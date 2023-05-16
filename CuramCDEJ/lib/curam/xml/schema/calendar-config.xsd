@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="CONFIGURATION">
+    <xs:annotation>
+      <xs:documentation>Contains a list of calendar configuration elements.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="CALENDAR" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="EVENT_TYPES" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="MONTH_CELL_HEIGHT" type="xs:string" use="optional"/>
+      <xs:attribute name="SHOW_REPEAT_EVENT_TEXT" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="CALENDAR_TYPE">
+    <xs:annotation>
+      <xs:documentation>Configuration Details for a particular calendar type.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="DESCRIPTION_LOCATION" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Hyperlink location to navigate to for an event within a calendar of a particular type. Attributes sent are: ID - the event ID; RE - Recurrence indicator. true or false;
+AT - Attendee indicator. true or false;
+RO - Read-only indicator. true or false;
+LV - Activity level. AL1, AL2, AL3, or AL4;
+AC - Acceptance indicator. true or false.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="DAY_VIEW_TIME_FORMAT">
+        <xs:annotation>
+          <xs:documentation>Integer representing day view time format: "12" means an am/pm view. "24" means a 24 hour clock view.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="12"/>
+            <xs:enumeration value="24"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="TYPE" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:element name="CALENDAR">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="CALENDAR_TYPE"/>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="EVENT_TYPES_TYPE">
+    <xs:annotation>
+      <xs:documentation>Event types to associate particular icons with.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence maxOccurs="unbounded">
+      <xs:element name="TYPE">
+        <xs:complexType>
+          <xs:attribute name="NAME" type="xs:string" use="required"/>
+          <xs:attribute name="ICON" type="xs:string" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="EVENT_TYPES" type="EVENT_TYPES_TYPE"/>
+</xs:schema>

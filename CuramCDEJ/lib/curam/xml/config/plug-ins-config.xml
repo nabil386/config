@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Copyright 2007-2021 Curam Software Ltd.
+All rights reserved.
+
+This software is the confidential and proprietary information of Curam
+Software, Ltd. ("Confidential Information"). You shall not disclose
+such Confidential Information and shall use it only in accordance with the
+terms of the license agreement you entered into with Curam Software.
+-->
+<pc:plug-ins
+    xmlns:pc="http://www.curamsoftware.com/curam/util/common/plug-in-config">
+
+  <!--
+  View renderers for evidence data. The "compare" property defaults to "false"
+  and the "mode" property defaults to "text".
+  -->
+  <pc:plug-in purpose="view-evidence-text" name="view-renderer"
+    class="curam.util.client.domain.render.legacy.view.LegacyEvidenceViewRenderer"/>
+
+  <pc:plug-in purpose="view-evidence-xml" extends="view-evidence-text">
+    <pc:property name="mode">xml</pc:property>
+  </pc:plug-in>
+
+  <pc:plug-in purpose="compare-evidence-xml" extends="view-evidence-xml">
+    <pc:property name="compare">true</pc:property>
+  </pc:plug-in>
+
+  <!--
+  View renderers for payment statements. The "output-type" property defaults
+  to "payment".
+  -->
+  <pc:plug-in purpose="view-benefit-statement" name="view-renderer"
+    class="curam.util.client.domain.render.legacy.view.LegacyPaymentStatementViewRenderer"/>
+
+  <pc:plug-in purpose="view-liability-statement"
+              extends="view-benefit-statement">
+    <pc:property name="output-type">liability</pc:property>
+  </pc:plug-in>
+
+  <!--
+  Edit renderers for text values. The text input control can be used or normal
+  values or for passwords. The PasswordEditRenderer extends the 
+  TextEditRenderer and sets the type of the input control and the input css 
+  class to use to 'password'. A custom CSS class may be used instead if 
+  required.
+  -->
+  <pc:plug-in purpose="curam-util-client::edit-text" name="edit-renderer"
+    class="curam.util.client.domain.render.edit.TextEditRenderer">
+    <pc:property name="dataTestidComponentPrefix">textinput</pc:property>
+  </pc:plug-in>
+    
+  <pc:plug-in purpose="curam-util-client::edit-password" name="edit-renderer"
+    class="curam.util.client.domain.render.edit.PasswordEditRenderer"/>    
+
+  <pc:plug-in purpose="edit-password" extends="curam-util-client::edit-text">
+    <pc:property name="is-password">true</pc:property>
+    <pc:property name="css-class">password</pc:property>
+  </pc:plug-in>
+
+  <!-- 
+  The basic renderer used for most domains: the formatted string value is just
+  sent to the page.
+  -->
+  <pc:plug-in purpose="view-text" name="view-renderer"
+    class="curam.util.client.domain.render.view.TextViewRenderer"/>
+
+  <!--
+  The new-style date edit renderer. This is not associated with a domain by
+  default; the legacy renderer is used instead. A text edit renderer is
+  configured to be used as the local renderer within the main date edit
+  renderer. The text edit renderer has a CSS class ("date") that differs from
+  the default CSS class ("text").
+  -->
+  <pc:plug-in purpose="edit-date-text" name="edit-renderer"
+              class="curam.util.client.domain.render.edit.TextEditWithPromptRenderer">
+    <pc:property name="input-css-class">texteditprompt</pc:property>
+  </pc:plug-in>
+  
+  <pc:plug-in purpose="edit-date" name="edit-renderer"
+              class="curam.util.client.domain.render.edit.DateEditRenderer">
+    <pc:local-plug-in local-purpose="text-input" name="edit-renderer"
+                      purpose="edit-date-text"/>
+    <pc:property name="dataTestidComponentPrefix">date</pc:property>
+  </pc:plug-in>
+
+  <pc:plug-in purpose="curam-util-client::edit-date-in-date-time"
+              extends="edit-date">
+    <pc:property name="suppress-table">true</pc:property>   
+  </pc:plug-in>
+  
+
+  <pc:plug-in purpose="curam-util-client::edit-time" name="edit-renderer"
+              class="curam.util.client.domain.render.edit.TimeEditRenderer">
+    <pc:property name="allow-blank">true</pc:property>
+    <pc:property name="time-domain">CURAM_TIME</pc:property>
+    <pc:property name="dataTestidComponentPrefix">time</pc:property>
+  </pc:plug-in>
+
+  <pc:plug-in purpose="curam-util-client::edit-time-in-date-time"
+              extends="curam-util-client::edit-time">
+    <pc:property name="suppress-table">true</pc:property>   
+  </pc:plug-in>
+  
+  <pc:plug-in purpose="edit-date-time" name="edit-renderer"
+              class="curam.util.client.domain.render.edit.DateTimeEditRenderer">
+    <pc:local-plug-in local-purpose="date-input" name="edit-renderer"
+                      purpose="curam-util-client::edit-date-in-date-time"/>
+    <pc:local-plug-in local-purpose="time-input" name="edit-renderer"
+                      purpose="curam-util-client::edit-time-in-date-time"/>
+    <pc:property name="date-domain">SVR_DATE</pc:property>
+    <pc:property name="time-domain">CURAM_TIME</pc:property>
+    <pc:property name="dataTestidComponentPrefix">datetime</pc:property>
+  </pc:plug-in>
+
+  <pc:plug-in purpose="curam-util-client::marshal-date-time" name="marshal"
+              class="curam.util.client.domain.marshal.DateTimeMarshal">
+    <pc:property name="date-domain">SVR_DATE</pc:property>
+    <pc:property name="time-domain">CURAM_TIME</pc:property>
+  </pc:plug-in>
+
+  <!-- 
+  The basic marshal used for most domains: a single string value is returned
+  without modification.
+  -->
+  <pc:plug-in purpose="marshal-text" name="marshal"
+    class="curam.util.client.domain.marshal.TextMarshal"/>
+    
+  <!--  Marshals the address data-->
+  <pc:plug-in purpose="curam-util-client::marshal-address" name="marshal"
+    class="curam.util.client.domain.marshal.AddressMarshal"/>
+
+  <!-- 
+  View renderers for values that refer to localized resources.
+  -->
+  <pc:plug-in purpose="view-resource" name="view-renderer"
+    class="curam.util.client.domain.render.view.ResourceViewRenderer"/>
+
+  <pc:plug-in purpose="view-boolean" extends="view-resource">
+    <pc:property name="resource">curam.omega3.i18n.CDEJResources</pc:property>
+  </pc:plug-in>
+
+  <pc:plug-in purpose="curam-util-client::edit-boolean" name="edit-renderer"
+      class="curam.util.client.domain.render.edit.CheckboxEditRenderer">
+      <pc:property name="dataTestidComponentPrefix">checkbox</pc:property>
+  </pc:plug-in>  
+
+  <pc:plug-in purpose="view-message" extends="view-resource">
+    <pc:property name="message">true</pc:property>
+  </pc:plug-in>
+
+  <!-- Renderer for a list with check-boxes for options  -->
+  <pc:plug-in purpose="list-with-checkboxes" name="select-renderer"
+    class="curam.util.client.domain.render.select.CheckboxedSelectRenderer">
+    <pc:property name="dataTestidComponentPrefix">checkboxselect</pc:property>
+   </pc:plug-in>
+
+  <!-- 
+  The basic select renderer used for most domains.
+  -->   
+  <pc:plug-in purpose="curam-util-client::select-value" name="select-renderer"
+    class="curam.util.client.domain.render.select.ListSelectOptionRenderer">
+    <pc:local-plug-in local-purpose="checkboxed-case" name="select-renderer"
+                      purpose="list-with-checkboxes"/>
+	<pc:property name="dataTestidComponentPrefix">dropdown</pc:property>
+  </pc:plug-in>
+
+  <!--
+  Converter, comparator, and default value plug-ins for code-table domains.
+  -->
+  <pc:plug-in purpose="convert-ct" name="converter"
+    class="curam.util.client.domain.convert.CodeTableCodeConverter"/>
+
+  <pc:plug-in purpose="compare-ct" name="comparator"
+    class="curam.util.client.domain.compare.CodeTableCodeLocaleAwareComparator"/>
+
+  <pc:plug-in purpose="default-value-ct" name="default"
+    class="curam.util.client.domain.defaults.CodeTableCodeDefault"/>
+
+  <!--
+  New renderers for code-table lists and hierarchies. The "edit-code-table"
+  purpose is set to a renderer that will switch between single-list code-table
+  editing for non-hierarchical code-tables and multi-list code-table editing
+  for hierarchical code-tables. These are not associated with domains by
+  default.
+  -->
+  <pc:plug-in purpose="edit-code-table-hierarchy" name="edit-renderer"
+    class="curam.util.client.domain.render.edit.CTHierarchyListEditRenderer">
+    <pc:property name="dataTestidComponentPrefix">dropdown</pc:property>
+  </pc:plug-in>
+
+  <pc:plug-in purpose="edit-code-table-list" name="edit-renderer"
+    class="curam.util.client.domain.render.edit.CTListEditWithBlankRenderer">
+    <pc:property name="dataTestidComponentPrefix">dropdown</pc:property>
+  </pc:plug-in>
+    
+  <pc:plug-in purpose="edit-code-table" name="edit-renderer"
+    class="curam.util.client.domain.render.edit.CodeTableEditRenderer">
+    <pc:local-plug-in local-purpose="code-table-list" name="edit-renderer"
+                      purpose="edit-code-table-list"/>
+    <pc:local-plug-in local-purpose="code-table-hierarchy" name="edit-renderer"
+                      purpose="edit-code-table-hierarchy"/>
+  </pc:plug-in>
+  
+  <pc:plug-in purpose="curam-util-client::edit-single-search-popup" 
+    name="edit-renderer"
+    class="curam.util.client.domain.render.edit.SingleSearchPopupEditRenderer">
+     <pc:property 
+      name="property-resource-name">DuimPopupConfig</pc:property>
+     <pc:property name="dataTestidComponentPrefix">singlesearchpopup</pc:property>
+  </pc:plug-in>
+  
+  <pc:plug-in purpose="curam-util-client::edit-multiple-search-popup" 
+    name="edit-renderer"
+    class="curam.util.client.domain.render.edit.MultipleSearchPopupEditRenderer">
+    <pc:property 
+      name="property-resource-name">DuimPopupConfig</pc:property>
+    <pc:property name="dataTestidComponentPrefix">multiplesearchpopup</pc:property>
+  </pc:plug-in>
+  
+  <pc:plug-in purpose="curam-util-client::edit-address" name="edit-renderer"
+              class="curam.util.client.domain.render.edit.AddressEditRenderer">
+  </pc:plug-in>
+  
+  <pc:plug-in purpose="curam-util-client::view-address" name="view-renderer"
+              class="curam.util.client.domain.render.view.AddressViewRenderer">
+  </pc:plug-in>
+  
+  <!-- 
+  For customizing look and feel of the new date picker, append custom CSS
+  classes to the below, rather than replacing them.
+  -->
+  <pc:plug-in purpose="curam-util-client::edit-alt-date" name="edit-renderer" 
+              class="curam.util.client.domain.render.edit.BirthdateEditRenderer">
+    <pc:property name="wrapperCssClass">alternate-date-container</pc:property>
+    <pc:property name="selectCssClass">alt-date-component</pc:property>
+    <pc:property name="dojoType">dijit.form.Select</pc:property>
+  </pc:plug-in>
+  
+</pc:plug-ins>

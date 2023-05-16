@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="DECISION_MATRIX">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="QUESTIONS" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="CONTRADICTIONS" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="OUTCOMES" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="ID" type="xs:string" use="required"/>
+      <xs:attribute name="CONTRADICTION_COLUMN" type="xs:string" use="optional"/>
+      <xs:attribute name="PRIORITY_COLUMN" type="xs:string" use="optional"/>
+      <xs:attribute name="SCORING_COLUMN" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="QUESTIONS">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="QUESTION" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="QUESTION">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ANSWER" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="QUESTION_ID" type="xs:string" use="required"/>
+      <xs:attribute name="TYPE" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="NORMAL"/>
+            <xs:enumeration value="CODETABLE"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="SUB_TYPE" type="xs:string" use="required"/>
+      <xs:attribute name="LABEL" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ANSWER">
+    <xs:complexType>
+      <xs:attribute name="ANSWER_ID" type="xs:string" use="required"/>
+      <xs:attribute name="VALUE" type="xs:string" use="optional"/>
+      <xs:attribute name="PRIORITY" type="xs:string" use="optional"/>
+      <xs:attribute name="SCORE" type="xs:string" use="optional"/>
+      <xs:attribute name="MAX" type="xs:string" use="optional"/>
+      <xs:attribute name="MIN" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CONTRADICTIONS">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="COMBINATION" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="COMBINATION">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="MESSAGE" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="SELECTION" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="COMBINATION_ID" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MESSAGE">
+    <xs:complexType>
+      <xs:attribute name="LOCALE" type="xs:string" use="required"/>
+      <xs:attribute name="TEXT" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SELECTION">
+    <xs:complexType>
+      <xs:attribute name="QUESTION_ID" type="xs:string" use="required"/>
+      <xs:attribute name="ANSWER_ID" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OUTCOMES">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="OUTCOME" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OUTCOME">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="COMBINATION" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="OUTCOME_ID" type="xs:string" use="required"/>
+      <xs:attribute name="LABEL" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+

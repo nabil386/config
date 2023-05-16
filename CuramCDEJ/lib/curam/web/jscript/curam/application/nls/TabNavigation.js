@@ -1,0 +1,1 @@
+({"curam.single.disabled.navigation.tab":"tab disabled","curam.navigation.tab":"Tab","curam.multiple.disabled.navigation.tab":"tabs disabled"})

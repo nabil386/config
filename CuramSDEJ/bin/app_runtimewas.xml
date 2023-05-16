@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2020. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant runtime support file for Curam projects running on WAS.
+  It includes tasks to start, stop and restart an application server, install and uninstall
+  an application, configure an application server and precompile the JSPs of an installed client.
+
+  This file is dependant on the AppServer.properties file and if this file does not exist any
+  of the targets will fail.
+
+-->
+<project name="app_runtimewas" default="start">
+
+  <!--  **************************  -->
+  <!--  ***  Import Utilities  ***  -->
+  <!--  **************************  -->
+  <import file="./app_properties.xml" />
+
+  <import file="./app_utilities.xml" />
+
+  <import file="./app_macros.xml" />
+
+  <!--  *******************************  -->
+  <!--  ***  App server Properties  ***  -->
+  <!--  *******************************  -->
+  <property file="${app.prop.location}"/>
+  <!-- Profile default value on z/OS must be default -->
+  <condition property="profile.name" value="default">
+    <os family="z/os"/>
+  </condition>
+  <property name="profile.name"   value="AppSrv01"/>
+  <property name="cell.name"      value="${node.name}Cell"/>
+
+  <!-- By default the run as username and password. -->
+  <!-- These can be overwritten in AppServer.properties. -->
+  <property name="curam.security.credentials.async.username" value="SYSTEM"/>
+  <property name="curam.security.credentials.async.password" value="yq0KlHpuxSuDL/Et2+z6cA=="/>
+  <property name="runas.user"     value="${curam.security.credentials.async.username}"/>
+  <property name="runas.password" value="${curam.security.credentials.async.password}"/>
+  
+  <!-- Use Jython 21 only for WAS 9 -->
+  <condition property="use.jython21" value="-usejython21 true" >
+    <available file="${WAS_HOME}/java/8.0" type="dir"/>
+  </condition>
+
+  <!-- For other WAS servers -->
+  <property name="use.jython21" value=""/>
+
+    <!-- PID files exist only when the server is running -->
+  <condition property="if.server.started">
+    <or>
+      <available file="${sysenv.WAS_HOME}/profiles/${profile.name}/logs/${curam.server.name}/${curam.server.name}.pid"/>
+      <available file="${sysenv.WAS_INSTANCE_HOME}/profiles/${profile.name}/logs/${curam.server.name}/${curam.server.name}.pid"/>
+    </or>
+  </condition>
+  
+  <!-- Check to see if virtual hosts are set in curam.webserver.virtualhosts 
+       in AppServer.properties else default to 80 and 443 ports -->
+  <condition property="webserver.virtualhosts" value="80,443" else="${curam.webserver.virtualhosts}">
+    <not>
+      <isset property="curam.webserver.virtualhosts"/>
+    </not>
+  </condition>
+  
+  <!--  **************  -->
+  <!--  ***  Init  ***  -->
+  <!--  **************  -->
+  <target name="init">
+    <!-- Check to see if the AppServer.properties file contains the correct settings -->
+    <condition property="appserver.properties.valid">
+      <and>
+        <isset property="curam.db.auth.alias"/>
+        <isset property="curam.client.httpport"/>
+        <isset property="curam.webservices.httpport"/>
+        <isset property="node.name"/>
+        <isset property="curam.server.name"/>
+      </and>
+    </condition>
+    <antcall target="check.appserver.properties.valid"/>
+
+    <!-- Check to see if the was.home variable has been setup. -->
+    <condition property="was.environment.variable.set">
+      <available file="${was.home}" type="dir"/>
+    </condition>
+    <antcall target="check.was.environment.variable"/>
+
+    <!-- Check to see if the node.name contains a space -->
+    <condition property="node.name.contains.space">
+      <contains string="${node.name}" substring=" "/>
+    </condition>
+    <antcall target="check.node.name.valid"/>
+
+  </target>
+
+  <!-- Fail if some properties are missing. -->
+  <target name="check.appserver.properties.valid" unless="appserver.properties.valid">
+    <fail message="Missing properties from AppServer.properties file. See AppServer.properties.sample."/>
+  </target>
+
+  <!-- Print message if environment variable does not exist. -->
+  <target name="check.was.environment.variable" unless="was.environment.variable.set">
+    <fail message="WAS_HOME environment variable is not set."/>
+  </target>
+
+  <!-- Check node.name does not contain a space. -->
+  <target name="check.node.name.valid" if="node.name.contains.space">
+    <fail message="The node.name property cannot contain spaces."/>
+  </target>
+
+
+  <!--  *************************************  -->
+  <!--  ***  Start an application server  ***  -->
+  <!--  *************************************  -->
+  <target name="start" depends="init, check.server.name, get.decrypted.appserver.password">
+
+    <echo message="Starting ${server.name} .. "/>
+
+    <!-- On windows, call 'wsadmin.bat' -->
+    <condition property="script.suffix" value=".bat" >
+      <os family="windows" />
+    </condition>
+    <!-- Unix platforms use wsadmin.sh -->
+    <property name="script.suffix" value=".sh"/>
+
+    <execos command="${was.home}/profiles/${profile.name}/bin/startServer${script.suffix}"
+            fail.required="${fail.on.error}"
+            options="${server.name}
+                     -profileName ${profile.name}
+                    "/>
+
+  </target>
+
+  <!--  ************************************  -->
+  <!--  ***  Stop an application server  ***  -->
+  <!--  ************************************  -->
+  <target name="stop" depends="init, check.server.name, get.decrypted.appserver.password">
+
+    <echo message="Stopping ${server.name} .."/>
+
+    <!-- On windows, call 'wsadmin.bat' -->
+    <condition property="script.suffix" value=".bat" >
+      <os family="windows" />
+    </condition>
+    <!-- Unix platforms use wsadmin.sh -->
+    <property name="script.suffix" value=".sh"/>
+
+    <execos command="${was.home}/profiles/${profile.name}/bin/stopServer${script.suffix}"
+            fail.required="${fail.on.error}"
+            options="${server.name}
+                     -user ${security.username}
+                     -password ${decrypted.appserver.password}
+                     -profileName ${profile.name}
+                    "/>
+
+  </target>
+
+
+  <!--  ***************************************  -->
+  <!--  ***  Restart an application server  ***  -->
+  <!--  ***************************************  -->
+  <target name="restart" depends="init, check.server.name">
+
+    <antcall target="stop">
+      <param name="fail.on.error" value="false"/>
+    </antcall>
+
+    <antcall target="start">
+      <param name="fail.on.error" value="true"/>
+    </antcall>
+
+  </target>
+
+  
+  <!--  *********************************************  -->
+  <!--  ***     Configures web server plugin      ***  -->
+  <!--  *********************************************  -->
+  <target name="configure.webserver.plugin" depends="init, check.server.name, get.decrypted.appserver.password" if="if.server.started">
+
+    <echo message="Configuring web server plugin..."/>
+    
+    <antcall target="was.wsadmin.script" inheritAll="false">
+      <param name="wsadmin.extra.args" value=" -f ${dir.sde.bin}/WebServerConfig.py propogateKeyRing ${cell.name} ${node.name} ${server.name} ${was.home} ${profile.name} ${webserver.virtualhosts}"/>
+      <param name="error.failure" value="${fail.on.error}"/>
+    </antcall>
+    
+  </target>
+  
+  <!--  **************************************************************  -->
+  <!--  ***     Shows failure message if server is not running     ***  -->
+  <!--  **************************************************************  -->
+  <target name="server.not.running" unless="if.server.started">
+    <fail message="Server '${server.name}' is not running. Please start the server and try again"/>
+  </target>
+  
+  <!--  ********************************  -->
+  <!--  ***  Install an application  ***  -->
+  <!--  ********************************  -->
+  <target name="install" depends="init, check.server.name, get.decrypted.appserver.password">
+
+    <echo message="Installing ${application.name} (${ear}) on ${server.name}..."/>
+
+    <!-- Task for decrypting passwords -->
+    <taskdef name="decrypt" classname="curam.util.tools.AntStrings"
+      classpath="${crypto.prop.file.location}:${jar.coreinf}:${jar.tools}"/>
+
+    <!-- Decrypt the runas.password. -->
+    <decrypt to="decrypted.runas.password" from="${runas.password}" type="decrypt"/>
+
+   <antcall target="was.wsadmin" inheritAll="false">
+      <param name="line"          value="print AdminApp.install('${ear}', '[-server ${server.name} -node ${node.name} -appname ${application.name} -MapRunAsRolesToUsers [[mdbuser ${runas.user} ${decrypted.runas.password}] [mbeancreator ${runas.user} ${decrypted.runas.password}]]]')"/>
+      <param name="password"      value="${decrypted.appserver.password}"/>
+      <param name="username"      value="${security.username}"/>
+      <param name="error.failure" value="${fail.on.error}"/>
+    </antcall>
+    
+    <echo message="Mapping the modules to servers..."/>
+    
+    <antcall target="was.wsadmin.script" inheritAll="false">
+      <param name="wsadmin.extra.args" value=" -f ${dir.sde.bin}/WebServerConfig.py mapModulesToServers ${cell.name} ${node.name} ${server.name} ${application.name}"/>
+      <param name="error.failure" value="${fail.on.error}"/>
+    </antcall>
+   
+    <echo message="Setting application class loader policy..."/>
+
+    <antcall target="was.wsadmin" inheritAll="false">
+      <param name="line"          value="print AdminConfig.modify(AdminConfig.showAttribute(AdminConfig.getid('/Deployment:${application.name}/'), 'deployedObject'), [['warClassLoaderPolicy', 'SINGLE']])"/>
+      <param name="password"      value="${decrypted.appserver.password}"/>
+      <param name="username"      value="${security.username}"/>
+      <param name="error.failure" value="${fail.on.error}"/>
+    </antcall>
+
+    <antcall target="was.wsadmin" inheritAll="false">
+      <param name="line"          value="print AdminConfig.modify(AdminConfig.showAttribute( AdminConfig.showAttribute (AdminConfig.getid('/Deployment:${application.name}/'), 'deployedObject'), 'classloader'), [['mode', 'PARENT_LAST']])"/>
+      <param name="password"      value="${decrypted.appserver.password}"/>
+      <param name="username"      value="${security.username}"/>
+      <param name="error.failure" value="${fail.on.error}"/>
+    </antcall>
+
+    <echo message="Starting ${application.name} on ${server.name}..."/>
+
+    <antcall target="was.wsadmin" inheritAll="false">
+      <param name="line"          value="print AdminControl.invoke(AdminControl.queryNames('cell=${cell.name},node=${node.name},type=ApplicationManager,process=${server.name},*'), 'startApplication', '${application.name}')"/>
+      <param name="password"      value="${decrypted.appserver.password}"/>
+      <param name="username"      value="${security.username}"/>
+      <param name="error.failure" value="${fail.on.error}"/>
+    </antcall>
+
+  </target>
+
+
+  <!--  **********************************  -->
+  <!--  ***  Uninstall an application  ***  -->
+  <!--  **********************************  -->
+  <target name="uninstall" depends="init, check.server.name, get.decrypted.appserver.password">
+
+    <echo message="Stopping ${application.name} on ${server.name}..."/>
+
+    <antcall target="was.wsadmin" inheritAll="false">
+      <param name="line"          value="print AdminControl.invoke(AdminControl.queryNames('cell=${cell.name},node=${node.name},type=ApplicationManager,process=${server.name},*'), 'stopApplication', '${application.name}')"/>
+      <param name="password"      value="${decrypted.appserver.password}"/>
+      <param name="username"      value="${security.username}"/>
+      <param name="error.failure" value="false"/>
+    </antcall>
+
+    <echo message="Uninstalling ${application.name} on ${server.name}..."/>
+
+    <antcall target="was.wsadmin" inheritAll="false">
+      <param name="line"          value="print AdminApp.uninstall('${application.name}', '[-server ${server.name} -node ${node.name}]')"/>
+      <param name="password"      value="${decrypted.appserver.password}"/>
+      <param name="username"      value="${security.username}"/>
+      <param name="error.failure" value="${fail.on.error}"/>
+    </antcall>
+
+  </target>
+
+
+  <!--  *****************************************  -->
+  <!--  ***  Configure an application server  ***  -->
+  <!--  *****************************************  -->
+  <target name="configure" depends="init" description="Setup and configure WAS">
+
+    <ant
+      antfile="./app_configureWAS.xml"
+      target="setup"
+      inheritall="false">
+    </ant>
+
+  </target>
+
+
+  <!--  *****************************  -->
+  <!--  ***  Precompile the JSPs  ***  -->
+  <!--  *****************************  -->
+  <target name="precompile" depends="init, check.ear.file">
+
+    <property name="temp.dir" value="${dir.bld}/temp_precompile"/>
+
+    <delete dir="${temp.dir}"/>
+    <mkdir dir="${temp.dir}"/>
+
+    <!-- On windows, call 'ws_ant.bat' -->
+    <condition property="script.suffix" value=".bat" >
+      <os family="windows" />
+    </condition>
+
+    <!-- Unix platforms use ws_ant -->
+    <property name="script.suffix" value=".sh"/>
+
+    <execos command="${was.home}/profiles/${profile.name}/bin/JspBatchCompiler${script.suffix}" fail.required="true"
+            options="-ear.path ${ear.file}
+                     -extractToDir ${temp.dir}
+                     -classloader.parentFirst false
+                    "/>
+
+    <copy file="${temp.dir}/${ear.file.name}" toFile="${ear.file}"/>
+
+    <!-- Delete the temporary directories used -->
+    <delete dir="${temp.dir}"/>
+
+  </target>
+
+  <!--  *********************  -->
+  <!--  ***  WAS WSADMIN  ***  -->
+  <!--  *********************  -->
+  <target name="was.wsadmin">
+
+    <!-- On windows, call 'wsadmin.bat' -->
+    <condition property="script.suffix" value=".bat" >
+      <os family="windows" />
+    </condition>
+    <!-- Unix platforms use wsadmin.sh -->
+    <property name="script.suffix" value=".sh"/>
+
+
+    <property name="wsadmin.extra.args" value=""/>
+
+    <exec executable="cmd.exe"
+          failonerror="${error.failure}" osfamily="windows">
+      <arg line="/c call ${was.home}/profiles/${profile.name}/bin/wsadmin${script.suffix} -user ${username} -password ${password} -profileName ${profile.name} -lang jython ${wsadmin.extra.args} -c &quot;${line}&quot; "/>
+    </exec>
+    <exec executable="${was.home}/profiles/${profile.name}/bin/wsadmin${script.suffix}"
+          failonerror="${error.failure}" osfamily="unix">
+      <arg line="-user ${username} -password ${password} -profileName ${profile.name} -lang jython ${wsadmin.extra.args} -c &quot;${line}&quot; "/>
+    </exec>
+
+  </target>
+  
+  <!--  *************************************  -->
+  <!--  ***  WAS WSADMIN SCRIPT EXECUTE   ***  -->
+  <!--  *************************************  -->
+  <target name="was.wsadmin.script">
+
+    <!-- On windows, call 'wsadmin.bat' -->
+    <condition property="script.suffix" value=".bat" >
+      <os family="windows" />
+    </condition>
+    <!-- Unix platforms use wsadmin.sh -->
+    <property name="script.suffix" value=".sh"/>
+    
+    <execos command="${WAS_HOME}/profiles/${profile.name}/bin/wsadmin${script.suffix}"
+            fail.required="${error.failure}"
+            options="-profileName ${profile.name} -lang jython ${use.jython21} ${wsadmin.extra.args}"/>
+
+  </target>
+</project>

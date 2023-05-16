@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2021. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant database build file for Curam projects.
+
+-->
+<project name="app_database" default="database">
+
+  <!--  *************************  -->
+  <!--  ***  D A T A B A S E  ***  -->
+  <!--  *************************  -->
+  <!-- Main Targets -->
+  <target name="database" description="Build a Clean Database"
+    depends="init, mergeshortnames, databasesql, droptablespaces, createtablespaces,
+            droptables, createtables, insertdata, insertproperties, insertrangeawareconfig, insertlobdata,
+            insertuserpreferences, inserttabconfiguration">
+  </target>
+
+
+  <!-- This target inserts data that was extracted using the extractdata build target.  -->
+  <target name="reloadextracteddata" description="Reloads data that was extracted using the extractdata command back onto the database."
+    depends="init, extractdatadatabasesql, droptablespaces, createtablespaces,
+            droptables, createtables, insertdata, app_database.insertlobdata">
+  </target>
+
+  <!-- run the datamanager for extract data target -->
+  <target name="extractdatadatabasesql" description="Explicitly call the target to insert data extracted using the extractdata command.">
+    <antcall target="databasesql">
+      <param name="datamanager.target" value="insertextracteddata"/>
+    </antcall>
+  </target>
+
+  <!-- run the data manager in test form -->
+  <target name="database.test">
+      <antcall target="database">
+        <param name="datamanager.target" value="test"/>
+      </antcall>
+  </target>
+
+  <!-- Generate the short names files for all components. -->
+  <target name="mergeshortnames"
+   description="Merge ShortNames.properties from all components">
+
+    <property
+      name="combined.short.names"
+      value="${dir.bld.svr.cls}/CombinedShortNames.properties" />
+    <property
+      name="combine.short.names.script"
+      value="${dir.bld.datamanager}/CombineShortNames.xml" />
+    <property
+      name="temp.shortnames.file"
+      value="${dir.bld.datamanager}/ComponentShortNames.properties" />
+    <property
+      name="global.shortnames.file"
+      value="${dir.project.properties}/ShortNames.properties" />
+
+    <mkdir dir="${dir.bld.datamanager}" />
+
+    <!-- Generate an Ant script to combine the available shortnames files. -->
+    <delete file="${combine.short.names.script}" />
+    <java
+      classname="curam.util.tools.datamanager.GenerateShortnamesMerger"
+      classpath="${jar.tools}:${jar.coreinf}:${jar.log4j.2.core}:${jar.log4j.2.api}:${jar.clover}:${jar.javatools}:${jar.j2ee}"
+      fork="${java.fork}"
+      failonerror="${java.failonerror}"
+      maxmemory="${java.maxmemory}"
+      taskname="generateShortNamesMerger"
+    >
+      <jvmarg line="${java.jvmargs}" />
+      <jvmarg value="-Xms${java.maxmemory}" />
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}" />
+      <arg line="${base.dir}" />
+      <arg value="${SERVER_COMPONENT_ORDER}" />
+      <arg value="${SERVER_LOCALE_LIST}" />
+      <arg value="${combine.short.names.script}" />
+    </java>
+
+    <!-- Invoke the Ant script we just generated. -->
+    <delete file="${temp.shortnames.file}" />
+    <ant
+      antfile="${combine.short.names.script}"
+      target="mergeFiles">
+
+      <property name="dir.base.components" value="${dir.base.components}" />
+      <property name="shortnames.file" value="${temp.shortnames.file}" />
+    </ant>
+
+    <echo message="Append new to old: ${dir.project.properties} + ${temp.shortnames.file}" />
+
+    <!-- Merge component ShortNames.properties with the application-wide version. -->
+    <delete file="${combined.short.names}" />
+    <antcall target="concat.shortnames.global.component">
+      <param name="destfile" value="${combined.short.names}" />
+      <param name="global.shortnames.file" value="${global.shortnames.file}" />
+      <param name="temp.shortnames.file"   value="${temp.shortnames.file}" />
+    </antcall>
+    <antcall target="concat.shortnames.component.global">
+      <param name="destfile" value="${combined.short.names}" />
+      <param name="global.shortnames.file" value="${global.shortnames.file}" />
+      <param name="temp.shortnames.file"   value="${temp.shortnames.file}" />
+    </antcall>
+
+
+  </target>
+
+  <!--
+    combines two short name files. putting the
+    global version ahead of the componentised version
+  -->
+  <target name="concat.shortnames.global.component"
+    unless="global.shortnames.last" >
+
+    <concat force="true" destfile="${destfile}"
+      fixlastline="yes"
+      encoding="${java.file.encoding}"
+      outputencoding="${java.file.encoding}">
+      <fileset dir="${base.dir}" includes="project/properties/ShortNames.properties" />
+      <fileset file="${temp.shortnames.file}" />
+    </concat>
+  </target>
+
+  <!--
+    combines two short name files. putting the
+    componentised version ahead of the global version
+  -->
+  <target name="concat.shortnames.component.global"
+    unless="ignore.global.shortnames"
+    if="global.shortnames.last"
+    >
+
+    <concat force="true" destfile="${destfile}"
+      fixlastline="yes"
+      encoding="${java.file.encoding}"
+      outputencoding="${java.file.encoding}">
+      <fileset file="${temp.shortnames.file}" />
+      <fileset dir="${base.dir}" includes="project/properties/ShortNames.properties" />
+    </concat>
+    </target>
+
+
+  <!-- run the data manager -->
+  <target name="databasesql"
+    depends="init, mergeshortnames, check.db.type, run.database.db2, run.database.ora, run.database.zos, run.database.h2">
+
+    <property name="datamanager.target" value="all"/>
+    <property name="extra.datamanager.jvmargs" value="-Dfake.property=1"/>
+
+    <!-- Call app_datamanager.xml to invoke the data manager -->
+    <ant
+      antfile="${dir.sde.bin}/app_datamanager.xml"
+      target="datamanager"
+      inheritAll="false">
+      <property name="prm.target"  value="${datamanager.target}"/>
+      <property name="extra.datamanager.jvmargs" value="${extra.datamanager.jvmargs}"/>
+    </ant>
+  </target>
+
+  <!-- run the DropTablespaces.sql -->
+  <target name="droptablespaces"
+    depends="check.db.type,
+      run.database.db2,
+      run.database.ora,
+      run.database.zos,
+      run.database.h2,
+      get.decrypted.db.password"
+      unless="statictablespaces">
+
+    <antcall target="dispmsg">
+      <param name="prm.msg" value="Dropping Table Spaces"/>
+    </antcall>
+    <sql
+      driver="${db.driver}"
+      url="${db.url}"
+      userid="${curam.db.username}"
+      password="${decrypted.db.password}"
+      autocommit="true"
+      onerror="continue"
+      encoding="UTF-8">
+      <transaction src="${dir.bld.datamanager}/DropTablespaces.sql"/>
+      <connectionProperty name="sslConnection" value="${curam.db2.ssl}"/>
+      <connectionProperty name="sslTrustStoreLocation" value="${curam.db2.ssl.truststore.location}"/>
+      <connectionProperty name="sslTrustStorePassword" value="${curam.db2.ssl.truststore.password}"/>
+      <classpath>
+        <path refid="database.common.classpath"/>
+      </classpath>
+     </sql>
+
+  </target>
+
+  <!-- run the CreateTablespaces.sql -->
+  <target name="createtablespaces"
+    depends="check.db.type,
+      run.database.db2,
+      run.database.ora,
+      run.database.zos,
+      run.database.h2,
+      get.decrypted.db.password"
+      unless="statictablespaces">
+
+    <antcall target="dispmsg">
+      <param name="prm.msg" value="Creating Table Spaces"/>
+    </antcall>
+    <sql
+      driver="${db.driver}"
+      url="${db.url}"
+      userid="${curam.db.username}"
+      password="${decrypted.db.password}"
+      autocommit="true"
+      encoding="UTF-8"
+      onerror="abort">
+      <transaction>
+        ${transaction}
+      </transaction>
+      <transaction src="${dir.bld.datamanager}/CreateTablespaces.sql"/>
+      <connectionProperty name="sslConnection" value="${curam.db2.ssl}"/>
+      <connectionProperty name="sslTrustStoreLocation" value="${curam.db2.ssl.truststore.location}"/>
+      <connectionProperty name="sslTrustStorePassword" value="${curam.db2.ssl.truststore.password}"/>
+      <classpath>
+        <path refid="database.common.classpath"/>
+      </classpath>
+    </sql>
+
+  </target>
+
+  <target name="droptables"
+    depends="check.db.type,
+      run.database.db2,
+      run.database.ora,
+      run.database.zos,
+      run.database.h2,
+      get.decrypted.db.password">
+
+    <antcall target="dispmsg">
+      <param name="prm.msg" value="Dropping Tables"/>
+    </antcall>
+    <sql
+      driver="${db.driver}"
+      url="${db.url}"
+      userid="${curam.db.username}"
+      password="${decrypted.db.password}"
+      autocommit="true"
+      onerror="continue"
+      encoding="UTF-8">
+      <transaction>
+        ${transaction}
+      </transaction>
+      <transaction src="${dir.bld.datamanager}/DropTables.sql"/>
+      <connectionProperty name="sslConnection" value="${curam.db2.ssl}"/>
+      <connectionProperty name="sslTrustStoreLocation" value="${curam.db2.ssl.truststore.location}"/>
+      <connectionProperty name="sslTrustStorePassword" value="${curam.db2.ssl.truststore.password}"/>
+      <classpath>
+        <path refid="database.common.classpath"/>
+      </classpath>
+     </sql>
+
+  </target>
+
+  <target name="createtables"
+    depends="check.db.type,
+      run.database.db2,
+      run.database.ora,
+      run.database.zos,
+      run.database.h2,
+      get.decrypted.db.password">
+
+    <antcall target="dispmsg">
+      <param name="prm.msg" value="Creating Tables"/>
+    </antcall>
+    <sql
+      driver="${db.driver}"
+      url="${db.url}"
+      userid="${curam.db.username}"
+      password="${decrypted.db.password}"
+      autocommit="true"
+      encoding="UTF-8"
+      onerror="abort">
+      <transaction>
+        ${transaction}
+      </transaction>
+      <transaction src="${dir.bld.datamanager}/CreateTables.sql"/>
+      <connectionProperty name="sslConnection" value="${curam.db2.ssl}"/>
+      <connectionProperty name="sslTrustStoreLocation" value="${curam.db2.ssl.truststore.location}"/>
+      <connectionProperty name="sslTrustStorePassword" value="${curam.db2.ssl.truststore.password}"/>
+      <classpath>
+        <path refid="database.common.classpath"/>
+      </classpath>
+    </sql>
+
+  </target>
+
+  <!-- run the setupdatabase.sql -->
+  <target name="insertdata"
+    depends="check.db.type,
+      run.database.db2,
+      run.database.ora,
+      run.database.zos,
+      run.database.h2,
+      get.decrypted.db.password">
+
+    <antcall target="dispmsg">
+      <param name="prm.msg" value="Inserting Data and Creating Constraints"/>
+    </antcall>
+    <sql
+      driver="${db.driver}"
+      url="${db.url}"
+      userid="${curam.db.username}"
+      password="${decrypted.db.password}"
+      autocommit="true"
+      encoding="UTF-8"
+      onerror="abort">
+      <transaction>
+        ${transaction}
+      </transaction>
+      <transaction src="${dir.bld.datamanager}/SetupDatabase.sql"/>
+      <connectionProperty name="sslConnection" value="${curam.db2.ssl}"/>
+      <connectionProperty name="sslTrustStoreLocation" value="${curam.db2.ssl.truststore.location}"/>
+      <connectionProperty name="sslTrustStorePassword" value="${curam.db2.ssl.truststore.password}"/>
+      <classpath>
+        <path refid="database.common.classpath"/>
+      </classpath>
+    </sql>
+
+  </target>
+
+  <!-- run the lob manager -->
+  <target name="insertlobdata">
+
+    <!-- Call app_datamanager.xml to invoke the lob manager -->
+    <ant
+      antfile="${dir.sde.bin}/app_datamanager.xml"
+      target="lobmanager"
+      inheritAll="false">
+    </ant>
+
+  </target>
+
+  <!-- run the properties manager -->
+  <target name="insertproperties">
+
+    <!-- Call app_propertiesmanager.xml to invoke the properties manager -->
+    <ant
+      antfile="${dir.sde.bin}/app_propertiesmanager.xml"
+      target="importproperties"
+      inheritAll="false">
+    </ant>
+
+  </target>
+
+  <!-- run the user preference manager -->
+  <target name="insertuserpreferences">
+    <!-- Call app_userpreferencemanager.xml to invoke the user preference manager. -->
+    <ant antfile="${dir.sde.bin}/app_userpreferencemanager.xml"
+      target="insertuserpreferences" inheritAll="false" />
+  </target>
+
+  <!-- run the properties manager -->
+  <target name="inserttabconfiguration">
+
+    <!-- Call app_tabconfiguration.xml to insert the tab configuration on to the database. -->
+    <ant
+      antfile="${dir.sde.bin}/app_tabconfiguration.xml"
+      target="inserttabconfiguration"
+      inheritAll="false">
+    </ant>
+
+  </target>
+  <!-- run the range aware server configuration -->
+    <target name="insertrangeawareconfig">
+      <!-- Call app_rangeawareconfig.xml to invoke the range aware server configuration. -->
+      <ant antfile="${dir.sde.bin}/app_rangeawareconfig.xml"
+        target="insertrangeawareconfig" inheritAll="false" />
+  </target>
+
+
+
+  <!-- ************************************ -->
+  <!-- ***  R U N  S T A T I S T I C S  *** -->
+  <!-- ************************************ -->
+
+  <target name="runstatistics" description="Runs statistics for the database"
+          unless="usingzos" depends="check.db.type, run.database.db2, run.database.h2,
+                                     run.database.ora, run.database.zos,
+                                     get.decrypted.db.password">
+
+    <antcall target="dispmsg">
+      <param name="prm.msg" value="Run Statistics for the database"/>
+    </antcall>
+
+    <replace file="${dir.bld.datamanager}/RunStatistics.sql" token="$USERNAME$"
+             value="${curam.db.username}"/>
+
+    <sql
+      driver="${db.driver}"
+      url="${db.url}"
+      userid="${curam.db.username}"
+      password="${decrypted.db.password}"
+      autocommit="false"
+      encoding="UTF-8"
+      delimiter="/"
+      onerror="abort">
+      <transaction src="${dir.bld.datamanager}/RunStatistics.sql"/>
+      <connectionProperty name="sslConnection" value="${curam.db2.ssl}"/>
+      <connectionProperty name="sslTrustStoreLocation" value="${curam.db2.ssl.truststore.location}"/>
+      <connectionProperty name="sslTrustStorePassword" value="${curam.db2.ssl.truststore.password}"/>
+      <classpath>
+        <path refid="database.common.classpath"/>
+      </classpath>
+    </sql>
+
+  </target>
+
+
+  <!-- ******************************************* -->
+  <!-- ***  F O R E I G N   K E Y   C H E C K  *** -->
+  <!-- ******************************************* -->
+
+  <target name="foreignkeycheck"
+   description="Check foreign key constraints of all Curam data">
+
+    <!-- On z/OS, put in noargsconversion -->
+    <condition property="java.extra.jvmargs" value="-Xnoargsconversion" >
+      <os family="z/os"/>
+    </condition>
+    <property name="java.extra.jvmargs" value="-Dfake.property=1"/>
+
+    <java
+      classname="curam.util.tools.richecker.ForeignKeyChecker"
+      classpathref="database.common.classpath"
+      fork="${java.fork}"
+      failonerror="${java.failonerror}"
+      maxmemory="${java.maxmemory}"
+      taskname="foreignkeychecker"
+    >
+      <sysproperty key="curam.disable.dynamic.properties"     value="true"/>
+      <jvmarg line="${java.jvmargs}" />
+      <jvmarg value="-Xms${java.maxmemory}" />
+      <jvmarg line="${java.extra.jvmargs}" />
+      <jvmarg value="-Dconsole.encoding=${java.console.encoding}" />
+      <jvmarg value="-Dfile.encoding=UTF-8" />
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}" />
+      <arg value="${dir.bld.ddl}/Merged_ForeignKeys.xml" />
+    </java>
+
+  </target>
+
+</project>

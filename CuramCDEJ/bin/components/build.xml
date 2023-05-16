@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2006,2021. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+Builds all the components. The dependencies between the components are only
+one-way, but there are two complications: the rest of the CDEJ must be built
+first using the old scripts; and the test dependencies are different (for
+example, the framework test code depends on some of the components build on
+that framework in order to test it). In short, first run the normal "client"
+build and then this script will compile all of the components before running
+all of the tests.
+
+It would be nice to import the projects and depend on their targets, but it is
+not possible to indicate the base directory for each project when they each
+import the common build file. Therefore, we have to invoke them as independent
+projects.
+
+NOTE: THIS SCRIPT IS NOT INVOKED DIRECTLY. IT MUST BE IMPORTED INTO A SCRIPT
+IN THE COMMON BASE FOLDER OF A GROUP OF COMPONENT PROJECT FOLDERS. THAT
+IMPORTING SCRIPT MUST THEN BE RUN FROM THAT FOLDER TO ENSURE THAT THE BASEDIR
+IS CORRECT.
+-->
+<project name="build">
+  <!--
+  Sets up the core properties for the build environment. See the script for
+  more details on what it sets.
+  -->
+  <property environment="sysenv."/>
+  <import file="build-environment.xml"/>
+
+  <!--
+  Imports some macros used to generate the overall site HTML page.
+  -->
+  <import file="build-site-macros.xml"/>
+
+  <!--
+  Load the property defining the list of component names ("list.components").
+  These will be processed in their declared order.
+
+  NOTE: THIS PATH IS RELATIVE TO THE COMMON BASE FOLDER OF THE COMPONENT
+  PROJECT FOLDERS. IT IS NOT RELATIVE TO THE LOCATION OF THIS SCRIPT FILE.
+  -->
+  <property file="components.properties"/>
+
+  <!--
+  Need to use some Ant Contrib tasks. We need to load "jar-files.properties"
+  to get the location of the Ant Contrib JAR file.
+  -->
+  <property file="jar-files.properties"/>
+  <property file="${dir.cdej}/bin/components/cdej.properties" />
+  <taskdef resource="net/sf/antcontrib/antlib.xml"
+           classpath="${jar.ant.contrib}"/>
+
+  <!-- =================================================================== -->
+  <!-- ================ C O M P O N E N T   T A R G E T S ================ -->
+  <!-- =================================================================== -->
+
+  <target name="basic"
+          description="Compiles and JARs all main component code and runs the JavaScript build.">
+    <buildcomponents target="jar"/>
+    <buildcomponents target="javascript"/>
+  </target>
+
+  <target name="jar"
+          description="Compiles and JARs all main component code.">
+    <buildcomponents target="jar"/>
+  </target>
+
+  <target name="clean" description="Cleans all component projects.">
+    <buildcomponents target="clean"/>
+    <delete dir="${dir.top.target}"/>
+  </target>
+
+  <target name="test-compile" depends="compile"
+          description="Compiles the test Java code.">
+    <buildcomponents target="test-compile"/>
+  </target>
+
+  <target name="compile" description="Compiles the main Java code.">
+    <buildcomponents target="compile"/>
+  </target>
+
+  <target name="checkstyle">
+    <buildcomponents target="checkstyle"/>
+  </target>
+
+  <target name="findbugs">
+    <buildcomponents target="findbugs"/>
+  </target>
+
+  <target name="javadoc">
+    <buildcomponents target="javadoc"/>
+  </target>
+
+  <target name="eclipse" description="Generates the Eclipse configuration.">
+    <buildcomponents target="eclipse"/>
+  </target>
+
+  <target name="javascript" description="Build the JavaScript.">
+    <buildcomponents target="javascript"/>
+  </target>
+
+  <target name="test-javascript-setup" description="Sets up dojo toolkit and JavaScript resources before running tests">
+    <buildcomponents target="setup-javascript-test"/>
+  </target>
+
+  <target name="test-javascript-smoketest" description="Run unit tests for JavaScript.">
+	<if>
+		<available file="${sysenv.CURAMCDEJ}/bin/components/build-javascript.xml" />
+		<then>
+			<antcall target="test-javascript" />
+		</then>
+		<else>
+			<buildcomponents target="test-javascript"/>
+		</else>
+	</if>
+  </target>
+
+  <target name="test-javascript" description="Run unit tests for JavaScript.">
+    <buildcomponents target="test-javascript"/>
+  </target>
+
+  <target name="test-javascript-coverage" description="Generate coverage report for JavaScript unit tests.">
+    <buildcomponents target="test-javascript-coverage"/>
+  </target>
+
+  <target name="javascript-doc" description="Generates documentation for JavaScript.">
+    <buildcomponents target="javascript-doc"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- =================== C O N M A N   T A R G E T S =================== -->
+  <!-- =================================================================== -->
+
+  <!--
+  The development sanity check will compile the main code and the test code
+  and run Policing against both.
+  -->
+  <!-- Comment in FindBugs when it has been updated. -->
+  <target name="cibuild-check" depends="test-compile, checkstyle, javadoc"/>
+
+  <!--
+  The release check will compile the main code and the test code, and execute
+  all of the unit tests.
+  -->
+  <target name="smoketest-check" depends="test-compile, test"/>
+
+
+  <!-- =================================================================== -->
+  <!-- ==== C O M P O N E N T   I N T E G R A T I O N   T A R G E T S ==== -->
+  <!-- =================================================================== -->
+
+  <!--
+  Set-up for top-level reports and web site.
+
+  NOTE: THESE PROPERTIES ARE RELATIVE TO THE COMMON BASE FOLDER OF A GROUP OF
+  COMPONENT PROJECT FOLDERS, AS THIS SCRIPT IS IMPORTED INTO ANOTHER SCRIPT AT
+  THAT LOCATION BEFORE IT IS USED.
+  -->
+  <property name="dir.top.target"     value="target"/>
+  <property name="dir.top.rpt.test"   value="${dir.top.target}/test-report"/>
+  <property name="dir.top.site"       value="${dir.top.target}/site"/>
+
+  <!-- ======= T O P - L E V E L   U N I T   T E S T   R E P O R T ======= -->
+  <!--
+  Runs the tests and merges all of the test reports into a single report.
+  -->
+  <target name="test" depends="-component-test, -merge-test"
+          description="Builds and runs all tests."/>
+
+  <target name="-component-test" depends="test-compile">
+    <buildcomponents target="diagnostics"/>
+    <buildcomponents target="test"/>
+  </target>
+
+  <target name="-merge-test">
+    <mkdir dir="${dir.top.rpt.test}/html"/>
+    <junitreport tofile="${dir.top.rpt.test}/report.xml">
+      <fileset dir="${basedir}">
+        <include name="*/target/test-report/TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="${dir.top.rpt.test}/html"/>
+    </junitreport>
+
+    <!-- Extract some values from the XML report. -->
+    <xslt in="${dir.top.rpt.test}/report.xml"
+          out="${dir.top.rpt.test}/report.properties"
+          style="${dir.bld.scripts}/test-summary.xsl"/>
+  </target>
+
+  <!-- ========== T O P - L E V E L   B U I L D I N G   S I T E ========== -->
+  <!--
+  Generates the web site with links to the JavaDoc and various reports.
+  -->
+  <target name="site"
+          depends="clean, -component-site, -merge-test,
+                   -merge-site"/>
+
+  <target name="-component-site">
+    <buildcomponents target="site"/>
+  </target>
+
+  <target name="-merge-site">
+    <mkdir dir="${dir.top.site}"/>
+    <property file="${dir.top.target}/test-report/report.properties"/>
+
+    <echo file="${dir.top.site}/index.html"><![CDATA[
+      <html>
+        <head>
+          <title>Top-level Building Site</title>
+        </head>
+        <body>
+          <h1>Top-level Building Site</h1>
+          <h2>Component Building Sites</h2>
+          <ul>
+    ]]></echo>
+
+    <sitelinks description="Component Site" uri="target/site/index.html"/>
+
+    <echo file="${dir.top.site}/index.html" append="true"><![CDATA[
+          </ul>
+          <h2>Documentation</h2>
+          <ul>
+    ]]></echo>
+
+    <sitelinks description="JavaDoc API Documentation"
+               uri="target/javadoc/index.html"/>
+
+    <echo file="${dir.top.site}/index.html" append="true"><![CDATA[
+          </ul>
+          <h2>Reports</h2>
+          <h3>Merged Reports</h3>
+          <table border="1">
+            <tr>
+              <th>Report</th>
+              <th>Details</th>
+              <th>Result</th>
+            </tr>
+    ]]></echo>
+
+    <reportresult title="Unit Test Report"
+                  uri="../test-report/html/index.html"
+                  details="${test.tests} tests: ${test.errors} errors,
+                           ${test.failures} failures"
+                  passwidth="${test.pass.rate}" failwidth="${test.fail.rate}"
+                  file="${dir.top.site}/index.html"/>
+
+    <echo file="${dir.top.site}/index.html" append="true"><![CDATA[
+          </table>
+          <h3>Component Reports</h3>
+          <table border="1">
+            <tr>
+              <th>Report</th>
+              <th>Details</th>
+              <th>Result</th>
+            </tr>
+    ]]></echo>
+
+    <sitetestreport file="${dir.top.site}/index.html"/>
+    <sitestylereport file="${dir.top.site}/index.html"/>
+    <sitejavadocreport file="${dir.top.site}/index.html"/>
+
+    <echo file="${dir.top.site}/index.html" append="true"><![CDATA[
+          </table>
+          <h2>Configuration</h2>
+          <table border="1">
+            <tr>
+              <th>Description</th>
+              <th>Value</th>
+            </tr>
+    ]]></echo>
+
+    <configpath desc="Base directory" value="${basedir}"
+                file="${dir.top.site}/index.html"/>
+    <configpath desc="JDE root directory"       value="${dir.jde}"
+                file="${dir.top.site}/index.html"/>
+    <configpath desc="CDEJ release directory"   value="${dir.cdej}"
+                file="${dir.top.site}/index.html"/>
+    <configpath desc="SDEJ release directory"   value="${dir.sdej}"
+                file="${dir.top.site}/index.html"/>
+    <configpath desc="Java directory"           value="${java.home}"
+                file="${dir.top.site}/index.html"/>
+    <configitem desc="Java version"             value="${ant.java.version}"
+                file="${dir.top.site}/index.html"/>
+    <configpath desc="J2EE JAR file"            value="${jar.j2ee}"
+                file="${dir.top.site}/index.html"/>
+
+    <echo file="${dir.top.site}/index.html" append="true"><![CDATA[
+          </table>
+        </body>
+      </html>
+    ]]></echo>
+  </target>
+
+  <!--
+  Packs the site information into a WAR file for easier distribution. The
+  content is static, so it can be unpacked and run from a local filesystem.
+  However, the WAR file can also be deployed easily to a J2EE web container
+  (e.g., Tomcat) for easy sharing.
+  -->
+  <target name="pack-site" depends="site">
+    <!-- Saves us having to maintain a separate "web.xml" file for now. -->
+    <echo file="${dir.top.target}/web.xml" append="true"><![CDATA[
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee">
+  <display-name>Building Site</display-name>
+  <description>Building Site for CDEJ 5.0.</description>
+</web-app>
+    ]]></echo>
+    <!--
+    Redirect to the home page to create a proper location that the relative
+    URLs can work from. Making the target a "welcome page" will not work.
+    -->
+    <echo file="${dir.top.target}/index.html" append="true"><![CDATA[
+<html>
+  <head>
+    <meta http-equiv="Refresh" content="0;URL=target/site/index.html"/>
+  </head>
+</html>
+    ]]></echo>
+    <war destfile="${dir.top.target}/building-site.war"
+         webxml="${dir.top.target}/web.xml" basedir="${basedir}">
+      <include name="target/*/**/*"/>
+      <include name="*/target/site/**/*"/>
+      <include name="*/target/test-report/**/*"/>
+      <include name="*/target/checkstyle-report/**/*"/>
+      <include name="*/target/javadoc-report/**/*"/>
+      <include name="*/target/javadoc/**/*"/>
+      <fileset dir="${dir.top.target}" includes="index.html"/>
+    </war>
+    <delete file="${dir.top.target}/web.xml"/>
+    <delete file="${dir.top.target}/index.html"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- =========================== M A C R O S =========================== -->
+  <!-- =================================================================== -->
+
+  <!--
+  A simple macro that invokes a specific target in the "build.xml" file in
+  each component in the correct order. The component directory will be the
+  base directory for each invocation. No properties or references will be
+  inherited; each script will determine them for itself.
+  -->
+  <macrodef name="buildcomponents">
+    <attribute name="target"/>
+    <sequential>
+      <for list="${list.components}" param="component" trim="true">
+        <sequential>
+          <ant dir="@{component}" target="@{target}" inheritall="false"/>
+        </sequential>
+      </for>
+    </sequential>
+  </macrodef>
+
+  <!--
+  Creates a HTML link for each component to the given URI (relative to the
+  component's base directory) with the given description in the link text.
+  -->
+  <macrodef name="sitelinks">
+    <attribute name="description"/>
+    <attribute name="uri"/>
+    <sequential>
+      <for list="${list.components}" param="component" trim="true">
+        <sequential>
+          <echo file="${dir.top.site}/index.html" append="true"><![CDATA[
+            <li><a href="../../@{component}/@{uri}">@{description} -
+                @{component}</a></li>
+          ]]></echo>
+        </sequential>
+      </for>
+    </sequential>
+  </macrodef>
+
+  <!--
+  Creates a test report entry for each component.
+  -->
+  <macrodef name="sitetestreport">
+    <attribute name="file"/>
+    <sequential>
+      <for list="${list.components}" param="component" trim="true">
+        <sequential>
+          <!-- Need to overwrite this property each time. -->
+          <var name="dir.cmp.target" value="@{component}/target"/>
+          <property prefix="@{component}"
+            file="${dir.cmp.target}/test-report/report.properties"/>
+          <if>
+            <isset property="@{component}.test.pass.rate"/>
+            <then>
+              <reportresult
+                title="@{component} - Unit Test Report"
+                uri="../../${dir.cmp.target}/test-report/html/index.html"
+                details="${@{component}.test.tests} tests:
+                         ${@{component}.test.errors} errors,
+                         ${@{component}.test.failures} failures"
+                passwidth="${@{component}.test.pass.rate}"
+                failwidth="${@{component}.test.fail.rate}"
+                file="@{file}"/>
+            </then>
+          </if>
+        </sequential>
+      </for>
+    </sequential>
+  </macrodef>
+
+  <!--
+  Creates a code style report entry for each component.
+  -->
+  <macrodef name="sitestylereport">
+    <attribute name="file"/>
+    <sequential>
+      <for list="${list.components}" param="component" trim="true">
+        <sequential>
+          <!-- Need to overwrite this property each time. -->
+          <var name="dir.cmp.target" value="@{component}/target"/>
+          <property prefix="@{component}"
+            file="${dir.cmp.target}/checkstyle-report/report.properties"/>
+          <if>
+            <isset property="@{component}.style.pass.rate"/>
+            <then>
+              <reportresult
+                title="@{component} - Checkstyle Coding Standards Report"
+                uri="../../${dir.cmp.target}/checkstyle-report/html/index.html"
+                details="${@{component}.style.files} files:
+                         ${@{component}.style.errors} errors in
+                         ${@{component}.style.files.in.error} files"
+                passwidth="${@{component}.style.pass.rate}"
+                failwidth="${@{component}.style.fail.rate}"
+                file="@{file}"/>
+            </then>
+          </if>
+        </sequential>
+      </for>
+    </sequential>
+  </macrodef>
+
+  <!--
+  Creates a Javadoc report entry for each component.
+  -->
+  <macrodef name="sitejavadocreport">
+    <attribute name="file"/>
+    <sequential>
+      <for list="${list.components}" param="component" trim="true">
+        <sequential>
+          <!-- Need to overwrite this property each time. -->
+          <var name="dir.cmp.target" value="@{component}/target"/>
+          <reportresult
+            title="@{component} - JavaDoc Validation Report"
+            uri="../../${dir.cmp.target}/javadoc-report/index.html"
+            details="" passwidth="100%" failwidth="0%" file="@{file}"/>
+        </sequential>
+      </for>
+    </sequential>
+  </macrodef>
+
+</project>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Licensed Materials - Property of IBM
+
+PID 5725-H26
+
+Copyright IBM Corporation 2017,2021. All rights reserved.
+
+US Government Users Restricted Rights - Use, duplication or disclosure
+restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+Builds the main classes for a component. This depends on properties and other
+settings provided by "build-component.xml".
+-->
+<project name="build.compile">
+
+  <import file="../../../../../BuilderScripts/properties.xml"/>
+  <!--
+  Compile the main classes delivered by this component and copy over any
+  associated properties files or resource files.
+  -->
+   
+  <target name="compile"
+    depends="-mkdir-classes, -compile-main, copy-main-resources"
+    description="Compiles the deliverable classes." />
+
+  <target name="-compile-main" if="has.main.java">
+    <!--
+    When forking to support the boot classpath, the "bootclasspath" attribute
+    must be the whole path, not a prefix. The built-in "sun.boot.class.path"
+    provides the original path and works on Sun and IBM JREs.
+    -->
+    <javac destdir="${dir.cls.main}" includeantruntime="false"
+           sourcepath="" srcdir="${dir.src.main}/java"
+           source="${ant.build.javac.source}" target="${ant.build.javac.target}"
+           fork="true" includes="**/*.java" excludes="${compile.excludes}"
+           debug="true" debuglevel="lines,vars,source"
+           classpath="${jar.jde.commons};${jar.coreinf.ejb.interfaces};${cp.compile};${jar.junit};${jar.jaxen};${jar.saxpath}"
+           bootclasspath="${cp.boot.compile};${sun.boot.class.path}">
+      <compilerarg line="-Xlint:unchecked" />
+    </javac>
+    <copy todir="${dir.cls.main}">
+      <fileset dir="${dir.src.main}/java">
+        <include name="**/*.properties"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!--
+  This target can be run from Eclipse (hence no "-" at the start), but we
+  don't need it on the command line (hence no description).
+  -->
+  <target name="copy-main-resources" if="has.main.resources">
+    <copy todir="${dir.cls.main}">
+      <fileset dir="${dir.src.main}/resources">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="-mkdir-classes" if="has.main.content">
+    <mkdir dir="${dir.cls.main}" />
+  </target>
+
+</project>

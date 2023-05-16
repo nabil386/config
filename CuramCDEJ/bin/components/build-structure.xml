@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Copyright © 2006 Curam Software Ltd.
+All rights reserved.
+
+This software is the confidential and proprietary information of Curam
+Software, Ltd. ("Confidential Information"). You shall not disclose
+such Confidential Information and shall use it only in accordance with the
+terms of the license agreement you entered into with Curam Software.
+-->
+<!--
+Loads the properties that define the common project structure and checks
+for the presence of the typical component source directories. For example,
+if the directory "${dir.src.test}/java" is present, then there are unit tests
+present that need to be compiled and executed, so the property "has.test.java"
+will be defined. The "dir" and "src" parts of the original property name
+are redundant, as all these checks relate only to subdirectories of the
+component's "src" directory.
+
+Checks are not performed for the presence of any target directories, as these
+may not be present until after certain targets have been executed. If those
+checks are necessary, they should be performed on an ad hoc basis.
+-->
+<project name="build.structure">
+  <!--
+  These properties are fixed relative to the base directory of the component,
+  as the project structure does not vary.
+  -->
+  <property file="${dir.bld.scripts}/project-structure.properties"/>
+
+  <!--
+  The Java source code in the main and test "java" directories and the files
+  in the main and test "resources" directories will be compiled or copied as
+  necessary. These will also be used to define Eclipse "source folders".
+  However, if there are no files in the directories, they should not be used,
+  as this can cause various problems elsewhere in the build scripts. It is
+  possible that a file once existed, but was later deleted thus leaving an
+  empty directory behind. When getting files from CVS, these empty directories
+  may or may not be "pruned" automatically, so we must cater for both
+  possibilities by not assuming that a directory must contain files.
+ 
+  We check if there are any files present using a little trick with
+  "pathconvert" and its "setonempty" attribute. You should avoid having a
+  "java" directory containing only properties files, as they will be ignored
+  by anything that checks if the corresponding "has.*.java" property is set.
+  -->
+  <fileset id="fs.main.java" dir="${dir.src.main}" includes="java/**/*.java"/>
+  <fileset id="fs.main.res"  dir="${dir.src.main}" includes="resources/**/*"/>
+  <fileset id="fs.test.java" dir="${dir.src.test}" includes="java/**/*.java"/>
+  <fileset id="fs.test.res"  dir="${dir.src.test}" includes="resources/**/*"/>
+
+
+  <pathconvert property="has.main.java" setonempty="false" targetos="windows"
+               refid="fs.main.java"/>
+  <pathconvert property="has.main.resources" setonempty="false"
+               targetos="windows" refid="fs.main.res"/>
+  <pathconvert property="has.test.java" setonempty="false" targetos="windows"
+               refid="fs.test.java"/>
+  <pathconvert property="has.test.resources" setonempty="false"
+               targetos="windows" refid="fs.test.res"/>
+
+  <!--
+  Useful for targets that check source code, whether main code or test code.
+  For example, Javadoc or Checkstyle checks.
+  -->
+  <condition property="has.any.java">
+    <or>
+      <isset property="has.main.java"/>
+      <isset property="has.test.java"/>
+    </or>
+  </condition>
+
+  <!--
+  Useful for determining if output directories need to be created.
+  -->
+  <condition property="has.main.content">
+    <or>
+      <isset property="has.main.java"/>
+      <isset property="has.main.resources"/>
+    </or>
+  </condition>
+
+  <condition property="has.test.content">
+    <or>
+      <isset property="has.test.java"/>
+      <isset property="has.test.resources"/>
+    </or>
+  </condition>
+
+</project>

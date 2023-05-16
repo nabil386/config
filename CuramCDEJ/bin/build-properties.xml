@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Licensed Materials - Property of IBM
+
+PID 5725-H26
+
+Copyright IBM Corporation 2006,2023. All rights reserved.
+
+US Government Users Restricted Rights - Use, duplication or disclosure
+restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<project name="build-properties" xmlns:if="ant:if" xmlns:unless="ant:unless">
+
+  <!-- ******************************************************************* -->
+  <!-- *** Test a named property to check it is defined. If not, fail. *** -->
+  <!-- *** Parameters: propname - name of property to be tested        *** -->
+  <!-- ***             envname - corresponding environment variable    *** -->
+  <!-- ******************************************************************* -->
+  <macrodef name="checkprop">
+    <attribute name="propname"/>
+    <attribute name="envname"/>
+    <sequential>
+      <fail message="A required property is not defined. You can either set the @{envname} environment variable or the @{propname} property in build.properties."
+          unless="@{propname}"/>
+    </sequential>
+  </macrodef>
+
+  <property file="${dir.client}/build.properties"/>
+
+  <property environment="env"/>
+
+  <condition property="dir.client" value="${env.CLIENT_DIR}">
+    <isset property="env.CLIENT_DIR"/>
+  </condition>
+  <checkprop propname="dir.client" envname="CLIENT_DIR"/>
+
+  <condition property="dir.server" value="${env.SERVER_DIR}">
+    <isset property="env.SERVER_DIR"/>
+  </condition>
+
+  <property name="dir.server.properties" value="${dir.server}/project/properties"/>
+  <property name="prop.file.location" value="${dir.server.properties}"/>
+  <property file="${prop.file.location}/Bootstrap.properties"/>
+  <property name="curam.environment.tnameserv.port" value="1221" />
+  <property name="curam.deprecation.reporting" value="true"/>
+
+  <!--
+  Set the encoding to use when reading the properties files. If the ENCODING
+  environment variable is not set, take the system encoding instead.
+  -->
+  <condition property="prp.encoding" value="${env.ENCODING}">
+    <isset property="env.ENCODING"/>
+  </condition>
+  <property name="prp.encoding"        value="${file.encoding}"/>
+
+  <property name="prp.xim.output"      value="${env.XIM_OUTPUT}"/>
+  <property name="prp.component.order" value="${env.CLIENT_COMPONENT_ORDER}"/>
+  <property name="prp.multiple.validation.errors"
+            value="${env.MULTIPLE_VALIDATION_ERRORS}"/>
+
+  <!-- Set properties from environment variables -->
+  <condition property="dir.cde"          value="${env.CURAMCDEJ}">
+    <isset property="env.CURAMCDEJ"/>
+  </condition>
+  <condition property="dir.sde"          value="${env.CURAMSDEJ}">
+    <isset property="env.CURAMSDEJ"/>
+  </condition>
+  <!--
+  The following is needed because ConMan builders currently do not set
+  CURAMCDEJ. On CDEJ developer machines env.CURAMCDEJ will be used. On
+  builder machines we rely on CURAMCDEJ being passed into this script. This
+  is a temporary fallback.
+   -->
+  <property name="dir.cde"               value="${CURAMCDEJ}"/>
+  <property name="dir.sde"               value="${CURAMCDEJ}"/>
+
+  <!-- Set property for SDEJ lib location -->
+  <condition property="dir.log4j2.config"          value="${env.CURAMSDEJ}/lib">
+    <isset property="env.CURAMSDEJ"/>
+  </condition>
+
+  <condition property="prp.project.name" value="${env.CLIENT_PROJECT_NAME}">
+    <isset property="env.CLIENT_PROJECT_NAME"/>
+  </condition>
+
+  <condition property="prp.locale.list"  value="${env.LOCALE_LIST}">
+    <isset property="env.LOCALE_LIST"/>
+  </condition>
+
+  <condition property="prp.enable.tree.nav"
+             value="${env.ENABLE_NEW_LOOK_AND_FEEL}">
+    <isset property="env.ENABLE_NEW_LOOK_AND_FEEL"/>
+  </condition>
+  <property name="prp.enable.tree.nav"   value="false"/>
+
+  <!-- Extension hooks to allow multiple struct.jar/text helper files -->
+  <property name="pre.classpath"  value="${env.PRE_CLASSPATH}"/>
+  <property name="post.classpath" value="${env.POST_CLASSPATH}"/>
+
+  <!-- Ensure that mandatory properties are now set -->
+  <checkprop propname="dir.cde"          envname="CURAMCDEJ"/>
+  <checkprop propname="prp.project.name" envname="CLIENT_PROJECT_NAME"/>
+  <checkprop propname="prp.locale.list"  envname="LOCALE_LIST"/>
+
+  <property name="fil.server.messages"  value="${env.SERVER_DIR}/build/jar/message_properties.jar"/>
+  <property name="fil.server.struct"    value="${env.SERVER_DIR}/build/jar/struct.jar"/>
+
+  <property name="dir.cde.bin"          value="${dir.cde}/bin"/>
+  <property name="dir.cde.inspectors"   value="${dir.cde}/doc/defaultproperties/inspectors"/>
+  <property name="dir.cde.lib"          value="${dir.cde}/lib"/>
+  <property name="dir.cde.lib.curam"    value="${dir.cde.lib}/curam"/>
+  <property name="dir.cde.lib.ext"      value="${dir.cde.lib}/ext"/>
+  <property name="dir.ext.jar"          value="${dir.cde.lib.ext}/jar"/>
+  <property name="dir.ext.js"          value="${dir.cde.lib.ext}/js"/>
+  <property name="dir.ext.jar.signed"   value="${dir.ext.jar}/signed/sha-2"/>
+  <property name="dir.curam.jar"        value="${dir.cde.lib.curam}/jar"/>
+  <property name="dir.curam.jar.signed" value="${dir.curam.jar}/signed/sha-2"/>
+  <property name="dir.curam.xml"        value="${dir.cde.lib.curam}/xml"/>
+  <property name="dir.curam.xml.build"  value="${dir.curam.xml}/build"/>
+  <property name="dir.curam.xsl"        value="${dir.curam.xml}/xsl"/>
+  <property name="dir.curam.xsl.build"  value="${dir.curam.xsl}/build"/>
+  <property name="dir.curam.xsl.jsp"    value="${dir.curam.xsl}/jsp"/>
+  <property name="dir.curam.xsl.doc"    value="${dir.curam.xsl}/bean-doc"/>
+  <property name="dir.curam.web"        value="${dir.cde.lib.curam}/web"/>
+  <property name="dir.curam.svg"        value="${dir.curam.web}/svg"/>
+  <property name="dir.curam.jsp"        value="${dir.curam.web}/jsp"/>
+  <property name="dir.curam.themes"     value="${dir.curam.web}/themes"/>
+  <property name="dir.cde.lib.imagegen" value="${dir.cde.lib}/imageGen"/>
+  <property name="dir.cde.svgtemplate"  value="${dir.cde.lib.imagegen}/template"/>
+  <property name="dir.src.java"         value="${dir.client}/JavaSource"/>
+  <property name="dir.src.components"   value="${dir.client}/components"/>
+
+  <available property="dir.core"
+             file="${dir.src.components}/core" value="${dir.src.components}/core" />
+
+  <property name="dir.domains.config"   value="curam/util/client/domain"/>
+  <property name="dir.styles.config"    value="curam/util/client/style"/>
+  <property name="dir.client.config"    value="curam/util/client/config"/>
+
+  <property name="dir.images.name"      value="Images"/>
+  <property name="dir.web"              value="${dir.client}/WebContent"/>
+  <!--
+  NB: Infrastructure JSPs are indentifed by their location in the
+  CDEJ/popups folder in ModalDialog.js. Do not change the dir.web.cdej
+  property below without updating ModalDialog.js also.
+  -->
+  <property name="dir.web.cdej"         value="${dir.web}/CDEJ"/>
+  <property name="dir.web.popups"       value="${dir.web.cdej}/popups"/>
+  <property name="dir.web.images"       value="${dir.web}/${dir.images.name}"/>
+  <property name="dir.web.genimages"    value="${dir.web}/genImages"/>
+  <property name="dir.web.themes"       value="${dir.web}/themes"/>
+  <property name="dir.web.jscript"      value="${dir.web.cdej}/jscript"/>
+  <property name="dir.curam.web.jscript" value="${dir.curam.web}/jscript"/>
+  <property name="dir.curam.app.module" value="curam/application"/>
+  <property name="dir.curam.web.jscript.dojotk" value="${dir.curam.web.jscript}/dojo-ibm-V1.10.5.zip"/>
+  <property name="dir.curam.web.jscript.ibmidx" value="${dir.curam.web.jscript}/ibm_idx_source_1.5.1.8-ga.zip"/>
+
+  <property name="dir.web.previews"     value="${dir.web}/Previews"/>
+  <property name="dir.web.inf"          value="${dir.web}/WEB-INF"/>
+  <property name="dir.web.inf.cdej"     value="${dir.web.inf}/CDEJ"/>
+  <property name="dir.web.inf.config"   value="${dir.web.inf.cdej}/config"/>
+  <property name="dir.web.inf.classes"  value="${dir.web.inf}/classes"/>
+  <property name="dir.web.inf.lib"      value="${dir.web.inf}/lib"/>
+  <!-- Deprecated Since Curam 8.0.0.0 word-integ-applet. The Word Integration Applet solution is being deprecated. -->
+  <property name="dir.applet.lib"       value="${dir.web}/applet-lib" />
+
+  <property name="dir.bld"              value="${dir.client}/build"/>
+  <property name="dir.bld.log"          value="${dir.client}/buildlogs"/>
+  <property name="dir.bld.uim"          value="${dir.bld}/uim"/>
+  <property name="dir.bld.classes"      value="${dir.bld}/classes"/>
+  <property name="dir.bld.properties"   value="${dir.bld.classes}/properties"/>
+  <property name="dir.bld.properties.page"
+            value="${dir.bld.classes}/page-properties"/>
+
+  <property name="dir.bld.properties.widget"
+            value="${dir.bld.properties}/curam/omega3/i18n"/>
+  <property name="dir.bld.properties.widget.default"
+            value="${dir.bld.properties}/curam/omega3/i18n/defaultproperties"/>
+  <property name="dir.tmp.actions"      value="${dir.bld.classes}/struts-actions"/>
+  <property name="dir.tmp.texthelpers"  value="${dir.bld.classes}/texthelpers"/>
+  <property name="dir.gen.actions"      value="${dir.bld}/struts-actions"/>
+  <property name="dir.gen.accessors"    value="${dir.bld}/accessors"/>
+  <property name="dir.gen.texthelpers"  value="${dir.bld}/texthelpers"/>
+  <property name="dir.bld.tmp"          value="${dir.bld}/tmp"/>
+  <property name="dir.bld.stylesheets"  value="${dir.bld}/stylesheets"/>
+  <property name="dir.bld.xim"          value="${dir.bld}/xim"/>
+  <property name="dir.bld.doc"          value="${dir.bld}/bean-doc"/>
+  <property name="dir.bld.svg"          value="${dir.bld}/svg"/>
+
+  <!-- JAR files. -->
+  <property name="jar.xerces"              value="${dir.ext.jar}/xercesImpl.jar"/>
+  <property name="jar.xalan"               value="${dir.ext.jar}/xalan-2.7.2.jar"/>
+  <property name="jar.serializer"          value="${dir.ext.jar}/serializer-2.7.2.jar"/>
+  <property name="jar.j2arkdepend"         value="${dir.curam.jar}/j2arkdepend.jar"/>
+  
+  <condition property="jar.j2ee" value="${env.J2EE_JAR}">
+    <isset property="env.J2EE_JAR" />
+  </condition>
+
+  <condition property="wlp.home" value="${env.WLP_HOME}">
+    <isset property="env.WLP_HOME"/>
+  </condition>
+  
+  <!-- Set 'liberty.j2ee' if WLP_HOME is set. -->
+  <path id="liberty.j2ee" if:set="wlp.home">
+    <fileset dir="${wlp.home}/dev/api/spec">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+  <!-- Set 'liberty.j2ee' to be empty if WLP_HOME is not set. -->
+  <path id="liberty.j2ee" unless:set="wlp.home"/>
+  
+  <property name="jar.json"                value="${dir.ext.jar}/JSON4J_Apache.jar"/>
+  <property name="jar.dom4j"               value="${dir.ext.jar}/dom4j.jar"/>
+  <property name="jar.saxpath"             value="${dir.ext.jar}/saxpath.jar"/>
+  <property name="jar.derby"               value="${dir.ext.jar}/derby.jar"/>
+  <property name="jar.log4j.2.core"        value="${dir.ext.jar}/log4j-core-2.17.1.jar"/>
+  <property name="jar.log4j.2.api"         value="${dir.ext.jar}/log4j-api-2.17.1.jar"/>
+  <property name="jar.log4j2.config"       value="${dir.log4j2.config}/log4j2-config.jar"/>
+  <property name="jar.commons.lang"        value="${dir.ext.jar}/commons-lang-3.12.0.jar"/>
+  <property name="jar.commons.codec"       value="${dir.ext.jar}/commons-codec-1.14.jar"/>
+  <property name="jar.commons.codec.signed" value="${dir.ext.jar.signed}/commons-codec-1.14.jar"/>
+  <property name="jar.commons.io"          value="${dir.ext.jar}/commons-io-2.8.0.jar"/>
+  <property name="jar.commons.io.signed"   value="${dir.ext.jar.signed}/commons-io-2.8.0.jar"/>
+  <property name="jar.commons.config"      value="${dir.ext.jar}/commons-configuration-2.8.0.jar"/>
+  <property name="jar.commons.beanutils"   value="${dir.ext.jar}/commons-beanutils.jar"/>
+  <property name="jar.commons.text"        value="${dir.ext.jar}/commons-text-1.10.0.jar"/>
+  <property name="jar.commons.collections4" value="${dir.ext.jar}/commons-collections4.jar"/>
+  <property name="jar.commons.collections" value="${dir.ext.jar}/commons-collections.jar"/>
+  <property name="jar.commons.logging"     value="${dir.ext.jar}/commons-logging.jar"/>
+  <property name="jar.commons.jxpath"      value="${dir.ext.jar}/commons-jxpath-1.3.jar"/>
+
+  <property name="jar.jde.commons"         value="${dir.curam.jar}/jde-commons.jar"/>
+  <property name="jar.jde.security.inf"    value="${dir.curam.jar}/security-inf.jar"/>
+  <property name="jar.bopi.generator"      value="${dir.curam.jar}/bopi-generator.jar"/>
+  <property name="jar.commons.omega3"      value="${dir.curam.jar}/omega3-commons.jar"/>
+  <property name="jar.generator.omega3"    value="${dir.curam.jar}/omega3-generator.jar"/>
+  <property name="jar.texthelper.gen"      value="${dir.curam.jar}/texthelper.jar"/>
+  <property name="jar.coreInf.omega3"      value="${dir.curam.jar}/omega3-coreInf.jar"/>
+  <property name="jar.dom-html-xim"        value="${dir.curam.jar}/dom-html-xim.jar"/>
+  <property name="jar.plug-in-framework"   value="${dir.curam.jar}/plug-in-framework.jar"/>
+  <property name="jar.general-plug-ins"    value="${dir.curam.jar}/general-plug-ins.jar"/>
+  <property name="jar.renderer-plug-ins"   value="${dir.curam.jar}/renderer-plug-ins.jar"/>
+  <property name="jar.client-persistence"  value="${dir.curam.jar}/client-persistence.jar"/>
+  <property name="jar.spm-core-struts"     value="${dir.curam.jar}/spm-core-struts.jar"/>  
+
+  <property name="jar.ehcachecore"         value="${dir.lib.release}/ehcache-core.jar"/>
+  <property name="jar.slf4japi"            value="${dir.lib.release}/slf4j-api.jar"/>
+  <property name="jar.slf4jjdk14"          value="${dir.lib.release}/slf4j-jdk14.jar"/>
+  <property name="jar.cglib.nodep"         value="${dir.lib.release}/cglib-nodep/cglib-nodep.jar"/>
+
+  <property name="jar.norelease.helptools" value="${dir.lib.nonrelease}/helptools.jar"/>
+  <property name="jar.fileedit"            value="${dir.curam.jar.signed}/WordIntegrationApplet.jar"/>
+  <property name="jar.jacob"               value="${dir.ext.jar}/jacob-1.20.jar"/>
+  <property name="jar.jacob.signed"        value="${dir.ext.jar.signed}/jacob-1.20.jar"/>
+  <property name="jar.java.plugin"         value="${env.JAVA_HOME}/jre/lib/plugin.jar"/>
+
+  <property name="jar.coreinf.ejb.interfaces" value="${dir.sde}/lib/coreinf-ejb-interfaces.jar"/>
+
+  <!-- Other files. -->
+  <property name="fil.total.exclusions.name" value="TotalExclusions.txt"/>
+  <property name="fil.xml.beans.lastbuild"   value="${dir.bld.xim}/ServerAccessBeans.xml.prev"/>
+  <property name="fil.xml.struts"            value="${dir.web.inf}/struts-config.xml"/>
+  <property name="fil.xml.config"            value="${dir.web.inf}/curam-config.xml"/>
+  <property name="fil.js.config"             value="${dir.web.jscript}/popup-config.js"/>
+  <property name="fil.xml.themes"            value="${dir.curam.themes}/themes.xml"/>
+  <property name="fil.xml.diff-beans"        value="diff-beans.xml"/>
+  <property name="fil.xml.beandependencies"  value="depend-si.xml"/>
+  <property name="fil.xsl.footer"            value="${dir.bld.stylesheets}/gen-page-footer.xsl"/>
+  <property name="fil.xsl.header"            value="${dir.bld.stylesheets}/gen-page-header.xsl"/>
+  <property name="fil.xsl.toolbar"           value="${dir.bld.stylesheets}/gen-toolbar.xsl"/>
+  <property name="fil.xsl.escape"            value="${dir.curam.xsl.jsp}/gen-escape-text.xsl"/>
+  <property name="fil.xsl.config"            value="${dir.curam.xsl.jsp}/gen-config.xsl"/>
+  <property name="fil.xsl.wizard.header"     value="${dir.curam.xsl.jsp}/gen-wizard-header.xsl"/>
+  <property name="fil.xsl.properties"        value="${dir.curam.xsl.build}/config-properties.xsl"/>
+  <property name="fil.svg.style"             value="${dir.curam.xsl}/rules/create-svg.xsl"/>
+  <property name="fil.workflow.svg.style"    value="${dir.curam.xsl}/workflow/embed-images.xsl"/>
+  <property name="fil.svg.staging.style"     value="${dir.curam.xsl}/svg/create-staging-svg.xsl"/>
+
+  <property name="prp.loglevel"              value="info"/>
+  <property name="prp.time.format"           value="HH:mm:ss 'on' dd MMM yyyy"/>
+  <property name="prp.big.heap"              value="512m"/>
+  <property name="prp.debug.code"            value="on"/>
+  <property name="prp.failonerror"           value="yes"/>
+  <property name="prp.previews.failonerror"  value="false"/>
+  <property name="debug.info"                value="on"/>
+  <property name="debug.level"               value="lines,vars,source"/>
+  <property name="cmp.maxmemory"             value="2g"/>
+  <property name="prp.warningstoerrors"      value="false"/>
+  <property name="cmp.gc"                    value="-J-XX:+UseG1GC"/>
+  <property name="cmp.compilerarg"           value=""/>
+  <condition property="cmp.deprecation" value="${curam.deprecation.reporting}" else="true">
+    <isset property="curam.deprecation.reporting"/>
+  </condition>
+
+  <property name="chunk.size"                value="100"/>
+
+  <!-- Fallback dimensions to use for modals in screen preview mode when no
+   dimension is set, or one dimension is missing, in UIM.
+   -->
+  <property name="prp.previews.fallbackmodalheight" value="600"/>
+  <property name="prp.previews.fallbackmodalwidth" value="900"/>
+
+  <!-- Classpaths -->
+
+  <!--
+  Classpath for XML-specific operations. This also acts as the "special"
+  classpath for the "transform" task.
+  -->
+  <path id="xml.cp">
+    <pathelement location="${jar.serializer}"/>
+    <pathelement location="${jar.xerces}"/>
+    <pathelement location="${jar.xalan}"/>
+  </path>
+
+  <path id="jde.commons.jars.classpath">
+    <pathelement path="${jar.cglib.nodep}"/>
+    <pathelement path="${jar.ehcachecore}"/>
+    <pathelement path="${jar.slf4japi}"/>
+    <pathelement path="${jar.slf4jjdk14}"/>
+    <pathelement path="${jar.commons.lang}"/>
+    <pathelement path="${jar.commons.text}"/>
+    <pathelement path="${jar.commons.codec}"/>
+    <pathelement path="${jar.commons.pool}"/>
+    <pathelement path="${jar.commons.io}"/>
+    <pathelement path="${jar.commons.collections4}"/>
+    <pathelement path="${jar.commons.collections}"/>
+  </path>
+  <property name="prop.jde.commons.jars.classpath" refid="jde.commons.jars.classpath"/>
+
+  <!--
+  Main classpath that forms a base for other classpaths. This includes the
+  XML-related classes and the Curam infrastructure classes (including the
+  infrastrucure resources copied to WEB-INF/classes).
+  -->
+  <path id="common.cp">
+    <path refid="xml.cp"/>
+    <pathelement location="${jar.j2arkdepend}"/>
+    <pathelement location="${jar.jde.commons}"/>
+    <pathelement location="${jar.jde.security.inf}"/>
+    <pathelement path="${prop.jde.commons.jars.classpath}"/>
+    <pathelement location="${jar.coreinf.ejb.interfaces}"/>
+    <pathelement location="${jar.commons.omega3}"/>
+    <pathelement location="${jar.coreInf.omega3}"/>
+    <pathelement location="${jar.generator.omega3}"/>
+    <pathelement location="${jar.texthelper.gen}"/>
+    <pathelement location="${jar.bopi.generator}"/>
+    <pathelement location="${jar.plug-in-framework}"/>
+    <pathelement location="${jar.dom-html-xim}"/>
+    <pathelement location="${jar.general-plug-ins}"/>
+    <pathelement location="${jar.renderer-plug-ins}"/>
+    <pathelement location="${jar.client-persistence}"/>
+    <pathelement location="${dir.web.inf.classes}"/>
+    <pathelement location="${jar.commons.io}"/>
+  </path>
+
+  <!--
+  Special classpath for custom Ant tasks that require a class loader that
+  does not do parent-first delegation. Some of the classes on the task
+  classpath are not included to save memory (e.g., Apache Derby).
+  -->
+  <path id="base.special.cp">
+    <path refid="common.cp"/>
+    <pathelement location="${dir.bld.classes}"/>
+    <pathelement location="${dir.bld.properties}"/>
+  </path>
+
+  <!-- Classpath for compiling JavaSource, TextHelpers and Action classes. -->
+  <path id="compile.cp">
+    <pathelement path="${pre.classpath}"/>
+    <path refid="common.cp"/>
+    <pathelement location="${jar.j2ee}"/>
+    <path refid="liberty.j2ee"/>
+    <pathelement location="${jar.spm-core-struts}"/>
+    <pathelement path="${fil.server.struct}"/>
+    <!-- include all jar files in the WebContent/Web-inf/lib directory. -->
+    <fileset dir="${dir.web.inf.lib}">
+      <include name="*.jar"/>
+    </fileset>
+    <pathelement path="${post.classpath}"/>
+  </path>
+
+  <!-- Base classpath for running the generators and loading tasks. -->
+  <path id="base.generator.cp">
+    <path refid="common.cp"/>
+    <pathelement location="${dir.bld.classes}"/>
+    <pathelement location="${dir.bld.properties}"/>
+    <pathelement location="${jar.derby}"/>
+    <pathelement location="${jar.log4j.2.core}"/>
+    <pathelement location="${jar.log4j.2.api}"/>
+    <pathelement location="${jar.log4j2.config}"/>
+    <pathelement location="${jar.dom4j}"/>
+    <pathelement location="${jar.saxpath}"/>
+    <pathelement location="${jar.json}"/>
+  </path>
+
+  <!-- Main classpath for loading and running custom Ant tasks. -->
+  <path id="taskdef.cp">
+    <path refid="base.generator.cp"/>
+    <pathelement location="${jar.commons.logging}"/>
+    <pathelement location="${jar.commons.collections}"/>
+    <pathelement location="${jar.commons.lang}"/>
+    <pathelement location="${jar.commons.jxpath}"/>
+    <pathelement location="${jar.commons.config}"/>
+    <pathelement location="${jar.commons.beanutils}"/>
+    <pathelement location="${jar.commons.text}"/>
+    <fileset dir="${dir.cde.lib.imagegen}">
+      <include name="*.jar"/>
+    </fileset>
+
+  </path>
+
+  <!-- Project-specific properties. -->
+  <taskdef name="string" classname="curam.util.tools.AntStrings"
+           classpathref="taskdef.cp" loaderref="taskdef.loader"/>
+
+  <condition property="prp.project.package"
+             value="${env.CLIENT_PROJECT_PACKAGE}">
+    <isset property="env.CLIENT_PROJECT_PACKAGE"/>
+  </condition>
+
+  <string to="prp.project.name.lower" from="${prp.project.name}"
+          type="lowercase"/>
+  <property name="prp.project.package" value="${prp.project.name.lower}"/>
+
+  <string to="prp.cpp" oldchar="." newchar="/"
+          from="${prp.project.package}" type="replace"/>
+  <property name="prp.project.relPath" value="${prp.cpp}"/>
+
+  <property name="dir.bld.properties.base"
+            value="${dir.bld.properties}/curam/util/properties"/>
+  <property name="dir.bld.properties.global"
+            value="${dir.bld.properties.base}/global"/>
+
+  <!-- XML catalogs -->
+  <xmlcatalog id="cat.svg">
+    <dtd publicId="-//W3C//DTD SVG 1.1//EN"
+         location="${dir.curam.xml}/schema/svg11.dtd"/>
+  </xmlcatalog>
+
+  <!-- Import the additional properties files. -->
+  <import file="build-props-int.xml" optional="true"/>
+  <import file="build-props-ext.xml"/>
+  <!--import file="build-refs-int.xml" optional="true"/-->
+
+
+  <!-- ServerAccessBeans.xml Diff Tool -->
+  <taskdef name="serveraccessbeansdiff" classname="curam.omega3.anttasks.ServerAccessBeansDiff"
+           classpathref="base.generator.cp"/>
+
+  <condition property="validateFileReference" else="false">
+    <isset property="validate.file.reference"/>
+  </condition>
+  
+  <!-- A boolean used to enable or disable the secure URLs solution -->
+  <condition property="enable.secure.urls" value="${env.ENABLE_SECURE_URLS}" else="false">
+    <and>
+      <isset property="env.ENABLE_SECURE_URLS"/>
+      <matches pattern="(true|false)" string="${env.ENABLE_SECURE_URLS}"/>
+    </and>
+  </condition>
+
+</project>

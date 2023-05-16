@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?> <jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:curam="http://www.curamsoftware.com/curam" xmlns:cing="http://www.curamsoftware.com/curam/jde/client/curam-ng" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+<jsp:directive.page import="curam.omega3.config.appconfig.CuramConfig"/>
+<jsp:directive.page import="curam.util.common.useragent.UserAgent"/> <jsp:directive.page import="curam.omega3.user.InfrastructureUserPreferences"/> <jsp:directive.page import="curam.omega3.user.UserPreferencesFactory"/> <jsp:directive.page import="curam.omega3.user.UserPreferences"/> <jsp:directive.page import="curam.util.client.jsp.JspUtil"/> <jsp:directive.page import="curam.util.client.security.CSRFToken"/> <jsp:directive.page import="curam.util.client.config.FormEventsUtil"/> <jsp:directive.page import="curam.util.client.config.AutoRecoveryUtil"/> <jsp:directive.page import="curam.util.client.application.toggles.RuntimeFeatureToggleUtils"/> <jsp:directive.page import="curam.util.client.control.DynamicUIMUtils"/> <jsp:directive.page import="curam.util.client.application.featureconfig.ActionMenuConfigurationUtils"/> <jsp:directive.page isErrorPage="false" pageEncoding="UTF-8" contentType="text/html;charset=UTF-8" isELIgnored="false" language="java" buffer="32kb"/> <jsp:output omit-xml-declaration="yes"/> <jsp:scriptlet> <![CDATA[ curam.omega3.util.UserUtils.setUserPreferences(session); UserPreferences prefs=UserPreferencesFactory.getUserPreferences(session); pageContext.setAttribute("homePage", prefs.getHomePage()); pageContext.setAttribute("appId", prefs.getApplicationID()); String locale=prefs.getLocale().toString(); pageContext.setAttribute("pageLocale", locale); pageContext.setAttribute("dojoConfig", JspUtil.getDojoConfig(prefs.getLocale())); pageContext.setAttribute("appLocale", prefs.getLocale()); pageContext.setAttribute("highContrastMode", "false"); curam.omega3.taglib.ScreenContext ctx=new curam.omega3.taglib.ScreenContext(); ctx.addContextBits(curam.omega3.taglib.ScreenContext.TAB); ctx.clear(curam.omega3.taglib.ScreenContext.HEADER | curam.omega3.taglib.ScreenContext.FOOTER | curam.omega3.taglib.ScreenContext.NAVIGATOR); pageContext.setAttribute("ctx", ctx); pageContext.setAttribute("o3__serverURL", JspUtil.getServerRootURL()); pageContext.setAttribute("isCuramFormsAPIEnabled", FormEventsUtil.isCuramFormsAPIEnabled()); pageContext.setAttribute("isAutorecoveryEnabled", AutoRecoveryUtil.checkAutoRecoveryEnabled()); pageContext.setAttribute("autorecoveryThrottleInterval", AutoRecoveryUtil.getAutoRecoveryThrottleInterval()); ]]> </jsp:scriptlet> <curam:userPreferences localeCode="${pageScope.pageLocale}"/> <jsp:text><![CDATA[<!DOCTYPE html>]]></jsp:text> <jsp:scriptlet> if(pageContext.getAttribute("htmlDirection").equals("rtl")) { pageContext.setAttribute("classDirection", "rtl"); } else { pageContext.setAttribute("classDirection", ""); } </jsp:scriptlet> <html lang="${htmlLanguage}" dir="${htmlDirection}" class="${classDirection}"> <head> <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/> <meta http-equiv="Pragma" content="no-cache"/> <meta http-equiv="Expires" content="-1"/> <jsp:scriptlet>JspUtil.enableChromeFrame(pageContext);</jsp:scriptlet> <title> <jsp:scriptlet> out.print(curam.omega3.util.CDEJResources.getProperty("browser.tab.title")); </jsp:scriptlet> </title> <link rel="stylesheet" href="${o3__serverURL}themes/v6/css/v6_main.css"/> <link rel="stylesheet" href="${o3__serverURL}themes/curam/css/curam_main.css"/> <link rel="stylesheet" href="${o3__serverURL}themes/curam/fonts/main-ibm-font.css"/> <link rel="shortcut icon" href="${o3__serverURL}themes/curam/images/SPM_UI_Mod_Placeholderlogo.ico"/> <jsp:scriptlet> if(pageContext.getAttribute("htmlDirection").equals("rtl")) { </jsp:scriptlet><link rel="stylesheet" href="${o3__serverURL}themes/v6_rtl/css/v6_rtl_main.css"/><jsp:scriptlet> </jsp:scriptlet><link rel="stylesheet" href="${o3__serverURL}themes/curam_rtl/css/curam_rtl_main.css"/><jsp:scriptlet> } </jsp:scriptlet> <link rel="stylesheet" href="${o3__serverURL}CDEJ/jscript/dojotk/dijit/themes/soria/soria.css"/> <link rel="stylesheet" type="text/css" media="all" href="${o3__serverURL}themes/soria/css/soria_main.css"/> <link rel="stylesheet" href="${o3__serverURL}CDEJ/jscript/dojotk/dojox/layout/resources/ExpandoPane.css"/> <link rel="stylesheet" href="${o3__serverURL}themes/new/css/new_main.css"/> <link rel="stylesheet" href="${o3__serverURL}CDEJ/css/custom.css"/> <jsp:scriptlet> if(pageContext.getAttribute("htmlDirection").equals("rtl")) { </jsp:scriptlet><link rel="stylesheet" type="text/css" media="all" href="${o3__serverURL}themes/soria_rtl/css/soria_rtl_main.css"/><jsp:scriptlet> } </jsp:scriptlet> <jsp:text><![CDATA[<!--[if IE 6]>]]></jsp:text> <link rel="stylesheet" href="${o3__serverURL}themes/v6/css/v6_cc_lteIE6.css"/> <jsp:text><![CDATA[<![endif]-->]]></jsp:text> <jsp:text><![CDATA[<!--[if IE 7]>]]></jsp:text> <link rel="stylesheet" href="${o3__serverURL}themes/v6/css/v6_cc_IE7.css"/> <jsp:text><![CDATA[<![endif]-->]]></jsp:text> <jsp:text><![CDATA[<!--[if IE]>]]></jsp:text> <link rel="stylesheet" href="${o3__serverURL}themes/v6/css/v6_cc_IE.css"/> <jsp:text><![CDATA[<![endif]-->]]></jsp:text> <jsp:text><![CDATA[<!--[if IE 8]>]]></jsp:text> <link rel="stylesheet" href="${o3__serverURL}themes/v6/css/v6_cc_IE8.css"/> <jsp:text><![CDATA[<![endif]-->]]></jsp:text> <jsp:text><![CDATA[<!--[if IE 9]>]]></jsp:text> <link rel="stylesheet" href="${o3__serverURL}themes/v6/css/v6_cc_IE9.css"/> <jsp:text><![CDATA[<![endif]-->]]></jsp:text> <jsp:text><![CDATA[<!--[if !IE]>-->]]></jsp:text> <link rel="stylesheet" href="${o3__serverURL}themes/v6/css/v6_cc_notIE.css"/> <link rel="stylesheet" href="${o3__serverURL}themes/v6/css/v6_cc_IE10.css"/> <jsp:text><![CDATA[<![endif]-->]]></jsp:text> <jsp:scriptlet> UserAgent ua = new UserAgent(request.getHeader("User-Agent")); RuntimeFeatureToggleUtils.setFeatureTogglePropertiesForSession(pageContext); DynamicUIMUtils.setInlinedPageItemsToDisplay(ActionMenuConfigurationUtils.getNumberOfPageMenuItemsInlined()); DynamicUIMUtils.setInlinedListItemsToDisplay(ActionMenuConfigurationUtils.getNumberOfListMenuItemsInlined()); request.getSession().setAttribute( curam.util.client.domain.render.RendererUtils.UA_SESSION_KEY, ua); request.getSession().setAttribute( curam.util.client.config.FormEventsUtil.CURAM_FORMS_API_ENABLED, pageContext.getAttribute("isCuramFormsAPIEnabled")); request.getSession().setAttribute( curam.util.client.config.AutoRecoveryUtil.AUTORECOVERY_ENABLED, pageContext.getAttribute("isAutorecoveryEnabled")); request.getSession().setAttribute( curam.util.client.config.AutoRecoveryUtil.AUTORECOVERY_THROTTLE_INTERVAL, pageContext.getAttribute("autorecoveryThrottleInterval")); pageContext.setAttribute("mobileUserAgent", String.valueOf(ua.isMobileBrowser())); pageContext.setAttribute("isDesktop", String.valueOf(!ua.isMobileBrowser())); if ("true".equals(pageContext.getAttribute("mobileUserAgent"))){ pageContext.setAttribute("mobileClassName", "mobile"); </jsp:scriptlet> <link rel="stylesheet" href="${o3__serverURL}themes/mobile/css/mobile_main.css"/> <jsp:scriptlet>}</jsp:scriptlet> <script type="text/javascript">
+        <jsp:scriptlet>
+    out.print("var CURAM_FORMS_API_ENABLED=\"" 
+      + pageContext.getAttribute("isCuramFormsAPIEnabled") + "\";");
+    out.print("var AUTORECOVERY_ENABLED=\"" 
+      + pageContext.getAttribute("isAutorecoveryEnabled") + "\";");
+    out.print("var AUTORECOVERY_THROTTLE_INTERVAL=\"" 
+      + pageContext.getAttribute("autorecoveryThrottleInterval") + "\";");
+    out.print("var USER_HOME_PAGE_ID=\"" 
+      + pageContext.getAttribute("homePage") + "\";");
+    out.print("var USER_APPLICATION_ID=\"" 
+            + pageContext.getAttribute("appId") + "\";");
+          // Gets the tab association for the user's home page as a JSON string.
+          // This is required when restoring a tab session to the "home" state
+          // to avoid complications arising from AJAX call synchronization.
+          out.print("var USER_HOME_PAGE_TAB_ASSOC=");
+          try {
+            final String tabAssoc =
+                curam.util.client.path.util.ClientDataAccessor.getInstance()
+                    .getRaw("/config/tablayout/associated[" 
+                            + pageContext.getAttribute("homePage") + "]["
+                            + pageContext.getAttribute("appId") + "]").toString();
+            out.print(tabAssoc + ";");
+          } catch (curam.util.common.path.DataAccessException e) {
+            if (curam.util.client.Trace.isOn()) {
+              e.printStackTrace(System.out);
+            }
+            out.print("null;");
+          }
+          out.print("window.__curamInTabbedUi = true;");
+          </jsp:scriptlet>
+      </script> <script type="text/javascript">
+      	<jsp:scriptlet>JspUtil.outputDojoLoaderConfiguration(pageContext, prefs.getLocale());</jsp:scriptlet>
+      </script> <script type="text/javascript" src="${o3__serverURL}CDEJ/jscript/dojotk/dojo/dojo.js">// dummy script content</script> <script type="text/javascript" src="${o3__serverURL}CDEJ/jscript/dojotk/dijit/dijit.js">// dummy script content</script> <script type="text/javascript">
+        <jsp:scriptlet>JspUtil.outputInspectorLayerData(pageContext);</jsp:scriptlet>
+        require.on("error", function(error) {
+          console.log(error.src, error.id);
+        });     
+      </script> <jsp:scriptlet>JspUtil.outputJSLocalisedValues(pageContext);</jsp:scriptlet> <script type="text/javascript" src="${o3__serverURL}CDEJ/jscript/cdej-cm.js">// dummy script content</script> <script type="text/javascript" src="${o3__serverURL}CDEJ/jscript/cdej-main.js">// dummy script content</script> <script type="text/javascript" src="${o3__serverURL}CDEJ/jscript/cdsl.js">// dummy script content</script> <script type="text/javascript">
+      <jsp:scriptlet>JspUtil.outputJavaScriptDebugSetup(pageContext);</jsp:scriptlet>
+      <jsp:scriptlet>JspUtil.outputBrowserTabTitleSetup(pageContext);</jsp:scriptlet>
+      require(["dojo/_base/lang", "dojox/encoding/digests/SHA1", "curam/util", 
+      "curam/util/ScreenContext", "dijit/layout/BorderContainer"], function(lang) {
+
+        lang.mixin(curam.util.TabActionsMenu, { "dynamicMenuBarData": {}});
+        lang.mixin(curam.util.TabNavigation, { "dynamicNavigationData": {}});
+
+        <jsp:text><![CDATA[dojo.global.jsBaseURL = curam.util.retrieveBaseURL(); dojo.global.jsScreenContext = new curam.util.ScreenContext();]]></jsp:text>
+        <jsp:scriptlet>
+          out.print("dojo.global.jsScreenContext.setContext('" 
+              + ((curam.omega3.taglib.ScreenContext)pageContext.getAttribute("ctx")).getValue() 
+              + "');");
+        </jsp:scriptlet>
+      });
+      </script> <curam:jsUserPreferences/> <script type="text/javascript">if(typeof(curam)=="undefined"){curam={};}curam.config={locale:"${pageScope.pageLocale}",modalsEnabled:"true",mobileUserAgent:${pageScope.mobileUserAgent},appID:"${appId}"};</script> <script type="text/javascript">
+        require(["dojo/ready"], function(ready){
+          ready(function(){
+            <jsp:scriptlet>
+            if (request.getParameter("o3gtu") != null) {
+              String url = request.getParameter("o3gtu");
+              url = curam.util.common.util.JavaScriptEscaper.escapeText(url, true);
+              if(url.indexOf("o3ctx") == -1) {
+                if (url.indexOf("?")!= -1) {
+                  url = url + "&amp;o3ctx=4096";
+                } else if (url.indexOf("?") == -1) {
+                  url = url + "?o3ctx=4096";
+                }
+            }
+            </jsp:scriptlet>                      
+              // Here we add handling of a new parameter that allows direct URLs to work.
+            if (window.parent == window) {
+                require(["curam/ui/UIController"], function () {
+                  curam.ui.UIController.initialize(
+                    "<jsp:scriptlet>out.print(url);</jsp:scriptlet>"
+                  );  
+                });
+              }
+            <jsp:scriptlet>
+            } else {
+            </jsp:scriptlet>             	               
+              require(["curam/ui/UIController"], function(){
+                curam.ui.UIController.initialize();
+              });
+              <jsp:scriptlet>
+            }
+          </jsp:scriptlet>
+          <jsp:scriptlet>
+          if (curam.util.client.tab.ApplicationConfigUtils.isGuardAgainstLeavingSet(false)) {
+          </jsp:scriptlet>
+            require(["curam/util/ui/AppExitConfirmation"], function(appExit){
+          		appExit.install();
+        	});
+          <jsp:scriptlet>
+           }
+          final Boolean arEnabled = (Boolean) pageContext.getAttribute("isAutorecoveryEnabled");
+          if (arEnabled) {
+          </jsp:scriptlet>
+             require(["curam/util/AutoRecoveryAPI"], function(autoRecovery){
+          	this.autoRecovery = new autoRecovery();
+              }); 	                 
+            <jsp:scriptlet>
+          } 
+          </jsp:scriptlet> 
+        });
+        
+        function openHelp(event) {
+          dojo.stopEvent(event);
+          var url ="../help/index.html";
+      <!--  Commenting out the code as the  help link in application frame should always open main help page
+        TODO : This commented block has to be removed when moving these functions to  namespace\class
+          var iframe = curam.tab.getContentPanelIframe();
+          if (iframe) {
+            var pageAndQuery = curam.util.getLastPathSegmentWithQueryString(iframe.src)
+            var helpPageId = pageAndQuery.substr(0, pageAndQuery.indexOf('?'));
+            if (helpPageId.indexOf('Page.do') != -1) {
+              helpPageId = helpPageId.substr(0,helpPageId.indexOf('Page.do'));
+            }
+            url += "?"+helpPageId;
+        }  -->
+          window.open(url);
+        }
+       
+        });
+      </script> <script type="text/javascript">
+		<jsp:scriptlet>out.print("window.curam.serverRootURL = \"" + JspUtil.getServerRootURL() + "\";");</jsp:scriptlet>
+	  </script> <script type="text/javascript" src="${o3__serverURL}CDEJ/jscript/SPMUIComponents/spm-uicomponents-main.bundle.js"> dummy script content</script> <script type="text/javascript">
+        <jsp:scriptlet>
+          out.print("window.__dropdownLabelConfig = " + JspUtil.getDropDownLabelConfig(pageContext) + ";");
+        </jsp:scriptlet>
+      </script> </head> <body class="${classDirection} ${appId} soria curam basic ${mobileClassName} ${htmlLanguage} app-frame-body"> <cing:page pageID="AppController"> <cing:component style="curam-util-client::application-view"/> </cing:page> </body> <script type="text/javascript">
+      require(["dojo/ready"], function(ready) {
+        ready(function(){
+          dojo.publish("/curam/application/loaded");
+        });
+      });
+      
+      <!--  Starting the  session timeout warning in the internal application-->
+      <jsp:scriptlet>
+			//Set the configuration properties for the session timeout warning.
+			final String appID = (String) pageContext.getAttribute("appId");
+			curam.omega3.taglib.ScreenContext sContext =
+		        (curam.omega3.taglib.ScreenContext) pageContext.getAttribute("ctx");
+			
+			String sessionTimeoutWarningInicialization = JspUtil.getSessionTimeoutWarningInitializationJavaScript(appID, sContext);
+			if(sessionTimeoutWarningInicialization != null){
+				 out.print(sessionTimeoutWarningInicialization);
+			}
+      </jsp:scriptlet>
+    </script> <script type="text/javascript">
+      <jsp:scriptlet>
+			final String csrfToken = CSRFToken.getToken(request.getSession());
+		    out.print("window.top.csrfToken =" + "\"" + csrfToken +"\"" );
+      </jsp:scriptlet>
+      
+      </script> </html> </jsp:root>

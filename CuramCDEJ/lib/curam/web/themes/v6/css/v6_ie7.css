@@ -1,0 +1,197 @@
+/*
+ * IBM Confidential
+ *
+ * OCO Source Materials
+ *
+ * Copyright IBM Corporation 2012,2021.
+ *
+ * The source code for this program is not published or otherwise divested of
+ * its trade secrets, irrespective of what has been deposited with the US
+ * Copyright Office.
+ */
+
+/*
+IE7 specific styles for Scrollable Lists.
+Scrollable lists are implemented with 2 separate tables. The first table only
+contains the column headers. The second table contains the table body and is
+wrapped in a div which has a scrollbar. The second table is pushed to the left
+by the scrollbar. To account for this, the second table has a dummy column
+header which is the width of the scrollbar. This is to ensure the columns on
+both tables line up to give the impression of a single table.
+
+However, on IE7 the second table is not pushed to the left by the scrollbar.
+The scrollbar actually draws over the table. So there is no need for the dummy
+col and hence we set it's width to zero.
+
+For IE8/Firefox
+*/
+body .scrollable-list-header-table col.scrollable-list-dummy-col {
+  width: 0px;
+}
+
+body .scrollable-list-header-table thead tr th.last-header {
+  background:#fbcb5d url(../images/list-header-corners.png) no-repeat top right;
+  border-right:none;
+}
+
+/*Used when the Scrollable list is nested, header has a grey colour*/
+body.list-inline-page div.list table.scrollable-list-header-table thead tr th.last-header {
+    background: url("../images/nested-list-header-corners.png") no-repeat scroll right top #D7E4F6;
+    border-right: medium none;
+}
+
+/*There is no dummy last column when scrollbars appear on lists*/
+/*So must further pad out the filed so data isn't clipped by scrollbar*/
+.soria div.list div.scrollable table td.last-field,
+.scrollable-list-header-table thead th.last-header span {
+padding-right:25px;
+}
+
+/* move the non radio input fields in further to the left so that they line up with the radio fields */
+body#Curam_user-prefs-editor input.non-radio{
+  margin-left: 5px;
+}
+
+/* pop-up field in container in ie7 needs a large margin top so that
+   it aligns correctly with the adjacent drop down or input field. */
+.soria span.container span.popup-field {
+  margin-top:-14px;
+}
+
+.soria .matrix-container .bottom-right {
+  float:left;
+	border-bottom:1px solid #191970;
+  border-right:1px solid black;
+  overflow:scroll;
+  position:fixed;
+}
+
+.soria #wizard-progress-bar {
+  position:fixed;
+  height:100%;
+}
+
+/* This rule is to fix the peek-a-boo issue found in IE7. See TEC-5825 & TEC-6124 for details
+The fix is set to 99%, as a bigger value would cause the page to overflow on the y-axis
+The fix is restricted, as much as possible, to the form of dialogs with wizard progress bars*/
+body.soria .wizard-exists #mainForm {
+  width:99% !important;
+}
+
+/* The height had of the input element had to be set to get checkbox lists displaying
+correctly in chrome. A height of 13px works for Chrome but not for IE7. A height of 
+15px works for IE7.
+*/
+.checkboxed-list div input {
+  height: 15px;
+}
+/* for a container with a date selector, setting the width of the icon to 20 
+   pixels. This will ensure that if there is another input control within 
+   the container along side the date selector (i.e such as a check box) that the
+   date selector icon will not be clipped no matter the width of the date 
+   selector or the number of columns on the cluster. */
+span.container table.date td.popup-actions{
+  width: 20px;
+}
+/* If there is an expandable row header preceding the multiselect header then 
+   we want to have the padding on the left of thee pixels.*/
+.soria th.first-header-expanding-list + th.multiselect {
+ padding-left:3px;
+}
+/*Added so table borders will render fully when elements contain blank values*/
+.soria .evidence-comparison div.list table {
+  border-collapse:collapse;
+}
+
+.soria #app-sections-container-dc_tablist .dijitTabListWrapper {
+  background:url("../images/app-frame-tab-strip.png") repeat-x 21px left transparent;
+  z-index:0; 
+  height:24px !important;
+}
+
+/* For typical picture editor, */
+.soria .cda-typical-picture-editor table.list {
+  border-collapse:collapse;
+}
+
+/* Last row check/radio box alignment in multi/single select list when sorted */
+body.soria div.list div.scrollable table tr.odd-last-row td.multiselect.first-field input ,
+body.soria div.list div.scrollable table tr.odd-last-row td.singleselect.first-field input {
+  margin-left: -1px !important;
+}
+
+/* Payment Statement table Styling */
+body.soria table.payment-statement {
+  border-collapse:collapse;
+}
+
+body.soria table.payment-statement tbody tr.odd td.difference,
+body.soria table.payment-statement tbody tr.even td.difference {
+  border-right:2px solid #B6B6B6;
+}
+
+body.soria table.payment-statement thead tr th {
+  padding-bottom:1px;
+}
+
+body.soria table.payment-statement thead tr th.field.first-header,
+body.soria table.payment-statement thead tr th.field.last-header {
+  padding-bottom:0px;
+}
+
+.dj_ie7 .soria .in-page-nav-tabContainer.dijitTabContainerTop .dijitTabListWrapper {
+  /* shorter height of 24px required for in page nav in ie7. Height in ie8 is 25px*/
+  height: 24px !important;
+}
+
+.dj_ie7 .in-page-nav-tabContainer { 
+  /* due to shorter height of 1px of tab container in ie7, the top position of the
+     background image needs to be brought up by 1px*/
+  background-position: 0 1px;
+}
+
+.dj_ie7 .soria .navigation-bar-tabs .dijitTabInnerDiv .dijitTabContent {
+  /* Navigation bar tabs appear 1px too short. This padding allows dojo to 
+     calculate the correct tab height for ie7. */
+  padding-bottom: 1px; 
+}
+
+.dj_ie7 .soria .in-page-nav-tabContainer .dijitTabInnerDiv .dijitTabContent {
+  /* in page navigation tabs appear 1px too short. This padding allows dojo to 
+     calculate the correct tab height for ie7. */
+  padding-bottom: 1px; 
+}
+
+.dj_ie7 .app-sections-container .dijitLayoutContainer.dijitScrollingTabController {
+  /* section tabs appear behind the tab spacer in ie7. Setting the z-index to ensure this
+     does not happen */
+  z-index:1;
+}
+
+.dj_ie7 .soria .list-details-row .uimController .ipnTabController {
+  /* height of tab container and its background image needs to be modified by 1px
+     for ie7. */
+  height:22px !important;
+  background-position: 0px 21px;
+}
+
+.navigation-tab .child-nav .child-nav-items {
+  position:absolute;
+}
+.soria div.list div.header-wrapper h3,
+.soria div.list div.header-wrapper h3.collapse, 
+td.field div.header-wrapper h3 {
+   float:left;
+}
+
+body.soria div.list div.scrollable table thead.hidden-table-header {
+  display:none;
+}
+
+.list .scrollable .codetable .dijitTextBox .dijitInputField {
+  position: static;
+}
+
+.soria .tab-content-holder .summaryPane {
+  height: 100%;
+}

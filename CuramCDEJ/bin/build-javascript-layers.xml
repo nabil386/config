@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+IBM Confidential
+OCO Source Materials
+
+PID 5725-H26
+
+Copyright IBM Corporation 2013,2020
+The source code for this program is not published or otherwise divested
+of its trade secrets, irrespective of what has been deposited with the US Copyright Office
+-->
+<project name="build-javascript-layers">
+
+  <property environment="sysenv"/>
+  <condition property="artifactory.user" value="${sysenv.ARTIFACTORY_USER}">
+    <isset property="sysenv.ARTIFACTORY_USER" />
+  </condition>
+    <condition property="artifactory.token" value="${sysenv.ARTIFACTORY_TOKEN}">
+    <isset property="sysenv.ARTIFACTORY_TOKEN" />
+  </condition>
+  <!-- Expected format: https://hostname/artifactory/repository-name -->
+  <condition property="artifactory.url" value="${sysenv.DEV_ARTIFACTORY_URL}">
+    <isset property="sysenv.DEV_ARTIFACTORY_URL" />
+  </condition>
+  <property name="fileserver.location" value="${artifactory.url}/ProductDevelopment/DevReleases/SDEJ_CDEJ_source" />
+  <dirname property="dir.build.script" file="${ant.file}" />
+  <property name="jar.antcontrib" value="${dir.build.script}/../lib/ext/jar/ant-contrib.jar" />
+  <taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${jar.antcontrib}"/>
+
+  <target name="create-javascript-layers" description="Builds JavaScript layers according to a configuration file provided in the -Dlayer-build-configuration=&lt;path-to-config-file&gt; parameter.">
+
+    <fail unless="app-component-dependencies"
+        message="The app component dependencies must be specified, use -Dapp-component-dependencies="/>
+
+    <fail unless="layer-name"
+        message="The name of your layer must be specified, use -Dlayer-name="/>
+  
+    <fail unless="layer-build-configuration"
+        message="The path to the JavaScript layer build configuration file must be specified, use -Dlayer-build-configuration="/>
+
+    <fail unless="target-directory"
+        message="The path to the target directory for your built layer files must be specified, use -Dtarget-directory="/>
+
+    <fail unless="sources-directory"
+        message="The path to the directory containing the source code of your JavaScript modules must be specified, use -Dsources-directory="/>
+  
+    <tempfile property="dir.sources.temp" destDir="${java.io.tmpdir}" prefix="curam-js-layerbuild"/>
+    <property name="profile.template.file" value="${dir.build.script}/layer-build-template.profile.js"/>
+    <pathconvert property="dir.layerbuild" dirsep="/">
+      <path location="${dir.sources.temp}/layerbuild"/>
+    </pathconvert>
+
+    <!-- Create temporary sources dir for the layer build. -->
+    <delete dir="${dir.sources.temp}" />
+    <mkdir dir="${dir.sources.temp}" />
+
+    <!-- Copy over the components' sources -->
+    <for list="${app-component-dependencies}" param="zip.name" trim="true">
+      <sequential>
+
+        <mkdir dir="${dir.sources.temp}/tmp_zip" />
+        <!-- Using "Basic" auth to get the file -->
+        <get src="${fileserver.location}/@{zip.name}" dest="${dir.sources.temp}/tmp_zip" username="${artifactory.user}" password="${artifactory.token}" />
+
+        <if>
+          <contains string="@{zip.name}" substring="idx" casesensitive="false" />
+          <then>
+            <!-- Unzip IDX source file with excludes -->
+            <unzip src="${dir.sources.temp}/tmp_zip/@{zip.name}" dest="${dir.sources.temp}">
+              <patternset excludes="idx/gridx/**" />
+            </unzip>
+          </then>
+          <else>
+            <!-- Unzip without excludes -->
+            <unzip src="${dir.sources.temp}/tmp_zip/@{zip.name}" dest="${dir.sources.temp}" />
+          </else>
+        </if>
+      </sequential>
+    </for>
+
+    <!-- Copy over our own component sources -->
+    <copy todir="${dir.sources.temp}">
+      <fileset dir="${sources-directory}">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+
+    <!-- Create the build profile, loading in the build configuration JSON file
+         and setting the releaseDir property. -->
+    <property name="build.profile.file" value="${dir.sources.temp}/build.profile.js" />
+
+    <loadfile property="configData" srcFile="${layer-build-configuration}"/>
+    <copy file="${profile.template.file}" tofile="${build.profile.file}" >
+      <filterchain>  
+        <replacetokens>
+          <token key="___configData___replaced_by_build_script___" value="${configData}"/>  
+          <token key="___releaseDir___replaced_by_build_script___" value="${dir.layerbuild}"/>
+          <token key="___layerName___replaced_by_build_script___" value="${layer-name}"/>
+        </replacetokens>
+      </filterchain>
+    </copy>
+
+    <!-- Perform Dojo build, creating the desired layer files in the process. -->
+    <java classname="org.mozilla.javascript.tools.shell.Main" failonerror="true" fork="true">
+      <arg value="${dir.sources.temp}/dojo/dojo.js" />
+      <arg value="baseUrl=file:${dir.sources.temp}/dojo" />
+      <arg value="load=build" />
+      
+      <arg value="--profile" />
+      <arg value="${build.profile.file}" />
+      <arg value="--release" />
+
+      <jvmarg value="-Xms256m" />
+      <jvmarg value="-Xmx256m" />
+      
+      <classpath>
+        <pathelement location="${dir.sources.temp}/util/shrinksafe/js.jar"/>
+        <pathelement location="${dir.sources.temp}/util/closureCompiler/compiler.jar"/>
+        <pathelement location="${dir.sources.temp}/util/shrinksafe/shrinksafe.jar"/>
+      </classpath>
+    </java>
+    
+    <!-- Fail the build if there are errors -->
+    <fail message="Couldn't create JavaScript layer files due to build failures. See build output for details." >
+      <condition>
+        <not>
+          <resourcecontains resource="${dir.layerbuild}/build-report.txt" substring="errors: 0" />
+        </not>
+      </condition>
+    </fail>
+
+    <!-- Setup target directory -->
+    <delete dir="${target-directory}" />
+    <mkdir dir="${target-directory}" />
+    <copy todir="${target-directory}">
+      <fileset dir="${dir.layerbuild}/dojo">
+        <include name="${layer-name}*.js"/>
+      </fileset>
+    </copy>
+    <copy todir="${target-directory}/nls">
+      <fileset dir="${dir.layerbuild}/dojo/nls">
+        <include name="${layer-name}*.js"/>
+      </fileset>
+    </copy>
+
+    <!-- Cleanup. -->
+    <delete dir="${dir.sources.temp}" />
+
+  </target>
+
+</project>

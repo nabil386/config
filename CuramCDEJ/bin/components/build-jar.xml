@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Copyright © 2006-2007 Curam Software Ltd.
+All rights reserved.
+
+This software is the confidential and proprietary information of Curam
+Software, Ltd. ("Confidential Information"). You shall not disclose
+such Confidential Information and shall use it only in accordance with the
+terms of the license agreement you entered into with Curam Software.
+-->
+<!--
+Compiles the main source code and creates the component JAR file. A "clean"
+is not performed first. This depends on targets and definitions in
+the "build-component.xml" script which imports this script.
+-->
+<project name="build.jar">
+  <!--
+  These properties are fixed relative to the base directory of the component,
+  as the project structure does not vary.
+  -->
+  <property name="fil.jar.component"
+            value="${dir.target}/${ant.project.name}.jar" />
+
+  <property name="fil.jar.component.test.classes"
+            value="${dir.target}/${ant.project.name}-test-classes.jar" />
+
+
+  <property file="jar-files.properties"/>
+
+  <if>
+   <equals arg1="${include.test.classes.in.jar}" arg2="true" />
+   <then>
+     <property name="src-and-tests" value="true" />
+   </then>
+  </if>
+
+  <!--
+  Create the JAR file after compiling the main classes and/or resources. If
+  there is any main content (Java code or resources), then there should be
+  something in the target classes directory after the "compile" target has run.
+  -->
+  <target name="-jar-src" depends="compile" unless="src-and-tests">
+
+    <jar destfile="${fil.jar.component}" basedir="${dir.cls.main}"/>
+
+  </target>
+
+  <target name="-jar-src-and-test" depends="test-compile" if="src-and-tests">
+
+    <jar destfile="${fil.jar.component}" basedir="${dir.cls.main}"/>
+    <jar destfile="${fil.jar.component.test.classes}" basedir="${dir.cls.test}"/>
+
+  </target>
+
+  <target name="jar" depends="-jar-src, -jar-src-and-test" if="has.main.content"
+          description="Creates the component JAR file."/>
+
+</project>

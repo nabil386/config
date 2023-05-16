@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="agenda">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="page-flow"/>
+        <xs:element ref="parameters" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="exit-page"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="exit-page">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="parameters" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="page">
+    <xs:complexType>
+      <xs:attribute name="id" type="xs:string" use="required"/>
+      <xs:attribute name="description" type="xs:string" use="required"/>
+      <xs:attribute name="initial" type="xs:boolean" default="false"/>
+      <xs:attribute name="status" type="xs:string"/>
+      <xs:attribute name="disableback" type="ATT_DISABLE_VAL" default="false"/>
+      <xs:attribute name="disableforward" type="ATT_DISABLE_VAL" default="false"/>
+      <xs:attribute name="submitonnext" type="xs:boolean" default="false"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="section">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="page" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="description" type="xs:string" use="required"/>
+      <xs:attribute name="visible" type="xs:boolean" default="true"/>
+      <xs:attribute name="status" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="page-flow">
+    <xs:complexType>
+      <xs:choice>
+        <xs:sequence>
+          <xs:element ref="page" maxOccurs="unbounded"/>
+          <xs:element ref="summary" minOccurs="0"/>
+        </xs:sequence>
+        <xs:sequence>
+          <xs:element ref="section" maxOccurs="unbounded"/>
+          <xs:element ref="summary" minOccurs="0"/>
+        </xs:sequence>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="parameter">
+    <xs:complexType>
+      <xs:attribute name="name" type="xs:string" use="required"/>
+      <xs:attribute name="value" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="parameters">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="parameter" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="summary">
+    <xs:complexType>
+      <xs:attribute name="id" type="xs:string" use="required"/>
+      <xs:attribute name="description" type="xs:string" use="required"/>
+      <xs:attribute name="status" type="xs:string" use="optional"/>
+      <xs:attribute name="close-on-submit" type="xs:boolean" default="false"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="ATT_DISABLE_VAL">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="true"/>
+      <xs:enumeration value="false"/>
+      <xs:enumeration value="dynamic"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

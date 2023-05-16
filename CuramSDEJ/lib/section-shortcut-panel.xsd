@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+	Copyright 2010 Curam Software Ltd.
+	All rights reserved.
+	
+	This software is the confidential and proprietary information of Curam
+	Software, Ltd. ("Confidential Information"). You shall not disclose
+	such Confidential Information and shall use it only in accordance with the
+	terms of the license agreement you entered into with Curam Software.
+-->
+<schema 
+  targetNamespace="http://www.curamsoftware.com/curam/util/client/section-shortcut-panel" 
+  elementFormDefault="qualified" 
+  xmlns="http://www.w3.org/2001/XMLSchema" 
+  xmlns:sc="http://www.curamsoftware.com/curam/util/client/section-shortcut-panel">
+  <element name="section-shortcut-panel" type="sc:shortcut-type">
+    <annotation>
+      <documentation>
+        The root element of section shortcut panel configuration. It can
+        contain nodes.
+      </documentation>
+    </annotation>
+  </element>
+  <element name="nodes" type="sc:nodes-type">
+    <annotation>
+      <documentation>
+        Represents a navigation tree.
+      </documentation>
+    </annotation>
+  </element>
+  <element name="node" type="sc:node-type">
+    <annotation>
+      <documentation>
+        Node of type group represents a shortcut panel,
+        Node of type leaf represents a link in the navigation tree.
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="shortcut-type">
+    <sequence>
+      <element ref="sc:nodes" />
+    </sequence>
+    <attribute name="id" use="required" type="string">
+      <annotation>
+        <documentation>
+          The unique identifier of a shortcut panel.
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="title"  type="string"></attribute>
+  </complexType>
+  <complexType name="nodes-type">
+    <sequence>
+      <element minOccurs="1"  maxOccurs="unbounded" ref="sc:node"/>
+    </sequence>
+  </complexType>
+  <complexType name="node-type">
+    <sequence>
+      <element  minOccurs="0" maxOccurs="unbounded" ref="sc:node"/>
+    </sequence>
+        <attribute name="open-as" use="optional">
+          <annotation>
+            <documentation>
+              Specifies if the page will open in new
+              modal window. The default is to open within the content
+              panel of the relevant page.
+            </documentation>
+          </annotation>
+          <simpleType>
+            <restriction base="string">
+              <enumeration value="modal"/>
+            </restriction>
+          </simpleType>
+        </attribute>
+    <attribute name="append-ellipsis" use="optional" type="boolean">
+      <annotation>
+        <documentation>
+          Specifies whether or not to append the ellipsis character.
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="id" use="required" type="ID">
+      <annotation>
+        <documentation>
+          The unique identifier of a node.
+        </documentation>
+      </annotation>
+      </attribute>
+    <attribute name="page-id" type="string">
+      <annotation>
+        <documentation>
+          The identifier of a page which should be opened by this navigation.
+        </documentation>
+      </annotation>      
+    </attribute>
+    <attribute name="title" type="string">
+      <annotation>
+        <documentation>
+          A reference to externalized title text for the leaf. 
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="type" use="required">
+      <annotation>
+        <documentation>
+          Specifies the type of the node. Valid values can be group, leaf.
+        </documentation>
+      </annotation>
+      <simpleType>
+        <restriction base="string">
+          <enumeration value="group"/>
+          <enumeration value="leaf"/>
+          <enumeration value="separator"/>
+        </restriction>
+      </simpleType>
+    </attribute>
+    <attribute name="visible" use="optional"  type="boolean">
+      <annotation>
+        <documentation>
+          Indicates whether the element should be displayed.
+        </documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+</schema>

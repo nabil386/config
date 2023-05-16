@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="decision">
+    <xs:annotation>
+      <xs:documentation>Root element of rules decision XML format.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence maxOccurs="unbounded">
+        <xs:element ref="rule-node"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="rule-node">
+    <xs:annotation>
+      <xs:documentation>Node of a decision as a result of a particular rule.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="rule-node"/>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:string" use="required"/>
+      <xs:attribute name="type" type="xs:string" use="required"/>
+      <xs:attribute name="result" type="xs:string" use="required"/>
+      <xs:attribute name="highlight" type="xs:boolean" use="optional" default="false"/>
+      <xs:attribute name="summary" type="xs:boolean" use="optional" default="true"/>
+      <xs:attribute name="text" type="xs:string" use="required"/>
+      <xs:attribute name="conjunction" type="xs:string" use="optional"/>
+      <xs:attribute name="rule-list-group-conjunction" type="xs:string" use="optional"/>
+      <xs:attribute name="legislation-base" type="xs:string" use="optional"/>
+      <xs:attribute name="legislation-link" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:attribute name="id" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Unique identifier of a rule node.</xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="type">
+    <xs:annotation>
+      <xs:documentation>The type of a rule node. Valid types are:
+"p" = "product"
+"r" = "rule"
+"rg" = "rule_group"
+"rlg" = "rule_list_group"
+"o" = "objective"
+"og" = "objective_group"
+"olg" = "objective_list_group"
+"a" = "assessment"
+"srs"= "subruleset"
+      </xs:documentation>
+    </xs:annotation>
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:maxLength value="3"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:attribute>
+  <xs:attribute name="result">
+    <xs:annotation>
+      <xs:documentation>Result of a rule. Valid values are: 
+"S" = "success"
+"F" = "failure"
+</xs:documentation>
+    </xs:annotation>
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:maxLength value="1"/>
+        <xs:minLength value="1"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:attribute>
+  <xs:attribute name="highlight" type="xs:boolean" default="false">
+    <xs:annotation>
+      <xs:documentation>Whether or not this rule should be highlighted.</xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="summary" type="xs:boolean">
+    <xs:annotation>
+      <xs:documentation>Summary attribute indicating if this node should be used for summary displays of the rule details.</xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="text" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Text of the rule decision.</xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="conjunction" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Conjunction code.</xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="rule-list-group-conjunction" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Conjunction code for the rules and rule groups contained in the rule list group.</xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="legislation-base" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Legislation base.</xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="legislation-link" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Legislation link.</xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+</xs:schema>

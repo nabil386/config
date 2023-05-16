@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:curam="http://www.curamsoftware.com/curam" xmlns:cing="http://www.curamsoftware.com/curam/jde/client/curam-ng" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"> <curam:userPreferences/> <jsp:directive.page import="curam.omega3.util.CDEJResources"/> <jsp:directive.page isErrorPage="false" pageEncoding="UTF-8" contentType="text/html;charset=UTF-8" isELIgnored="false" language="java" buffer="32kb"/> <jsp:directive.page import="curam.util.interfaces.UserLocaleApiPkg.UserLocaleApi_getLocale_TH"/> <jsp:directive.page import="curam.omega3.user.UserPreferencesFactory"/> <jsp:directive.page import="java.util.Locale"/> <jsp:directive.page import="curam.omega3.user.UserPreferences"/> <jsp:directive.page import="java.util.List"/> <jsp:directive.page import="curam.util.client.jsp.JspUtil"/> <jsp:output omit-xml-declaration="yes"/> <jsp:text><![CDATA[<!DOCTYPE html>]]></jsp:text> <jsp:scriptlet> UserPreferences prefs = UserPreferencesFactory.getUserPreferences(session); pageContext.setAttribute("landmarkLabel", CDEJResources.getProperty("modal.panel.frame.title")); pageContext.setAttribute("o3__serverURL", JspUtil.getServerRootURL(1)); pageContext.setAttribute("userLocaleSelectorTitle", CDEJResources.getProperty("user-locale-selector.title")); pageContext.setAttribute("userLocaleSelectorButtonSubmit", CDEJResources.getProperty("user-locale-selector.button.submit")); pageContext.setAttribute("userLocaleSelectorButtonCancel", CDEJResources.getProperty("user-locale-selector.button.cancel")); pageContext.setAttribute("testModeEnabled",curam.omega3.util.DataTestIDUtils.isTestModeEnabled()); String ctx = request.getParameter(curam.omega3.taglib.ScreenContext.CTX_PARAM); curam.omega3.taglib.ScreenContext sc = new curam.omega3.taglib.ScreenContext(); sc.set(ctx); sc.clearStates(); pageContext.setAttribute("currentContext",sc.getValue()); pageContext.setAttribute("o3__serverURL", JspUtil.getServerRootURL(1)); </jsp:scriptlet> <curam:userPreferences localeCode="${pageScope.pageLocale}"/> <c:set scope="request" value="user-locale-selector" var="pageId"/> <curam:removeMessages/> <jsp:scriptlet><![CDATA[if(pageContext.getAttribute("htmlDirection").equals("rtl")) { pageContext.setAttribute("classDirection", "rtl"); } else { pageContext.setAttribute("classDirection", ""); } ]]></jsp:scriptlet> <html lang="${htmlLanguage}" dir="${htmlDirection}" class="${classDirection}" role="region" aria-label="${landmarkLabel}"> <jsp:scriptlet><![CDATA[pageContext.setAttribute("theme", "v6", pageContext.APPLICATION_SCOPE);]]></jsp:scriptlet> <head> <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/> <link href="${pageScope.o3__serverURL}themes/${applicationScope.theme}/css/${applicationScope.theme}_main.css" media="all" type="text/css" rel="stylesheet"/> <link rel="stylesheet" type="text/css" media="all" href="${pageScope.o3__serverURL}themes/curam/css/curam_main.css"/> <link rel="stylesheet" type="text/css" media="all" href="${pageScope.o3__serverURL}themes/curam/fonts/main-ibm-font.css"/> <jsp:scriptlet> if(pageContext.getAttribute("htmlDirection").equals("rtl")) { </jsp:scriptlet> <link href="${pageScope.o3__serverURL}themes/${applicationScope.theme}_rtl/css/${applicationScope.theme}_rtl_main.css" media="all" type="text/css" rel="stylesheet"/> <link rel="stylesheet" type="text/css" media="all" href="${pageScope.o3__serverURL}themes/curam_rtl/css/curam_rtl_main.css"/> <jsp:scriptlet> } </jsp:scriptlet> <link href="${pageScope.o3__serverURL}CDEJ/css/custom.css" media="all" type="text/css" rel="stylesheet"/> <link href="${pageScope.o3__serverURL}themes/classic/images/icons/curam.ico" rel="shortcut icon"/> <link href="${pageScope.o3__serverURL}themes/classic/images/icons/curam.ico" rel="icon"/> <script type="text/javascript">
+        <jsp:text><![CDATA[var alreadySubmitted=0;var treeEnabled=true;var doubleLists = new Array();var jsPageID="user-locale-selector";]]></jsp:text>
+      </script> <script type="text/javascript">
+        <jsp:scriptlet><![CDATA[curam.util.client.jsp.JspUtil.outputDojoLoaderConfiguration(pageContext, prefs.getLocale());  ]]></jsp:scriptlet>
+      </script> <script type="text/javascript" src="${o3__serverURL}CDEJ/jscript/dojotk/dojo/dojo.js"><![CDATA[
+				// dummy script content
+				]]></script> <script type="text/javascript" src="${o3__serverURL}CDEJ/jscript/dojo.layer.js">
+        <jsp:text><![CDATA[// dummy script content]]></jsp:text>
+      </script> <script type="text/javascript" src="${pageScope.o3__serverURL}CDEJ/jscript/dojotk/dijit/dijit.js"><![CDATA[
+				// script content
+				]]></script> <script type="text/javascript">
+        <jsp:scriptlet><![CDATA[curam.util.client.jsp.JspUtil.outputJSModulePaths(pageContext);]]></jsp:scriptlet>
+      </script> <script src="${pageScope.o3__serverURL}CDEJ/jscript/cdej.js" type="text/javascript"><![CDATA[
+				// script content
+				]]></script> <script src="${pageScope.o3__serverURL}CDEJ/jscript/cdej-cm.js" type="text/javascript"><![CDATA[
+				// script content
+				]]></script> <script type="text/javascript"><![CDATA[
+				require(["curam/core-uim", "curam/dialog"]);
+
+				]]></script> <curam:jsUserPreferences/> <script src="${pageScope.o3__serverURL}CDEJ/jscript/popup-config.js" type="text/javascript"><![CDATA[// script content]]></script> <jsp:scriptlet><![CDATA[curam.util.client.jsp.JspUtil.outputJSLocalisedValues(pageContext); ]]></jsp:scriptlet> <script type="text/javascript"><![CDATA[require(["curam/util", "curam/util/ScreenContext", "curam/util/onLoad"], function() {
+            var jsBaseURL = curam.util.retrieveBaseURL();
+            dojo.global.jsScreenContext = new curam.util.ScreenContext();
+            jsScreenContext.setContext('MODAL');
+
+            // register publisher for the pageID and title information
+            curam.util.onLoad.addPublisher(function(context) {
+              context.pageID = jsPageID;
+              context.title = "${userLocaleSelectorTitle}";
+            });
+          });
+          
+          // set focus on the radio button with users default locale
+		  function setFocusOnDefaultLocale() {
+		    document.querySelectorAll('input[checked="checked"]')[0].focus();
+		  }
+	  ]]></script> <title> <jsp:text><![CDATA[${userLocaleSelectorTitle}]]></jsp:text> </title> <script type="text/javascript">
+        <jsp:text><![CDATA[
+           require(["curam/util","curam/dialog", "curam/util/onLoad"], function() {
+            curam.dialog.forceParentLocaleRefresh();
+            curam.dialog.initModal('user-locale-selector');
+
+            // register publisher for the page height information
+            curam.util.onLoad.addPublisher(function(context) {
+              context.height = curam.util.getPageHeight();
+            });
+           });
+            ]]></jsp:text>
+      </script> <script type="text/javascript" src="${pageScope.o3__serverURL}CDEJ/jscript/SPMUIComponents/spm-uicomponents-main.bundle.js">
+        <jsp:text><![CDATA[ dummy script content]]></jsp:text>
+      </script> <script type="text/javascript" src="${pageScope.o3__serverURL}CDEJ/jscript/SPMUIComponents/spm-custom-carbon-addons-main.bundle.js">
+        <jsp:text><![CDATA[ dummy script content]]></jsp:text>
+      </script> </head> <jsp:scriptlet> pageContext.setAttribute("appID", curam.omega3.util.UserUtils.getApplicationID((javax.servlet.http.HttpServletRequest) pageContext.getRequest())); </jsp:scriptlet> <body id="Curam_user-locale-selector" class="${classDirection} ${appID} basic modal ${htmlLanguage} en soria curam bx--uim-modal spm-component" role="document" aria-label="${landmarkLabel}" onload="setFocusOnDefaultLocale()"> <cing:page pageID="user-locale-selector"> <div id="content" class="bx--uim-modal bx--page__content"> <cing:form action="userLocaleAction.do" method="post" returnToSelf="false"> <div id="error-messages-container"> <curam:ifMessagesExist> <h3 id="error-messages-header" class="message-list"> <jsp:text><![CDATA[Message List]]></jsp:text> </h3> <ul class="messages" id="error-messages"> <curam:messageLoop> <curam:getCurrentMessage/> </curam:messageLoop> </ul> </curam:ifMessagesExist> </div> <div class="action-set hidden-action-set center"> <a class="ac" href="#">${userLocaleSelectorButtonSubmit}</a> <input type="submit" name="__o3btn.submit" value="Save" id="__o3btn.submit" title="Save" class="hidden-button curam-default-action" tabindex="-1"/> <a class="ac" href="#">${userLocaleSelectorButtonCancel}</a> <input type="button" name="__o3btn.cancel" value="Cancel" id="__o3btn.cancel" title="Cancel" class="hidden-button" tabindex="-1" onclick="curam.dialog.closeModalDialog();"/> </div> <fieldset class="bx--fieldset"> <legend class="bx--label bx--visually-hidden">${userLocaleSelectorTitle}</legend> <div class="bx--form-item"> <div class="bx--radio-button-group bx--radio-button-group--vertical"> <jsp:scriptlet><![CDATA[ UserLocaleApi_getLocale_TH getLocaleTh = new UserLocaleApi_getLocale_TH(); getLocaleTh.setBeanInstanceName("GET_LOCALE"); getLocaleTh.setInstanceName("GET_LOCALE"); getLocaleTh.setUserPreferences(prefs); getLocaleTh.callServer(); String versionNo = getLocaleTh.getFormattedProperty(getLocaleTh.result$versionNumber_idx); pageContext.setAttribute("versionNo", versionNo); Locale userLocale = prefs.getLocale(); String[] locales = CDEJResources.getProperty( "curam.omega3.CDEJBuildSettings", "locale.list").split(","); List serverLocaleList = JspUtil.getAvailableServerLocales( request, userLocale); pageContext.setAttribute("rbChecked", "unchecked"); for(int i = 0; i < locales.length; i++) { if (serverLocaleList.contains(locales[i])) { String rbChecked = ""; if (locales[i].equals(userLocale.toString())) { rbChecked = " checked=\"checked\""; } out.write("<div class=\"bx--radio-button-wrapper\">"); out.write("<input type=\"radio\" class=\"bx--radio-button\" type=\"radio\"" + "name=\"selected-locale\" tabindex=\"0\" value=\"" + locales[i] + "\"" + rbChecked + " id=\"radioBtn_" + i + "\"" + " lang=\"" + JspUtil.replaceUnderscoreByHyphen(locales[i]) + "\"" + "/>"); out.write("<label for=\"radioBtn_" + i + "\" class=\"bx--radio-button__label\">" + "<span class=\"bx--radio-button__appearance\"></span>" + "<span class=\"bx--radio-button__label-text\" lang=\"" + JspUtil.replaceUnderscoreByHyphen(locales[i]) + "\">" + JspUtil.getLocaleNativeLabel(locales[i]) + "</span>" + "</label>"); out.write("</div>"); } } ]]></jsp:scriptlet> <input type="hidden" name="version-number" value="${pageScope.versionNo}"/> </div> </div> </fieldset> </cing:form> </div> <div region="bottom" id="actions-panel"> <div class="action-set buttons"> <script type="text/javascript">require(["curam/util"], function(){
+				 	 curam.util.getTopmostWindow().dojo.publish("/curam/CuramCarbonModal/nonStandardModalFooter", [{"hasDefaultSubmitButton": "true"}]);});
+				 </script> <curam:button name="cancel" dataTestidComponentPrefix="link" labelProp="user-locale-selector.button.cancel" cssClass="submit replace" type="submit" onclick="return curam.util.closeLocaleSelector(arguments[0]);"> ${userLocaleSelectorButtonCancel} </curam:button> <script type="text/javascript">
+              <jsp:text><![CDATA[dojo.addOnLoad(function(){curam.util.replaceSubmitButton('cancel', undefined, true)});]]></jsp:text>
+            </script> <curam:button name="submit" dataTestidComponentPrefix="link" labelProp="user-locale-selector.button.submit" cssClass="submit replace curam-default-action" type="submit"> ${userLocaleSelectorButtonSubmit} </curam:button> <script type="text/javascript">
+              <jsp:text><![CDATA[dojo.addOnLoad(function(){curam.util.replaceSubmitButton('submit')});]]></jsp:text>
+            </script> </div> </div> <script type="text/javascript">
+          <jsp:text><![CDATA[require(["curam/omega3-util"], function(omega3Util) {omega3Util.setFocus();});]]></jsp:text>
+        </script> </cing:page> </body> </html>
+</jsp:root>

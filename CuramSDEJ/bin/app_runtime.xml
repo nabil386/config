@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2020. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant runtime support file for Curam projects.
+  It includes tasks to start, stop and restart an application server, install and uninstall
+  an application, configure an application server and precompile the JSPs of an installed client.
+
+  This file is dependant on the AppServer.properties file and if this file does not exist any
+  of the targets will fail.
+
+-->
+<project name="app_runtime" default="startserver">
+
+  <!--  *******************************  -->
+  <!--  ***  App server Properties  ***  -->
+  <!--  *******************************  -->
+  <property file="${app.prop.location}" />
+
+  <!--  **********************  -->
+  <!--  ***  runtime.init  ***  -->
+  <!--  **********************  -->
+  <!-- Initialisation for other targets in this file. -->
+  <target name="runtime.init">
+
+    <!-- Check to see if the AppServer.properties file exists -->
+    <echo message="Using properties file '${app.prop.location}'." />
+    <condition property="appserver.properties.exists">
+      <available file="${app.prop.location}" type="file" />
+    </condition>
+    <antcall target="check.properties.exists" />
+
+    <!-- Check to see if the AppServer.properties file contains the
+         as.vendor property  and that this property is set correctly
+         to IBM or BEA. -->
+    <condition property="vendor.equals.ibm">
+      <equals arg1="${as.vendor}" arg2="ibm" casesensitive="false" />
+    </condition>
+
+    <condition property="vendor.equals.wlp">
+      <equals arg1="${as.vendor}" arg2="wlp" casesensitive="false" />
+    </condition>
+
+    <condition property="vendor.equals.bea">
+      <equals arg1="${as.vendor}" arg2="bea" casesensitive="false" />
+    </condition>
+
+    <condition property="vendor.supported">
+      <or>
+        <isset property="vendor.equals.ibm" />
+        <isset property="vendor.equals.wlp" />
+        <isset property="vendor.equals.bea" />
+      </or>
+    </condition>
+
+    <condition property="gss.start">
+      <equals arg1="${start.searchserver}" arg2="true" casesensitive="false" />
+    </condition>
+
+    <antcall target="check.vendor.supported" />
+
+    <!-- Check to see if the AppServer.properties file contains the correct settings -->
+    <condition property="appserver.properties.valid">
+      <and>
+        <isset property="as.vendor" />
+        <isset property="security.username" />
+        <isset property="security.password" />
+        <isset property="curam.server.port" />
+      </and>
+    </condition>
+    <antcall target="check.appserver.properties.valid" />
+
+    <echo message="Application Server vendor is ${as.vendor}." />
+  </target>
+
+  <!-- Fail if some properties are missing. -->
+  <target name="check.appserver.properties.valid" unless="appserver.properties.valid">
+    <fail message="Missing properties from AppServer.properties file. See AppServer.properties.sample." />
+  </target>
+
+  <!-- Print message if AppServer.properties cannot be found. -->
+  <target name="check.properties.exists" unless="appserver.properties.exists">
+    <fail message="The AppServer.properties file could not be found. (See AppServer.properties.sample.)" />
+  </target>
+
+  <!-- Print message if vendor unsupported. -->
+  <target name="check.vendor.supported" unless="vendor.supported">
+    <fail message="The vendor ${as.vendor} is currently unsupported." />
+  </target>
+
+
+  <!--  *************************************  -->
+  <!--  ***  Start an application server  ***  -->
+  <!--  *************************************  -->
+  <target name="startserver" depends="runtime.init" description="Starts an application server (use -Dserver.name=)">
+    <antcall target="start.was" />
+    <antcall target="start.wlp" />
+    <antcall target="start.wls" />
+    <antcall target="start.gss" />
+  </target>
+
+  <target name="start.was" if="vendor.equals.ibm">
+    <ant antfile="${dir.sde.bin}/app_runtimewas.xml" target="start" inheritAll="false">
+      <property name="fail.on.error" value="${appserver.failonerror}" />
+      <property name="was.home" value="${WAS_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+    </ant>
+  </target>
+
+  <target name="start.wlp" if="vendor.equals.wlp">
+    <ant antfile="${dir.sde.bin}/app_runtimewlp.xml" target="start" inheritAll="false">
+      <property name="fail.on.error" value="${appserver.failonerror}" />
+      <property name="wlp.home" value="${WLP_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+    </ant>
+  </target>
+
+  <target name="start.wls" if="vendor.equals.bea">
+    <ant antfile="${dir.sde.bin}/app_runtimewls.xml" target="start" inheritAll="false">
+      <property name="fail.on.error" value="${appserver.failonerror}" />
+      <property name="wls.home" value="${WLS_HOME}" />
+      <property name="CURAMSDEJ" value="${sysenv.CURAMSDEJ}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+    </ant>
+  </target>
+
+  <!--  *******************************************  -->
+  <!--  ***  Start Generic Search Server (GSS)  ***  -->
+  <!--  *******************************************  -->
+  <target name="start.gss" if="gss.start">
+    <antcall target="startupSearchServer" />
+  </target>
+
+  <!--  ************************************  -->
+  <!--  ***  Stop an application server  ***  -->
+  <!--  ************************************  -->
+  <target name="stopserver" depends="runtime.init" description="Stops an application server(use -Dserver.name=)">
+    <antcall target="stop.was" />
+    <antcall target="stop.wlp" />
+    <antcall target="stop.wls" />
+  </target>
+
+  <target name="stop.was" if="vendor.equals.ibm">
+    <ant antfile="${dir.sde.bin}/app_runtimewas.xml" target="stop" inheritAll="false">
+      <property name="fail.on.error" value="${appserver.failonerror}" />
+      <property name="was.home" value="${WAS_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+    </ant>
+  </target>
+
+  <target name="stop.wlp" if="vendor.equals.wlp">
+    <ant antfile="${dir.sde.bin}/app_runtimewlp.xml" target="stop" inheritAll="false">
+      <property name="fail.on.error" value="${appserver.failonerror}" />
+      <property name="wlp.home" value="${WLP_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+    </ant>
+  </target>
+
+  <target name="stop.wls" if="vendor.equals.bea">
+    <ant antfile="${dir.sde.bin}/app_runtimewls.xml" target="stop" inheritAll="false">
+      <property name="fail.on.error" value="${appserver.failonerror}" />
+      <property name="wls.home" value="${WLS_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+    </ant>
+  </target>
+
+
+  <!--  ***************************************  -->
+  <!--  ***  Restart an application server  ***  -->
+  <!--  ***************************************  -->
+  <target name="restartserver" depends="runtime.init" description="Restarts an application server (use -Dserver.name=)">
+    <antcall target="restart.was" />
+    <antcall target="restart.wlp" />
+    <antcall target="restart.wls" />
+    <!-- This stops and starts all the running gss instances -->
+    <antcall target="start.gss" />
+  </target>
+
+  <target name="restart.was" if="vendor.equals.ibm">
+    <ant antfile="${dir.sde.bin}/app_runtimewas.xml" target="restart" inheritAll="false">
+      <property name="was.home" value="${WAS_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+    </ant>
+  </target>
+
+  <target name="restart.wlp" if="vendor.equals.wlp">
+    <ant antfile="${dir.sde.bin}/app_runtimewlp.xml" target="restart" inheritAll="false">
+      <property name="wlp.home" value="${WLP_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+    </ant>
+  </target>
+
+  <target name="restart.wls" if="vendor.equals.bea">
+    <ant antfile="${dir.sde.bin}/app_runtimewls.xml" target="restart" inheritAll="false">
+      <property name="wls.home" value="${WLS_HOME}" />
+      <property name="CURAMSDEJ" value="${sysenv.CURAMSDEJ}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+    </ant>
+  </target>
+
+  <!--  ********************************  -->
+  <!--  ***  Install an application  ***  -->
+  <!--  ********************************  -->
+  <target name="installapp" depends="runtime.init, check.ear.file" description="Installs and starts an EJB application (use -Dserver.name= -Dear.file= -Dapplication.name=)">
+
+    <ant antfile="${dir.sde.bin}/app_init.xml" target="internal.verify.project.dir.path" inheritall="false">
+      <property name="dir.bld" value="${dir.bld}" />
+      <property name="crypto.prop.file.location" value="${crypto.prop.file.location}" />
+      <property name="crypto.jar.file" value="${crypto.jar.file}" />
+      <property name="crypto.ks.file" value="${crypto.ks.file}" />
+      <property name="crypto.prop.file" value="${crypto.prop.file}" />
+      <property name="crypto.ext.dir" value="${crypto.ext.dir}" />
+      <property name="crypto.jvm.vendor" value="${crypto.jvm.vendor}" />
+    </ant>
+
+    <ant antfile="${dir.sde.bin}/app_jwt.xml" target="internal.jwt.jar" />
+
+    <antcall target="install.was" />
+    <antcall target="install.wlp" />
+    <antcall target="install.wls" />
+  </target>
+
+  <target name="install.was" if="vendor.equals.ibm">
+    <antcall target="check.application.name" />
+
+    <taskdef name="antstring" classname="curam.util.tools.AntStrings" classpath="${jar.coreinf}:${jar.tools}" />
+    <antstring to="ear.replaced" oldchar="\" newchar="/" from="${ear.file}" type="replace" />
+
+    <ant antfile="${dir.sde.bin}/app_runtimewas.xml" target="install" inheritAll="false">
+      <property name="fail.on.error" value="true" />
+      <property name="was.home" value="${WAS_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+      <property name="ear" value="${ear.replaced}" />
+    </ant>
+  </target>
+
+  <target name="install.wlp" if="vendor.equals.wlp">
+    <antcall target="check.application.name" />
+
+    <taskdef name="antstring" classname="curam.util.tools.AntStrings" classpath="${jar.coreinf}:${jar.tools}" />
+    <antstring to="ear.replaced" oldchar="\" newchar="/" from="${ear.file}" type="replace" />
+
+    <ant antfile="${dir.sde.bin}/app_runtimewlp.xml" target="install" inheritAll="false">
+      <property name="fail.on.error" value="true" />
+      <property name="wlp.home" value="${WLP_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+      <property name="ear" value="${ear.replaced}" />
+    </ant>
+  </target>
+
+  <target name="install.wls" if="vendor.equals.bea">
+    <ant antfile="${dir.sde.bin}/app_runtimewls.xml" target="install" inheritAll="false">
+      <property name="fail.on.error" value="true" />
+      <property name="wls.home" value="${WLS_HOME}" />
+      <property name="CURAMSDEJ" value="${sysenv.CURAMSDEJ}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+    </ant>
+  </target>
+
+  
+  <!--  *********************************************  -->
+  <!--  ***     Configures web server plugin      ***  -->
+  <!--  *********************************************  -->
+  <target name="configurewebserverplugin" depends="runtime.init, check.server.name" description="Configures web server plugin (use -Dserver.name=)">
+
+    <ant antfile="${dir.sde.bin}/app_init.xml" target="internal.verify.project.dir.path" inheritall="false">
+      <property name="dir.bld" value="${dir.bld}" />
+      <property name="crypto.prop.file.location" value="${crypto.prop.file.location}" />
+      <property name="crypto.jar.file" value="${crypto.jar.file}" />
+      <property name="crypto.ks.file" value="${crypto.ks.file}" />
+      <property name="crypto.prop.file" value="${crypto.prop.file}" />
+      <property name="crypto.ext.dir" value="${crypto.ext.dir}" />
+      <property name="crypto.jvm.vendor" value="${crypto.jvm.vendor}" />
+    </ant>
+
+    <ant antfile="${dir.sde.bin}/app_jwt.xml"
+      target="internal.jwt.jar" />
+
+    <antcall target="configure.was.webserver.plugin" />
+    <antcall target="configure.wls.webserver.plugin" />
+    <antcall target="configure.wlp.webserver.plugin" />
+
+  </target>
+
+
+  <!--  ***********************************************************  -->
+  <!--  ***     Configures web server plugin for WebSphere      ***  -->
+  <!--  ***********************************************************  -->
+  <target name="configure.was.webserver.plugin" if="vendor.equals.ibm">
+
+    <!-- Check if server is running and show a message if it isn't -->
+    <ant antfile="${dir.sde.bin}/app_runtimewas.xml" target="server.not.running" inheritAll="false" />
+
+    <ant antfile="${dir.sde.bin}/app_runtimewas.xml" target="configure.webserver.plugin" inheritAll="false">
+      <property name="fail.on.error" value="true" />
+      <property name="was.home" value="${WAS_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+      <property name="ear" value="${ear.replaced}" />
+    </ant>
+
+  </target>
+
+
+  <!--  ***********************************************************  -->
+  <!--  ***     Configures web server plugin for Weblogic       ***  -->
+  <!--  ***********************************************************  -->
+  <target name="configure.wls.webserver.plugin" if="vendor.equals.bea">
+
+    <ant antfile="${dir.sde.bin}/app_runtimewls.xml" target="configure.webserver.plugin" inheritAll="false">
+      <property name="fail.on.error" value="true" />
+      <property name="wls.home" value="${WLS_HOME}" />
+      <property name="CURAMSDEJ" value="${sysenv.CURAMSDEJ}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+    </ant>
+
+  </target>
+
+  <!--  ***********************************************************  -->
+  <!--  ***     Configures web server plugin for Liberty        ***  -->
+  <!--  ***********************************************************  -->
+  <target name="configure.wlp.webserver.plugin" if="vendor.equals.wlp">
+
+    <ant antfile="${dir.sde.bin}/app_runtimewlp.xml" target="configure.webserver.plugin" inheritAll="false">
+      <property name="fail.on.error" value="true" />
+      <property name="wlp.home" value="${WLP_HOME}" />
+      <property name="CURAMSDEJ" value="${sysenv.CURAMSDEJ}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+    </ant>
+
+  </target>
+
+  
+  <!--  **********************************  -->
+  <!--  ***  Uninstall an application  ***  -->
+  <!--  **********************************  -->
+  <target name="uninstallapp" depends="runtime.init, check.application.name" description="Stops and uninstalls an EJB application  (use -Dserver.name= -Dapplication.name=)">
+    <antcall target="uninstall.was" />
+    <antcall target="uninstall.wlp" />
+    <antcall target="uninstall.wls" />
+  </target>
+
+  <target name="uninstall.was" if="vendor.equals.ibm">
+    <ant antfile="${dir.sde.bin}/app_runtimewas.xml" target="uninstall" inheritAll="false">
+      <property name="fail.on.error" value="true" />
+      <property name="was.home" value="${WAS_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+    </ant>
+  </target>
+
+  <target name="uninstall.wlp" if="vendor.equals.wlp">
+    <ant antfile="${dir.sde.bin}/app_runtimewlp.xml" target="uninstall" inheritAll="false">
+      <property name="fail.on.error" value="true" />
+      <property name="wlp.home" value="${WLP_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+    </ant>
+  </target>
+
+  <target name="uninstall.wls" if="vendor.equals.bea">
+    <ant antfile="${dir.sde.bin}/app_runtimewls.xml" target="uninstall" inheritAll="false">
+      <property name="fail.on.error" value="true" />
+      <property name="wls.home" value="${WLS_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+    </ant>
+  </target>
+
+
+  <!--  *****************************************  -->
+  <!--  ***  Configure an application server  ***  -->
+  <!--  *****************************************  -->
+  <target name="configure" depends="runtime.init, check.db.type" description="Automatically configures the application server">
+
+    <!-- Fail if the curam.db.type is setup for H2 -->
+    <fail if="usingh2" message="Application servers cannot be configured for usage with a H2 Database." />
+
+    <ant antfile="${dir.sde.bin}/app_init.xml" target="internal.verify.project.dir.path" inheritall="false">
+      <property name="dir.bld" value="${dir.bld}" />
+      <property name="crypto.prop.file.location" value="${crypto.prop.file.location}" />
+      <property name="crypto.jar.file" value="${crypto.jar.file}" />
+      <property name="crypto.ks.file" value="${crypto.ks.file}" />
+      <property name="crypto.prop.file" value="${crypto.prop.file}" />
+      <property name="crypto.ext.dir" value="${crypto.ext.dir}" />
+      <property name="crypto.jvm.vendor" value="${crypto.jvm.vendor}" />
+    </ant>
+    <ant antfile="${dir.sde.bin}/app_jwt.xml" target="internal.jwt.jar" />
+    <antcall target="xmlserver.generate.keystore" />
+    <antcall target="configure.was" />
+    <antcall target="configure.wlp" />
+    <antcall target="configure.wls" />
+  </target>
+
+  <target name="xmlserver.generate.keystore">
+    <ant antfile="${dir.sde.xmlserver}/xmlserver.xml" target="createkeystore">
+      <property file="${dir.sde.xmlserver}/TLSKeystore.properties"/>
+      <property name="config.xmlserver.path" value="${dir.sde.xmlserver}"/>
+    </ant>
+    <ant antfile="${dir.sde.xmlserver}/xmlserver.xml" target="exportcert">
+      <property file="${dir.sde.xmlserver}/TLSKeystore.properties"/>
+      <property name="config.xmlserver.path" value="${dir.sde.xmlserver}"/>
+    </ant>
+    <ant antfile="${dir.sde.xmlserver}/xmlserver.xml" target="importcert">
+      <property file="${dir.sde.xmlserver}/TLSKeystore.properties"/>
+      <property name="config.xmlserver.path" value="${dir.sde.xmlserver}"/>
+    </ant>
+  </target>
+
+  <target name="configure.was" if="vendor.equals.ibm">
+    <ant antfile="${dir.sde.bin}/app_runtimewas.xml" target="configure" inheritAll="false">
+      <property name="was.home" value="${WAS_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+      <property name="crypto.prop.file.location" value="${crypto.prop.file.location}" />
+    </ant>
+  </target>
+
+  <target name="configure.wlp" if="vendor.equals.wlp">
+    <ant antfile="${dir.sde.bin}/app_runtimewlp.xml" target="configure" inheritAll="false">
+      <property name="wlp.home" value="${WLP_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+      <property name="crypto.prop.file.location" value="${crypto.prop.file.location}" />
+    </ant>
+  </target>
+
+  <target name="configure.wls" if="vendor.equals.bea">
+    <ant antfile="${dir.sde.bin}/app_runtimewls.xml" target="configure" inheritAll="false">
+      <property name="wls.home" value="${WLS_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+      <property name="crypto.prop.file.location" value="${crypto.prop.file.location}" />
+    </ant>
+  </target>
+
+
+  <!--  *****************************  -->
+  <!--  ***  Precompile the JSPs  ***  -->
+  <!--  *****************************  -->
+  <!-- This target will always appear to have succeeded, even if it fails -->
+  <target name="precompilejsp" depends="runtime.init" description="Precompiles JSPs">
+    <antcall target="precompile.was" />
+    <antcall target="precompile.wlp" />
+    <antcall target="precompile.wls" />
+  </target>
+
+  <target name="precompile.was" if="vendor.equals.ibm">
+
+    <taskdef name="antstring" classname="curam.util.tools.AntStrings" classpath="${jar.coreinf}:${jar.tools}" />
+    <property name="ear.file.temp" location="${ear.file}" />
+    <antstring to="ear.flattened" from="${ear.file.temp}" type="flatten" />
+
+    <ant antfile="${dir.sde.bin}/app_runtimewas.xml" target="precompile" inheritAll="false">
+      <property name="fail.on.error" value="true" />
+      <property name="was.home" value="${WAS_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+      <property name="dir.bld" value="${dir.bld}" />
+      <property name="ear.file.name" value="${ear.flattened}" />
+    </ant>
+
+  </target>
+
+  <target name="precompile.wlp" if="vendor.equals.wlp">
+
+    <taskdef name="antstring" classname="curam.util.tools.AntStrings" classpath="${jar.coreinf}:${jar.tools}" />
+    <property name="ear.file.temp" location="${ear.file}" />
+    <antstring to="ear.flattened" from="${ear.file.temp}" type="flatten" />
+
+    <ant antfile="${dir.sde.bin}/app_runtimewlp.xml" target="precompile" inheritAll="false">
+      <property name="fail.on.error" value="true" />
+      <property name="wlp.home" value="${WLP_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+      <property name="dir.bld" value="${dir.bld}" />
+      <property name="ear.file.name" value="${ear.flattened}" />
+    </ant>
+
+  </target>
+
+  <target name="precompile.wls" if="vendor.equals.bea">
+    <ant antfile="${dir.sde.bin}/app_runtimewls.xml" target="precompile" inheritAll="false">
+      <property name="fail.on.error" value="true" />
+      <property name="wls.home" value="${WLS_HOME}" />
+      <property name="app.prop.location" value="${app.prop.location}" />
+      <property name="dir.bld" value="${dir.bld}" />
+    </ant>
+  </target>
+
+</project>

@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Copyright 2006-2010 Curam Software Ltd.
+All rights reserved.
+
+This software is the confidential and proprietary information of Curam
+Software, Ltd. ("Confidential Information"). You shall not disclose
+such Confidential Information and shall use it only in accordance with the
+terms of the license agreement you entered into with Curam Software.
+-->
+<!--
+Generates all the Eclipse project and plug-in configuration files for the
+component, so that it can be maintain as an Eclipse project. This depends on
+targets and definitions in the "build-component.xml" script which imports
+this script.
+
+The classpaths defined in a component project's "build-component.properties"
+are used to generate the Eclipse ".classpath" file. Eclipse only allows one
+classpath, so the classpaths defined by the properties "cp.compile.test" and
+"cp.boot.compile.test" are combined into one and used to create ".classpath".
+These two properties are assumed to include any necessary classes to compile
+the "main" and "test" source code. Typically, the "cp.compile.test" classpath
+is defined to extend "cp.compile", so this assumption should hold. If not,
+then rearrange the classpath definitions as required.
+
+The entries added to the ".classpath" file depend on the form of the entries
+in the classpath properties. There are several special cases handled for
+references to non-component-style projects in the JDE. See the targets below
+for details.
+
+Some support was added to allow projects to reference "linked resources".
+However, this tends to cause various strange errors in Eclipse and is probably
+best avoided.
+
+To run the tests, a run/launch configuration file is created named
+"RUN-TESTS-<project-name>.launch". Eclipse will recognize this file
+automatically and add it to the list of available run configurations. The
+classpath used in this this file comes from the properties "cp.run.test" and
+"cp.boot.run.test".
+
+Classes can be excluded from Checkstyle checking by defining the
+"checkstyle.eclipse.excludes" property to be a comma-separated list of
+Checkstyle exclusion patterns. These are regular expressions that are written
+to match the fully qualified names of the classes to be excluded. The supported
+regular expressions are dictated by Checkstyle. See the tool documentation for
+details.
+-->
+<project name="build.eclipse">
+  <!--
+  Generates all files.
+  -->
+
+  <target name="eclipse"
+          depends="diagnostics, -eclipse-classpath, -eclipse-project,
+                   -eclipse-launch"
+                   description="Generates configuration files for an Eclipse project.">
+    <if>
+      <isset property="dir.jde"/>
+      <then>
+         <antcall target="-eclipse-checkstyle"/>
+      </then>
+    </if>
+  </target>
+
+
+  <!--
+  Properties defining some temporary files that are used.
+  -->
+  <property name="fil.cp.refs"      value=".classpath-refs.tmp" />
+  <property name="fil.cp.jars"      value=".classpath-jars.tmp" />
+  <property name="fil.cp.srcs"      value=".classpath-srcs.tmp" />
+  <property name="fil.project.refs" value=".project-refs.tmp" />
+  <condition property="regex.separator" value="\\">
+	<os family="windows"/>
+  </condition>	
+  <property name="regex.separator"  value="/" />
+	
+	
+  <!--
+  The Eclipse classpath is used to build the main and test classes. It is
+  assumed here that the test classpaths include all of the entries in the
+  main classpath (a convention followed for all current components).
+
+  TODO: Check if duplicate entries are automatically eliminated. If so, then
+  we can add both sets of classpaths here for safety. [DG]
+  -->
+  <path id="cp.eclipse">
+    <pathelement path="${cp.compile.test}" />
+    <pathelement path="${cp.boot.compile.test}" />
+  </path>
+
+  <!-- =================================================================== -->
+  <!-- =================== C L A S S P A T H   F I L E =================== -->
+  <!-- =================================================================== -->
+  <!--
+  Generate the ".classpath" file from the test compile classpath and test
+  compile boot classpath. This assumes that the test classpaths combine to
+  become a superset of the main classpaths. The generated ".classpath" file is
+  not deleted by the "clean" target.
+
+  There are three main constituents of the ".classpath" file:
+
+  1. The boilerplate entries that are added to every classpath such as the
+     default JRE, JUnit, and the "src/main/java", "src/main/resources",
+     "src/test/java" and "src/test/resources" directories and their
+     associated output directories for compiled class files.
+
+  2. The entries for all of the referenced JAR files (or, strictly, everything
+     that is not a "classes" directory).
+
+  3. The entries for all of the referenced "classes" directories.
+
+  The classpath definitions for the component mix the JAR files and the
+  "classes" directories together, so they must be separated here. A "classes"
+  directory cannot be added directly to the classpath, as that is not supported
+  by the Eclipse JDT and will result in errors that prevent builds from
+  completing. These directories must first be defined in the ".project" file as
+  externally linked resources. These resources are given a name and that named
+  resource may then be referenced in an entry in the ".classpath" file.
+  -->
+  <target name="-eclipse-classpath" depends="-cp-entries">
+    <loadfile property="cp.srcs" srcfile="${fil.cp.srcs}"/>
+    <loadfile property="cp.jars" srcfile="${fil.cp.jars}"/>
+    <loadfile property="cp.refs" srcfile="${fil.cp.refs}"/>
+    <echo message="Generating Eclipse '.classpath' file..." />
+    <echo file=".classpath"><![CDATA[<classpath>
+${cp.srcs}
+${cp.jars}
+${cp.refs}
+  <classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+</classpath>]]></echo>
+    <delete file="${fil.cp.srcs}" />
+    <delete file="${fil.cp.jars}" />
+    <delete file="${fil.cp.refs}" />
+  </target>
+
+  <!--
+  Generate one temporary file containing the classpath entries that specify
+  JAR files and another temporary file containing the classpath entries that
+  reference external directories via linked resources in the ".project" file.
+  -->
+  <target name="-cp-entries" depends="-cp-src-entries">
+    <echo message="" file="${fil.cp.jars}" />
+    <echo message="" file="${fil.cp.refs}" />
+    <for param="cp.entry">
+      <path refid="cp.eclipse"/>
+      <!--
+      When generating entries for linked resources, it is assumed that all such
+      resources have paths that match one of the following:
+
+       <some-path>/<project-name>/build/classes
+       <some-path>/<component-name>/target/classes
+       <some-path>/build/class/clientdep
+
+      The third last path step is assumed to be a unique name for this linked
+      resource, as it is assumed to follow the conventions for other CDEJ
+      old-style projects or new-style component projects except for the last
+      pattern, which relates to special handling for the dependency on the SDEJ.
+      -->
+      <sequential>
+        <propertyregex property="normalized.path" input="@{cp.entry}"
+                       regexp="${regex.separator}" replace="/" global="true" override="true"/>
+        <propertyregex property="last.folder" input="${normalized.path}"
+                       regexp="[^\/]+$" select="\0" override="true"/>
+        <propertyregex property="second.last.folder" input="${normalized.path}"
+                       regexp="([^\/]+)/([^\/]+)$" select="\1" override="true"/>
+        <propertyregex property="third.last.folder" input="${normalized.path}"
+                       regexp="([^\/]+)/([^\/]+)/([^\/]+)$" select="\1"
+                       override="true"/>
+      	
+        <if>
+          <equals arg1="${second.last.folder}" arg2="target"/>
+          <then>
+            <!--
+            New-style component. Easy to set this up in Eclipse as a simple
+            project reference. Only "target/classes" will be allowed. If
+            "target/test-classes" is encountered, it will be ignored, as we
+            do not want a duplicated project reference. If on the test code
+            is required, then no project reference will be added. Tough.
+            -->
+            <if>
+              <equals arg1="${last.folder}" arg2="classes"/>
+              <then>
+                <echo append="true" file="${fil.cp.refs}"><![CDATA[
+  <classpathentry kind="src" path="/${third.last.folder}"/>]]></echo>
+              </then>
+            </if>
+          </then>
+          <elseif>
+            <!-- Special handling for CDEJ "CoreInf" Eclipse project. -->
+            <equals arg1="${third.last.folder}" arg2="CoreInf"/>
+            <then>
+              <echo append="true" file="${fil.cp.refs}"><![CDATA[
+  <classpathentry kind="src" path="/CoreInf"/>]]></echo>
+            </then>
+          </elseif>
+          <elseif>
+            <!-- Special handling for "JDECommons" Eclipse project. -->
+            <equals arg1="${third.last.folder}" arg2="jde-commons-core"/>
+            <then>
+              <echo append="true" file="${fil.cp.refs}"><![CDATA[
+  <classpathentry kind="src" path="/JDECommons"/>]]></echo>
+            </then>
+          </elseif>
+          <elseif>
+            <equals arg1="${last.folder}" arg2="clientdep"/>
+            <then>
+              <echo append="true" file="${fil.cp.refs}"><![CDATA[
+  <classpathentry kind="lib" path="clientdep"/>]]></echo>
+            </then>
+          </elseif>
+          <elseif>
+            <not>
+              <matches pattern="\.jar$" string="@{cp.entry}"/>
+            </not>
+            <then>
+              <!-- It is not just a JAR file, so we cannot handle it. -->
+              <fail message="Cannot add classpath entry for '@{cp.entry}'."/>
+            </then>
+          </elseif>
+          <else>
+            <echo append="true" file="${fil.cp.jars}"><![CDATA[
+  <classpathentry kind="lib" path="${normalized.path}"/>]]></echo>
+          </else>
+        </if>
+      </sequential>
+    </for>
+  </target>
+
+  <!--
+  Generate a temporary file containing the classpath entries that specify the
+  input source directories and output locations for each. Only generate the
+  entries if the directories exist.
+  -->
+  <target name="-cp-src-entries">
+    <echo message="" file="${fil.cp.srcs}"/>
+    <if>
+      <isset property="has.main.java"/>
+      <then>
+        <echo append="true" file="${fil.cp.srcs}"><![CDATA[
+  <classpathentry kind="src" path="${dir.src.main}/java" output="${dir.cls.main}"/>]]></echo>
+      </then>
+    </if>
+    <if>
+      <isset property="has.main.resources"/>
+      <then>
+        <echo append="true" file="${fil.cp.srcs}"><![CDATA[
+  <classpathentry kind="src" path="${dir.src.main}/resources" output="${dir.cls.main}"/>]]></echo>
+      </then>
+    </if>
+    <if>
+      <isset property="has.test.java"/>
+      <then>
+        <echo append="true" file="${fil.cp.srcs}"><![CDATA[
+  <classpathentry kind="src" path="${dir.src.test}/java" output="${dir.cls.test}"/>]]></echo>
+      </then>
+    </if>
+    <if>
+      <isset property="has.test.resources"/>
+      <then>
+        <echo append="true" file="${fil.cp.srcs}"><![CDATA[
+  <classpathentry kind="src" path="${dir.src.test}/resources" output="${dir.cls.test}"/>]]></echo>
+      </then>
+    </if>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- ===================== P R O J E C T   F I L E ===================== -->
+  <!-- =================================================================== -->
+  <!--
+  Generate the ".project" file. The generated ".project" file is not deleted
+  by the "clean" target.
+  -->
+  <target name="-eclipse-project" depends="-link-resources">
+    <echo message="Generating Eclipse '.project' file..." />
+    <loadfile property="resource.links" srcfile="${fil.project.refs}" />
+
+    <!-- Load additional natures specified by the project in additional-natures.xml file
+         By default there are no extra natures. -->
+    <loadfile property="loaded.natures" srcfile="./additional-natures.xml" failonerror="false" />
+    <if>
+     <isset property="loaded.natures" />
+     <then>
+       <property name="project.natures" value="${loaded.natures}" />
+     </then>
+     <else>
+       <property name="project.natures" value="" />
+     </else>
+    </if>
+
+    <!-- Load additional build commands specified by the project in additional-build-commands.xml file
+         By default there are no extra build commands. -->
+    <loadfile property="loaded.commands" srcfile="./additional-build-commands.xml" failonerror="false" />
+    <if>
+     <isset property="loaded.commands" />
+     <then>
+       <property name="project.build.commands" value="${loaded.commands}" />
+     </then>
+     <else>
+       <property name="project.build.commands" value="" />
+     </else>
+    </if>
+
+<if>
+ <isset property="dir.jde"/>
+ <then>
+    <echo file=".project"><![CDATA[
+  <projectDescription>
+    <name>${ant.project.name}</name>
+    <comment></comment>
+    <projects></projects>
+    <buildSpec>
+      <buildCommand>
+        <name>org.eclipse.jdt.core.javabuilder</name>
+        <arguments></arguments>
+      </buildCommand>
+      <buildCommand>
+        <name>net.sf.eclipsecs.core.CheckstyleBuilder</name>
+        <arguments></arguments>
+      </buildCommand>
+      ${project.build.commands}
+    </buildSpec>
+    <natures>
+      <nature>org.eclipse.jdt.core.javanature</nature>
+      <nature>net.sf.eclipsecs.core.CheckstyleNature</nature>
+      ${project.natures}
+    </natures>
+    <linkedResources>
+  ${resource.links}
+    </linkedResources>
+  </projectDescription>]]>
+    </echo>
+ </then>
+ <else>
+    <echo file=".project"><![CDATA[
+  <projectDescription>
+    <name>${ant.project.name}</name>
+    <comment></comment>
+    <projects></projects>
+    <buildSpec>
+      <buildCommand>
+        <name>org.eclipse.jdt.core.javabuilder</name>
+        <arguments></arguments>
+      </buildCommand>
+      ${project.build.commands}
+    </buildSpec>
+    <natures>
+      <nature>org.eclipse.jdt.core.javanature</nature>
+      ${project.natures}
+    </natures>
+    <linkedResources>
+  ${resource.links}
+    </linkedResources>
+  </projectDescription>]]>
+    </echo>
+ </else>
+</if>
+
+    <delete file="${fil.project.refs}" />
+  </target>
+
+  <target name="-link-resources">
+    <echo message="" file="${fil.project.refs}" />
+    <for param="resource.path">
+      <path refid="cp.eclipse"/>
+      <sequential>
+        <propertyregex property="normalized.path" input="@{resource.path}"
+                       regexp="${regex.separator}" replace="/" global="true" override="true"/>
+        <propertyregex property="last.folder" input="${normalized.path}"
+                       regexp="[^\/]+$" select="\0" override="true"/>
+        <propertyregex property="second.last.folder" input="${normalized.path}"
+                       regexp="([^\/]+)/([^\/]+)$" select="\1" override="true"/>
+        <propertyregex property="third.last.folder" input="${normalized.path}"
+                       regexp="([^\/]+)\/([^\/]+)\/([^\/]+)$" select="\1"
+                       override="true"/>
+
+        <if>
+          <or>
+            <equals arg1="${second.last.folder}" arg2="target"/>
+            <equals arg1="${third.last.folder}" arg2="CoreInf"/>
+            <equals arg1="${third.last.folder}" arg2="jde-commons-core"/>
+          </or>
+          <then>
+            <!--
+            Ignore new-style components. We can set them up easily without
+            special external project links, as the project name is always the
+            same as the folder name. Also ignore CDEJ "CoreInf" project and
+            "JDECommons" project. Special handling elsewhere.
+            -->
+          </then>
+          <elseif>
+            <equals arg1="${last.folder}" arg2="clientdep" />
+            <then>
+              <echo append="true" file="${fil.project.refs}"><![CDATA[
+    <link>
+      <name>clientdep</name>
+      <type>2</type>
+      <location>${normalized.path}</location>
+    </link>]]></echo>
+            </then>
+          </elseif>
+          <elseif>
+            <not>
+              <matches pattern="\.jar$" string="@{resource.path}"/>
+            </not>
+            <then>
+              <!-- It is not just a JAR file, so we cannot handle it. -->
+              <fail
+                message="Cannot add project reference for '@{resource.path}'."/>
+            </then>
+          </elseif>
+        </if>
+      </sequential>
+    </for>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- ========= C H E C K S T Y L E   C O N F I G U R A T I O N ========= -->
+  <!-- =================================================================== -->
+  <!--
+  Generate the ".checkstyle" file configuring the Checkstyle plug-in for this
+  component. The generated ".checkstyle" file is not deleted by the "clean"
+  target. This configuration is a "local" configuration for the project; this
+  is more reliable, as it is not dependent on the correctness of any of the
+  manually-defined "global" Checkstyle configurations in Eclipse.
+
+  The "checkstyle.eclipse.excludes" property can be set for a project that
+  needs to exclude files from the Checkstyle checks. The only recommended use
+  of this is to avoid problems caused by bugs in Checkstyle (such as its
+  inability to handle exception types declared as generics).
+  -->
+  <target name="-eclipse-checkstyle">
+    <echo message="Generating Eclipse '.checkstyle' file..." />
+    <echo file=".checkstyle"><![CDATA[<fileset-config
+    file-format-version="1.2.0" simple-config="false">
+  <local-check-config name="${ant.project.name}-checks" type="project"
+      location="/Tooling/checkstyle_client_checks.xml"
+      description="Configuration generated for ${ant.project.name}">
+    <additional-data name="protect-config-file" value="true"/>
+  </local-check-config>
+  <fileset name="${ant.project.name}-checks" enabled="true"
+           check-config-name="${ant.project.name}-checks" local="true">
+    <file-match-pattern match-pattern=".java$" include-pattern="true"/>]]></echo>
+    <if>
+      <isset property="checkstyle.eclipse.excludes"/>
+      <then>
+        <for param="cs.exclude" list="${checkstyle.eclipse.excludes}"
+             trim="true">
+          <sequential>
+            <echo file=".checkstyle" append="true"><![CDATA[
+    <file-match-pattern match-pattern="@{cs.exclude}" include-pattern="false"/>]]></echo>
+          </sequential>
+        </for>
+      </then>
+    </if>
+    <echo file=".checkstyle" append="true"><![CDATA[
+  </fileset>
+  <filter name="NonSrcDirs" enabled="true"/>
+</fileset-config>]]></echo>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- ================= U N I T   T E S T   L A U N C H ================= -->
+  <!-- =================================================================== -->
+  <!--
+  Generates an Eclipse launch configuration file for the component's test
+  suite.
+  -->
+  <target name="-eclipse-launch">
+    <!--
+    In the launch file, the path entries have a "type" of "2" to indicate that
+    they are class archives (JAR files or directories) and a "path" of "2" if
+    the entry is on the boot classpath and "3" if it is on the system
+    classpath.
+    -->
+
+
+       <path id="cp.boot.launch">
+         <pathelement path="${cp.boot.run.test}" />
+       </path>
+
+
+
+
+    <pathconvert property="cp.boot.launch.string" refid="cp.boot.launch"
+      dirsep="/" pathsep="&amp;quot;/&amp;gt;&quot;/&gt;&#10;    &lt;listEntry value=&quot;&amp;lt;runtimeClasspathEntry type=&amp;quot;2&amp;quot; path=&amp;quot;2&amp;quot; externalArchive=&amp;quot;" />
+
+    <path id="cp.launch">
+      <pathelement path="${cp.run.test}" />
+    </path>
+    <pathconvert property="cp.launch.string" refid="cp.launch" dirsep="/"
+      pathsep="&amp;quot;/&amp;gt;&quot;/&gt;&#10;    &lt;listEntry value=&quot;&amp;lt;runtimeClasspathEntry type=&amp;quot;2&amp;quot; path=&amp;quot;3&amp;quot; externalArchive=&amp;quot;" />
+
+    <echo message="Generating Eclipse test suite launch file..." />
+
+
+    <echo file="RUN-TESTS-${ant.project.name}.launch"><![CDATA[
+<launchConfiguration type="org.eclipse.jdt.junit.launchconfig">
+  <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR"
+    value="${ant.project.name}"/>
+  <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE"
+    value="${test.suite}"/>
+  <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY"
+    value="${basedir}"/>
+
+  <listAttribute key="org.eclipse.jdt.launching.CLASSPATH">
+  ]]>
+  </echo>
+
+<if>
+ <isset property="dir.jde"/>
+ <then>
+   <echo file="RUN-TESTS-${ant.project.name}.launch" append="true"><![CDATA[
+       <listEntry value="&lt;runtimeClasspathEntry type=&quot;2&quot; path=&quot;2&quot; externalArchive=&quot;${cp.boot.launch.string}&quot;/&gt;"/>
+   ]]>
+   </echo>
+ </then>
+</if>
+
+
+  <echo file="RUN-TESTS-${ant.project.name}.launch" append="true"><![CDATA[
+
+    <listEntry value="&lt;runtimeClasspathEntry type=&quot;4&quot; path=&quot;1&quot; containerPath=&quot;org.eclipse.jdt.launching.JRE_CONTAINER&quot;/&gt;&#10;"/>
+    <listEntry value="&lt;runtimeClasspathEntry type=&quot;3&quot; path=&quot;2&quot; containerPath=&quot;JUNIT_HOME/junit.jar&quot;/&gt;&#10;"/>
+
+    <listEntry value="&lt;runtimeClasspathEntry type=&quot;2&quot; path=&quot;3&quot; externalArchive=&quot;${cp.launch.string}&quot;/&gt;"/>
+
+    <listEntry value="&lt;runtimeClasspathEntry type=&quot;1&quot; path=&quot;3&quot; projectName=&quot;${ant.project.name}&quot;/&gt;&#10;"/>
+
+  </listAttribute>
+
+  <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+    <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
+  </listAttribute>
+  <booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables"
+    value="true"/>
+  <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR"
+    value="false"/>
+  <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH"
+    value="false"/>
+  <stringAttribute key="org.eclipse.jdt.junit.TESTNAME" value=""/>
+  <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value=""/>
+</launchConfiguration>]]>
+    </echo>
+  </target>
+
+</project>

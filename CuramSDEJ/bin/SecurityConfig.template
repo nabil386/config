@@ -1,0 +1,91 @@
+#/*
+# * Licensed Materials - Property of IBM
+# *
+# * PID 5725-H26
+# *
+# * Copyright IBM Corporation 2012,2016. All rights reserved.
+# *
+# * US Government Users Restricted Rights - Use, duplication or disclosure
+# * restricted by GSA ADP Schedule Contract with IBM Corp.
+# */
+
+Interactive=false
+
+################################################################
+# Global Security Panel
+################################################################
+enabled=true
+enforceJava2Security=false
+useDomainQualifiedUserNames=false
+issuePermissionWarning=true
+activeProtocol=BOTH
+activeAuthMechanism=LTPA
+platform=!PLATFORM!
+useZosSAFSecurity=!SECSAF!
+
+################################################################
+# LTPA Panel - timeout needs to be greater than web session timeout
+################################################################
+LTPAPassword=!SECPASSWORD!
+
+################################################################
+# Single Signon Panel
+################################################################
+# Interoperability on this panel determines whether old 
+# LtpaToken and newer LtpaToken2 cookies are supported; 
+# false indicates only LtpaToken2 is supported.
+LTPAInteroperability=false
+SingleSignOnLtpaToken2login=false
+
+################################################################
+# Admin Login Details
+################################################################
+AdminUsername=!SECUSER!
+AdminPassword=!SECPASSWORD!
+
+###############################################################
+# J2C Authentication Data Panel
+###############################################################
+j2cAlias=!DBALIAS!
+j2cUserid=!DBUSER!
+j2cPassword=!DBPASSWORD!
+j2cDescription=J2C authentication alias
+
+###############################################################
+# JAAS Application Login Panel
+###############################################################
+loginTrace=!LOGINTRACE!
+checkIdentityOnly=!IDENTITYONLY!
+userRegistryEnabled=!REGISTRYENABLED!
+# Note: The us of either of the following two properties, overrides the functionality of userRegistryEnabled.
+userRegistryEnabledTypes=!REGISTRYENABLEDTYPES!
+userRegistryDisabledTypes=!REGISTRYDISABLEDTYPES!
+loginModuleClassName=com.ibm.ws.security.common.auth.module.proxy.WSLoginModuleProxy
+loginModuleAuthStrategy=REQUIRED
+curamLoginModule=curam.util.security.CuramLoginModule
+ltpaLoginModule=com.ibm.ws.security.server.lm.ltpaLoginModule
+wsMapDefaultInboundLoginModule=com.ibm.ws.security.server.lm.wsMapDefaultInboundLoginModule
+usernameDelimiter=!DELIMITER!
+
+###############################################################
+# Security Custom Properties
+###############################################################
+servlet24Compliance=com.ibm.ws.security.web.logoutOnHTTPSessionExpire
+
+###############################################################
+# Cookie Settings - Need to disable HttpOnly attribute JSESSIONID cookie
+###############################################################
+cookieName=JSESSIONID
+cookieMaxAge=-1
+cookieDomain=
+cookiePath=/
+cookieSecure=false
+cookieHttpOnly=false
+cookieUseContextRootAsPath=false
+
+################################################################
+# SSL / TLS 1.2 Settings
+################################################################
+defaultNodeAlias=NodeDefaultSSLSettings
+sslProtocol=TLSv1.2
+securityLevel=HIGH

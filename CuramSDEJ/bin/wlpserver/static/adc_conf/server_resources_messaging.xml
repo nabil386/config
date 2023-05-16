@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2020. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<server description="Server Messaging (JMS) Resource Configuration">
+    <messagingEngine>
+        <queue id="QN.DPEnactment"
+            exceptionDestination = "QN.DPError" />
+        <queue id="QN.DPError"
+            exceptionDestination = "QN.CuramDeadMessageQueue" />
+        <queue id="QN.WorkflowEnactment"
+            exceptionDestination = "QN.WorkflowError" />
+        <queue id="QN.WorkflowActivity"
+            exceptionDestination = "QN.WorkflowError" />
+        <queue id="QN.WorkflowError"
+            exceptionDestination = "QN.CuramDeadMessageQueue" />
+        <queue id="QN.CuramDeadMessageQueue" />
+        <topicSpace id="Default.Topic.Space"
+            forceReliability="ReliablePersistent"
+            failedDeliveryPolicy="KEEP_TRYING"
+            maxRedeliveryCount="5"
+            maintainStrictOrder="true"
+            maxMessageDepth="5000" />
+    </messagingEngine>
+
+    <jmsActivationSpec id="eis/DPEnactmentAS">
+        <properties.wasJms destinationType="javax.jms.Queue"
+            busName="CuramBus" />
+        <properties.wasJms destinationRef="DPEnactment"
+            subscriptionDurability="DurableShared" />
+    </jmsActivationSpec>
+    <jmsQueue id="DPEnactment" jndiName="jms/DPEnactment">
+        <properties.wasJms deliveryMode="Persistent"
+            queueName="QN.DPEnactment" />
+    </jmsQueue>
+
+    <jmsActivationSpec id="eis/DPErrorAS">
+        <properties.wasJms destinationType="javax.jms.Queue"
+            busName="CuramBus" />
+        <properties.wasJms destinationRef="DPError"
+            subscriptionDurability="DurableShared" />
+    </jmsActivationSpec>
+    <jmsQueue id="DPError" jndiName="jms/DPError">
+        <properties.wasJms deliveryMode="Persistent"
+            queueName="QN.DPError" />
+    </jmsQueue>
+
+    <jmsActivationSpec id="eis/WorkflowEnactmentAS">
+        <properties.wasJms destinationType="javax.jms.Queue"
+            busName="CuramBus" />
+        <properties.wasJms destinationRef="WorkflowEnactment"
+            subscriptionDurability="DurableShared" />
+    </jmsActivationSpec>
+    <jmsQueue id="WorkflowEnactment" jndiName="jms/WorkflowEnactment">
+        <properties.wasJms deliveryMode="Persistent"
+            queueName="QN.WorkflowEnactment" />
+    </jmsQueue>
+
+    <jmsActivationSpec id="eis/WorkflowActivityAS">
+        <properties.wasJms destinationType="javax.jms.Queue"
+            busName="CuramBus" />
+        <properties.wasJms destinationRef="WorkflowActivity"
+            subscriptionDurability="DurableShared" />
+    </jmsActivationSpec>
+    <jmsQueue id="WorkflowActivity" jndiName="jms/WorkflowActivity">
+        <properties.wasJms deliveryMode="Persistent"
+            queueName="QN.WorkflowActivity" />
+    </jmsQueue>
+
+    <jmsActivationSpec id="eis/WorkflowErrorAS">
+        <properties.wasJms destinationType="javax.jms.Queue"
+            busName="CuramBus" />
+        <properties.wasJms destinationRef="WorkflowError"
+            subscriptionDurability="DurableShared" />
+    </jmsActivationSpec>
+    <jmsQueue id="WorkflowError" jndiName="jms/WorkflowError">
+        <properties.wasJms deliveryMode="Persistent"
+            queueName="QN.WorkflowError" />
+    </jmsQueue>
+
+    <jmsActivationSpec id="eis/CuramDeadMessageQueueAS">
+        <properties.wasJms destinationType="javax.jms.Queue"
+            busName="CuramBus" />
+        <properties.wasJms destinationRef="CuramDeadMessageQueue"
+            subscriptionDurability="DurableShared" />
+    </jmsActivationSpec>
+    <jmsQueue id="CuramDeadMessageQueue" jndiName="jms/CuramDeadMessageQueue">
+        <properties.wasJms deliveryMode="Persistent"
+            queueName="QN.CuramDeadMessageQueue" />
+    </jmsQueue>
+
+    <jmsConnectionFactory id="CuramQueueConnectionFactory"
+        jndiName="jms/CuramQueueConnectionFactory">
+        <properties.wasJms busName="CuramBus" />
+    </jmsConnectionFactory>
+
+    <jmsActivationSpec id="eis/CuramCacheInvalidationTopicAS">
+        <properties.wasJms destinationType="javax.jms.Topic"
+            busName="CuramBus" />
+        <properties.wasJms destinationRef="CuramCacheInvalidationTopic" />
+    </jmsActivationSpec>
+    <jmsActivationSpec id="Curam/InvalidationModule/CuramCacheInvalidationTopicMDB">
+        <properties.wasJms destinationType="javax.jms.Topic"
+            busName="CuramBus" />
+        <properties.wasJms destinationRef="CuramCacheInvalidationTopic" />
+    </jmsActivationSpec>
+    <jmsTopic id="CuramCacheInvalidationTopic" jndiName="jms/CuramCacheInvalidationTopic">
+        <properties.wasJms deliveryMode="NonPersistent"
+            topicName="CuramCacheInvalidationTopic" />
+    </jmsTopic>
+    <jmsConnectionFactory id="CuramTopicConnectionFactory"
+        jndiName="jms/CuramTopicConnectionFactory">
+        <properties.wasJms busName="CuramBus" />
+    </jmsConnectionFactory>
+
+</server>

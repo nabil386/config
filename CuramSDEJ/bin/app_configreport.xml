@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant file for creating a Configuration report for sending to IBM Corporation.
+
+-->
+<project name="app_configreport" default="main">
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="./app_properties.xml" />
+    
+  <!-- App server specific properties -->
+  <property file="${app.prop.location}"/>
+
+
+  <property name="curam.dir"              value="${sysenv.CURAM_DIR}" />
+  <property name="installer.dir"          location="${sysenv.CURAM_DIR}/Installer" />
+  
+  <property name="dir.bld.log.config"     value="${dir.bld.log}/config"/>
+  <property name="dir.bld.log.config.envsettings"     value="${dir.bld.log.config}/EnvSettings" />
+  <property name="dir.bld.log.appserver"  Value="${dir.bld.log}/appserverlogstmp" />
+  <property name="dir.bld.log.installer"  Value="${dir.bld.log}/Installerlogstmp" />
+
+  <property name="app.prop.file"          value="AppServer.properties"/>
+  <property name="app.prop.location"      value="${prop.file.location}/${app.prop.file}"/>
+  
+  
+  <!--  *****************************************  -->
+  <!--  ***    C O N F I G   R E P O R T E R  ***  -->
+  <!--  *****************************************  -->
+  <target name="main" description="Start the Config Reporter">
+
+    <!-- Set the starting time stamp for use in file names -->
+    <tstamp><format property="tim.start.sort" pattern="yyyyMMddHHmmss"/></tstamp>
+
+    
+    <!-- Start recording progress to a log file -->
+    <delete file="${base.dir}/config_report.zip"/>
+    <delete dir="${dir.bld.log.config}"/>
+
+    <mkdir dir="${dir.bld.log.config}"/>
+    <mkdir dir="${dir.bld.log.config.envsettings}"/>
+    <mkdir dir="${dir.bld.log.appserver}"/>
+    <mkdir dir="${dir.bld.log.installer}"/>
+
+    <record name="${dir.bld.log.config}/ConfigReporter${tim.start.sort}.log" loglevel="info" />
+
+    <!-- Run the configtest target -->
+    <antcall target="run.config.test" />
+
+    <!-- Get a copy of the app server logs -->
+    <antcall target="get.appserver.logs" />
+    
+    <!-- Get a copy of the Installer logs -->
+    <antcall target="get.installer.logs"/>
+
+    <!-- Get environment variable settings -->
+    <echoproperties destfile="${dir.bld.log.config.envsettings}/EnvSettings.log" />
+    <antcall target="get.env.settings"/>
+
+
+    <zip destfile="${base.dir}/config_report.zip"
+         encoding="UTF-8">
+      <zipfileset dir="${dir.bld.log.config}" prefix="config" />
+      <zipfileset dir="${prop.file.location}"
+        includes="*.properties" prefix="properties"/>
+      <zipfileset dir="${dir.bld.log.appserver}" prefix="appserverlogs" />
+      <zipfileset dir="${dir.bld.log.installer}" prefix="Installerlogs" />
+      <zipfileset dir="${dir.project.config}" includes="deployment_packaging.xml"/>
+    </zip>
+   
+    <delete dir="${dir.bld.log.appserver}"/>
+    <delete dir="${dir.bld.log.installer}"/>
+    
+    <record name="${dir.bld.log.config}/ConfigReporter${tim.start.sort}.log" action="stop" />
+
+    <echo>A config_report.zip has been created in your current directory</echo>
+    
+  </target>
+  
+  
+  
+  
+  <!--  *************************************************  -->
+  <!--  ***  A P P S E R V E R . F I L E . C H E C K  ***  -->
+  <!--  *************************************************  -->
+  <target name="check.appserver.prop.file">
+    <!-- Check whether an appserver property file exists -->
+    <available property="appserver.prop.file.available" file="${app.prop.location}"/>
+  </target>
+  
+
+  <!--  *************************************************  -->
+  <!--  ***  G E T . A P P S E R V E R . L O G S      ***  -->
+  <!--  *************************************************  -->  
+  <target name="get.appserver.logs" description="Get logs for the Appserver, if they exist"
+    depends="check.appserver.prop.file" if="appserver.prop.file.available" >
+    
+    <property name="appserver.vendor"       value="${as.vendor}"/>
+    
+    <!-- Check whether an appserver is IBM websphere or BEA weblogic -->
+    <condition property="usingwas">
+      <contains string="${as.vendor}" substring="IBM" casesensitive="No"/>
+    </condition>
+
+    <condition property="usingwls">
+       <contains string="${as.vendor}" substring="BEA" casesensitive="No"/>
+    </condition>
+    
+    <antcall target="get.websphere.logs"/>
+    <antcall target="get.weblogic.logs"/>
+  
+  </target>
+  
+  
+
+  <!--  *************************************************  -->
+  <!--  ***  W E B S P H E R E . L O G S  ***  -->
+  <!--  *************************************************  -->   
+  <target name="get.websphere.logs" if="usingwas">
+    
+    <!-- Default profile name is AppSrv01, if this property has not been set in AppServer.properties -->
+    <property name="profile.name"           value="AppSrv01"/>
+    <property name="waslogs.dir"            location="${WAS_HOME}/profiles/${profile.name}/logs"/>
+  
+    <copy todir="${dir.bld.log.appserver}/was" failOnError="false">
+      <fileset dir="${waslogs.dir}" includes="**/*"/>
+    </copy>
+       
+  </target>
+
+  
+  <!--  *************************************************  -->
+  <!--  ***  W E B L O G I C . L O G S  ***  -->
+  <!--  *************************************************  -->    
+  <target name="get.weblogic.logs" if="usingwls">
+
+    <property name="wls.domain.home"        value="${WLS_HOME}/../../user_projects/domains/${node.name}"/>
+    <property name="wls.logs.dir"           location="${wls.domain.home}/servers/${curam.server.name}/logs"/>
+
+    <copy todir="${dir.bld.log.appserver}/wls" failOnError="false">
+      <fileset dir="${wls.logs.dir}" includes="**/*"/>
+    </copy>
+    
+  </target>
+  
+
+  <!--  *************************************************  -->
+  <!--  ***  I N S T A L L E R . F I L E . C H E C K  ***  -->
+  <!--  *************************************************  -->
+  <target name="check.installer.dir">
+  
+    <!-- Include files from the Installer dir, if it exists. 
+    This is case sensitive as it is different to the installer dir -->
+    <fileset dir="${sysenv.CURAM_DIR}"  id="myfileset" includes="Installer/*" casesensitive="Yes"/> 
+    <pathconvert refid="myfileset" property="installer.file.available" setonempty="false"/>
+  </target>
+ 
+ 
+  <!--  *************************************************  -->
+  <!--  ***  G E T . I N S T A L L E R . L O G S      ***  -->
+  <!--  *************************************************  -->  
+  <target name="get.installer.logs" description="Get logs from the Installer directory, if they exist"
+    depends="check.installer.dir" if="installer.file.available" >
+
+    <copy todir="${dir.bld.log.installer}" failOnError="false">
+      <fileset dir="${installer.dir}" />
+    </copy>  
+
+  </target>
+   
+  
+  <!--  *********************************************************  -->
+  <!--  ***  G E T . E N V I R O N M E N T . S E T T I N G S  ***  -->
+  <!--  *********************************************************  --> 
+  <target name="get.env.settings" description="Get environment settings files">
+  
+    <!-- file extension will be different for windows or unix -->
+    <!-- On Windows platforms file extension is '.bat' -->
+    <condition property="env.settings.extension" value=".bat" >
+      <os family="windows" />
+    </condition>
+    <!-- On Unix platforms file extension is '.sh' -->
+    <property name="env.settings.extension" value=".sh"/>
+    
+    <copy todir="${dir.bld.log.config.envsettings}" failOnError="false">
+      <fileset dir="${curam.dir}" includes="SetEnvironment${env.settings.extension}"/>
+      <fileset dir="${curam.dir}" includes="CustomEnvironment${env.settings.extension}"/>
+    </copy> 
+
+  </target>
+  
+  <!--  ***************************************  -->
+  <!--  ***  R U N . C O N F I G . T E S T  ***  -->
+  <!--  ***************************************  -->  
+  <target name="run.config.test">
+  
+    <!-- run the configtest target -->
+    <subant target="main" failonerror="false">
+      <fileset dir="${dir.sde.bin}" includes="app_configtest.xml"/>
+    </subant>
+
+  </target>
+  
+
+  
+</project>
+

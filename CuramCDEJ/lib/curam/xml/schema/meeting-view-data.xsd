@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="SCHEDULE">
+    <xs:annotation>
+      <xs:documentation>Root element for meeting view. Must have MODE, TYPE, DATE and READ_ONLY attributes set. MODE must be Single or Multiple. Type must relate to an entry in the XML configuration file. READ_ONLY must be true or false. DATE must be in yyyy-MM-dd format.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="USER"/>
+      </xs:sequence>
+      <xs:attribute name="MODE" type="xs:string" use="required"/>
+      <xs:attribute name="TYPE" type="xs:string" use="required"/>
+      <xs:attribute name="READ_ONLY" type="xs:boolean" use="required"/>
+      <xs:attribute name="DATE" type="xs:date" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="USER">
+    <xs:annotation>
+      <xs:documentation>A User represents a person to be scheduled.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="BUSY"/>
+      </xs:sequence>
+      <xs:attribute name="NAME" type="xs:string" use="required"/>
+      <xs:attribute name="ID" type="xs:string" use="required"/>
+      <xs:attribute name="DURATION" type="xs:int" use="required">
+        <xs:annotation>
+          <xs:documentation>The number of minutes in a meeting the user is to be scheduled for.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="BUSY">
+    <xs:annotation>
+      <xs:documentation>A time when a USER is busy. START and END are date-times in the format yyyy-MM-dd hh:mm:ss, the start and end times of the busy period.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="START" type="xs:string" use="required"/>
+      <xs:attribute name="END" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

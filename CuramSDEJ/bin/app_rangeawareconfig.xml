@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+
+<project name="app_rangeawareconfig" default="insertrangeawareconfig">
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="./app_properties.xml" />
+
+  <!--  **************************  -->
+  <!--  ***  Import Utilities  ***  -->
+  <!--  **************************  -->
+  <import file="./app_utilities.xml" />
+
+  <target name="insertrangeawareconfig"
+    depends="checkParam, build.rangeawareconfig.properties"
+    description="Insert the range aware configuration settings.">
+
+    <!-- Call app_batchlauncher.xml to launch the Batch Launcher -->
+    <ant
+      antfile="${dir.sde.bin}/app_batchlauncher.xml"
+      target="main"
+      inheritall="false">
+      <property name="batch.program" value="${batch.program}"/>
+      <property name="batch.parameters" value="${batch.parameters}"/>
+      <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+      <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+    </ant>
+
+    <echo>The range aware configuration settings have been imported into the database.
+    </echo>
+  </target>
+
+  <target name="checkParam">
+  <condition property="raks.config.file" value="${rangeAwareConfig}">
+       <isset property="rangeAwareConfig"/>
+    </condition>
+  <property name="raks.config.file" value="${rangeawareserver.config.file}"/>
+  </target>
+
+  <!--  **********************************************  -->
+  <!--  *** Set the range aware config properties. ***  -->
+  <!--  **********************************************  -->
+  <target name="build.rangeawareconfig.properties">
+
+    <property name="batch.program"
+      value="curam.util.internal.rangeaware.intf.RangeAwareConfiguration.insertRangeAwareConfiguration"/>
+    <property name="batch.parameters"
+      value="configurationFile=${raks.config.file},"/>
+
+  </target>
+
+  <!--  *****************  -->
+  <!--  ***  THE END  ***  -->
+  <!--  *****************  -->
+
+</project>
+
+

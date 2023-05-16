@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2020. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  Script to configure WLP using AppServer.properties.
+
+-->
+<project name="app_utilsWLP" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless">
+
+  <property name="replace.encoding" value="UTF-8"/>
+  <property name="server.setup.location" value="${WLP_HOME}/usr/servers/${curam.server.name}"/>
+
+  <taskdef name="string" classname="curam.util.tools.AntStrings"
+      classpath="${jar.coreinf}:${jar.tools}"/>
+
+  <condition property="wlp.command.extension" value=".bat">
+    <os family="windows"/>
+  </condition>
+
+  <property name="wlp.command.extension" value="" />
+
+  <!-- Macros -->
+  <macrodef name="wlpserver" description="Wrapper for the WLP server target">
+    <attribute name="operation" description="Server operation" />
+    <attribute name="args" description="Arguments for server operation" default="" />
+    <attribute name="failonerror" description="Indicate if failure results should be ignored." default="true"/>
+    <sequential>
+      <exec executable="${WLP_HOME}/bin/server${wlp.command.extension}" failonerror="@{failonerror}" logError="true">
+        <arg value="@{operation}"/>
+        <arg value="${curam.server.name}"/>
+        <arg line="@{args}" />
+      </exec>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="wlpserverstatus" description="Wrapper for the WLP server status command to set a corresponding property">
+    <attribute name="statusproperty" description="Name of property to place server status output into." />
+    <attribute name="failonerror" description="Indicate if failure results should be ignored." default="true"/>
+    <sequential>
+      <exec executable="${WLP_HOME}/bin/server${wlp.command.extension}" failonerror="@{failonerror}" outputproperty="@{statusproperty}">
+        <arg value="status"/>
+        <arg value="${curam.server.name}"/>
+      </exec>
+    </sequential>
+  </macrodef>  
+  
+  <macrodef name="wlpEncodePassword" description="Encode a password for WLP">
+    <attribute name="password" description="The password to encode." />
+    <attribute name="property" description="The target propertyname."/>
+    <sequential>
+      <exec executable="${WLP_HOME}/bin/securityUtility${wlp.command.extension}" failonerror="true" outputproperty="@{property}" logError="true">
+        <arg value="encode"/>
+        <arg value="@{password}"/>
+      </exec>
+    </sequential>
+  </macrodef>
+
+</project>

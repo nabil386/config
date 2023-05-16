@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+  This is the Ant build file for the IEG2 validation and it work onle
+  when IEG2 component is installed in the application.  -->
+
+<project name="IEG2Validator" default="validateieg2scripts">
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="./app_properties.xml" />
+
+  <!--  **************************  -->
+  <!--  ***  Import Utilities  ***  -->
+  <!--  **************************  -->
+  <import file="./app_utilities.xml" />
+
+  <!--  **************************  -->
+  <!--  ***  Setup Class Path  ***  -->
+  <!--  **************************  -->
+  <path id="validator.classpath">
+    <path refid="j.cp"/>
+    <pathelement path="${client.dir}/build/uim"/>
+  </path>
+
+  <taskdef name="antapply" classname="curam.util.tools.AntApply"
+    classpathref="validator.classpath" />
+
+
+    <!--  ********************************************************************  -->
+    <!--  ***        Validate IEG2 Scripts in the specified directory      ***  -->
+    <!--  ********************************************************************  -->
+    <target name="validateieg2scripts"
+      depends="check.ieg2.component,check.ieg2.dir.available"
+      description="validate IEG2 in the specified directory.">
+
+      <antcall target="dispmsg" inheritAll="false">
+        <param name="prm.msg" value="Start validating the IEG2 scripts in the directory ${scripts.dir}."/>
+      </antcall>
+
+      <antcall target="validatescriptsfordeprecationwarnings">
+        <param name="scripts.base.dir" value="${scripts.dir}" />
+        <param name="scripts.pattern"  value="*.xml" />
+      </antcall>
+
+      <antcall target="dispmsg" inheritAll="false">
+        <param name="prm.msg" value="End validating the IEG2."/>
+      </antcall>
+    </target>
+
+
+    <!--  ***********************************************  -->
+    <!--  ***  Check IEG2 scripts directory available ***  -->
+    <!--  ***********************************************  -->
+    <target name="check.ieg2.dir.available"
+      depends="check.ieg2.dir.property.available">
+
+      <!-- check if the specified directory of the IEG2 scripts exists -->
+      <available property="scripts.dir.exists"
+        file="${scripts.dir}" type="dir"/>
+
+      <fail unless="scripts.dir.exists"
+        message="The IEG2 scripts directory ${scripts.dir} specified does not exist."/>
+    </target>
+
+
+    <!--  ****************************************************  -->
+    <!--  ***   Check IEG2 scripts directory property      ***  -->
+    <!--  ****************************************************  -->
+    <target name="check.ieg2.dir.property.available" unless="scripts.dir">
+      <fail message="The property 'scripts.dir' must be set. Please use -Dscripts.dir"/>
+    </target>
+
+
+    <!--  ***************************************************  -->
+    <!--  ***            Check IEG2 Component             ***  -->
+    <!--  ***************************************************  -->
+    <target name="check.ieg2.component">
+
+     <available property="ieg2.component.exists" file="${dir.base.components}/IntelligentEvidenceGathering" type="dir"/>
+
+     <fail unless="ieg2.component.exists"
+            message="The IEG2 component does not exist."/>
+    </target>
+
+
+    <!--  *****************************************************************  -->
+    <!--  ***      Validate IEG2 Scripts for Deprecation warnings       ***  -->
+    <!--  *****************************************************************  -->
+
+    <taskdef name="antapply" classname="curam.util.tools.AntApply"
+        classpathref="validator.classpath" />
+
+    <target name="validatescriptsfordeprecationwarnings"
+      description="validate all the scripts for deprecation warnings.">
+
+      <antapply type="both"
+        executable="${JAVA_HOME}/bin/java"
+        failonerror="false"
+        resultproperty="final.result">
+
+        <!-- Java Arguments -->
+        <arg value="-Xmx${java.maxmemory}" />
+        <arg value="-classpath" />
+        <arg pathref="validator.classpath" />
+        <arg line="-Xbootclasspath/p:${jars.allxml}" />
+
+        <!-- Application System Properties -->
+        <arg line="-Dcuram.disable.dynamic.properties=true"/>
+        <arg line="-Dcuram.project.name=curam"/>
+
+        <!-- The Validation Java Class -->
+        <arg line="curam.ieg.validation.impl.CommandLineScriptValidator" />
+
+        <!-- The rule set file Argument -->
+        <arg line="-script.file" /><srcfile />
+
+        <!-- The rule set files to be validated -->
+        <fileset dir="${scripts.base.dir}">
+          <patternset>
+            <include name="${scripts.pattern}"/>
+          </patternset>
+        </fileset>
+      </antapply>
+
+      <fail message="Validation failed.">
+       <condition>
+         <equals arg1="${final.result}" arg2="1" />
+       </condition>
+     </fail>
+    </target>
+
+
+</project>
