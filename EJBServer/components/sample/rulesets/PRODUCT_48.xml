@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/CuramRulesSchema.xsd"
+>
+  <Product
+    comment="This is the rule set for a sample benefit product which has only a daily objective tag. It also has descriptions specified for the objectives and objective tags."
+    id="PRODUCT_48"
+    legislationbase=""
+    producttype="RT2"
+  >
+    <Label
+      highlightonfailure="true"
+      legislationlink=""
+    >
+      <RuleName>
+        <Text
+          locale="en_US"
+          value="List Objective Test Product"
+        />
+      </RuleName>
+      <SuccessText>
+        <Text
+          locale="en_US"
+          value="Person entitled to Product 48"
+        />
+      </SuccessText>
+      <FailureText>
+        <Text
+          locale="en_US"
+          value="Person not entitled to Product 48"
+        />
+      </FailureText>
+    </Label>
+    <DataAccess name="Globals">
+      <DataItem name="dateOfCalculation"/>
+      <DataItem name="deliveryFrequency"/>
+      <DataItem name="personReferenceNumber"/>
+      <DataItem name="claimReferenceNumber"/>
+      <DataItem name="assessmentReferenceNumber"/>
+    </DataAccess>
+    <DataAccess name="SimpleProductRulesEvidence">
+      <DataItem name="eligibleInd"/>
+      <DataItem name="dailyRate"/>
+      <DataItem name="childIndicator"/>
+      <DataItem name="certificationFromDate"/>
+      <DataItem name="certificationToDate"/>
+      <DataItem name="clientAge"/>
+    </DataAccess>
+    <DataAccess name="SimpleProductRulesEvidenceList">
+      <DataItem name="eligibleInd"/>
+      <DataItem name="dailyRate"/>
+      <DataItem name="description"/>
+    </DataAccess>
+    <DataAccess name="SimpleProductRulesConstants">
+      <DataItem name="kMinAge"/>
+      <DataItem name="kMaxAge"/>
+    </DataAccess>
+    <RuleGroup
+      assessmentquerymode="querysingleitem"
+      executionmode="executeall"
+      id="1"
+      operation="and"
+      summaryitem="true"
+    >
+      <Label
+        highlightonfailure="true"
+        legislationlink=""
+      >
+        <RuleName>
+          <Text
+            locale="en_US"
+            value="Prerequisites"
+          />
+        </RuleName>
+        <SuccessText>
+          <Text
+            locale="en_US"
+            value="Prerequisites"
+          />
+        </SuccessText>
+        <FailureText>
+          <Text
+            locale="en_US"
+            value="Prerequisites"
+          />
+        </FailureText>
+      </Label>
+      <Rule
+        id="2"
+        rulemode="all"
+        summaryitem="true"
+      >
+        <Label
+          highlightonfailure="true"
+          legislationlink=""
+        >
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Eligibility Indicator Test"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Eligibility Indicator is True"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Eligibility Indicator is False"
+            />
+          </FailureText>
+        </Label>
+        <Condition
+          dataitemlhs="SimpleProductRulesEvidence.eligibleInd"
+          dataitemrhs="true"
+          id="3"
+          operation="=="
+        />
+      </Rule>
+      <Rule
+        id="4"
+        rulemode="notquotation"
+        summaryitem="true"
+      >
+        <Label
+          highlightonfailure="true"
+          legislationlink=""
+        >
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Claimant certified"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Claimant is certified"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Claimant is not certified"
+            />
+          </FailureText>
+        </Label>
+        <Condition
+          dataitemlhs="SimpleProductRulesEvidence.certificationFromDate"
+          dataitemrhs="Globals.dateOfCalculation"
+          id="5"
+          operation="&lt;="
+        />
+        <Condition
+          conjunction="and"
+          dataitemlhs="SimpleProductRulesEvidence.certificationToDate"
+          dataitemrhs="Globals.dateOfCalculation"
+          id="6"
+          operation="&gt;="
+        />
+      </Rule>
+      <Rule
+        id="21"
+        rulemode="all"
+        summaryitem="true"
+      >
+        <Label
+          highlightonfailure="true"
+          legislationlink=""
+        >
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Claimant is aged between 18 and 65"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Claimant is aged between 18 and 65"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Claimant is not aged between 18 and 65"
+            />
+          </FailureText>
+        </Label>
+        <Condition
+          dataitemlhs="SimpleProductRulesEvidence.clientAge"
+          dataitemrhs="SimpleProductRulesConstants.kMinAge"
+          id="22"
+          operation="&gt;="
+        />
+        <Condition
+          conjunction="and"
+          dataitemlhs="SimpleProductRulesEvidence.clientAge"
+          dataitemrhs="SimpleProductRulesConstants.kMaxAge"
+          id="23"
+          operation="&lt;="
+        />
+      </Rule>
+    </RuleGroup>
+    <ObjectiveGroup
+      comment=""
+      conjunction="all"
+      id="7"
+      priority="1"
+    >
+      <Label
+        highlightonfailure="true"
+        legislationlink=""
+      >
+        <RuleName>
+          <Text
+            locale="en_US"
+            value="Sample Product Personal Rate"
+          />
+        </RuleName>
+        <SuccessText>
+          <Text
+            locale="en_US"
+            value="Sample Product Personal Rate is payable"
+          />
+        </SuccessText>
+        <FailureText>
+          <Text
+            locale="en_US"
+            value="Sample Product Rate is not payable"
+          />
+        </FailureText>
+      </Label>
+
+
+      <ObjectiveListGroup
+        conjunction="all"
+        id="111"
+        listgroup="SimpleProductRulesEvidenceList"
+      >
+        <Label highlightonfailure="true">
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="ListObjectiveListGroup"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="List Objective List Group Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="List Objective List Group Failed"
+            />
+          </FailureText>
+        </Label>
+        <RuleGroup
+          executionmode="stoponresult"
+          id="112"
+          operation="and"
+          summaryitem="false"
+        >
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="RuleGroup"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="RuleGroup Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="RuleGroup Failed"
+              />
+            </FailureText>
+          </Label>
+          <Rule id="113">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Eligible Rule for List"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Eligible Rule for List Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Eligible Rule for List Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              dataitemlhs="SimpleProductRulesEvidenceList.current.eligibleInd"
+              dataitemrhs="true"
+              id="114"
+              operation="=="
+            />
+          </Rule>
+        </RuleGroup>
+        <Objective
+          deductionallowable="true"
+          description=""
+          id="115"
+          priority="0"
+          ratefctype="CT1"
+          ratetarget="RC1"
+          ratetype="PC4"
+          recordid="14"
+          relatedreference="SimpleProductRulesEvidenceList.current.description"
+          targetid="123"
+        >
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="List Objective"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="List Objective Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="List Objective Failed"
+              />
+            </FailureText>
+          </Label>
+          <ObjectiveTag
+            id="116"
+            name="List Payment"
+            pattern="000100000"
+            recordid="120"
+            type="RTT3"
+            value="SimpleProductRulesEvidenceList.current.dailyRate"
+          />
+        </Objective>
+      </ObjectiveListGroup>
+    </ObjectiveGroup>
+  </Product>
+</RuleSet>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/CuramRulesSchema.xsd">  
+  <Product comment="" id="PRODUCT_9" legislationbase="" producttype="RT1"> 
+    <Label highlightonfailure="true"> 
+      <RuleName> 
+        <Text locale="fr" value="Informations collectées de trop-perçu de passif"/> 
+      </RuleName>  
+      <SuccessText> 
+        <Text locale="fr" value="Réussite du produit"/> 
+      </SuccessText>  
+      <FailureText> 
+        <Text locale="fr" value="Echec du produit"/> 
+      </FailureText> 
+    </Label>  
+    <DataAccess name="Globals"> 
+      <DataItem name="dateOfCalculation"/>  
+      <DataItem name="deliveryFrequency"/>  
+      <DataItem name="personReferenceNumber"/>  
+      <DataItem name="claimReferenceNumber"/>  
+      <DataItem name="assessmentReferenceNumber"/> 
+    </DataAccess>  
+    <DataAccess name="LiabilityOverpaymentCaseEvidence"> 
+      <DataItem name="caseClosedInd"/>  
+      <DataItem name="caseSuspendedInd"/>  
+      <DataItem name="productAvailableInd"/>  
+      <DataItem name="locationAvailableInd"/>  
+      <DataItem name="overpaymentAmount"/> 
+    </DataAccess>  
+    <DataAccess name="LiabilityOverpaymentRulesConstants"> 
+      <DataItem name="kUMinAge"/>  
+      <DataItem name="kUMaxAge"/>  
+      <DataItem name="kOverpaymentAmountLowerBound"/> 
+    </DataAccess>  
+    <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="1" operation="and" summaryitem="true"> 
+      <Label highlightonfailure="true"> 
+        <RuleName> 
+          <Text locale="fr" value="Conditions préalables"/> 
+        </RuleName>  
+        <SuccessText> 
+          <Text locale="fr" value="Réussite des conditions préalables"/> 
+        </SuccessText>  
+        <FailureText> 
+          <Text locale="fr" value="Echec des conditions préalables"/> 
+        </FailureText> 
+      </Label>  
+      <Rule id="2" rulemode="notquotation" summaryitem="true"> 
+        <Label highlightonfailure="true"> 
+          <RuleName> 
+            <Text locale="fr" value="Ouverture du dossier"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Le dossier est ouvert"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Le dossier est clos"/> 
+          </FailureText> 
+        </Label>  
+        <Condition dataitemlhs="LiabilityOverpaymentCaseEvidence.caseClosedInd" dataitemrhs="true" id="3" operation="!="/> 
+      </Rule>  
+      <Rule id="4" rulemode="notquotation" summaryitem="true"> 
+        <Label highlightonfailure="true"> 
+          <RuleName> 
+            <Text locale="fr" value="Dossier suspendu"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Le dossier n'est pas suspendu"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Le dossier est suspendu"/> 
+          </FailureText> 
+        </Label>  
+        <Condition dataitemlhs="LiabilityOverpaymentCaseEvidence.caseSuspendedInd" dataitemrhs="true" id="5" operation="!="/> 
+      </Rule>  
+      <Rule id="6" rulemode="notquotation" summaryitem="true"> 
+        <Label highlightonfailure="true"> 
+          <RuleName> 
+            <Text locale="fr" value="Produit disponible"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Le produit est disponible"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Le produit n'est pas disponible"/> 
+          </FailureText> 
+        </Label>  
+        <Condition dataitemlhs="LiabilityOverpaymentCaseEvidence.productAvailableInd" dataitemrhs="true" id="7" operation="=="/> 
+      </Rule>  
+      <Rule id="8" rulemode="notquotation" summaryitem="true"> 
+        <Label highlightonfailure="true"> 
+          <RuleName> 
+            <Text locale="fr" value="Le produit est disponible à partir de l'emplacement sélectionné"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Le produit est disponible à partir de l'emplacement sélectionné"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Le produit n'est pas disponible à partir de l'emplacement sélectionné"/> 
+          </FailureText> 
+        </Label>  
+        <Condition dataitemlhs="LiabilityOverpaymentCaseEvidence.locationAvailableInd" dataitemrhs="true" id="9" operation="=="/> 
+      </Rule> 
+    </RuleGroup>  
+    <ObjectiveGroup comment="" conjunction="highestvalue" id="10" priority="1"> 
+      <Label highlightonfailure="true"> 
+        <RuleName> 
+          <Text locale="fr" value="Groupe de composants de trop-perçu de passif"/> 
+        </RuleName>  
+        <SuccessText> 
+          <Text locale="fr" value="Réussite du trop-perçu de passif"/> 
+        </SuccessText>  
+        <FailureText> 
+          <Text locale="fr" value="Echec du trop-perçu de passif"/> 
+        </FailureText> 
+      </Label>  
+      <Objective comment="" deductionallowable="false" description="" id="11" priority="1" ratefctype="CT2" ratetarget="RC1" ratetype="PC19" recordid="11" targetid="0"> 
+        <Label highlightonfailure="true"> 
+          <RuleName> 
+            <Text locale="fr" value="Taux de trop-perçu de passif"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Réussite du trop-perçu de passif"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Echec du trop-perçu de passif"/> 
+          </FailureText> 
+        </Label>  
+        <ObjectiveTag comment="" id="12" name="" pattern="200100000" recordid="12" type="RTT3" value="LiabilityOverpaymentCaseEvidence.overpaymentAmount"/>  
+        <ObjectiveTag comment="" id="13" name="" pattern="000100000" recordid="13" type="RTT3" value="LiabilityOverpaymentCaseEvidence.overpaymentAmount"/>  
+        <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="14" operation="and" summaryitem="true"> 
+          <Label highlightonfailure="true"> 
+            <RuleName> 
+              <Text locale="fr" value="Règles de taux de trop-perçu de passif"/> 
+            </RuleName>  
+            <SuccessText> 
+              <Text locale="fr" value="Règles de réussite du taux de trop-perçu de passif"/> 
+            </SuccessText>  
+            <FailureText> 
+              <Text locale="fr" value="Règles d'échec du taux de trop-perçu de passif"/> 
+            </FailureText> 
+          </Label>  
+          <Rule id="15" rulemode="all" summaryitem="true"> 
+            <Label highlightonfailure="true"> 
+              <RuleName> 
+                <Text locale="fr" value="Le montant de trop-perçu n'est pas égal à zéro"/> 
+              </RuleName>  
+              <SuccessText> 
+                <Text locale="fr" value="Le montant de trop-perçu est supérieur à zéro"/> 
+              </SuccessText>  
+              <FailureText> 
+                <Text locale="fr" value="Le montant de trop-perçu est inférieur ou égal à zéro"/> 
+              </FailureText> 
+            </Label>  
+            <Condition dataitemlhs="LiabilityOverpaymentCaseEvidence.overpaymentAmount" dataitemrhs="LiabilityOverpaymentRulesConstants.kOverpaymentAmountLowerBound" id="16" operation="&gt;"/> 
+          </Rule> 
+        </RuleGroup> 
+      </Objective> 
+    </ObjectiveGroup> 
+  </Product> 
+</RuleSet>

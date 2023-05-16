@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<ieg-script xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ieg-schema.xsd"
+finish-page="CommonIntake_finishInternalIntakeScript" 
+	quit-page="CommonIntake_quitInternalIntakeScript"		
+	show-sections="true"
+	show-progress-bar="true"
+	validate-save-and-exit="false"
+	highlight-validation="true"
+	>
+		
+	<identifier id="BDMOASGISApplicationCP" scriptversionnumber="V1" type="Intake" />
+	<condition expression="isNotNull(MaritalStatusInfo.currentMaritalStatus) and (MaritalStatusInfo.currentMaritalStatus==&quot;MS5&quot; or MaritalStatusInfo.currentMaritalStatus==&quot;MS6&quot;)">
+	<section>
+		<title id="Section.Title.SpouseOrCLP">
+			<![CDATA[Spouse/Common-Law Partner]]>
+		</title>
+		<icon enabled-image="sample_about_you"
+			current-image="sample_about_you" />
+
+			<question-page 
+				id="PartnerDetails" 
+				entity="Person"
+				progress="0" 
+				show-back-button="true" 
+				show-next-button="true" 
+				show-exit-button="true"			
+				show-save-exit-button="true" 			
+				criteria="isPrimaryParticipant==false"
+				>
+			
+				<validation expression="not(isNotNull(Person.firstName)) or ValidateInstitutionNameLength(Person.firstName, &quot;1&quot;, &quot;17&quot;)">
+					<message id="PersonalInformation.FName.Validation"><![CDATA[First given name cannot contain numbers or special characters.]]></message>
+				</validation>
+
+				<validation expression="not(isNotNull(Person.middleName)) or ValidateInstitutionNameLength(Person.middleName, &quot;1&quot;, &quot;17&quot;)">
+					<message id="PersonalInformation.OName.Validation"><![CDATA[Other given name cannot contain numbers or special characters.]]></message>
+				</validation>
+
+				<validation expression="not(isNotNull(Person.lastName)) or ValidateInstitutionNameLength(Person.lastName, &quot;1&quot;, &quot;32&quot;)">
+					<message id="PersonalInformation.FamName.Validation"><![CDATA[Last name cannot contain numbers or special characters.]]></message>
+				</validation>
+				
+				<validation expression="not(isNotNull(Person.LastNameAtBirth)) or ValidateInstitutionNameLength(Person.LastNameAtBirth, &quot;1&quot;, &quot;32&quot;)">
+					<message id="PersonalInformation.LName.Validation"><![CDATA[Last name at birth cannot contain numbers or special characters.]]></message>
+				</validation>	
+
+				<validation expression="not(isNotNull(Person.sinRawAP)) or ValidateSINLength(Person.sinRawAP)">
+					<message id="PersonalInformation.SIN.LengthValidation"><![CDATA[Please enter a valid Social Insurance Number with 9 digits.]]></message>
+				</validation>
+				
+				<validation expression="not(isNotNull(Person.sinRawAP)) or ValidateSINMOD10(Person.sinRawAP)">
+					<message id="PersonalInformation.SIN.invalid"><![CDATA[Please enter a valid Social Insurance Number.]]></message>
+				</validation>
+				
+				<validation expression="not(isNotNull(Person.dateOfBirth)) or ValidateFutureDate(Person.dateOfBirth)">
+					<message id="PersonalInformation.DOB.Validation"><![CDATA[Date of birth cannot be a future date.]]></message>
+				</validation>
+				
+				<validation expression="not(isNotNull(Person.sinRawAP)) or ValidateSINSPM(Person.sinRawAP)">
+					<message id="PersonalInformation.SINSPM.Validation">Based on the information you provided it appears you have already applied for benefits. If you are applying for additional benefits for another period reapply at Canada.ca/reapply. If you believe you are receiving this message in error, please call us toll free at1-555-555-1234 between 8:30 AM and 4:30 PM, local time, Monday to Friday, except civic holidays.</message>
+				</validation>
+
+				<validation expression="not(isNotNull(Person.sinRawAP)) or ValidateSINService(Person.sinRawAP, Person.firstName, Person.lastName, Person.dateOfBirth)">
+					<message id="PersonalInformation.SINService.Validation">Something doesn't look right. Please review the information entered and try again. If this situation continues, please call us toll free at 1-555-555-1234 between 8:30 AM and 4:30 PM, local time, Monday to Friday, except civic holidays.</message>
+				</validation>
+
+				<validation expression="not(isNotNull(Person.oasAccntNum)) or ValidateOASAcntNum(Person.oasAccntNum)">
+					<message id="PersonalInformation.OASAccntNum.Validation"><![CDATA[A valid nine-digit OAS Account Number starting with zero must be entered. ]]></message>
+				</validation>					
+
+				<validation expression="ValidatePartnerFirstName(Person.firstName,Person.lastName, Person.dateOfBirth, Person.isDiffResiAddressForPartner)">
+					<message id="PartnerInformation.FName.Validation"><![CDATA[First name must be entered when Last name, Date of Birth or 'Did the applicant provide a different residential address for spouse/common-law partner?' has been entered.]]></message>
+				</validation>	
+	
+				<validation expression="ValidatePartnerLastName(Person.firstName,Person.lastName, Person.dateOfBirth, Person.isDiffResiAddressForPartner)">
+					<message id="PartnerInformation.LName.Validation"><![CDATA[Last name must be entered when First name, Date of Birth or 'Did the applicant provide a different residential address for spouse/common-law partner?' has been entered.]]></message>
+				</validation>
+				
+				<validation expression="ValidatePartnerDOB(Person.firstName,Person.lastName, Person.dateOfBirth, Person.isDiffResiAddressForPartner)">
+					<message id="PartnerInformation.DOB.Validation"><![CDATA[Date of Birth must be entered when First name, Last name or 'Did the applicant provide a different residential address for spouse/common-law partner?' has been entered.]]></message>
+				</validation>
+	
+				<validation expression="ValidatePartnerProvideDifAddr(Person.firstName,Person.lastName, Person.dateOfBirth, Person.isDiffResiAddressForPartner)">
+					<message id="PartnerInformation.DidProvDiffResiAddress.Validation"><![CDATA['Did the applicant provide a different residential address for spouse/common-law partner?' must be selected when First name, Last name or Date of Birth has been provided.]]></message>
+				</validation>
+					
+				<title id="QuestionPage.Title.SpouseOrCLPDetails">
+					<![CDATA[Spouse/Common-Law Partner Details]]>
+				</title>
+					
+				<description id="MandatoryFieldsDescription">
+					<![CDATA[All fields marked as * are mandatory. <br> Service Canada has the following personal information for you on file. Please review and contact Old Age Security if any changes need to be made.</br>]]>
+				</description>
+			
+					<cluster entity="Person">
+						
+						<question id="sinRawAP" mandatory="true">
+							<label id="PersonalInformation.SIN">
+								<![CDATA[Social Insurance Number]]>
+							</label>
+							<layout>
+								<label-width>0</label-width>
+								<width>50</width>								
+							</layout>
+							<hint-text id="PersonalInformation.SIN.Hint">
+								<![CDATA[Exclude spaces or hyphens when entering Social Insurance Number.]]>
+							</hint-text>					
+						</question>
+							
+						<question id="personTitle">
+							<label id="Question.Label.Title">
+								<![CDATA[Title]]>
+							</label>
+							<layout>
+								<label-width>0</label-width>							
+								<width>50</width>						
+							</layout>													
+						</question>
+
+						<question id="firstName" mandatory="true">
+							<label id="PersonalInformation.FName">
+								<![CDATA[First name]]>
+							</label>
+							<layout>
+								<label-width>0</label-width>								
+								<width>60</width>									
+							</layout>
+						</question>	
+						<question id="middleName" >
+							<label id="PersonalInformation.OName">
+								<![CDATA[Middle name]]>
+							</label>			
+							<layout>
+								<label-width>0</label-width>								
+								<width>60</width>									
+							</layout>
+						</question>	
+						<question id="lastName" mandatory="true">
+							<label id="PersonalInformation.FamName">
+								<![CDATA[Last name]]>
+							</label>
+							<layout>
+								<label-width>0</label-width>								
+								<width>60</width>									
+							</layout>
+						</question>	
+		 
+						<question id="dateOfBirth" mandatory="true">
+							<label id="PersonalInformation.DOB">
+								<![CDATA[Date of birth]]>
+							</label>
+							<layout>
+								<type>date-picker</type>
+							</layout>
+							<hint-text id="PersonalInformation.DOB.Hint">
+								<![CDATA[YYYY-MM-DD]]>
+							</hint-text>                    
+						</question>	
+						<question id="genderDropdown" mandatory="true">
+							<label id="PersonalInformation.Gender">
+								<![CDATA[Gender]]>
+							</label>
+                    		<layout>
+								<label-width>0</label-width>
+								<width>60</width>							
+							</layout>                
+						</question>
+						<question id="isDiffResiAddressForPartner" mandatory="true">
+							<label id="Question.Label.IsDiffResiAddrForPartner">
+								<![CDATA[Does your spouse/common-law partner have a different residential address than yours?]]>
+							</label> 
+							<layout>
+								<width>50</width>									
+							</layout>							                  
+						</question>					
+					</cluster>							
+				</question-page>
+
+				<!-- Call out to pre-populate applicatn's address as partners address.   -->
+    			<callout expression="SetPartnerDetails()" id="SetPartnerDetails"/>
+	
+			<loop loop-type="for-each"  entity="Person" criteria="isPrimaryParticipant==false">
+				<condition expression="isNotNull(Person.isDiffResiAddressForPartner) and Person.isDiffResiAddressForPartner==&quot;YN1&quot;">
+					<question-page 
+						id="PartnerResidAddrInfo" 
+						entity="Person"
+						progress="0"
+						show-back-button="true" 
+						show-next-button="true" 
+						show-exit-button="true"			
+						show-save-exit-button="true"
+						>
+						<title id="ResAddressInformation.ResAddr.Title">
+							<![CDATA[Residential address]]>
+						</title>
+
+						<description id="QuestionPage.Description.MandatoryFields">
+							<![CDATA[ All fields marked as * are mandatory. The Guaranteed Income Supplement is payable to individuals who reside in Canada.  A residential address is required.]]>
+						</description>
+
+							<validation expression="not(isNotNull(SearchCriteriaResi.residPostalCode)) or validateCAPostalCode(SearchCriteriaResi.residPostalCode)">
+								<message id="AddressInformation.ResAddr.PostalCode.Validation"><![CDATA[Please enter a valid postal code (e.g. V1N 4J4)]]></message>
+							</validation>
+
+						<set-attribute expression="Person.residentialCountry" id="ResidentialAddress.country"/>
+						<set-attribute expression="Person.residentialCountry" id="IntlResAddress.country" />
+
+						<condition expression="(Person.hasActiveResidAddress==true)">																				
+							<cluster>
+								<description id="Cluster.Description.ResidentialAddress">
+									<![CDATA[Please confirm the residential address of your spouse or common-law partner.]]>
+								</description>
+								<display-text id="ResAddressInformation.AddressProv.Desc">
+									<![CDATA[The residential address for applicant is as follows:]]>
+								</display-text>
+								<layout>
+									<label-width>0</label-width>
+								</layout>							
+							</cluster>
+	
+							<cluster entity="ResidentialAddress">
+								<question id="oneLineAddress" read-only-expression="true"> </question>
+							</cluster>
+							
+							<cluster>				
+								<question id="isResidentialAddressUpdate" mandatory="true">
+									<layout>
+										<type>radio</type>
+									</layout>
+									<label id="ResAddressInformation.UpdateAddress.Residential">
+										<![CDATA[<b>Does this residential address need to be updated?</b>]]>
+									</label>
+								</question>
+							</cluster>
+						</condition>
+						<condition expression="(Person.hasActiveResidAddress==false or Person.isResidentialAddressUpdate==&quot;YN1&quot;)">		
+							<cluster entity="SearchCriteriaResi">
+								<question id="residCountry"
+											  mandatory="true">
+									<label id="AddressInformation.Country">
+										<![CDATA[Country]]>
+									</label>
+									<layout>
+										<width>70</width>							
+									</layout>									
+								</question>
+							</cluster>						
+						</condition>						
+						<condition expression="(Person.hasActiveResidAddress==false and SearchCriteriaResi.residCountry==&quot;CA&quot;) or (Person.isResidentialAddressUpdate==&quot;YN1&quot; and SearchCriteriaResi.residCountry==&quot;CA&quot;)">		
+								<cluster entity="SearchCriteriaResi">
+									<description id="Cluster.Description.PostalCode">
+										<![CDATA[Note: If you are unsure of your postal code you can look it up on the Canada Post Web site. <a href="https://srv241-s2.lab.hrdc-drhc.gc.ca/stream4/sc/msca-mdsc/portal-portail/pro/vupi-vupi/logout?targetUrl=http%3A%2F%2Fwww.servicecanada.gc.ca%2Fcgi-bin%2Fop-so%2Fmsca%2Fredirection.asp%3Flinkmsca%3D103e.html">https://srv241-s2.lab.hrdc-drhc.gc.ca/stream4/sc/msca-mdsc/portal-portail/pro/vupi-vupi/logout?targetUrl=http%3A%2F%2Fwww.servicecanada.gc.ca%2Fcgi-bin%2Fop-so%2Fmsca%2Fredirection.asp%3Flinkmsca%3D103e.html</a>]]>
+									</description>
+									<question id="residPostalCode" mandatory="true" show-field-help="false">
+										<label id="SearchAddress.ResAddr.PostalCode"><![CDATA[Please enter residential postal code (A1A 1A1)]]></label>
+										<hint-text id="SearchAddress.Hint"><![CDATA[Postal code: <br>(Example: K1A 2B3)</br>]]></hint-text>
+										<layout>
+											<width>70</width>							
+										</layout>											
+									</question>
+								</cluster>						
+						</condition>																	
+					</question-page>
+
+					 <callout
+					        expression="SetAddOrUpdateAddressIndicatorsForPartner()"
+					        id="SetAddOrUpdateAddressIndicators"
+					      />	
+				</condition>	
+
+				<condition expression="(Person.addOrUpdateResidAddress==true)">
+
+					<callout
+						expression="SearchPartnerAddress(SearchCriteriaResi.residCountry,&quot;Residential&quot;,SearchCriteriaResi.residPostalCode)"
+						id="SearchPartnerAddress"
+					  />
+									  
+					  <!--  List Address Page/ skip if it is not CA -->
+					<condition expression="SearchCriteriaResi.caResiAddrSearchInd==true">
+						<question-page 
+							id="PartnerResidAddrInfoAddressList" 
+							entity="Person"
+							progress="0"
+							show-back-button="true" 
+							show-next-button="true" 
+							show-exit-button="true"			
+							show-save-exit-button="true"
+							>
+					
+							
+							<title id="AddressInformation.ResAddr.Title" />
+								
+							<description id="QuestionPage.Description.MandatoryFields">
+								<![CDATA[ All fields marked as * are mandatory. The Guaranteed Income Supplement is payable to individuals who reside in Canada.  A residential address is required.]]>
+							</description>								
+
+								<cluster>      
+									
+									<display-text id="RequiredField.Indicator"/>
+									<layout>
+										<label-width>0</label-width>
+									</layout>										
+									</cluster>
+
+									<cluster>
+										<list-question
+											entity="SearchAddress"
+											id="isSelected"
+											single-select="true"
+											criteria="isResidentialAddress==&quot;YN1&quot; and isActive==&quot;YN1&quot;"
+											display="dropdown"	 																											
+										>				
+											<label id="ResAddressInformation.AddressProv.Desc">
+												<![CDATA[Please select the residential address]]>
+											</label>	
+											<item-label>
+												<label-element attribute-id="formatedAddressData"/>
+											</item-label>
+										</list-question>  
+								</cluster>			
+						</question-page>
+					</condition>
+
+				   <callout
+						expression="UpdatePartnerAddress(&quot;Residential&quot;,&quot;STEP1&quot;,&quot;Test&quot; )"
+						id="UpdatePartnerAddress"
+					  />
+				 
+					<question-page 
+							id="PartnerResidAddrInfoDetails" 
+							entity="Person"
+							progress="0"
+							show-back-button="true" 
+							show-next-button="true" 
+							show-exit-button="true"			
+							show-save-exit-button="true"
+							>
+							<validation expression="Person.residentialCountry!=&quot;CA&quot; or (Person.residentialCountry==&quot;CA&quot; and (not(isNotNull(ResidentialAddress.postalCode)) or validateCAPostalCode(ResidentialAddress.postalCode)))">
+								<message id="AddressInformation.ResAddr.PostalCode.Validation"><![CDATA[Please enter a valid postal code (e.g. V1N 4J4)]]></message>
+							</validation>
+
+							<validation expression="validateUSZipCodeLength(Person.residentialCountry,IntlResAddress.zipCode)">
+								<message id="AddressInformation.ResAddr.Ziplength.Validation"><![CDATA[Zip code is invalid when country is US]]></message>
+							</validation>
+							
+							<validation expression="Person.residentialCountry!=&quot;CA&quot; or ValidateAddressLength(ResidentialAddress.suiteNum, ResidentialAddress.addressLine1, ResidentialAddress.addressLine2, Person.residentialCountry, false)">
+								<message id="AddressInformation.ResAddr.AddrLength.CAOrUS.ValidationOne"><![CDATA[Unit/Apt/Suite Number, Street Name and Street number combined  must be less than 40 characters.]]></message>
+					    	</validation>
+					    	
+					    	<validation expression="Person.residentialCountry!=&quot;US&quot; or ValidateAddressLength(IntlResAddress.suiteNum, IntlResAddress.addressLine1, IntlResAddress.addressLine2, Person.residentialCountry, false)">
+								<message id="AddressInformation.ResAddr.AddrLength.CAOrUS.ValidationOne"><![CDATA[Unit/Apt/Suite Number, Street Name and Street number combined  must be less than 40 characters.]]></message>
+					    	</validation>
+					    	
+					    	<validation expression="(Person.residentialCountry==&quot;CA&quot; or Person.residentialCountry==&quot;US&quot;) or ValidateAddressLength(IntlResAddress.suiteNum, IntlResAddress.addressLine1, IntlResAddress.addressLine2, Person.residentialCountry, false)">
+								<message id="AddressInformation.ResAddr.AddrLength.Other.ValidationOne"><![CDATA[Unit/Apt/Suite Number, Street 1 and Street 2 combined must be less than 40 characters.]]></message>
+					    	</validation>
+					    	
+					    	<validation expression="Person.residentialCountry!=&quot;CA&quot; or ValidateAddressLength(ResidentialAddress.city, ResidentialAddress.province, ResidentialAddress.postalCode, Person.residentialCountry, true)">
+								<message id="AddressInformation.ResAddr.AddrLength.CA.ValidationTwo"><![CDATA[City, Town or Village, Province and Postal Code combined must be less than 40 characters.]]></message>
+					    	</validation>
+					    	
+					    	<validation expression="Person.residentialCountry!=&quot;US&quot; or ValidateAddressLength(IntlResAddress.city, IntlResAddress.state, IntlResAddress.zipCode, Person.residentialCountry, true)">
+								<message id="AddressInformation.ResAddr.AddrLength.US.ValidationTwo"><![CDATA[City, Town or Village,State and Zip Code combined must be less than 40 characters.]]></message>
+					    	</validation>
+					    	
+					    	<validation expression="Person.residentialCountry==&quot;CA&quot; or Person.residentialCountry==&quot;US&quot; or ValidateAddressLength(IntlResAddress.city, IntlResAddress.addressLine4, IntlResAddress.zipCode, Person.residentialCountry, true)">
+								<message id="AddressInformation.ResAddr.AddrLength.Other.ValidationTwo"><![CDATA[City, Town, Village, State/Province/Region and Zip Code combined must be less than 40 characters.]]></message>
+					    	</validation>
+							
+							<title id="AddressInformation.ResAddr.Title">
+								<![CDATA[Residential address]]>
+							</title>
+							
+							<description id="MandatoryFieldsDescription">
+								<![CDATA[All fields marked as * are mandatory. The Guaranteed Income Supplement is payable to individuals who reside in Canada.  A residential address is required.]]>
+							</description>
+					
+							<condition expression="Person.residentialCountry==&quot;CA&quot;">
+								<cluster entity="ResidentialAddress">
+									<question id="suiteNum" mandatory="false">
+										<label id="AddressInformation.AptNum">
+											<![CDATA[Unit/Apt/Suite number]]>
+										</label>
+										<layout>
+											<width>60</width>							
+										</layout>										
+									</question>
+									<question id="addressLine1" mandatory="true">
+										<label id="AddressInformation.StreetNum">
+											<![CDATA[Street Number]]>
+										</label>
+										<layout>
+											<width>60</width>							
+										</layout>											
+									</question>
+									<question id="addressLine2" mandatory="true"
+										read-only-expression="ResidentialAddress.isAddrSelectedInd">
+										<label id="AddressInformation.StreetName">
+											<![CDATA[Street Name]]>
+										</label>
+										<layout>
+											<width>70</width>							
+										</layout>											
+									</question>
+									<question id="city" mandatory="true"
+										read-only-expression="ResidentialAddress.isAddrSelectedInd">
+										<label id="AddressInformation.City">
+											<![CDATA[City, Town or Village]]>
+										</label>
+										<layout>
+											<width>70</width>							
+										</layout>										
+									</question>
+									<question id="province" mandatory="true"
+										read-only-expression="ResidentialAddress.isAddrSelectedInd">
+										<label id="AddressInformation.Prov">
+											<![CDATA[Province or Territory]]>
+										</label>
+										<layout>
+											<width>70</width>							
+										</layout>										
+									</question>
+									<question id="postalCode" mandatory="true" 
+										read-only-expression="ResidentialAddress.isAddrSelectedInd">
+										<description id="Cluster.Description.PostalCode">
+										<![CDATA[Note: If you are unsure of your postal code you can look it up on the Canada Post Web site. <a href="https://srv241-s2.lab.hrdc-drhc.gc.ca/stream4/sc/msca-mdsc/portal-portail/pro/vupi-vupi/logout?targetUrl=http%3A%2F%2Fwww.servicecanada.gc.ca%2Fcgi-bin%2Fop-so%2Fmsca%2Fredirection.asp%3Flinkmsca%3D103e.html">https://srv241-s2.lab.hrdc-drhc.gc.ca/stream4/sc/msca-mdsc/portal-portail/pro/vupi-vupi/logout?targetUrl=http%3A%2F%2Fwww.servicecanada.gc.ca%2Fcgi-bin%2Fop-so%2Fmsca%2Fredirection.asp%3Flinkmsca%3D103e.html</a>]]>
+										</description>
+										<label id="AddressInformation.ResAddr.PostalCode">
+											<![CDATA[Postal Code (A1A 1A1)]]>
+										</label>
+										<layout>
+											<class-names>wds-js-input-mask-postal-code</class-names>
+											<width>70</width>											
+										</layout>
+									</question>
+								</cluster>
+							</condition>
+
+							<!-- COMMON Residential Address fields for US and All else -->
+							<condition expression="Person.residentialCountry!=&quot;CA&quot;" >
+								<cluster entity="IntlResAddress" grouping-id="resAddressGroup">
+									<question id="suiteNum" mandatory="false">
+										<label id="AddressInformation.AptNum"><![CDATA[Unit/Apt/Suite number]]></label>
+									</question>
+								</cluster>
+							</condition>
+							
+							<!-- Residential Address fields when country is US-->
+							<condition expression="Person.residentialCountry==&quot;US&quot;" >
+								<cluster entity="IntlResAddress" grouping-id="resAddressGroup">
+									<question id="addressLine1" mandatory="true">
+										<label id="AddressInformation.StreetNum">
+											<![CDATA[Street Number]]>
+										</label>
+										<layout>
+											<width>60</width>							
+										</layout>										
+									</question>
+									<question id="addressLine2" mandatory="true">
+										<label id="AddressInformation.StreetName">
+											<![CDATA[Street Name]]>
+										</label>
+										<layout>
+											<width>70</width>							
+										</layout>										
+									</question>
+									<question id="city" mandatory="true">
+										<label id="AddressInformation.City">
+											<![CDATA[City, Town or Village]]>
+										</label>
+										<layout>
+											<width>70</width>							
+										</layout>										
+									</question>
+									<question id="state" mandatory="true">
+										<label id="AddressInformation.State"><![CDATA[State]]></label>
+										<layout>
+											<width>70</width>							
+										</layout>										
+									</question>
+								</cluster>
+							</condition>
+
+							<!-- Residential Address fields when country is NOT US or CA-->	
+							<condition expression="Person.residentialCountry!=&quot;CA&quot;
+								and Person.residentialCountry!=&quot;US&quot;" >
+								<cluster entity="IntlResAddress" grouping-id="resAddressGroup">
+									<question id="addressLine1" mandatory="true">
+										<label id="AddressInformation.StreetNumOne"><![CDATA[Street 1]]></label>
+										<layout>
+											<width>70</width>							
+										</layout>										
+									</question>
+									<question id="addressLine2" mandatory="true">
+										<label id="AddressInformation.StreetNameTwo"><![CDATA[Street 2]]></label>
+										<layout>
+											<width>70</width>							
+										</layout>										
+									</question>
+									<question id="city" mandatory="true">
+										<label id="AddressInformation.City"><![CDATA[City, Town or Village]]></label>
+										<layout>
+											<width>70</width>							
+										</layout>										
+									</question>
+									<question id="addressLine4" mandatory="true">
+										<label id="AddressInformation.Intl.State"><![CDATA[State/Province/Region]]></label>
+										<layout>
+											<width>70</width>							
+										</layout>										
+									</question>
+								</cluster>
+							</condition>
+							
+							<!-- Residential Address fields when country not CA -->
+							<condition expression="Person.residentialCountry!=&quot;CA&quot;" >
+								<cluster entity="IntlResAddress" grouping-id="resAddressGroup">
+									<question id="zipCode" mandatory="true">
+										<label id="AddressInformation.ResAddr.ZipCode">
+											<![CDATA[Zip Code]]>
+										</label>
+										<layout>
+											<width>60</width>							
+										</layout>										
+									</question>
+								</cluster>
+							</condition>
+
+							<set-attribute expression="Person.residentialCountry" id="ResidentialAddress.country"/>
+							<set-attribute expression="Person.residentialCountry" id="IntlResAddress.country" />
+					</question-page>	
+							
+								<!-- Always VAlidate Address Manual or from WS, Firts Parameter is 3 -->
+					<callout expression="ValidatePartnerResidentialAddress( &quot;3&quot;, 
+								ResidentialAddress.suiteNum, 
+								ResidentialAddress.addressLine1, 
+								ResidentialAddress.addressLine2, 
+								ResidentialAddress.city, 
+								ResidentialAddress.province, 
+								ResidentialAddress.postalCode, Person.residentialCountry)"				
+								id="ValidatePartnerResidentialAddress"
+								/>
+							
+					<callout
+						expression="UpdatePartnerAddress(&quot;Residential&quot;,&quot;STEP2&quot;,&quot;Test&quot; )"
+						id="UpdatePartnerAddress"
+					  />
+					
+					<callout expression="ResetPartnerAddressValidationFlag()" id="ResetPartnerAddressValidationFlag"  />		
+					
+					<condition expression="ResidentialAddress.validateStatus==&quot;2&quot;">		
+						<question-page 
+							id="PartnerResidAddrInfoInvalidAddrMsg" 
+							entity="Person"
+							progress="0"
+							show-back-button="true" 
+							show-exit-button="true"
+							>
+						
+							<title id="AddressInformation.ResAddr.Title" />		
+								<cluster entity="Person">
+									<question id="invalidAddressIsContinue" mandatory="true" multi-select="false">
+										<label id="ResAddressInformation.AddressMSG.Invalid">
+											<![CDATA[The address as entered is not valid. Do you still want to continue?]]>
+										</label>
+										<layout>
+											<type>radio</type>
+										</layout>
+									</question>
+								</cluster>										
+						</question-page>
+					</condition>
+					<condition expression="ResidentialAddress.validateStatus==&quot;3&quot;">		
+						<question-page 
+							id="PartnerResidAddrInfoExceptionAddrMsg" 
+							entity="Person"
+							progress="0"
+							show-back-button="true" 
+							show-exit-button="true"
+							>	
+							
+							<title id="AddressInformation.ResAddr.Title" />
+								
+								<cluster> 			
+									<display-text id="RequiredField.Indicator"/>
+									<layout>
+										<label-width>0</label-width>
+									</layout>									
+									</cluster>			
+								
+									<cluster>
+									<display-text id="ResAddressInformation.AddressMSG.Exception">
+									<![CDATA[We are temporarily experiencing technical difficulties and the address cannot be validated.  Please review the address and continue to the next step to proceed]]>
+									<layout>
+										<label-width>0</label-width>
+									</layout>									
+									</display-text>
+											  
+								</cluster>
+								<!--  Add Cluster to display address in one line -->
+								<cluster entity="ResidentialAddress">
+									<question id="oneLineAddress" read-only-expression="true"> </question>
+								</cluster>								
+						</question-page>
+					</condition>		
+				 </condition> 				
+			</loop>	
+	</section>
+	</condition>
+</ieg-script>

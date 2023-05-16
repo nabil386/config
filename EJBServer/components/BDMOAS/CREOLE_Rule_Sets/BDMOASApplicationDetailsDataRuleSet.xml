@@ -1,0 +1,140 @@
+<RuleSet name="BDMOASApplicationDetailsDataRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../build/svr/creole.gen/schema/RuleSet.xsd">
+
+	<Class extends="ActiveSuccessionSet"
+		extendsRuleSet="PropagatorRuleSet" name="BDMOASApplicationDetails">
+		<Attribute name="requestedPensionStartDate">
+			<Annotations />
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="applicationStatus">
+			<Annotations />
+			<type>
+				<codetableentry table="BDMOASApplicationStatus" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="withdrawalDate">
+			<Annotations />
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="benefitType">
+			<Annotations />
+			<type>
+				<codetableentry table="BDMOASBenefitType" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="methodOfApplication">
+			<Annotations />
+			<type>
+				<codetableentry table="BDMOASMethodOfApplication" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="receiptDate">
+			<Annotations />
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="description">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage
+					key="DynamicEvidenceSuccessionSet.description"
+					resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules">
+					<reference attribute="successionID" />
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="caseParticipantRole">
+			<Annotations />
+			<type>
+				<javaclass name="java.lang.Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="related_caseParticipantRole">
+			<Annotations />
+			<type>
+				<ruleclass name="CaseParticipantRole"
+					ruleset="CaseEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<reference attribute="caseParticipantRoleRecord">
+					<create ruleclass="CaseParticipantRoleCalculator"
+						ruleset="DynamicEvidenceRuleSet">
+						<reference attribute="caseParticipantRole" />
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="related_BDMOASBenefitCancellationRequest">
+			<Annotations>
+				<relatedSuccessionSet relationship="child" />
+			</Annotations>
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass name="BDMOASBenefitCancellationRequest"
+						ruleset="BDMOASBenefitCancellationRequestDataRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="related_BDMOASBenefitCessation">
+			<Annotations>
+				<relatedSuccessionSet relationship="child" />
+			</Annotations>
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass name="BDMOASBenefitCessation"
+						ruleset="BDMOASBenefitCessationDataRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="related_BDMOASDeemedDate">
+			<Annotations>
+				<relatedSuccessionSet relationship="child" />
+			</Annotations>
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass name="BDMOASDeemedDate"
+						ruleset="BDMOASDeemedDateDataRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

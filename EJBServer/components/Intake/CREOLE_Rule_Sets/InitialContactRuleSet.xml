@@ -1,0 +1,1761 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+  Copyright 2011 Curam Software Ltd.
+  All rights reserved.
+
+  This software is the confidential and proprietary information of Curam
+  Software, Ltd. ("Confidential Information").  You shall not disclose such
+  Confidential Information and shall use it only in accordance with the
+  terms of the license agreement you entered into with Curam Software.
+-->
+<!--
+  This is a sample rule set which is created to test the CoreAdvisorRuleSet.
+  -->
+<RuleSet
+  name="InitialContactRuleSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+>
+
+
+  <!--
+    Represents advice for HouseholdMember if ethnic details are not recorded.
+-->
+  <Class
+    extends="AbstractAdviceItem"
+    extendsRuleSet="CoreAdvisorRuleSet"
+    name="ExistingApplicationAdviceForIntakeWorker"
+    xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+  >
+
+
+    <Initialization>
+      <Attribute name="concernRoleID">
+        <type>
+          <javaclass name="Number"/>
+        </type>
+      </Attribute>
+      <Attribute name="application">
+        <type>
+          <ruleclass
+            name="Application"
+            ruleset="ApplicationData"
+          />
+        </type>
+      </Attribute>
+      <Attribute name="adviceContextID">
+        <type>
+          <javaclass name="Number"/>
+        </type>
+      </Attribute>
+    </Initialization>
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="ExistingApplicationAdviceForIntakeWorker.description"
+          resourceBundle="curam.cgiss.rules.LifeEventRuleSetProperties"
+        />
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="applicationID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <reference attribute="applicationID">
+          <reference attribute="application"/>
+        </reference>
+
+
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="adviceContext">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <reference attribute="adviceContextID"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="adviceText">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="applicationVerificationAdviceForIntakeWoker"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="intakeWorker">
+      <type>
+        <ruleclass name="IntakeWorker"/>
+      </type>
+      <derivation>
+        <create ruleclass="IntakeWorker"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="applicationHomeLink">
+      <type>
+        <ruleclass name="ApplicationHomeLink"/>
+      </type>
+      <derivation>
+        <create ruleclass="ApplicationHomeLink">
+          <reference attribute="applicationID"/>
+        </create>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="concernRoleName">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <reference attribute="concernRoleName">
+          <singleitem
+            onEmpty="error"
+            onMultiple="returnFirst"
+          >
+            <readall
+              ruleclass="ConcernRole"
+              ruleset="ParticipantEntitiesRuleSet"
+            >
+              <match retrievedattribute="concernRoleID">
+                <reference attribute="concernRoleID"/>
+              </match>
+            </readall>
+          </singleitem>
+        </reference>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="participant">
+      <type>
+        <ruleclass
+          name="StringParameter"
+          ruleset="CoreAdvisorRuleSet"
+        />
+      </type>
+      <derivation>
+        <create
+          ruleclass="StringParameter"
+          ruleset="CoreAdvisorRuleSet"
+        >
+          <specify attribute="name">
+            <String value="participant"/>
+          </specify>
+
+
+          <specify attribute="value">
+            <reference attribute="concernRoleName"/>
+          </specify>
+        </create>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="showAdvice">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <reference attribute="isApplicationStatusSubmitted"/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- BEGIN, CR00291216, PC -->
+    <Attribute name="verifyIntakeApplicantStatusIsActive">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <any>
+          <dynamiclist>
+            <list>
+              <reference attribute="filterApplicant"/>
+            </list>
+            <listitemexpression>
+              <reference attribute="isIntakeApplicantActive">
+                <create ruleclass="findApplicantStatus">
+                  <reference attribute="currentIntakeApplicantStatusID">
+                    <current/>
+                  </reference>
+                </create>
+              </reference>
+            </listitemexpression>
+          </dynamiclist>
+        </any>
+
+
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="filterApplicant">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="IntakeApplicant"
+            ruleset="ApplicationData"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <readall
+          ruleclass="IntakeApplicant"
+          ruleset="ApplicationData"
+        >
+          <match retrievedattribute="concernRoleID">
+            <reference attribute="concernRoleID"/>
+
+
+          </match>
+        </readall>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00291216 -->
+
+
+    <Attribute name="category">
+      <type>
+        <codetableentry table="AdviceCategory"/>
+      </type>
+      <derivation>
+        <Code table="AdviceCategory">
+          <String value="AC2001"/>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="status">
+      <type>
+        <codetableentry table="AdviceStatus"/>
+      </type>
+      <derivation>
+        <Code table="AdviceStatus">
+          <String value="AS2002"/>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="priority">
+      <type>
+        <codetableentry table="AdvicePriority"/>
+      </type>
+      <derivation>
+        <Code table="AdvicePriority">
+          <String value="AP2001"/>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="isApplicationStatusSubmitted">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <Code table="ApplicationStatus">
+            <String value="AS19003"/>
+          </Code>
+          <reference attribute="status">
+            <reference attribute="applicationStatus">
+              <create ruleclass="ApplicationStatusForApplicantion">
+                <reference attribute="currentApplicationStatusID">
+                  <reference attribute="application"/>
+                </reference>
+              </create>
+            </reference>
+          </reference>
+        </equals>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+  <!--
+    Represents advice for HouseholdMember if ethnic details are not recorded.
+-->
+  <Class
+    extends="AbstractAdviceItem"
+    extendsRuleSet="CoreAdvisorRuleSet"
+    name="ExistingApplicationAdviceForEligibilityWorker"
+    xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+  >
+
+
+    <Initialization>
+      <Attribute name="concernRoleID">
+        <type>
+          <javaclass name="Number"/>
+        </type>
+      </Attribute>
+      <Attribute name="application">
+        <type>
+          <ruleclass
+            name="Application"
+            ruleset="ApplicationData"
+          />
+        </type>
+      </Attribute>
+      <Attribute name="adviceContextID">
+        <type>
+          <javaclass name="Number"/>
+        </type>
+      </Attribute>
+    </Initialization>
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="ExistingApplicationAdviceForEligibilityWorker.description"
+          resourceBundle="curam.cgiss.rules.LifeEventRuleSetProperties"
+        />
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="applicationID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <reference attribute="applicationID">
+          <reference attribute="application"/>
+        </reference>
+
+
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="adviceContext">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <reference attribute="adviceContextID"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="adviceText">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="applicationVerificationAdviceForEligibilityWoker"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="eligibilityWorker">
+      <type>
+        <ruleclass name="EligibilityWorker"/>
+      </type>
+      <derivation>
+        <create ruleclass="EligibilityWorker"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="applicationHomeLink">
+      <type>
+        <ruleclass name="ApplicationHomeLink"/>
+      </type>
+      <derivation>
+        <create ruleclass="ApplicationHomeLink">
+          <reference attribute="applicationID"/>
+        </create>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="concernRoleName">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <reference attribute="concernRoleName">
+          <singleitem
+            onEmpty="error"
+            onMultiple="returnFirst"
+          >
+            <readall
+              ruleclass="ConcernRole"
+              ruleset="ParticipantEntitiesRuleSet"
+            >
+              <match retrievedattribute="concernRoleID">
+                <reference attribute="concernRoleID"/>
+              </match>
+            </readall>
+          </singleitem>
+        </reference>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="participant">
+      <type>
+        <ruleclass
+          name="StringParameter"
+          ruleset="CoreAdvisorRuleSet"
+        />
+      </type>
+      <derivation>
+        <create
+          ruleclass="StringParameter"
+          ruleset="CoreAdvisorRuleSet"
+        >
+          <specify attribute="name">
+            <String value="participant"/>
+          </specify>
+
+
+          <specify attribute="value">
+            <reference attribute="concernRoleName"/>
+          </specify>
+        </create>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="showAdvice">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <reference attribute="isApplicationStatusReadyForDetermination"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="category">
+      <type>
+        <codetableentry table="AdviceCategory"/>
+      </type>
+      <derivation>
+        <Code table="AdviceCategory">
+          <String value="AC2001"/>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="status">
+      <type>
+        <codetableentry table="AdviceStatus"/>
+      </type>
+      <derivation>
+        <Code table="AdviceStatus">
+          <String value="AS2002"/>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="priority">
+      <type>
+        <codetableentry table="AdvicePriority"/>
+      </type>
+      <derivation>
+        <Code table="AdvicePriority">
+          <String value="AP2001"/>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="isApplicationStatusReadyForDetermination">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <Code table="ApplicationStatus">
+            <String value="AS19004"/>
+          </Code>
+          <reference attribute="status">
+            <reference attribute="applicationStatus">
+              <create ruleclass="ApplicationStatusForApplicantion">
+                <reference attribute="currentApplicationStatusID">
+                  <reference attribute="application"/>
+                </reference>
+              </create>
+            </reference>
+          </reference>
+        </equals>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+  <!--
+    Represents advice for HouseholdMember if ethnic details are not recorded.
+-->
+  <Class
+    name="ApplicationForApplicant"
+    xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+  >
+
+
+    <Initialization>
+      <Attribute name="applicationID">
+        <type>
+          <javaclass name="Number"/>
+        </type>
+      </Attribute>
+    </Initialization>
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="ApplicationHomeLink.description"
+          resourceBundle="curam.cgiss.rules.LifeEventRuleSetProperties"
+        />
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="application">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="Application"
+            ruleset="ApplicationData"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <readall
+          ruleclass="Application"
+          ruleset="ApplicationData"
+        >
+          <match retrievedattribute="applicationID">
+            <reference attribute="applicationID"/>
+
+
+          </match>
+        </readall>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+  <!--
+    Represents advice for HouseholdMember if ethnic details are not recorded.
+-->
+  <Class
+    name="ApplicationStatusForApplicantion"
+    xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+  >
+
+
+    <Initialization>
+      <Attribute name="currentApplicationStatusID">
+        <type>
+          <javaclass name="Number"/>
+        </type>
+      </Attribute>
+    </Initialization>
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="ApplicationStatusForApplicantion.description"
+          resourceBundle="curam.cgiss.rules.LifeEventRuleSetProperties"
+        />
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="applicationStatus">
+      <type>
+        <ruleclass
+          name="ApplicationStatus"
+          ruleset="ApplicationData"
+        />
+      </type>
+      <derivation>
+        <singleitem
+          onEmpty="error"
+          onMultiple="error"
+        >
+          <readall
+            ruleclass="ApplicationStatus"
+            ruleset="ApplicationData"
+          >
+            <match retrievedattribute="applicationStatusID">
+              <reference attribute="currentApplicationStatusID"/>
+            </match>
+          </readall>
+        </singleitem>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <!-- BEGIN, CR00291216, PC -->
+  <Class
+    name="findApplicantStatus"
+    xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+  >
+
+
+    <Initialization>
+      <Attribute name="intakeApplicantStatusID">
+        <type>
+          <javaclass name="Number"/>
+        </type>
+      </Attribute>
+    </Initialization>
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="ApplicationStatusForApplicantion.description"
+          resourceBundle="curam.cgiss.rules.LifeEventRuleSetProperties"
+        />
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="intakeApplicantStatus">
+      <type>
+        <ruleclass
+          name="IntakeApplicantStatus"
+          ruleset="ApplicationData"
+        />
+
+
+      </type>
+      <derivation>
+        <singleitem
+          onEmpty="error"
+          onMultiple="returnFirst"
+        >
+          <readall
+            ruleclass="IntakeApplicantStatus"
+            ruleset="ApplicationData"
+          >
+            <match retrievedattribute="intakeApplicantStatusID">
+              <reference attribute="intakeApplicantStatusID"/>
+
+
+            </match>
+          </readall>
+        </singleitem>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="isIntakeApplicantActive">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="status">
+            <reference attribute="intakeApplicantStatus"/>
+          </reference>
+          <Code table="ApplicantStatus">
+            <String value="ATS19001"/>
+          </Code>
+        </equals>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+  <!-- END, CR00291216 -->
+
+
+  <Class
+    name="ParticipantScreening"
+    xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+  >
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="ParticipantScreening.description"
+          resourceBundle="curam.cgiss.rules.LifeEventRuleSetProperties"
+        />
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="screeningExecutionID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Concern Role ID -->
+    <Attribute name="concernRoleID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+  <Class
+    name="ParticipantTriage"
+    xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+  >
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="ParticipantTriage.description"
+          resourceBundle="curam.cgiss.rules.LifeEventRuleSetProperties"
+        />
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="participantTriageID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Case Concern Role ID -->
+    <Attribute name="concernRoleID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Record Status -->
+    <Attribute name="recordStatus">
+      <type>
+        <!-- BEGIN, CR00260917, CP-->
+        <codetableentry table="RecordStatus"/>
+        <!-- END, CR00260917-->
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+  <!--
+    Represents advice for HouseholdMember if ethnic details are not recorded.
+-->
+  <Class
+    extends="AbstractLink"
+    extendsRuleSet="CoreAdvisorRuleSet"
+    name="ApplicationHomeLink"
+  >
+
+
+    <Initialization>
+      <Attribute name="applicationID">
+        <type>
+          <javaclass name="Number"/>
+        </type>
+      </Attribute>
+    </Initialization>
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="ApplicationHomeLink.description"
+          resourceBundle="curam.cgiss.rules.LifeEventRuleSetProperties"
+        />
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="target">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="ApplicationSummary"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="params">
+      <type>
+        <ruleclass
+          name="NumberParameter"
+          ruleset="CoreAdvisorRuleSet"
+        />
+      </type>
+      <derivation>
+        <create
+          ruleclass="NumberParameter"
+          ruleset="CoreAdvisorRuleSet"
+        >
+          <specify attribute="name">
+            <String value="applicationID"/>
+          </specify>
+          <specify attribute="value">
+            <reference attribute="applicationID"/>
+          </specify>
+        </create>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="modal">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <false/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="external">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <false/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="name">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="applicationHomeLink"/>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+  <!--
+    Represents advice for HouseholdMember if ethnic details are not recorded.
+-->
+  <Class
+    extends="AbstractAdviceItem"
+    extendsRuleSet="CoreAdvisorRuleSet"
+    name="NewClientAdvice"
+    xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+  >
+
+
+    <Initialization>
+      <Attribute name="concernRoleID">
+        <type>
+          <javaclass name="Number"/>
+        </type>
+      </Attribute>
+      <Attribute name="adviceContextID">
+        <type>
+          <javaclass name="Number"/>
+        </type>
+      </Attribute>
+    </Initialization>
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="NewClientAdvice.description"
+          resourceBundle="curam.cgiss.rules.LifeEventRuleSetProperties"
+        />
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="adviceContext">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <reference attribute="adviceContextID"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="adviceText">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="startTriageAdvice"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="intakeWorker">
+      <type>
+        <ruleclass name="IntakeWorker"/>
+      </type>
+      <derivation>
+        <create ruleclass="IntakeWorker"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="startTriageLink">
+      <type>
+        <ruleclass name="StartTriageLink"/>
+      </type>
+      <derivation>
+        <create ruleclass="StartTriageLink">
+          <reference attribute="concernRoleID"/>
+        </create>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="participant">
+      <type>
+        <ruleclass
+          name="StringParameter"
+          ruleset="CoreAdvisorRuleSet"
+        />
+      </type>
+      <derivation>
+        <create
+          ruleclass="StringParameter"
+          ruleset="CoreAdvisorRuleSet"
+        >
+          <specify attribute="name">
+            <String value="participant"/>
+          </specify>
+
+
+          <specify attribute="value">
+            <reference attribute="concernRoleName"/>
+          </specify>
+        </create>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="concernRoleName">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <reference attribute="concernRoleName">
+          <singleitem
+            onEmpty="error"
+            onMultiple="returnFirst"
+          >
+            <readall
+              ruleclass="ConcernRole"
+              ruleset="ParticipantEntitiesRuleSet"
+            >
+              <match retrievedattribute="concernRoleID">
+                <reference attribute="concernRoleID"/>
+              </match>
+            </readall>
+          </singleitem>
+        </reference>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="showAdvice">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <all>
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <not>
+                <reference attribute="isClientHasExistingCases"/>
+              </not>
+              <not>
+                <reference attribute="isClientHasExistingApplications"/>
+              </not>
+              <not>
+                <reference attribute="isClientHasExistingScreeningss"/>
+              </not>
+              <not>
+                <reference attribute="isClientHasExistingTriages"/>
+              </not>
+            </members>
+          </fixedlist>
+        </all>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="category">
+      <type>
+        <codetableentry table="AdviceCategory"/>
+      </type>
+      <derivation>
+        <Code table="AdviceCategory">
+          <String value="AC2001"/>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="status">
+      <type>
+        <codetableentry table="AdviceStatus"/>
+      </type>
+      <derivation>
+        <Code table="AdviceStatus">
+          <String value="AS2002"/>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="priority">
+      <type>
+        <codetableentry table="AdvicePriority"/>
+      </type>
+      <derivation>
+        <Code table="AdvicePriority">
+          <String value="AP2001"/>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="isClientHasExistingCases">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <compare comparison="&gt;">
+          <property name="size">
+            <object>
+              <reference attribute="caseParticipantRoles"/>
+            </object>
+          </property>
+          <Number value="0"/>
+        </compare>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="caseParticipantRoles">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="CaseParticipantRole"
+            ruleset="CaseEntitiesRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <readall
+          ruleclass="CaseParticipantRole"
+          ruleset="CaseEntitiesRuleSet"
+        >
+          <match retrievedattribute="participantRoleID">
+            <reference attribute="concernRoleID"/>
+
+
+          </match>
+        </readall>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="isClientHasExistingApplications">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <compare comparison="&gt;">
+          <property name="size">
+            <object>
+              <reference attribute="applicationExecutionsForMatchingRole"/>
+            </object>
+          </property>
+          <Number value="0"/>
+        </compare>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="applicationExecutionsForMatchingRole">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="IntakeApplicant"
+            ruleset="ApplicationData"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <readall
+          ruleclass="IntakeApplicant"
+          ruleset="ApplicationData"
+        >
+          <match retrievedattribute="concernRoleID">
+            <reference attribute="concernRoleID"/>
+
+
+          </match>
+        </readall>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="isClientHasExistingScreeningss">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <compare comparison="&gt;">
+          <property name="size">
+            <object>
+              <reference attribute="screeningExecutions"/>
+            </object>
+          </property>
+          <Number value="0"/>
+        </compare>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="screeningExecutions">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="ParticipantScreening"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <readall ruleclass="ParticipantScreening">
+          <match retrievedattribute="concernRoleID">
+            <reference attribute="concernRoleID"/>
+
+
+          </match>
+        </readall>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="isClientHasExistingTriages">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <compare comparison="&gt;">
+          <property name="size">
+            <object>
+              <!-- BEGIN, CR00260917, CP-->
+              <reference attribute="filteredTriages"/>
+              <!-- END, CR00260917-->
+            </object>
+          </property>
+          <Number value="0"/>
+        </compare>
+      </derivation>
+    </Attribute>
+
+
+    <!-- BEGIN, CR00260917, CP-->
+    <!-- List of Filetered Triage which are not in Cancelled state. -->
+    <Attribute name="filteredTriages">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="ParticipantTriage"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="participantTriages"/>
+          </list>
+          <listitemexpression>
+            <equals>
+              <reference attribute="recordStatus">
+                <current/>
+              </reference>
+              <Code table="RecordStatus">
+                <String value="RST1"/>
+              </Code>
+            </equals>
+
+
+          </listitemexpression>
+        </filter>
+
+
+      </derivation>
+    </Attribute>
+    <!-- END, CR00260917-->
+
+
+    <Attribute name="participantTriages">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="ParticipantTriage"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <readall ruleclass="ParticipantTriage">
+          <match retrievedattribute="concernRoleID">
+            <reference attribute="concernRoleID"/>
+
+
+          </match>
+        </readall>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+  <!--
+    Represents advice for HouseholdMember if ethnic details are not recorded.
+-->
+  <Class
+    extends="AbstractLink"
+    extendsRuleSet="CoreAdvisorRuleSet"
+    name="StartLifeEventLink"
+  >
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="StartLifeEventLink.description"
+          resourceBundle="curam.cgiss.rules.LifeEventRuleSetProperties"
+        />
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="target">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="Intake_ListLifeEvents"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="concernRoleID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="params">
+      <type>
+        <ruleclass
+          name="NumberParameter"
+          ruleset="CoreAdvisorRuleSet"
+        />
+      </type>
+      <derivation>
+        <create
+          ruleclass="NumberParameter"
+          ruleset="CoreAdvisorRuleSet"
+        >
+          <specify attribute="name">
+            <String value="concernRoleID"/>
+          </specify>
+
+
+          <specify attribute="value">
+            <reference attribute="concernRoleID"/>
+          </specify>
+        </create>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="modal">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <true/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="external">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <false/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="name">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="startLifeEventLink"/>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+  <!--
+    Represents advice for HouseholdMember if ethnic details are not recorded.
+-->
+  <Class
+    extends="AbstractLink"
+    extendsRuleSet="CoreAdvisorRuleSet"
+    name="StartTriageLink"
+    xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+  >
+
+
+    <Initialization>
+      <Attribute name="concernRoleID">
+        <type>
+          <javaclass name="Number"/>
+        </type>
+      </Attribute>
+    </Initialization>
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="StartTriageLink.description"
+          resourceBundle="curam.cgiss.rules.LifeEventRuleSetProperties"
+        />
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="target">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="Intake_startTriageScriptForConcernRole"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="startTriageParam">
+      <type>
+        <ruleclass
+          name="NumberParameter"
+          ruleset="CoreAdvisorRuleSet"
+        />
+      </type>
+      <derivation>
+        <create
+          ruleclass="NumberParameter"
+          ruleset="CoreAdvisorRuleSet"
+        >
+          <specify attribute="name">
+            <String value="concernRoleID"/>
+          </specify>
+
+
+          <specify attribute="value">
+            <reference attribute="concernRoleID"/>
+          </specify>
+        </create>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="modal">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <true/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="external">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <false/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="name">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="startTriageLink"/>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <Class
+    extends="AbstractAdviceContext"
+    extendsRuleSet="CoreAdvisorRuleSet"
+    name="InitialContactContext"
+  >
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="InitialContactContext.description"
+          resourceBundle="curam.cgiss.rules.LifeEventRuleSetProperties"
+        />
+      </derivation>
+    </Attribute>
+
+
+    <!-- This attribute value would be prepopulated by the propagator -->
+    <Attribute name="concernRoleID">
+      <type>
+        <ruleclass
+          name="NumberParameter"
+          ruleset="CoreAdvisorRuleSet"
+        />
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- This attribute value would be prepopulated by the propagator -->
+    <Attribute name="adviceContextID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="concernRoleIDValue">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <reference attribute="value">
+          <reference attribute="concernRoleID"/>
+        </reference>
+      </derivation>
+    </Attribute>
+
+
+    <!-- This attribute will hold the list of advice which will be sent back to the client -->
+    <Attribute name="advice">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="AbstractAdviceItem"
+            ruleset="CoreAdvisorRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <joinlists>
+          <fixedlist>
+            <listof>
+              <javaclass name="List">
+                <ruleclass
+                  name="AbstractAdviceItem"
+                  ruleset="CoreAdvisorRuleSet"
+                />
+              </javaclass>
+            </listof>
+            <members>
+              <reference attribute="newClientAdvice"/>
+              <reference attribute="existingApplicationAdviceForIntakeWorker"/>
+              <reference attribute="existingApplicationAdviceForEligibilityWorker"/>
+            </members>
+          </fixedlist>
+        </joinlists>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="newClientAdvice">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="AbstractAdviceItem"
+            ruleset="CoreAdvisorRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <fixedlist>
+          <listof>
+            <ruleclass
+              name="AbstractAdviceItem"
+              ruleset="CoreAdvisorRuleSet"
+            />
+          </listof>
+          <members>
+            <create ruleclass="NewClientAdvice">
+              <reference attribute="concernRoleIDValue"/>
+              <reference attribute="adviceContextID"/>
+            </create>
+          </members>
+        </fixedlist>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="existingApplicationAdviceForIntakeWorker">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="AbstractAdviceItem"
+            ruleset="CoreAdvisorRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <reference attribute="applications"/>
+          </list>
+          <listitemexpression>
+            <create ruleclass="ExistingApplicationAdviceForIntakeWorker">
+              <reference attribute="concernRoleIDValue"/>
+              <current/>
+              <reference attribute="adviceContextID"/>
+            </create>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="existingApplicationAdviceForEligibilityWorker">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="AbstractAdviceItem"
+            ruleset="CoreAdvisorRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <reference attribute="applications"/>
+          </list>
+          <listitemexpression>
+            <create ruleclass="ExistingApplicationAdviceForEligibilityWorker">
+              <reference attribute="concernRoleIDValue"/>
+              <current/>
+              <reference attribute="adviceContextID"/>
+            </create>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="applications">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="Application"
+            ruleset="ApplicationData"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <joinlists>
+          <dynamiclist>
+            <list>
+              <readall
+                ruleclass="IntakeApplicant"
+                ruleset="ApplicationData"
+              >
+                <match retrievedattribute="concernRoleID">
+                  <reference attribute="concernRoleIDValue"/>
+
+
+                </match>
+              </readall>
+            </list>
+            <listitemexpression>
+              <reference attribute="application">
+                <create ruleclass="ApplicationForApplicant">
+                  <reference attribute="applicationID">
+                    <current/>
+                  </reference>
+                </create>
+              </reference>
+            </listitemexpression>
+          </dynamiclist>
+        </joinlists>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <Class
+    extends="UserRole"
+    extendsRuleSet="CoreAdvisorRuleSet"
+    name="IntakeWorker"
+  >
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="IntakeWorker.description"
+          resourceBundle="curam.cgiss.rules.LifeEventRuleSetProperties"
+        />
+      </derivation>
+    </Attribute>
+    <Attribute name="roleName">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="INTAKEROLE"/>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <Class
+    extends="UserRole"
+    extendsRuleSet="CoreAdvisorRuleSet"
+    name="EligibilityWorker"
+  >
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="EligibilityWorker.description"
+          resourceBundle="curam.cgiss.rules.LifeEventRuleSetProperties"
+        />
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="roleName">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="ELIGIBILITYROLE"/>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+</RuleSet>

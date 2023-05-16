@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet
+  name="PDCBirthAndDeathSummaryRuleSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+>
+  <Class
+    extends="DefaultEvidenceSummary"
+    extendsRuleSet="EvidenceSummaryRuleSet"
+    name="PDCBirthAndDeathSummary"
+  >
+    <Attribute name="evidence">
+      <type>
+        <ruleclass
+          name="PDCBirthAndDeath"
+          ruleset="PDCBirthAndDeathRuleSet"
+        />
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="summary">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <reference attribute="isDead"/>
+            </condition>
+            <value>
+              <ResourceMessage
+                key="summaryMessage2"
+                resourceBundle="curam.pdc.rules.DynEvd_PDCBirthAndDeath_Summary"
+              >
+                <reference attribute="dateOfBirth">
+                  <reference attribute="evidence"/>
+                </reference>
+                <reference attribute="dateOfDeath">
+                  <reference attribute="evidence"/>
+                </reference>
+              </ResourceMessage>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage
+                key="summaryMessage1"
+                resourceBundle="curam.pdc.rules.DynEvd_PDCBirthAndDeath_Summary"
+              >
+                <reference attribute="dateOfBirth">
+                  <reference attribute="evidence"/>
+                </reference>
+              </ResourceMessage>
+            </value>
+          </otherwise>
+        </choose>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="isDead">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <not>
+          <equals>
+            <reference attribute="dateOfDeath">
+              <reference attribute="evidence"/>
+            </reference>
+            <null/>
+          </equals>
+        </not>
+      </derivation>
+    </Attribute>
+  </Class>
+</RuleSet>

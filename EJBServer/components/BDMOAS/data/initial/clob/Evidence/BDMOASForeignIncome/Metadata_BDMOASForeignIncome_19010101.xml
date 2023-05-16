@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- DEV TASK 90155: Foreign Income Changes -->
+<EvidenceTypeVersion modifiable="true"
+	enableSaveAndNew="true" correctionOnly="true"
+	relatedParticipant="caseParticipantRoleID"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../../../../DynamicEvidenceMetadata.xsd">
+	<Model>
+		<Attributes>
+			<Attribute>
+				<RelatedCPAttribute cpRoleType="MEM"
+					name="caseParticipantRoleID" participantType="Person">
+					<CPSearchType code="PRI" />
+					<CPSearchType code="MEM" />
+				</RelatedCPAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="incomeType">
+					<DomainType dataType="Codetable">
+						<CodetableOptions codetableName="IncomeTypeCode" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="otherDescription"
+					mandatory="false">
+					<DomainType dataType="String">
+						<StringOptions maxSize="144"
+							trimLeadingSpaces="true" trimTrailingSpaces="true" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="false" name="year">
+					<DomainType dataType="String">
+						<StringOptions maxSize="4" trimLeadingSpaces="true"
+							trimTrailingSpaces="true" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="currency">
+					<DomainType dataType="Codetable">
+						<CodetableOptions codetableName="BDMCurrency" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="amount">
+					<DomainType dataType="Float" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="false" name="canadianAmount">
+					<DomainType dataType="Money">
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="country">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMSourceCountry" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<CommentsAttribute name="comments" />
+			</Attribute>
+		</Attributes>
+		<Relationships />
+	</Model>
+	<Validations>
+		<PatternValidations>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="canadianAmount" target="year"
+					unidirectional="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_YEAR_MUST_BE_ENTERED_IF_CANADIAN_DOLLAR_AMOUNT_ENTERED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="year" target="canadianAmount"
+					unidirectional="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_CANADIAN_DOLLAR_AMOUNT_MUST_BE_ENTERED_IF_YEAR_ENTERED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="incomeType" sourceLiteral="Other"
+					target="otherDescription" unidirectional="true"
+					useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_INCOMETYPE_OTHER_DESCRIPTION_REQUIRED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+		</PatternValidations>
+		<CustomRulesValidation
+			ruleSetName="BDMOASForeignIncomeValidationRuleSet" />
+	</Validations>
+	<SummaryInformation>
+		<SummaryRuleset
+			ruleSetName="BDMOASForeignIncomeSummaryRuleSet" />
+	</SummaryInformation>
+	<UserInterface>
+		<Cluster>
+			<RelCPCluster defaultToBlank="true"
+				enableMultiMemberUpdates="false" fullCreateParticipant="false"
+				isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true"
+				modifyOption="no" showParticipantTypeFilter="true"
+				useSingleName="false">
+				<StandardField source="caseParticipantRoleID" />
+				<ClusterName id="Related.Participant.Cluster.Title" />
+				<LabelName id="Name.Label.Name" />
+				<RelCpPfx id="Participant.Description.Name" />
+				<FirstName id="First.Name.Label.Name" />
+				<SecondName id="Second.Name.Label.Name" />
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true" labelWidth="40"
+				numberOfColumns="2">
+				<Title id="ForeignIncomeDetails.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField modifiable="true" source="year"
+						useDefault="false">
+						<Label id="Year.Field.Label.Name" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<SkipField />
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="amount"
+						useDefault="false">
+						<Label id="AmountReported.Field.Label.Name" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="canadianAmount" useDefault="false">
+						<Label id="CanadianAmount.Field.Label.Name" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="incomeType"
+						useBlank="true" useDefault="false">
+						<Label id="IncomeType.Field.Label.Name" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="otherDescription" useDefault="false">
+						<Label id="Description.Field.Label.Name" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="currency"
+						useBlank="true" useDefault="false">
+						<Label id="Currency.Field.Label.Name" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="country"
+						useBlank="true" useDefault="false">
+						<Label id="Country.Field.Label.Name" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<CommentsCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true">
+				<Title id="Comments.Cluster.Title" />
+				<StandardField source="comments" />
+			</CommentsCluster>
+		</Cluster>
+	</UserInterface>
+</EvidenceTypeVersion>

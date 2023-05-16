@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMOASMaritalRelationshipICVerificationRuleSet"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+    <Class extends="VerificationDeterminator"
+        extendsRuleSet="VerificationRuleSet"
+        name="BDMOASMaritalRelationshipICVerificationDeterminator">
+
+        <Attribute name="displayName">
+            <type>
+                <javaclass name="curam.creole.value.Message" />
+            </type>
+            <derivation>
+                <XmlMessage>BDMOASMaritalRelationshipICVerification</XmlMessage>
+            </derivation>
+        </Attribute>
+
+        <Attribute name="determine">
+            <type>
+                <ruleclass
+                    name="VerificationDeterminatorResult"
+                    ruleset="VerificationRuleSet" />
+            </type>
+            <derivation>
+                <create
+                    ruleclass="VerificationDeterminatorResult"
+                    ruleset="VerificationRuleSet">
+                    <specify attribute="result">
+                        <reference attribute="isVerificationRequired" />
+                    </specify>
+                    <specify attribute="reason">
+                        <reference attribute="reasonSkipped" />
+                    </specify>
+                </create>
+            </derivation>
+        </Attribute>
+
+        <Attribute name="reasonSkipped">
+            <type>
+                <codetableentry table="VerificationSkippedReason" />
+            </type>
+            <derivation>
+                <Code table="VerificationSkippedReason">
+                    <String value="BDMVSR2001" />
+                </Code>
+            </derivation>
+        </Attribute>
+
+        <Attribute name="maritalRelationshipEvidenceRecord">
+            <type>
+                <ruleclass name="BDMOASMaritalRelationship"
+                    ruleset="BDMOASMaritalRelationshipVerDataRuleSet" />
+            </type>
+            <derivation>
+                <singleitem onMultiple="returnFirst"
+                    onEmpty="returnNull">
+                    <readall ruleclass="BDMOASMaritalRelationship"
+                        ruleset="BDMOASMaritalRelationshipVerDataRuleSet">
+                        <match
+                            retrievedattribute="evidenceDescriptorID">
+                            <reference
+                                attribute="evidenceDescriptorID">
+                                <reference
+                                    attribute="verificationDeterminatorParams" />
+                            </reference>
+                        </match>
+                    </readall>
+                </singleitem>
+            </derivation>
+        </Attribute>
+        
+        <!-- If both of the relationship status and relationship change type for exception are not met then verification is required -->
+        <Attribute name="isVerificationRequired">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <not>
+                    <all>
+                        <fixedlist>
+                            <listof>
+                                <javaclass name="Boolean" />
+                            </listof>
+                            <members>
+                                <reference attribute="isRelationshipStatusForExceptionMet" />
+                                <reference attribute="isRelationshipChangeTypeExceptionMet" />
+                            </members>
+                        </fixedlist>
+                    </all>
+                </not>
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="isRelationshipStatusForExceptionMet">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <any>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <equals>
+                                <Code table="BDMOASMaritalRelation">
+                                    <String value="MR1" />
+                                </Code>
+                                <reference attribute="relationshipStatus">
+                                    <reference attribute="maritalRelationshipEvidenceRecord" />
+                                </reference>
+                            </equals>
+                            <equals>
+                                <Code table="BDMOASMaritalRelation">
+                                    <String value="MR2" />
+                                </Code>
+                                <reference attribute="relationshipStatus">
+                                    <reference attribute="maritalRelationshipEvidenceRecord" />
+                                </reference>
+                            </equals>
+                        </members>
+                    </fixedlist>
+                </any>
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="isRelationshipChangeTypeExceptionMet">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <all>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <not>
+                                <equals>
+                                    <Code table="BDMOASMaritalChangeType">
+                                        <String value="" />
+                                    </Code>
+                                    <reference attribute="relationshipChangeType">
+                                        <reference attribute="maritalRelationshipEvidenceRecord" />
+                                    </reference>
+                                </equals>
+                            </not>
+                            <equals>
+                                <Code table="BDMOASMaritalChangeType">
+                                    <String value="MCT2" />
+                                </Code>
+                                <reference attribute="relationshipChangeType">
+                                    <reference attribute="maritalRelationshipEvidenceRecord" />
+                                </reference>
+                            </equals>
+                        </members>
+                    </fixedlist>
+                </all>
+            </derivation>
+        </Attribute>
+        
+    </Class>
+</RuleSet>

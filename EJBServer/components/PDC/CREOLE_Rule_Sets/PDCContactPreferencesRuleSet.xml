@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="PDCContactPreferencesRuleSet">
+  <Class
+    extends="DynamicEvidence"
+    extendsRuleSet="DynamicEvidenceRuleSet"
+    name="PDCContactPreferences"
+  >
+    <Attribute name="preferredCommunication">
+      <Annotations/>
+      <type>
+        <codetableentry table="CommunicationMethod"/>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+    <Attribute name="preferredLanguage">
+      <Annotations/>
+      <type>
+        <codetableentry table="Language"/>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+    <Attribute name="participant">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="related_participant">
+      <Annotations/>
+      <type>
+        <ruleclass
+          name="CaseParticipantRole"
+          ruleset="CaseEntitiesRuleSet"
+        />
+      </type>
+      <derivation>
+        <reference attribute="caseParticipantRoleRecord">
+          <create
+            ruleclass="CaseParticipantRoleCalculator"
+            ruleset="DynamicEvidenceRuleSet"
+          >
+            <reference attribute="participant"/>
+          </create>
+        </reference>
+      </derivation>
+    </Attribute>
+  </Class>
+</RuleSet>

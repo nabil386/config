@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.curamsoftware.com/schemas/GUMBO/ApplicationBuilderConfig"
+    xmlns:abc="http://www.curamsoftware.com/schemas/GUMBO/ApplicationBuilderConfig"
+    elementFormDefault="qualified">
+    
+    <xs:complexType name="EvFieldType">
+        <xs:attribute name="referenced-as" type="xs:NCName" use="optional"/>
+        <xs:attribute name="target-name" type="xs:NCName" use="optional"/>
+        <xs:attribute name="aggregation" type="xs:NCName" use="optional"/>
+        <xs:attribute name="is-reference-attribute" type="xs:boolean" use="optional"/>
+        <xs:attribute name="map-as-concernrole-id" type="xs:boolean" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="ParticipantCreatorType">
+        <xs:attribute name="refid" type="xs:string" use="required"/>
+        <xs:attribute name="name" type="xs:NCName" use="required"/>
+        <xs:attribute name="role" type="xs:string" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="ParticipantNameFieldType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="from" type="xs:NCName" use="required"/>
+        <xs:attribute name="order" type="xs:positiveInteger" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="AddressFieldType">
+        <xs:attribute name="name" type="xs:NCName" use="required"/>
+        <xs:attribute name="from" type="xs:NCName" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="ParticipantAddressType">
+        <xs:sequence>
+            <xs:element ref="abc:address-field" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="type" type="xs:string" use="required"/>
+    </xs:complexType>
+    
+    <xs:element name="participant-name-field" type="abc:ParticipantNameFieldType"/>
+    <xs:element name="participant-address" type="abc:ParticipantAddressType"/>
+    <xs:element name="ev-field" type="abc:EvFieldType"/>
+    <xs:element name="create-participant" type="abc:ParticipantCreatorType"/>
+    <xs:element name="address-field" type="abc:AddressFieldType"/>
+    
+    <xs:complexType name="EntityType">
+        <xs:sequence>
+            <xs:element ref="abc:ev-field" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="abc:create-participant" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:NCName"/>
+        <xs:attribute name="package" type="xs:string"/>
+        <xs:attribute name="case-participant-relationship-name" type="xs:NCName"/>
+        <xs:attribute name="case-participant-class-name" type="xs:NCName"/>
+        <xs:attribute name="ev-type-code" type="xs:NCName" use="optional"/>
+        <xs:attribute name="dyn-evidence-primary-cpr-field-name" type="xs:NCName" use="optional"/>
+        <xs:attribute name="target-entity-type" type="xs:NCName" use="optional"/>        
+    </xs:complexType>
+    
+    <xs:complexType name="ParticipantCreatorDefinitionType">
+        <xs:sequence>
+            <xs:element ref="abc:participant-name-field" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="abc:participant-address" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="type" type="xs:string" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="EvidenceConfigType">
+                <xs:sequence>
+                    <xs:element name="entity" type="abc:EntityType" maxOccurs="unbounded"/>
+                    <xs:element name="def-create-participant" type="abc:ParticipantCreatorDefinitionType"  minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="package" type="xs:string" use="optional"/>
+    </xs:complexType>
+    
+    <xs:simpleType name="MutliplicityType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="multiple"/>
+            <xs:enumeration value="singleton"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="FieldType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="append"/>
+            <xs:enumeration value="button-radio"/>
+            <xs:enumeration value="button-checkbox"/>
+            <xs:enumeration value="choice-combo"/>
+            <xs:enumeration value="choice-multi-list"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:complexType name="FieldConfig">
+        <xs:attribute name="name" type="xs:NCName"/>
+        <xs:attribute name="type" type="abc:FieldType" use="optional"/>
+        <xs:attribute name="append-separator" type="xs:string" use="optional"/>
+        <xs:attribute name="codetable-class" type="xs:string" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="SectionConfig">
+        <xs:sequence>
+            <xs:element name="field" type="abc:FieldConfig" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:NCName" use="required"/>
+        <xs:attribute name="type" type="abc:MutliplicityType" use="optional"/>
+    </xs:complexType>
+    
+    <xs:complexType name="PdfConfigType">
+                <xs:sequence>
+                    <xs:element name="section" type="abc:SectionConfig" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="pdf-form-name" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="DatastoreConfigType">
+        <xs:attribute name="targetSchema" type="xs:string"/>
+    </xs:complexType>
+            
+    <xs:element name="evidence-config" type="abc:EvidenceConfigType"/>
+    
+    <xs:element name="pdf-config" type="abc:PdfConfigType"/>
+    
+    <xs:element name="datastore-config" type="abc:DatastoreConfigType"/>
+    
+    <xs:complexType name="ApplicationBuilderConfigType">
+        <xs:choice>
+          <xs:element ref="abc:evidence-config"/>
+          <xs:element ref="abc:pdf-config"/>
+          <xs:element ref="abc:datastore-config"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:element name="application-builder-config" type="abc:ApplicationBuilderConfigType"/>
+</xs:schema>

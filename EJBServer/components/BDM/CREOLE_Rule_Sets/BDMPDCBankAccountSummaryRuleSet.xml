@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMPDCBankAccountSummaryRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class extends="DefaultEvidenceSummary"
+		extendsRuleSet="EvidenceSummaryRuleSet"
+		name="BDMPDCBankAccountSummary">
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="PDCBankAccount"
+					ruleset="PDCBankAccountRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="summary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="summaryMessage"
+					resourceBundle="curam.bdm.pdc.rules.BDMPDCBankAccountSummaryRuleSet">
+						<reference attribute="bankAccountName"/>
+						<reference attribute="accountNumber">
+							<reference attribute="evidence" />
+						</reference>
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="bankAccountName">
+			<type>
+				<javaclass name="String"/>
+			</type>
+			<derivation>
+		    		<call class="curam.ca.gc.bdm.creole.impl.Statics"	method="getBankNameUsingInstitutionNumberAndTransitNumber">
+						<type>
+							<javaclass name="String" />
+						</type>
+					<arguments>
+						<reference attribute="evidence" />
+					</arguments>
+				</call>
+    		</derivation>
+		</Attribute>
+
+		<Attribute name="bankAccount">
+			<type>
+				<ruleclass name="BankBranch" />
+			</type>
+			<derivation>
+					<singleitem onEmpty="returnNull" onMultiple="error">
+						<readall ruleclass="BankBranch">
+							<match retrievedattribute="bankSortCode">
+								<property name="toString">
+									<object>
+										<concat>
+											<fixedlist>
+												<listof>
+													<javaclass name="String"/>
+												</listof>
+												<members>
+													<reference attribute="financialInstitutionNumber">
+														 <reference attribute="evidence"/>
+													</reference>
+													<reference attribute="branchTransitNumber">
+														 <reference attribute="evidence"/>
+													</reference>
+												</members>
+											</fixedlist>
+										</concat>
+									</object>
+								</property>	
+							</match>	
+						</readall>
+					</singleitem>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="bank">
+			<type>
+				<ruleclass name="Bank" />
+			</type>
+			<derivation>
+					<singleitem onEmpty="returnNull" onMultiple="error">
+						<readall ruleclass="Bank">
+							<match retrievedattribute="bankID">
+								<reference attribute="bankID">
+									<reference attribute="bankAccount"/>
+								</reference>
+							</match>	
+						</readall>
+					</singleitem>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class name="BankBranch">
+		<Attribute name="bankBranchID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="bankID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="bankSortCode">
+			<type>
+				<javaclass name="String" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="name">
+			<type>
+				<javaclass name="String" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="startDate">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="endDate">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="statusCode">
+			<type>
+				<codetableentry table="RecordStatus" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class name="Bank">
+		<Attribute name="bankID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="name">
+			<type>
+				<javaclass name="String" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

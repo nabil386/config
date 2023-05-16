@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMOASForeignIncomeSummaryRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+
+	<Class extends="DefaultEvidenceSummary"
+		extendsRuleSet="EvidenceSummaryRuleSet" name="SummaryInformation">
+
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="BDMOASForeignIncome"
+					ruleset="BDMOASForeignIncomeRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="summary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Message" />
+					</type>
+					<when>
+						<condition>
+							<any>
+								<fixedlist>
+									<listof>
+										<javaclass name="java.lang.Boolean" />
+									</listof>
+									<members>
+										<equals>
+											<reference attribute="caseParticipantRoleID">
+												<reference attribute="evidence" />
+											</reference>
+											<Number value="0" />
+										</equals>
+										<equals>
+											<reference attribute="amount">
+												<reference attribute="evidence" />
+											</reference>
+											<Number value="0.00" />
+										</equals>
+										<equals>
+											<reference attribute="incomeType">
+												<reference attribute="evidence" />
+											</reference>
+											<null />
+										</equals>
+										<equals>
+											<reference attribute="currency">
+												<reference attribute="evidence" />
+											</reference>
+											<null />
+										</equals>
+									</members>
+								</fixedlist>
+							</any>
+						</condition>
+						<value>
+							<ResourceMessage
+								key="MandatoryFieldsMissingValues.SummaryMessage"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASForeignIncomeSummaryRuleSet">
+							</ResourceMessage>
+						</value>
+					</when>
+					<when>
+						<condition>
+							<not>
+								<equals>
+									<reference attribute="canadianAmount">
+										<reference attribute="evidence" />
+									</reference>
+									<Number value="0.00" />
+								</equals>
+							</not>
+						</condition>
+						<value>
+							<ResourceMessage
+								key="CanadianDollarAmount.SummaryMessage"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASForeignIncomeSummaryRuleSet">
+								<reference attribute="incomeType">
+									<reference attribute="evidence" />
+								</reference>
+								<reference attribute="year">
+									<reference attribute="evidence" />
+								</reference>
+								<reference attribute="canadianAmount">
+									<reference attribute="evidence" />
+								</reference>
+							</ResourceMessage>
+						</value>
+					</when>
+					<otherwise>
+							<value>
+								<ResourceMessage
+									key="ReportedAmount.SummaryMessage"
+									resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASForeignIncomeSummaryRuleSet">
+									<reference attribute="incomeType">
+										<reference attribute="evidence" />
+									</reference>
+									<reference attribute="amount">
+										<reference attribute="evidence" />
+									</reference>
+								</ResourceMessage>
+							</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+	</Class>
+
+</RuleSet>

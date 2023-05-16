@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EvidenceTypeVersion
+  businessEndDate="toDate"
+  businessStartDate="fromDate"
+  correctionOnly="true"
+  modifiable="true"
+  relatedParticipant="participant"
+>
+  <Model>
+    <Attributes>
+      <Attribute>
+        <RelatedCPAttribute
+          cpRoleType="MEM"
+          name="participant"
+          participantType="Person"
+        >
+          <CPSearchType code="PRI"/>
+          <CPSearchType code="MEM"/>
+        </RelatedCPAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          mandatory="true"
+          name="emailAddress"
+        >
+          <DomainType dataType="String">
+            <StringOptions
+              maxSize="256"
+              trimLeadingSpaces="true"
+              trimTrailingSpaces="true"
+            />
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          mandatory="true"
+          name="fromDate"
+        >
+          <DomainType dataType="Date"/>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute name="toDate">
+          <DomainType dataType="Date"/>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          mandatory="true"
+          name="emailAddressType"
+        >
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="EmailType"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <CommentsAttribute name="comments"/>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          defaultValue="false"
+          name="preferredInd"
+        >
+          <DomainType dataType="Boolean"/>
+        </DataAttribute>
+      </Attribute>
+    </Attributes>
+    <Relationships/>
+  </Model>
+  <Validations>
+    <PatternValidations>
+      <Validator>
+        <ComparisonValidator
+          operator="LessThanOrEqualTo"
+          shallow="false"
+          source="fromDate"
+          target="toDate"
+          useClause="false"
+          useLiteral="false"
+        />
+      </Validator>
+    </PatternValidations>
+    <CustomRulesValidation ruleSetName="PDCEmailAddressValidationRuleSet"/>
+  </Validations>
+  <SummaryInformation>
+    <SummaryMapping>
+      <Summary>
+        <parameter name="emailAddressType"/>
+        <parameter name="emailAddress"/>
+        <SummaryResource id="PDCEmailAddress.SummaryMessage"/>
+      </Summary>
+    </SummaryMapping>
+  </SummaryInformation>
+  <UserInterface createDialogWidth="700">
+    <Cluster>
+      <RelCPCluster
+        defaultToBlank="true"
+        fullCreateParticipant="false"
+        isOnCreatePage="true"
+        isOnModifyPage="true"
+        isOnViewPage="true"
+        modifyOption="no"
+        showParticipantTypeFilter="true"
+        useSingleName="false"
+      >
+        <StandardField source="participant"/>
+        <ClusterName id="ParticipantDetails"/>
+        <LabelName id="Participant.Description.ID2"/>
+      </RelCPCluster>
+    </Cluster>
+    <Cluster>
+      <StandardCluster
+        isOnCreatePage="true"
+        isOnModifyPage="true"
+        isOnViewPage="true"
+        numberOfColumns="1"
+      >
+        <Title id="EmailDetails"/>
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="emailAddress"
+            useDefault="true"
+          >
+            <Label id="Field.Label.EmailAddress"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="false"
+            source="emailAddressType"
+            useDefault="true"
+          >
+            <Label id="Field.Label.Type"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="fromDate"
+            useDefault="true"
+          >
+            <Label id="Field.Label.From"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="toDate"
+            useDefault="false"
+          >
+            <Label id="Field.Label.To"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="preferredInd"
+            useDefault="true"
+          >
+            <Label id="Field.Label.PreferredInd"/>
+          </StandardField>
+        </StandardClusterField>
+      </StandardCluster>
+    </Cluster>
+    <Cluster>
+      <CommentsCluster
+        isOnCreatePage="true"
+        isOnModifyPage="true"
+        isOnViewPage="true"
+      >
+        <Title id="Cluster.Title.Comments"/>
+        <StandardField source="comments"/>
+      </CommentsCluster>
+    </Cluster>
+  </UserInterface>
+</EvidenceTypeVersion>

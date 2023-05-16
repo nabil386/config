@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+  Copyright 2010-2011 Curam Software Ltd.
+  All rights reserved.
+
+  This software is the confidential and proprietary information of Curam
+  Software, Ltd. (&quot;Confidential Information&quot;).  You shall not disclose such
+  Confidential Information and shall use it only in accordance with the
+  terms of the license agreement you entered into with Curam Software.
+-->
+<!--
+
+  Default implementations of the rules classes in ProgramRecommendationRuleSet.
+
+  Rule Set developers should extend these classes rather than directly extending the classes
+  defined in ProgramRecommendationRuleSet. These default implementations provide
+  some isolation against future changes.
+-->
+<RuleSet
+  name="DefaultProgramRecommendationRuleSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+>
+
+
+  <!-- Default ProgramRecommender Rule Class. -->
+  <Class
+    abstract="true"
+    extends="ProgramRecommender"
+    extendsRuleSet="ProgramRecommendationRuleSet"
+    name="DefaultProgramRecommender"
+  >
+
+
+    <!-- BEGIN, CR00316611, RB  -->
+    <!-- BEGIN, CR00340176, MST -->
+    <!-- Mark as specified -->
+    <Attribute name="productID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00340176 -->
+
+
+    <Attribute name="startDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="endDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00316611 -->
+
+
+    <!-- Mark as specified -->
+    <Attribute name="caseID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Empty list. -->
+    <Attribute name="simulatedDeterminations">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="SimulatedDetermination"
+            ruleset="ProgramRecommendationRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <fixedlist>
+          <listof>
+            <ruleclass name="DefaultSimulatedDetermination"/>
+          </listof>
+          <members/>
+        </fixedlist>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <!--
+    Default Simulated Determination Rule Class.
+  -->
+  <Class
+    abstract="true"
+    extends="SimulatedDetermination"
+    extendsRuleSet="ProgramRecommendationRuleSet"
+    name="DefaultSimulatedDetermination"
+  >
+
+
+    <!-- Simple english-only text description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <XmlMessage>Recommendation</XmlMessage>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Mark as specified. -->
+    <Attribute name="programRecommendationCase">
+      <type>
+        <ruleclass
+          name="ProgramRecommendationCase"
+          ruleset="ProgramRecommendationRuleSet"
+        />
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Empty list -->
+    <Attribute name="programRecommendationDisplayCases">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="ProgramRecommendationDisplayCase"
+            ruleset="ProgramRecommendationDisplayRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <fixedlist>
+          <listof>
+            <ruleclass
+              name="ProgramRecommendationDisplayCase"
+              ruleset="ProgramRecommendationDisplayRuleSet"
+            />
+          </listof>
+          <members/>
+        </fixedlist>
+
+
+      </derivation>
+    </Attribute>
+
+
+    <!-- BEGIN, CR00323679, PD-->
+    <!-- Empty list -->
+    <Attribute name="members">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="Member"
+            ruleset="ProgramRecommendationRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <fixedlist>
+          <listof>
+            <ruleclass
+              name="Member"
+              ruleset="ProgramRecommendationRuleSet"
+            />
+          </listof>
+          <members/>
+        </fixedlist>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00323679 -->
+
+
+    <!-- BEGIN, CR00332324, MST -->
+    <!-- BEGIN, CR00335709, MST -->
+    <Attribute name="productID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00335709 -->
+    <!-- END, CR00332324 -->
+
+
+    <!-- BEGIN, CR00369873, MST -->
+    <Attribute name="productDeliveryID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <Number value="0"/>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00369873 -->
+
+
+  </Class>
+
+
+  <!--
+    Default implementation of the ProgramRecommendationCase rule class.
+  -->
+  <Class
+    abstract="true"
+    extends="ProgramRecommendationCase"
+    extendsRuleSet="ProgramRecommendationRuleSet"
+    name="DefaultProgramRecommendationCase"
+  >
+
+
+    <!--
+      False forever.
+    -->
+    <Attribute name="programRecommendationEligibilityTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Boolean"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <timelineoperation>
+          <false/>
+        </timelineoperation>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Empty list -->
+    <Attribute name="programRecommendationObjectiveTimelines">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="AbstractObjectiveTimeline"
+            ruleset="ProductEligibilityEntitlementRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <!-- empty list -->
+        <fixedlist>
+          <listof>
+            <ruleclass
+              name="AbstractObjectiveTimeline"
+              ruleset="ProductEligibilityEntitlementRuleSet"
+            />
+          </listof>
+          <members/>
+        </fixedlist>
+      </derivation>
+    </Attribute>
+
+
+    <!-- BEGIN, CR00316611, RB -->
+    <Attribute name="monthlyAmountTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Number"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <!-- Null (interpreted as "not applicable" forever -->
+        <timelineoperation>
+          <null/>
+        </timelineoperation>
+      </derivation>
+    </Attribute>
+    <Attribute name="isEmergencyCase">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <!-- default to "not an emergency"-->
+        <false/>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00316611 -->
+
+
+  </Class>
+
+
+</RuleSet>

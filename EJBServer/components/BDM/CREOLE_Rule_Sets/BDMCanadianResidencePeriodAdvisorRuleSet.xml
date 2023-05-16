@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  90018 DEV: Evidence- creditable residency period in Canada -->
+<RuleSet name="BDMCanadianResidencePeriodAdvisorRuleSet"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+
+    <Class extends="AbstractAdviceContext"
+        extendsRuleSet="CoreAdvisorRuleSet"
+        name="BDMCanadianResidencePeriodAdviceContext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+
+        <!-- This attribute value would be prepopulated by the propagator. -->
+        <Attribute name="caseID">
+            <type>
+                <ruleclass name="NumberParameter"
+                    ruleset="CoreAdvisorRuleSet" />
+            </type>
+            <derivation>
+                <specified />
+            </derivation>
+        </Attribute>
+
+        <!-- This attribute value would be prepopulated by the propagator -->
+        <Attribute name="adviceContextID">
+            <type>
+                <javaclass name="Number" />
+            </type>
+            <derivation>
+                <specified />
+            </derivation>
+        </Attribute>
+
+        <!-- This attribute will hold the list of advices which will be sent back 
+            to the client -->
+        <Attribute name="advice">
+            <type>
+                <javaclass name="List">
+                    <ruleclass name="AbstractAdviceItem"
+                        ruleset="CoreAdvisorRuleSet" />
+                </javaclass>
+            </type>
+            <derivation>
+                <dynamiclist>
+                    <list>
+                        <reference attribute="canadianResidencePeriodRecords" />
+                    </list>
+                    <listitemexpression>
+                        <create ruleclass="BDMCanadianResidencePeriodAdviceItem">
+                            <reference attribute="value">
+                                <reference attribute="caseID" />
+                            </reference>
+                            <reference attribute="adviceContextID" />
+                            <current/>
+                        </create>
+                    </listitemexpression>
+                </dynamiclist>
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="canadianResidencePeriodRecords">
+            <type>
+                <javaclass name="java.util.List">
+                    <ruleclass name="BDMCanadianResidencePeriod"
+                        ruleset="BDMCanadianResidencePeriodVerDataRuleSet" />
+                </javaclass>
+            </type>
+            <derivation>
+                <readall ruleclass="BDMCanadianResidencePeriod"
+                    ruleset="BDMCanadianResidencePeriodVerDataRuleSet">
+                    <match retrievedattribute="caseID">
+                        <reference attribute="value">
+                            <reference attribute="caseID" />
+                        </reference>
+                    </match>
+                </readall>
+            </derivation>
+        </Attribute>
+    </Class>
+
+
+    <Class name="BDMCanadianResidencePeriodAdviceItem"
+        extends="AbstractAdviceItem" extendsRuleSet="CoreAdvisorRuleSet"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+
+        <Initialization>
+            <Attribute name="caseIDParam">
+                <type>
+                    <javaclass name="Number" />
+                </type>
+            </Attribute>
+            <Attribute name="adviceContextID">
+                <type>
+                    <javaclass name="Number" />
+                </type>
+            </Attribute>
+            <Attribute name="evidence">
+                <type>
+                    <ruleclass name="BDMCanadianResidencePeriod" 
+                    ruleset="BDMCanadianResidencePeriodVerDataRuleSet"/>
+                </type>
+            </Attribute>
+        </Initialization>
+
+        <Attribute name="caseID">
+            <type>
+                <javaclass name="Number" />
+            </type>
+            <derivation>
+                <reference attribute="caseIDParam" />
+            </derivation>
+        </Attribute>
+
+        <Attribute name="adviceText">
+            <type>
+                <javaclass name="String" />
+            </type>
+            <derivation>
+                <String value="CanadianResidenceOverlapValidationMessage" />
+            </derivation>
+        </Attribute>
+
+        <Attribute name="category">
+            <type>
+                <codetableentry table="AdviceCategory" />
+            </type>
+            <derivation>
+                <Code table="AdviceCategory">
+                    <String value="AC2000" />
+                </Code>
+            </derivation>
+        </Attribute>
+
+        <Attribute name="priority">
+            <type>
+                <codetableentry table="AdvicePriority" />
+            </type>
+            <derivation>
+                <Code table="AdvicePriority">
+                    <String value="AP2000" />
+                </Code>
+            </derivation>
+        </Attribute>
+
+        <Attribute name="status">
+            <type>
+                <codetableentry table="AdviceStatus" />
+            </type>
+            <derivation>
+                <Code table="AdviceStatus">
+                    <String value="AS2000" />
+                </Code>
+            </derivation>
+        </Attribute>
+
+        <Attribute name="evidenceType">
+            <type>
+                <codetableentry table="EvidenceType" />
+            </type>
+            <derivation>
+                <Code table="EvidenceType">
+                    <String value="BDMDET0005" />
+                </Code>
+            </derivation>
+        </Attribute>
+
+        <Attribute name="relatedID">
+            <type>
+                <javaclass name="Number" />
+            </type>
+            <derivation>
+                <reference attribute="evidenceID">
+                    <reference attribute="evidence"/>
+                </reference>
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="canadianResidencePeriodObject">
+            <type>
+                <ruleclass name="CanadianResidencePeriodObject"/>
+            </type>
+            <derivation>
+                <create ruleclass="CanadianResidencePeriodObject">
+                    <reference attribute="evidence" />
+                </create>
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="isOverlapCheckNeeded">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <all>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <not>
+                                <reference attribute="resolutionExists" />
+                            </not>
+                            <reference attribute="foreignResidencePeriodRecordsExist" />
+                        </members>
+                    </fixedlist>
+                </all>
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="resolutionExists">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <any>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <equals>
+                                <Code table="BDMIssueResolution">
+                                    <String value="IR1"/>
+                                </Code>
+                                <reference attribute="resolution">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                            <equals>
+                                <Code table="BDMIssueResolution">
+                                    <String value="IR2"/>
+                                </Code>
+                                <reference attribute="resolution">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                            <equals>
+                                <Code table="BDMIssueResolution">
+                                    <String value="IR3"/>
+                                </Code>
+                                <reference attribute="resolution">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                        </members>
+                    </fixedlist>
+                </any>
+            </derivation>
+        </Attribute>
+
+        <Attribute name="showAdvice">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <all>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <not>
+                                <reference attribute="resolutionExists" />
+                            </not>
+                            <any>
+                                <fixedlist>
+                                    <listof>
+                                        <javaclass name="Boolean"/>
+                                    </listof>
+                                    <members>
+                                        <reference attribute="isForeignResidenceOverlap" />
+                                        <reference attribute="isForeignContributionOverlap" />
+                                    </members>
+                                </fixedlist>
+                            </any>
+                        </members>
+                    </fixedlist>
+                </all>
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="isForeignResidenceOverlap">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <all>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <reference attribute="foreignResidencePeriodRecordsExist" />
+                            <reference attribute="foreignResidenceOverlapExists" />
+                        </members>
+                    </fixedlist>
+                </all>
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="isForeignContributionOverlap">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <all>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <reference attribute="foreignContributionPeriodRecordsExist" />
+                            <reference attribute="foreignContributionOverlapExists" />
+                        </members>
+                    </fixedlist>
+                </all>
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="foreignResidenceOverlapExists">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <any>
+                    <dynamiclist>
+                        <list>
+                            <reference attribute="foreignResidencePeriodRecords" />
+                        </list>
+                        <listitemexpression>
+                            <any>
+                                <fixedlist>
+                                    <listof>
+                                        <javaclass name="Boolean" />
+                                    </listof>
+                                    <members>
+                                        <property name="valueOn">
+                                            <object>
+                                                <reference attribute="exists">
+                                                    <current />
+                                                </reference>
+                                            </object>
+                                            <arguments>
+                                                <reference attribute="startDate">
+                                                    <reference attribute="evidence" />
+                                                </reference>
+                                            </arguments>
+                                        </property>
+                                        <property name="valueOn">
+                                            <object>
+                                                <reference attribute="exists">
+                                                    <current />
+                                                </reference>
+                                            </object>
+                                            <arguments>
+                                                <reference attribute="endDate">
+                                                    <reference attribute="evidence" />
+                                                </reference>
+                                            </arguments>
+                                        </property>
+                                        <property name="valueOn">
+                                            <object>
+                                                <reference attribute="existenceTimeline">
+                                                    <reference attribute="canadianResidencePeriodObject" />
+                                                </reference>
+                                            </object>
+                                            <arguments>
+                                                <reference attribute="startDate">
+                                                    <current />
+                                                </reference>
+                                            </arguments>
+                                        </property>
+                                        <property name="valueOn">
+                                            <object>
+                                                <reference attribute="existenceTimeline">
+                                                    <reference attribute="canadianResidencePeriodObject" />
+                                                </reference>
+                                            </object>
+                                            <arguments>
+                                                <reference attribute="endDate">
+                                                    <current />
+                                                </reference>
+                                            </arguments>
+                                        </property>
+                                    </members>
+                                </fixedlist>
+                            </any>
+                        </listitemexpression>
+                    </dynamiclist>
+                </any>
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="foreignResidencePeriodRecords">
+            <type>
+                <javaclass name="java.util.List">
+                    <ruleclass name="BDMForeignResidencePeriod"
+                        ruleset="BDMForeignResidencePeriodDataRuleSet" />
+                </javaclass>
+            </type>
+            <derivation>
+                <readall ruleclass="BDMForeignResidencePeriod"
+                    ruleset="BDMForeignResidencePeriodDataRuleSet">
+                    <match retrievedattribute="caseID">
+                        <reference attribute="caseID" />
+                    </match>
+                </readall>
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="foreignResidencePeriodRecordsExist">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <compare comparison="&gt;">
+                    <property name="size">
+                        <object>
+                            <reference attribute="foreignResidencePeriodRecords" />
+                        </object>
+                    </property>
+                    <Number value="0" />
+                </compare>
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="foreignContributionOverlapExists">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <any>
+                    <dynamiclist>
+                        <list>
+                            <reference attribute="foreignContributionPeriodRecords" />
+                        </list>
+                        <listitemexpression>
+                            <any>
+                                <fixedlist>
+                                    <listof>
+                                        <javaclass name="Boolean" />
+                                    </listof>
+                                    <members>
+                                        <property name="valueOn">
+                                            <object>
+                                                <reference attribute="exists">
+                                                    <current />
+                                                </reference>
+                                            </object>
+                                            <arguments>
+                                                <reference attribute="startDate">
+                                                    <reference attribute="evidence" />
+                                                </reference>
+                                            </arguments>
+                                        </property>
+                                        <property name="valueOn">
+                                            <object>
+                                                <reference attribute="exists">
+                                                    <current />
+                                                </reference>
+                                            </object>
+                                            <arguments>
+                                                <reference attribute="endDate">
+                                                    <reference attribute="evidence" />
+                                                </reference>
+                                            </arguments>
+                                        </property>
+                                        <property name="valueOn">
+                                            <object>
+                                                <reference attribute="existenceTimeline">
+                                                    <reference attribute="canadianResidencePeriodObject" />
+                                                </reference>
+                                            </object>
+                                            <arguments>
+                                                <reference attribute="startDate">
+                                                    <current />
+                                                </reference>
+                                            </arguments>
+                                        </property>
+                                        <property name="valueOn">
+                                            <object>
+                                                <reference attribute="existenceTimeline">
+                                                    <reference attribute="canadianResidencePeriodObject" />
+                                                </reference>
+                                            </object>
+                                            <arguments>
+                                                <reference attribute="endDate">
+                                                    <current />
+                                                </reference>
+                                            </arguments>
+                                        </property>
+                                    </members>
+                                </fixedlist>
+                            </any>
+                        </listitemexpression>
+                    </dynamiclist>
+                </any>
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="foreignContributionPeriodRecords">
+            <type>
+                <javaclass name="java.util.List">
+                    <ruleclass name="BDMForeignContributionPeriod"
+                        ruleset="BDMForeignContributionPeriodDataRuleSet" />
+                </javaclass>
+            </type>
+            <derivation>
+                <readall ruleclass="BDMForeignContributionPeriod"
+                    ruleset="BDMForeignContributionPeriodDataRuleSet">
+                    <match retrievedattribute="caseID">
+                        <reference attribute="caseID" />
+                    </match>
+                </readall>
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="foreignContributionPeriodRecordsExist">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <compare comparison="&gt;">
+                    <property name="size">
+                        <object>
+                            <reference attribute="foreignContributionPeriodRecords" />
+                        </object>
+                    </property>
+                    <Number value="0" />
+                </compare>
+            </derivation>
+        </Attribute>
+        
+    </Class>
+    
+    <Class name="CanadianResidencePeriodObject">
+        <Initialization>
+            <Attribute name="evidence">
+                <type>
+                    <ruleclass name="BDMCanadianResidencePeriod"
+                        ruleset="BDMCanadianResidencePeriodVerDataRuleSet" />
+                </type>
+            </Attribute>
+        </Initialization>
+        <Attribute name="existenceTimeline">
+            <type>
+                <javaclass name="curam.creole.value.Timeline">
+                    <javaclass name="Boolean" />
+                </javaclass>
+            </type>
+            <derivation>
+                <existencetimeline>
+                    <intervaltype>
+                        <javaclass name="java.lang.Boolean" />
+                    </intervaltype>
+                    <intervalfromdate>
+                        <reference attribute="startDate">
+                            <reference attribute="evidence" />
+                        </reference>
+                    </intervalfromdate>
+                    <intervaltodate>
+                        <reference attribute="endDate">
+                            <reference attribute="evidence" />
+                        </reference>
+                    </intervaltodate>
+                    <preExistenceValue>
+                        <false />
+                    </preExistenceValue>
+                    <existenceValue>
+                        <true />
+                    </existenceValue>
+                    <postExistenceValue>
+                        <false />
+                    </postExistenceValue>
+                </existencetimeline>
+            </derivation>
+        </Attribute>
+    </Class>
+</RuleSet>

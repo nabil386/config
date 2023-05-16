@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- 
+  Copyright 2009-2011 Curam Software Ltd.
+  All rights reserved.
+  
+  This software is the confidential and proprietary information of Curam
+  Software, Ltd. ("Confidential Information").  You shall not disclose such
+  Confidential Information and shall use it only in accordance with the
+  terms of the license agreement you entered into with Curam Software.
+-->
+<!--
+  Interface rule classes for CREOLE rule objects corresponding to Curam Rate Tables.
+  
+  Customer code must not create, modify or remove instances of any of the rule
+  classes in this rule set.  Instances of these rule classes may only be
+  manipulated by the Rate Propagator.
+  
+  -->
+<RuleSet
+  name="RateRuleSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+>
+
+
+  <!-- A cell from a Curam rate table.
+    
+    Note that in the Curam database, one conceptual rate table can
+    be stored as several rate header rows, each bearing the same
+    rate table type but different effective dates.
+    
+    By contract, a single rule object will be created for each cell in an
+    active conceptual rate table (spanning multiple rate header
+    rows), with the effective dates being manifest as the timelines of
+    values in the rate cells.
+    
+    For the period before a rate table first came into existence, the 
+    timeline will hold a zero value.  Similarly, if a rate cell is not
+    present in a particular rate header version for a rate table (but is
+    present in other versions), a zero value will be used in the timeline
+    for the missing cell.
+    
+    Only rate header database rows with a rateStatus of "active"
+    will be used to populate rate table rule objects.
+    
+    The following features of rate tables are NOT supported and any use
+    of them will be skipped:
+    - rate table sub rows;
+    - rate table sub columns;
+    - minimum/maximum ranges (either on cells or columns).
+    
+  -->
+  <Class name="RateCell">
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <XmlMessage>Table: <replace>
+            <reference attribute="rateTableType"/>
+          </replace>, Row: <replace>
+            <reference attribute="rateRowType"/>
+          </replace>, Column: <replace>
+            <reference attribute="rateColumnType"/>
+          </replace>
+        </XmlMessage>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="rateCellCoordinates">
+      <type>
+        <javaclass name="curam.core.sl.infrastructure.rate.impl.RateCellCoordinates"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The identifier for the rate table that this rate cell resides in. -->
+    <Attribute name="rateTableType">
+      <type>
+        <codetableentry table="RateTableType"/>
+      </type>
+      <derivation>
+        <Code table="RateTableType">
+          <property name="getCode">
+            <object>
+              <property name="tableType">
+                <object>
+                  <reference attribute="rateCellCoordinates"/>
+                </object>
+              </property>
+            </object>
+          </property>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The identifier for the rate row that this rate cell resides in. -->
+    <Attribute name="rateRowType">
+      <type>
+        <codetableentry table="RateRowType"/>
+      </type>
+      <derivation>
+        <Code table="RateRowType">
+          <property name="getCode">
+            <object>
+              <property name="rowType">
+                <object>
+                  <reference attribute="rateCellCoordinates"/>
+                </object>
+              </property>
+            </object>
+          </property>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The identifier for the rate column that this rate cell resides in. -->
+    <Attribute name="rateColumnType">
+      <type>
+        <codetableentry table="RateColumnType"/>
+      </type>
+      <derivation>
+        <Code table="RateColumnType">
+          <property name="getCode">
+            <object>
+              <property name="columnType">
+                <object>
+                  <reference attribute="rateCellCoordinates"/>
+                </object>
+              </property>
+            </object>
+          </property>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The varying numerical value of this cell.
+      
+      The value will be defaulted to 0:
+      - For the period prior to the existence of the rate table (i.e.
+      prior to the effective date of the earliest rate header record),
+      - For any effectived-dated version of the rate header when the 
+      particular row/column combination is not present in the rate 
+      table.
+    -->
+    <Attribute name="valueTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Number"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+</RuleSet>

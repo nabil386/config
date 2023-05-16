@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<RuleSet name="BDMIncomeVerificationRuleSet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../catalog/RuleSet.xsd">
+    <Class extends="VerificationDeterminator" extendsRuleSet="VerificationRuleSet" name="BDMIncomeVerificationDeterminator">
+
+        <Attribute name="displayName">
+            <type>
+                <javaclass name="curam.creole.value.Message"/>
+            </type>
+            <derivation>
+                <ResourceMessage key="BDMVerification.Income.DisplayName"	resourceBundle="curam.bdm.verification.BDMVerification"/>
+            </derivation>
+        </Attribute> 
+        
+        <Attribute name="reasonSkipped">
+            <type>
+                <codetableentry table="VerificationSkippedReason"/>
+            </type>
+            <derivation>
+        		<choose>
+          			<type>
+            			<codetableentry table="VerificationSkippedReason"/>
+          			</type>
+          			<when>
+            			<condition>
+              				<not>
+                				<reference attribute="incomeBelow30000"/>
+              				</not>
+            			</condition>
+            			<value>
+              				<Code table="VerificationSkippedReason">
+                				<String value="VSR26004"/>
+              				</Code>
+            			</value>
+          			</when>
+          			<otherwise>
+            			<value>
+              				<Code table="VerificationSkippedReason">
+                				<String value="VSR26005"/>
+              				</Code>
+            			</value>
+          			</otherwise>
+        		</choose>
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="determine">
+            <type>
+                <ruleclass	name="VerificationDeterminatorResult"	ruleset="VerificationRuleSet"/>
+            </type>
+            <derivation>
+                <create	ruleclass="VerificationDeterminatorResult"	ruleset="VerificationRuleSet">
+                    <specify attribute="result">
+                        <reference attribute="incomeBelow30000"/>
+                    </specify>
+                    <specify attribute="reason">
+                        <reference attribute="reasonSkipped"/>
+                    </specify>
+                </create>
+            </derivation>
+        </Attribute> 
+        
+        <Attribute name="incomeBelow30000">
+            <type>
+                <javaclass name="Boolean"/>
+            </type>
+            <derivation>
+                <all>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean"/>
+                        </listof>
+                        <members>
+                            <not>
+                                <equals>
+                                    <reference attribute="incomeEvidenceRecord"/>
+                                    <null/>
+                                </equals>
+                            </not>
+                            <not>
+                             <compare comparison="&gt;">
+							  <reference attribute="income">
+									<reference attribute="incomeEvidenceRecord"/>
+							  </reference>
+							 <Number value="30000.00"/>
+							</compare>
+							</not>
+                        </members>
+                    </fixedlist>
+                </all>
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="incomeEvidenceRecord">
+            <type>
+                <ruleclass name="Income" ruleset="IncomeVerDataRuleSet"/>        
+            </type>
+            <derivation>
+                <singleitem onMultiple="returnFirst" onEmpty="returnNull">
+                    <readall ruleclass="Income" ruleset="IncomeVerDataRuleSet">
+                        <match retrievedattribute="evidenceDescriptorID">
+                            <reference attribute="evidenceDescriptorID">
+                                <reference attribute="verificationDeterminatorParams"/>
+                            </reference>
+                        </match>
+                    </readall>
+                </singleitem>
+            </derivation>
+        </Attribute>
+        
+    </Class>
+</RuleSet>

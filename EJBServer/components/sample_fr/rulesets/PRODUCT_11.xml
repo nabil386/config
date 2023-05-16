@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/CuramRulesSchema.xsd">  
+  <Product comment="This is the rule set for a simple product." id="PRODUCT_11" legislationbase="" producttype="RT2"> 
+    <Label highlightonfailure="true" legislationlink=""> 
+      <RuleName> 
+        <Text locale="fr" value="produit simple"/> 
+      </RuleName>  
+      <SuccessText> 
+        <Text locale="fr" value="Personne autorisée pour un simple produit"/> 
+      </SuccessText>  
+      <FailureText> 
+        <Text locale="fr" value="Personne non autorisée pour un simple produit"/> 
+      </FailureText> 
+    </Label>  
+    <DataAccess name="Globals"> 
+      <DataItem name="dateOfCalculation"/>  
+      <DataItem name="deliveryFrequency"/>  
+      <DataItem name="personReferenceNumber"/>  
+      <DataItem name="claimReferenceNumber"/>  
+      <DataItem name="assessmentReferenceNumber"/> 
+    </DataAccess>  
+    <DataAccess name="SimpleProductRulesEvidence"> 
+      <DataItem name="eligibleInd"/>  
+      <DataItem name="dailyRate"/>  
+      <DataItem name="childIndicator"/>  
+      <DataItem name="certificationFromDate"/>  
+      <DataItem name="certificationToDate"/>  
+      <DataItem name="clientAge"/> 
+    </DataAccess>  
+    <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="1" operation="and" summaryitem="true"> 
+      <Label highlightonfailure="true" legislationlink=""> 
+        <RuleName> 
+          <Text locale="fr" value="Conditions préalables"/> 
+        </RuleName>  
+        <SuccessText> 
+          <Text locale="fr" value="Conditions préalables"/> 
+        </SuccessText>  
+        <FailureText> 
+          <Text locale="fr" value="Conditions préalables"/> 
+        </FailureText> 
+      </Label>  
+      <Rule id="2" rulemode="all" summaryitem="true"> 
+        <Label highlightonfailure="true" legislationlink=""> 
+          <RuleName> 
+            <Text locale="fr" value="Test d'indicateur d'éligibilité"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="L'indicateur d'éligibilité est Vrai"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="L'indicateur d'éligibilité est Faux"/> 
+          </FailureText> 
+        </Label>  
+        <Condition dataitemlhs="SimpleProductRulesEvidence.eligibleInd" dataitemrhs="true" id="3" operation="=="/> 
+      </Rule> 
+    </RuleGroup>  
+    <ObjectiveGroup comment="" conjunction="all" id="4" priority="1"> 
+      <Label highlightonfailure="true" legislationlink=""> 
+        <RuleName> 
+          <Text locale="fr" value="Taux personnel de produit simple"/> 
+        </RuleName>  
+        <SuccessText> 
+          <Text locale="fr" value="Le taux personnel du produit simple peut être payé"/> 
+        </SuccessText>  
+        <FailureText> 
+          <Text locale="fr" value="Le taux du produit simple ne peut être payé"/> 
+        </FailureText> 
+      </Label>  
+      <Objective comment="Personal rate for Simple Product" deductionallowable="true" description="" id="5" priority="1" ratefctype="CT1" ratetarget="RC1" ratetype="PC4" recordid="16" targetid="0"> 
+        <Label highlightonfailure="true" legislationlink=""> 
+          <RuleName> 
+            <Text locale="fr" value="Taux de produit simple maximum"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Réussite du taux de produit simple maximum"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Echec du taux de produit simple maximum"/> 
+          </FailureText> 
+        </Label>  
+        <ObjectiveTag comment="" id="6" name="Personal Daily Rate" pattern="000100000" recordid="22" type="RTT3" value="SimpleProductRulesEvidence.dailyRate"/>  
+        <ObjectiveTag comment="" id="7" name="Personal Monthly Rate" pattern="200100000" recordid="23" type="RTT3" value="SimpleProductRulesEvidence.dailyRate*30"/>  
+        <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="8" operation="and" summaryitem="true"> 
+          <Label highlightonfailure="true" legislationlink=""> 
+            <RuleName> 
+              <Text locale="fr" value="Règles pour le taux de produit simple maximum"/> 
+            </RuleName>  
+            <SuccessText> 
+              <Text locale="fr" value="Règles pour la réussite du taux de produit simple maximum"/> 
+            </SuccessText>  
+            <FailureText> 
+              <Text locale="fr" value="Règles pour l'échec du taux de produit simple maximum"/> 
+            </FailureText> 
+          </Label>  
+          <Rule id="9" rulemode="all" summaryitem="true"> 
+            <Label highlightonfailure="true" legislationlink=""> 
+              <RuleName> 
+                <Text locale="fr" value="L'indicateur d'éligibilité doit être Vrai"/> 
+              </RuleName>  
+              <SuccessText> 
+                <Text locale="fr" value="L'indicateur d'éligibilité est Vrai"/> 
+              </SuccessText>  
+              <FailureText> 
+                <Text locale="fr" value="L'indicateur d'éligibilité est Faux"/> 
+              </FailureText> 
+            </Label>  
+            <Condition dataitemlhs="SimpleProductRulesEvidence.eligibleInd" dataitemrhs="true" id="10" operation="=="/> 
+          </Rule> 
+        </RuleGroup> 
+      </Objective> 
+    </ObjectiveGroup> 
+  </Product> 
+</RuleSet>

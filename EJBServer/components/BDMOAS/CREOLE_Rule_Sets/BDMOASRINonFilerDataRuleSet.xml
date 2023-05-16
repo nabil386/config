@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 103431 DEV: Implement OAS RI Non-Filer -->
+<RuleSet name="BDMOASRINonFilerDataRuleSet">
+  <Class
+    extends="ActiveSuccessionSet"
+    extendsRuleSet="PropagatorRuleSet"
+    name="BDMOASRINonFiler"
+  >
+    <Annotations>
+      <SuccessionSetPopulation/>
+    </Annotations>
+     <Attribute name="taxYear">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.String"/>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+   
+    <Attribute name="nonFilerStatus">
+     <Annotations />
+			<type>
+				<codetableentry table="BDMOASRINonFilerStatus" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+    </Attribute>
+    
+    <Attribute name="nonFilerReason">
+     <Annotations />
+			<type>
+				<codetableentry table="BDMOASRINonFilerReason" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+    </Attribute>    
+ 
+    <Attribute name="caseParticipantRole">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="related_person">
+      <Annotations/>
+      <type>
+        <ruleclass
+          name="CaseParticipantRole"
+          ruleset="CaseEntitiesRuleSet"
+        />
+      </type>
+      <derivation>
+        <reference attribute="caseParticipantRoleRecord">
+          <create
+            ruleclass="CaseParticipantRoleCalculator"
+            ruleset="DynamicEvidenceRuleSet"
+          >
+            <reference attribute="caseParticipantRole"/>
+          </create>
+        </reference>
+      </derivation>
+    </Attribute>
+  </Class>
+</RuleSet>

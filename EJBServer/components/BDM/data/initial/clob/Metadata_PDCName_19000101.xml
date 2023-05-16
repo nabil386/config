@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EvidenceTypeVersion
+  modifiable="true"
+  relatedParticipant="participant"
+>
+  <Model>
+    <Attributes>
+      <Attribute>
+        <RelatedCPAttribute
+          cpRoleType="MEM"
+          name="participant"
+          participantType="Person"
+        >
+          <CPSearchType code="PRI"/>
+          <CPSearchType code="MEM"/>
+        </RelatedCPAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          name="title"
+          volatile="true"
+        >
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="PersonTitle"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          mandatory="true"
+          name="firstName"
+          volatile="true"
+        >
+          <DomainType dataType="String">
+            <StringOptions
+              maxSize="65"
+              trimLeadingSpaces="true"
+              trimTrailingSpaces="true"
+            />
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          name="middleName"
+          volatile="true"
+        >
+          <DomainType dataType="String">
+            <StringOptions maxSize="65"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          mandatory="false"
+          name="lastName"
+          volatile="true"
+        >
+          <DomainType dataType="String">
+            <StringOptions
+              maxSize="65"
+              trimLeadingSpaces="true"
+              trimTrailingSpaces="true"
+            />
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          name="suffix"
+          volatile="true"
+        >
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="PersonSuffix"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          name="initials"
+          volatile="true"
+        >
+          <DomainType dataType="String">
+            <StringOptions maxSize="10"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          mandatory="true"
+          name="nameType"
+          volatile="true"
+        >
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="AlternateNameType"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <CommentsAttribute name="comments"/>
+      </Attribute>
+    </Attributes>
+    <Relationships/>
+  </Model>
+ <!-- START : TAsk 4281 JP  -->
+  
+  <Validations>
+    <PatternValidations>
+      <Validator>
+        <DependentAttributeValidator dependency="MustEnter" source="nameType" sourceLiteral="Registered" target="lastName" unidirectional="true" useSourceLiteral="true">
+          <ValidationMessageInformation>
+            <ValidationMessageMapping>
+              <ValidationMessage>
+                <ValidationMessageResource id="ERR_NAME_RV_PERSON_LAST_NAME_MUST_BE_COMPLETED"/>
+              </ValidationMessage>
+            </ValidationMessageMapping>
+          </ValidationMessageInformation>
+        </DependentAttributeValidator>
+      </Validator>
+	  <!-- START: Task 97849: DEV: Last Name validation for Alias -->
+      <Validator>
+        <DependentAttributeValidator dependency="MustEnter" source="nameType" sourceLiteral="Alias" target="lastName" unidirectional="true" useSourceLiteral="true">
+          <ValidationMessageInformation>
+            <ValidationMessageMapping>
+              <ValidationMessage>
+                <ValidationMessageResource id="ERR_NAME_RV_PERSON_ALIAS_LAST_NAME_MUST_BE_COMPLETED"/>
+              </ValidationMessage>
+            </ValidationMessageMapping>
+          </ValidationMessageInformation>
+        </DependentAttributeValidator>
+      </Validator>	  
+	  <!-- END: Task 97849: DEV: Last Name validation for Alias -->
+    </PatternValidations>
+    <CustomRulesValidation ruleSetName="PDCNameValidationRuleSet"/>
+  </Validations>
+   <!-- START : TAsk 4281 JP  -->
+
+  <SummaryInformation>
+    <SummaryRuleset ruleSetName="PDCNameSummaryRuleSet"/>
+  </SummaryInformation>
+  <UserInterface
+    createDialogWidth="700"
+    modifyDialogWidth="700"
+  >
+    <Cluster>
+      <RelCPCluster
+        defaultToBlank="true"
+        fullCreateParticipant="false"
+        isOnCreatePage="true"
+        isOnModifyPage="true"
+        isOnViewPage="true"
+        modifyOption="no"
+        showParticipantTypeFilter="true"
+        useSingleName="false"
+      >
+        <StandardField source="participant"/>
+        <ClusterName id="Participant"/>
+        <LabelName id="Participant.Description.ID3"/>
+      </RelCPCluster>
+    </Cluster>
+    <Cluster>
+      <StandardCluster
+        isOnCreatePage="true"
+        isOnModifyPage="true"
+        isOnViewPage="true"
+        numberOfColumns="2"
+      >
+        <Title id="Cluster.Title.NameDetails"/>
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="title"
+            useBlank="true"
+            useDefault="false"
+          >
+            <Label id="Field.Label.Title"/>
+          </StandardField>
+        </StandardClusterField>
+        <!-- BEGIN TASK-23532 Name Evidence Change for SIN/SIR, Non Editable Field First Name, Middle Name and Last Name -->
+        <StandardClusterField>
+          <StandardField
+            modifiable="false"
+            source="firstName"
+            useDefault="true"
+          >
+            <Label id="Field.Label.FirstName"/>
+          </StandardField>          
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="false"
+            source="middleName"
+            useDefault="true"
+          >
+            <Label id="Field.Label.MiddleName"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="false"
+            source="lastName"
+            useDefault="true"
+          >
+            <Label id="Field.Label.LastName"/>
+          </StandardField>
+        </StandardClusterField>
+        <!-- END TASK-23532 -->
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="suffix"
+            useBlank="true"
+            useDefault="false"
+          >
+            <Label id="Field.Label.ID5"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="initials"
+            useDefault="true"
+          >
+            <Label id="Field.Label.ID6"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="false"
+            source="nameType"
+            useDefault="true"
+          >
+            <Label id="Field.Label.ID7"/>
+          </StandardField>
+        </StandardClusterField>
+      </StandardCluster>
+    </Cluster>
+    <Cluster>
+      <CommentsCluster
+        isOnCreatePage="true"
+        isOnModifyPage="true"
+        isOnViewPage="true"
+      >
+        <Title id="Cluster.Title.Comments"/>
+        <StandardField source="comments"/>
+      </CommentsCluster>
+    </Cluster>
+  </UserInterface>
+</EvidenceTypeVersion>

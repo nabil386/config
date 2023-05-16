@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--  BEGIN CR00168004 , AK  -->
+<workflow-process category="PC12" createdBy="unauthenticated" creationDate="20070115T164040" id="87" language-version="1.0" process-version="1" released="true"> 
+  <!--  BEGIN CR00168004 -->  
+  <name>SupervisorCloseTaskNotification</name>  
+  <!--BEGIN, CR00361282, CL -->  
+  <process-display-name> 
+    <localized-text> 
+      <locale language="fr">Notification de tâche de fermeture de superviseur</locale>  
+      <locale language="en">Supervisor Close Task Notification</locale>
+    </localized-text> 
+  </process-display-name>  
+  <!--END, CR00361282 -->  
+  <!-- BEGIN, CR00248295, NS -->  
+  <description> 
+    <localized-text> 
+      <locale language="fr">Avertit un utilisateur qu'une tâche dans laquelle l'utilisateur a travaillé a été close par un superviseur.</locale>  
+      <locale language="en">Notifies a user that a task on which the user has been working has been closed by a supervisor.</locale>
+    </localized-text> 
+  </description>  
+  <!-- END, CR00248295 -->  
+  <enactment-mappings> 
+    <mapping> 
+      <source-attribute name="taskID" struct-name="curam.core.sl.supervisor.struct.CloseTaskNotificationDetails"/>  
+      <target-attribute name="taskID" wdo-name="TaskCloseNotificationDetails"/> 
+    </mapping>  
+    <mapping> 
+      <source-attribute name="supervisorFullName" struct-name="curam.core.sl.supervisor.struct.CloseTaskNotificationDetails"/>  
+      <target-attribute name="supervisorFullName" wdo-name="TaskCloseNotificationDetails"/> 
+    </mapping>  
+    <mapping> 
+      <source-attribute name="taskClosedFromUser" struct-name="curam.core.sl.supervisor.struct.CloseTaskNotificationDetails"/>  
+      <target-attribute name="taskClosedFromUser" wdo-name="TaskCloseNotificationDetails"/> 
+    </mapping> 
+  </enactment-mappings>  
+  <wdos> 
+    <wdo is-list-wdo="false"> 
+      <wdo-name>TaskCloseNotificationDetails</wdo-name>  
+      <display-name> 
+        <localized-text> 
+          <locale language="fr">Détails de la notification de clôture de la tâche</locale>  
+          <locale language="en">Task Close Notification Details</locale>
+        </localized-text> 
+      </display-name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Détails nécessaires pour informer l'utilisateur de la clôture de la tâche.</locale>  
+          <locale language="en">The details needed to inform the user of the task closure.</locale>
+        </localized-text> 
+      </description>  
+      <attributes> 
+        <attribute> 
+          <attribute-name>taskID</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Identifiant de tâche</locale>  
+              <locale language="en">Task Identifier</locale>
+            </localized-text> 
+          </display-name>  
+          <type>INT64</type>  
+          <required-at-enactment>true</required-at-enactment> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>supervisorFullName</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Nom complet du superviseur</locale>  
+              <locale language="en">Supervisor Full Name</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>true</required-at-enactment> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>taskClosedFromUser</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Tâche close par l'utilisateur</locale>  
+              <locale language="en">Task Closed From User</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>true</required-at-enactment> 
+        </attribute> 
+      </attributes> 
+    </wdo> 
+  </wdos>  
+  <activities> 
+    <start-process-activity id="1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité de processus de début</locale>  
+          <locale language="en">Start Process Activity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de début</locale>  
+          <locale language="en">The start process activity</locale>
+        </localized-text> 
+      </description>  
+      <split type="none"> 
+        <transition-id idref="1"/> 
+      </split> 
+    </start-process-activity>  
+    <end-process-activity id="2"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de fin</locale>  
+          <locale language="en">End Process Activity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de fin</locale>  
+          <locale language="en">The end process activity</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/> 
+    </end-process-activity>  
+    <route-activity category="AC1" id="3"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Informer l'utilisateur de la clôture de la tâche</locale>  
+          <locale language="en">Inform User Task Closed</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Envoie une notification à l'utilisateur qui a réservé la tâche lorsqu'une tâche a été close par le superviseur.</locale>  
+          <locale language="en">Sends a notification to the user who had the task reserved when a task has been closed by the supervisor.</locale>
+        </localized-text> 
+      </description>  
+      <notification delivery-mechanism="DM1"> 
+        <subject> 
+          <message> 
+            <message-text> 
+              <localized-text> 
+                <locale language="fr">Notification de clôture de la tâche</locale>  
+                <locale language="en">Task Closure Notification</locale>
+              </localized-text> 
+            </message-text> 
+          </message> 
+        </subject>  
+        <body> 
+          <message> 
+            <message-text> 
+              <localized-text> 
+                <locale language="fr">La tâche %1n a été close par %2s.</locale>  
+                <locale language="en">Task %1n has been closed by %2s.</locale>
+              </localized-text> 
+            </message-text>  
+            <message-parameters> 
+              <wdo-attribute name="taskID" wdo-name="TaskCloseNotificationDetails"/>  
+              <wdo-attribute name="supervisorFullName" wdo-name="TaskCloseNotificationDetails"/> 
+            </message-parameters> 
+          </message> 
+        </body>  
+        <allocation-strategy identifier="curam.core.sl.intf.NotificationAllocationFunction.defaultStrategy" type="function"> 
+          <function-mappings> 
+            <formal-parameters> 
+              <formal-parameter index="0"> 
+                <base-type type="STRING"> 
+                  <wdo-attribute name="taskClosedFromUser" wdo-name="TaskCloseNotificationDetails"/> 
+                </base-type> 
+              </formal-parameter> 
+            </formal-parameters> 
+          </function-mappings> 
+        </allocation-strategy> 
+      </notification>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="7"/> 
+      </split> 
+    </route-activity> 
+  </activities>  
+  <transitions> 
+    <transition from-activity-idref="1" id="1" to-activity-idref="3"/>  
+    <transition from-activity-idref="3" id="7" to-activity-idref="2"/> 
+  </transitions> 
+</workflow-process>

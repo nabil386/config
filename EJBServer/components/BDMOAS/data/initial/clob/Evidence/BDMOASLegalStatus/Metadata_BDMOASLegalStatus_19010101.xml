@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Task 82485 DEV: Implement Legal Status Case Evidence -->
+<EvidenceTypeVersion modifiable="true"
+	businessStartDate="startDate" businessEndDate="endDate"
+	relatedParticipant="caseParticipantRoleID"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../../../../../../../DynamicEvidenceMetadata.xsd">
+	<Model>
+		<Attributes>
+			<Attribute>
+				<RelatedCPAttribute cpRoleType="MEM"
+					name="caseParticipantRoleID" participantType="Person">
+					<CPSearchType code="PRI" />
+					<CPSearchType code="MEM" />
+				</RelatedCPAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="legalStatus"
+					volatile="true">
+					<DomainType dataType="Codetable">
+						<CodetableOptions codetableName="BDMOASLegalStatus" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="otherLegalStatusDetails">
+					<DomainType dataType="String">
+						<StringOptions maxSize="144"
+							trimLeadingSpaces="true" trimTrailingSpaces="true" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="startDate" mandatory="true">
+					<DomainType dataType="Date">
+						<DateOptions currentDate="LessThanOrEqualTo">
+							<ValidationMessageInformation>
+								<ValidationMessageMapping>
+									<ValidationMessage>
+										<ValidationMessageResource
+											id="ERR_START_DATE_AFTER_CURRENT_DATE" />
+									</ValidationMessage>
+								</ValidationMessageMapping>
+							</ValidationMessageInformation>
+						</DateOptions>
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="endDate">
+					<DomainType dataType="Date" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<CommentsAttribute name="comments" />
+			</Attribute>
+		</Attributes>
+		<Relationships />
+	</Model>
+	<Validations>
+		<PatternValidations>
+			<Validator>
+				<ComparisonValidator
+					operator="GreaterThanOrEqualTo" source="endDate" target="startDate" />
+			</Validator>
+			<Validator>
+				<DuplicateValidator conjunction="AND"
+					endDate="endDate" startDate="startDate">
+					<DuplicateAttributes conjunction="AND">
+						<DuplicateAttribute
+							name="caseParticipantRoleID" />
+						<ValidationMessageInformation>
+							<ValidationMessageMapping>
+								<ValidationMessage>
+									<ValidationMessageResource
+										id="ERR_OVERLAPPING_LEGAL_STATUS" />
+								</ValidationMessage>
+							</ValidationMessageMapping>
+						</ValidationMessageInformation>
+					</DuplicateAttributes>
+				</DuplicateValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="legalStatus" sourceLiteral="Other"
+					target="otherLegalStatusDetails" unidirectional="true"
+					useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_LEGAL_STATUS_OTHER_THEN_OTHERLEGALSTATUS_MANDATORY" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="otherLegalStatusDetails"
+					target="legalStatus" targetLiteral="Other" unidirectional="true"
+					useTargetLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_OTHERLEGALSTATUSDETAILS_ONLY_WEHN_LEGAL_STATUS_OTHER" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+		</PatternValidations>
+		<CustomRulesValidation
+			ruleSetName="BDMOASLegalStatusValidationRuleSet" />
+	</Validations>
+	<SummaryInformation>
+		<SummaryMapping>
+			<Summary>
+				<parameter name="legalStatus" />
+				<SummaryResource id="SummaryMessage" />
+			</Summary>
+		</SummaryMapping>
+	</SummaryInformation>
+	<UserInterface>
+		<Cluster>
+			<RelCPCluster defaultToBlank="false"
+				enableMultiMemberUpdates="false" fullCreateParticipant="false"
+				isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true"
+				modifyOption="no" showParticipantTypeFilter="true"
+				useSingleName="false">
+				<StandardField source="caseParticipantRoleID" />
+				<ClusterName id="Related.Participant.Cluster.Title" />
+				<LabelName id="Related.Participant.Name.Label" />
+				<RelCpPfx id="Related.Participant.Description" />
+				<FirstName id="Related.Participant.First.Name.Label" />
+				<SecondName id="Related.Participant.Second.Name.Label" />
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true" labelWidth="40"
+				numberOfColumns="2">
+				<Title id="LegalStatus.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField source="legalStatus" modifiable="true"
+						useDefault="false" useBlank="true">
+						<Label id="LegalStatus.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField source="otherLegalStatusDetails"
+						modifiable="true" useDefault="false" useBlank="true">
+						<Label id="OtherLegalStatusDetails.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField source="startDate" modifiable="true"
+						useDefault="false" useBlank="true">
+						<Label id="StartDate.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField source="endDate" modifiable="true"
+						useDefault="false">
+						<Label id="EndDate.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<CommentsCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true">
+				<Title id="Comments.Cluster.Title" />
+				<StandardField source="comments" />
+			</CommentsCluster>
+		</Cluster>
+	</UserInterface>
+</EvidenceTypeVersion>

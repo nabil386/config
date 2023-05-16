@@ -1,0 +1,59 @@
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<xs:schema targetNamespace="http://www.curamsoftware.com/WorkspaceServices/IntakeApplication"
+    xmlns:ia="http://www.curamsoftware.com/WorkspaceServices/IntakeApplication"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    
+    <!-- argument for sendApplication method -->
+    <xs:element name="intakeApplication">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="ia:intakeApplicationType" maxOccurs="1" minOccurs="1"/>
+                <xs:element name="applicationReference" type="xs:string"/>
+                <xs:element ref="ia:applicationLocale" maxOccurs="1" minOccurs="1"/>
+                <xs:element ref="ia:submittedDateTime" maxOccurs="1" minOccurs="1"/>
+                <xs:element ref="ia:programsAppliedFor" maxOccurs="1" minOccurs="1"/>
+                <xs:element ref="ia:applicationData" maxOccurs="1" minOccurs="1"/>
+                <xs:element ref="ia:applicationSchemaName" maxOccurs="1" minOccurs="1"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="intakeApplicationType" type="xs:string"/>
+    <xs:element name="programsAppliedFor" type="ia:programsAppliedForType"/>
+    <xs:element name="applicationLocale" type="xs:string"/>
+    <xs:element name="programType" type="xs:string"/>
+    <xs:element name="applicationData" type="xs:string"/>
+    <xs:element name="submittedDateTime" type="xs:string"/>
+    <xs:element name="applicationSchemaName" type="xs:string"/>
+    <xs:element name="applicationReference" type="xs:string"/>
+    
+    <xs:element name="sendApplicationResponseType" type="xs:boolean"/>
+    
+    <xs:element name="fault" type="xs:string"/>
+    
+    <xs:complexType name="programsAppliedForType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="1" name="programApplicationReference"
+                type="ia:programApplicationReferenceType"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="programApplicationReferenceType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" ref="ia:programType"/>
+            <xs:element maxOccurs="1" minOccurs="1" name="processedByCuramInd" type="xs:boolean"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="curamReferenceID" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:element name="updateIntakeApplicationFault" type="xs:string"/>
+
+</xs:schema>

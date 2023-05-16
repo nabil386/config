@@ -1,0 +1,1 @@
+Contains data required in order to start up a working Curam application

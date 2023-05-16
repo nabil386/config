@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  
+<ieg-script xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ieg-schema.xsd"
+	finish-page="cw/FinishLifeEventScript.jspx"
+	quit-page="cw/QuitLifeEventScript.jspx"		
+	show-sections="true"
+	show-progress-bar="true"
+	validate-save-and-exit="false"
+	config-properties="bdm-app-config"
+	>
+		
+	<identifier id="BDMLifeEventPhoneNumberUpdate" scriptversionnumber="V1" type="LifeEvent" />
+	
+	<section>
+		<title id="SelectChangeType.SectionTitle"><![CDATA[Select the type of change]]></title>
+		<question-page 
+			id="SelectChangeType"
+			entity="Person"
+			progress="0" 
+			show-back-button="false"
+			show-exit-button="true"
+			show-next-button="true" 
+			show-save-exit-button="false"
+			>
+			<description id="MandatoryFieldsDescription">
+				<![CDATA[<p>All fields are mandatory unless specified as optional.</br></br></p>]]>
+			</description>
+			<validation expression="CheckIsUnableToReceivingAlert(&quot;VALIDATION&quot;,Person.phoneNumberChangeType)" >
+						<message id="SelectChangeType.display.information"><![CDATA[If you proceed you will no longer be receiving alerts by text or by email. Click 'Next' to continue.]]></message>
+			</validation>
+			<validation expression="UpdateCommunicationDetailsEntity(Person.phoneNumberChangeType)">
+				     <message id="SelectChangeType.Validation"><![CDATA[Please select a phone number to update or remove]]></message>
+			</validation>
+			<validation expression="ValidateConditionalMandatoryLifeEvent(Person.phoneNumberChangeType, Person.selectedPhoneNumberID)">
+				     <message id="SelectChangeType.Validation"><![CDATA[Please select a phone number to update or remove]]></message>
+			</validation>
+			<cluster >
+				<question id="phoneNumberChangeType" mandatory="true">
+					<label id="SelectChangeType.SelectChangeType"> <![CDATA[What type change would you like to make?]]></label>
+							<layout>
+								<type>radio</type>
+							</layout>
+				</question>
+							</cluster>	
+			<!-- <callout expression="UpdateCommunicationDetailsEntity()" id="SelectChangeType.UpdateCommunicationDetailsEntity"/>  -->
+			<condition expression="isNotNull(Person.phoneNumberChangeType) and not(Person.phoneNumberChangeType==&quot;BDMPNCT01&quot;)">
+				<cluster>
+					<list-question entity="CommunicationDetails" 
+						id="phoneNumberSelected"
+						single-select="true" 
+						mandatory="false"
+						criteria="phoneNumber!=&quot;&quot;">			
+						<label id="SelectChangeType.PhoneNumbers"><![CDATA[Please select the phone number to update or remove:]]></label>
+	              		<item-label><label-element attribute-id="phoneNumberDesc"/></item-label>
+	            	</list-question>
+	            </cluster>
+            </condition>
+		</question-page>
+		<!-- Callout to reset value  -->
+		 <callout expression="CheckIsUnableToReceivingAlert(&quot;RESET_VALUE&quot;,Person.phoneNumberChangeType)" id="SelectChangeType.resetValue"/> 
+	</section>
+	
+	<section>
+		<title id="CommunicationPrimary.SectionTitle"><![CDATA[Phone number details]]></title>
+		<condition expression="not(Person.phoneNumberChangeType==&quot;BDMPNCT03&quot;) and Person.selectedPhoneNumberID!=&quot;&quot;">
+				<question-page id="CommunicationPrimary"
+					entity="Person"
+					progress="30" 
+					show-back-button="true"
+					show-exit-button="true"
+					show-next-button="true" 
+					show-save-exit-button="false"
+					>				
+					<description id="MandatoryFieldsDescription">
+						<![CDATA[All fields are mandatory unless specified as optional.]]>
+					</description> 
+					<validation expression="not(isNotNull(CommunicationDetails.phoneExt)) or validateOnlyNumeric(CommunicationDetails.phoneExt)">
+		      			<message id="CommunicationDetails.ExtensionNumber.Validation"><![CDATA[Please enter only numeric values for the extension number.]]></message>
+		    		</validation>
+		    		<validation expression="(isNotNull(CommunicationDetails.phoneNumber) and isNotNull(CommunicationDetails.phoneAreaCode) and isNotNull(CommunicationDetails.countryCode))
+		    					or (isNotNull(CommunicationDetails.phoneNumber) and isNotNull(CommunicationDetails.countryCode) and not(isNotNull(CommunicationDetails.phoneAreaCode)))
+		    					or (isNotNull(CommunicationDetails.phoneAreaCode) and isNotNull(CommunicationDetails.countryCode) and not(isNotNull(CommunicationDetails.phoneNumber))) ">
+		      			<message id="CommunicationDetails.phoneCountryCode.Validation"><![CDATA[Country code must be selected when Area code or Phone number has been provided.]]></message>
+		    		</validation>
+		    		<validation expression="not(isNotNull(CommunicationDetails.phoneAreaCode)) or validateOnlyNumeric(CommunicationDetails.phoneAreaCode)">
+		      			<message id="CommunicationDetails.AreadCode.Numeric.Validation"><![CDATA[Area code must be numeric.]]></message>
+		    		</validation>
+		    		<validation expression="not(isNotNull(CommunicationDetails.phoneNumber)) or validateOnlyNumeric(CommunicationDetails.phoneNumber)">
+		      			<message id="CommunicationDetails.PhoneNumber.Numeric.Validation"><![CDATA[Phone number must be numeric.]]></message>
+		    		</validation>
+		    		<validation expression="ValidateAreaCodeMandatory(CommunicationDetails.countryCode,CommunicationDetails.phoneAreaCode)">
+		      			<message id="CommunicationDetails.AreaCode.Mandatory.Validation"><![CDATA[Area code is mandatory when country code is +1.]]></message>
+		    		</validation>
+					<validation expression="ValidatePhoneNumber(CommunicationDetails.countryCode,CommunicationDetails.phoneNumber)">
+		      			<message id="CommunicationDetails.PhoneNumber.Validation"><![CDATA[Phone number must be 7 digits when country code is + 1.]]></message>
+		    		</validation>
+		    		<validation expression="ValidatePhoneAreaCode(CommunicationDetails.countryCode,CommunicationDetails.phoneAreaCode)">
+				      	<message id="CommunicationDetails.AreaCode.Validation"><![CDATA[Area code can only be 3 digits when country code is + 1.]]></message>
+				    </validation>
+		    		<validation expression="ValidatePhoneNumberAndType(CommunicationDetails.phoneNumber,CommunicationDetails.phoneType)">
+						<message id="CommunicationDetails.PPhoneNumber.Validation"><![CDATA[Please select the type of phone number when a number has been added.]]></message>
+			    	</validation>
+			    	<validation expression="ValidateDatastorePhoneValueChanged(CommunicationDetails.countryCode, CommunicationDetails.phoneAreaCode,
+						CommunicationDetails.phoneNumber, CommunicationDetails.phoneExt, CommunicationDetails.phoneType, CommunicationDetails.isMor, CommunicationDetails.isAftr, CommunicationDetails.isEve,
+						CommunicationDetails.isPreferredCommunication, CommunicationDetails.receiveAlerts, CommunicationDetails.alertFrequency)">
+						<message id="CommunicationDetails.phoneValueChange.Validation"><![CDATA[Nothing has changed. Please make a change to proceed.]]></message>
+					</validation>
+			    	<!-- Personal mobile phone number or Business mobile phone number cannot have extension -->
+			    	
+			    	<validation expression="ValidatePhoneNumberExtAndType(CommunicationDetails.phoneExt,CommunicationDetails.phoneType)">
+						<message id="CommunicationDetails.phoneExtMobile.Validation"><![CDATA[Personal mobile phone number or Business mobile phone number cannot have extensions.]]></message>
+					</validation>
+					<!-- Can only receive alert to a mobile number -->
+					<validation expression="(
+			    		(CommunicationDetails.receiveAlerts==&quot;YN1&quot; )and (CommunicationDetails.phoneType==&quot;BDMPH8000&quot; or CommunicationDetails.phoneType==&quot;BDMPH8001&quot;) 
+			    		or 
+			    		(CommunicationDetails.receiveAlerts==&quot;YN2&quot; )and (CommunicationDetails.phoneType!=&quot;&quot;))">
+						<message id="CommunicationDetails.phoneReceiveAlert.Validation"><![CDATA[Alerts can only be received on a mobile number.]]></message>
+					</validation>
+					<validation expression="ValidateAlertFrequency(CommunicationDetails.receiveAlerts,CommunicationDetails.alertFrequency)">
+						<message id="CommunicationDetails.phoneAlertFrequency.Validation"><![CDATA[Please specify how many alerts you would prefer to receive.]]></message>
+					</validation>
+					<cluster entity="CommunicationDetails"   criteria="curamDataStoreUniqueID!=&quot;&quot;"  >
+							<title id="CommunicationDetails.SectionOne.PTelephoneTitle">
+								<![CDATA[Telephone number and contact preference]]>
+							</title>
+							<question id="countryCode" default-value-expression="&quot;BDMPC80035&quot;"  mandatory="true" >
+								<label id="CommunicationDetails.SectionOne.PTelephoneCCode">
+									<![CDATA[Country code]]>
+								</label>
+							</question>
+						<layout>
+							<type>flow</type>
+							<num-cols>2</num-cols>
+						</layout>
+						<container>
+						<question id="phoneAreaCode"  mandatory="false" >
+							<label id="CommunicationDetails.SectionOne.PAreaCode">
+								<![CDATA[Area Code (555)]]>
+							</label>
+						</question>
+						<question id="phoneNumber"  mandatory="true" >
+							<label id="CommunicationDetails.SectionOne.PTelephoneNumber">
+								<![CDATA[Phone number (5551212)]]>
+							</label>
+							<layout>
+									<width>80</width>
+							</layout>
+						</question>
+						<question id="phoneExt"  mandatory="false" >
+							<label id="CommunicationDetails.SectionOne.PTelephoneExt">
+								<![CDATA[Extension]]>
+							</label>
+							<layout>
+									<width>80</width>
+							</layout>
+						</question>
+						</container>
+				
+						<question id="phoneType"  mandatory="true" >
+							<label id="CommunicationDetails.SectionOne.PTelephoneType">
+								<![CDATA[Type of phone number.]]>
+							</label>
+						</question>
+				
+						<layout>
+							<num-cols>1</num-cols>
+						</layout>
+						<display-text id="CommunicationDetails.SectionOne.PTelephoneTime">
+							<![CDATA[When is the best time to call you at this number?]]>
+						</display-text>
+						<question id="isMor" control-question="false"
+							control-question-type="IEG_BOOLEAN">
+							<label id="CommunicationDetails.SectionOne.PTelephoneTimeMor">
+								<![CDATA[Morning]]>
+							</label>
+						</question>
+						<question id="isAftr" control-question="false"
+							control-question-type="IEG_BOOLEAN">
+							<label id="CommunicationDetails.SectionOne.PTelephoneTimeAftr">
+								<![CDATA[Afternoon]]>
+							</label>
+						</question>
+						<question id="isEve" control-question="false"
+							control-question-type="IEG_BOOLEAN">
+							<label id="CommunicationDetails.SectionOne.PTelephoneTimeEve">
+								<![CDATA[Evening]]>
+							</label>
+						</question>
+					
+						<question id="isPreferredCommunication" mandatory="true">
+							<label id="CommunicationDetails.isPrimaryCommunicationLabel">
+									<![CDATA[Would you like this to be preferred telephone number that we use to contact you?]]>
+							</label>
+							<hint-text id="CommunicationDetails.isPrimaryCommunicationLabel.hint">
+									<![CDATA[Only one telephone number can be selected as the preferred.]]>
+							</hint-text>
+							<layout>
+									<type>radio</type>
+							</layout>
+						</question>
+				
+						<question id="receiveAlerts" mandatory="true">
+							<label id="CommunicationDetails.receiveAlertLabel">
+								<![CDATA[Would you like to receive text alerts on this phone number?]]>
+							</label>
+							<hint-text id="CommunicationDetails.receiveAlertLabel.hint">
+								<![CDATA[Please note that alerts can only be sent by text to one mobile number]]>
+							</hint-text>
+							<layout>
+								<type>radio</type>
+							</layout>
+						</question>
+					</cluster>
+					<condition expression="CommunicationDetails.receiveAlerts==&quot;YN1&quot;">
+						<cluster entity="CommunicationDetails"   criteria="curamDataStoreUniqueID!=&quot;&quot;" >
+							<question id="alertFrequency" mandatory="true">
+								<label id="CommunicationDetails.alterFrequencyLabel">
+									<![CDATA[How many alerts would you prefer to receive?]]>
+								</label>
+								<hint-text id="CommunicationDetails.alterFrequency.hint">
+									<![CDATA[You will receive an alert when there is new information in your client account]]>
+								</hint-text>
+								<layout>
+									<type>radio</type>
+								</layout>
+							</question>
+						</cluster>
+					</condition>
+				</question-page>
+		</condition>
+	</section>
+	
+	<section>
+		<title id="Summary.SectionTitle"><![CDATA[Summary of changes]]></title>
+		<summary-page id="SummaryPage"  
+			entity="Person"
+			show-back-button="true"
+			show-exit-button="true"
+			show-next-button="true" 
+			show-save-exit-button="false"
+			>
+			<next-button-label id="Summary.NextButton.Label">Submit</next-button-label>
+			<cluster entity="Person" >
+				<question id="phoneNumberChangeType" ><label id="CommunicationDetails.SectionOne.TypeOfChange"><![CDATA[Type of change]]></label></question>
+			</cluster>
+			<condition expression="Person.phoneNumberChangeType==&quot;BDMPNCT03&quot; and Person.selectedPhoneNumberID!=&quot;&quot;">
+				<cluster entity="CommunicationDetails"   criteria="curamDataStoreUniqueID!=&quot;&quot;">
+					<question id="phoneNumberDesc" ><label id="CommunicationDetails.SectionOne.PTelephoneNumber"><![CDATA[Phone number]]></label></question>
+				</cluster>
+			</condition>
+			<condition expression="not(Person.phoneNumberChangeType==&quot;BDMPNCT03&quot;) and Person.selectedPhoneNumberID!=&quot;&quot;">
+				<cluster entity="CommunicationDetails" criteria="curamDataStoreUniqueID!=&quot;&quot;"  >
+					<title id="Summary.ClusterTitle"><![CDATA[\uFEFF]]></title>
+		        	<edit-link start-page="CommunicationPrimary" />	
+					<layout><type>flow</type><num-cols>3</num-cols></layout>
+					<question id="countryCode" ><label id="CommunicationDetails.SectionOne.PTelephoneCCode"><![CDATA[Country code]]></label></question>
+					<question id="phoneAreaCode" ><label id="CommunicationDetails.SectionOne.PAreaCode"><![CDATA[Area code]]></label></question>
+					<question id="phoneNumber"><label id="CommunicationDetails.SectionOne.PTelephoneNumber"><![CDATA[Phone number]]></label></question>
+					<question id="phoneExt"><label id="CommunicationDetails.SectionOne.PTelephoneExt"><![CDATA[Extension]]></label></question>
+					<question id="phoneType" ><label id="CommunicationDetails.SectionOne.PTelephoneType"><![CDATA[Type of phone number]]></label></question>
+				</cluster>
+				<cluster entity="CommunicationDetails" criteria="curamDataStoreUniqueID!=&quot;&quot;"   >
+		            <display-text id="CommunicationDetails.SectionOne.PTelephoneTime">
+							<![CDATA[When is the best time to call you at this number?]]>
+						</display-text>
+					<layout><type>flow</type><num-cols>3</num-cols></layout>
+					<question id="isMor"><label id="CommunicationDetails.SectionOne.PTelephoneTimeMor"><![CDATA[Morning]]></label></question>
+					<question id="isAftr"><label id="CommunicationDetails.SectionOne.PTelephoneTimeAftr"><![CDATA[Afternoon]]></label></question>
+					<question id="isEve"><label id="CommunicationDetails.SectionOne.PTelephoneTimeEve"><![CDATA[Evening]]></label></question>
+				</cluster>
+				<cluster entity="CommunicationDetails" criteria="curamDataStoreUniqueID!=&quot;&quot;" >
+					<question id="isPreferredCommunication"><label id="CommunicationDetails.isPrimaryCommunicationLabel"><![CDATA[Would you like this to be preferred telephone number that we use to contact you?]]></label></question>
+					<question id="receiveAlerts"><label id="CommunicationDetails.receiveAlertLabel"><![CDATA[Would you like to receive text alters on this phone number?]]></label></question>
+				</cluster>
+				<!-- <condition expression="CommunicationDetails.receiveAlerts==&quot;YN1&quot; and CommunicationDetails.curamDataStoreUniqueID!=&quot;&quot;"> -->
+				<cluster entity="CommunicationDetails" criteria="curamDataStoreUniqueID!=&quot;&quot;"  >
+					<question id="alertFrequency"><label id="CommunicationDetails.alterFrequencyLabel"><![CDATA[How many alerts would you prefer to receive?]]></label></question>
+				</cluster>
+				<!-- </condition> -->
+			</condition>
+			</summary-page>
+	</section>
+	
+	
+	<!-- Attestation-->
+	<!-- <ieg-sub-script>
+		<identifier id="BDMStimulusApplicationSubmission" scriptversionnumber="V1" type="Sub"/>
+	</ieg-sub-script> -->
+	<!-- End Attestation-->		
+</ieg-script>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ieg-script
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ieg-schema.xsd"
+	finish-page="cw/FinishLifeEventScript.jspx"
+	quit-page="cw/QuitLifeEventScript.jspx"		
+	show-sections="true"
+	show-progress-bar="true"
+	validate-save-and-exit="false"
+	config-properties="bdm-app-config"
+	>
+
+	<identifier id="BDMLifeEventPersonalUpdate" scriptversionnumber="V1" type="LifeEvent" />
+
+	<section>
+		<title id="PersonalInformation.Title">
+			<![CDATA[Personal Information]]>
+		</title>
+		<icon enabled-image="sample_about_you"
+			current-image="sample_about_you" />
+	
+		<question-page 
+			id="PersonalInformation" 
+			entity="Person"
+			progress="0" 
+			show-back-button="false"
+			show-exit-button="true"
+			show-next-button="true"
+			show-save-exit-button="false"
+			>
+			
+			<set-attribute expression="RemoveSpecialCharacters(Person.sinRaw)" id="SIN" />
+			
+			<!--BEGIN TASK- 17150 Name Validation -->
+			<!-- BEGIN TASK-27353 Name should be Max 65 Char long  -->
+			<validation expression="not(isNotNull(Person.firstName)) or ValidateInstitutionNameLength(Person.firstName, &quot;1&quot;, &quot;65&quot;)">
+				<message id="PersonalInformation.FName.Validation"><![CDATA[First given name cannot contain numbers or special characters or exceed 65 characters.]]></message>
+			</validation>
+			<validation expression="not(isNotNull(Person.middleName)) or ValidateInstitutionNameLength(Person.middleName, &quot;1&quot;, &quot;65&quot;)">
+				<message id="PersonalInformation.OName.Validation"><![CDATA[Other given name(s) cannot contain numbers or special characters or exceed 65 characters.]]></message>
+			</validation>
+			<validation expression="not(isNotNull(Person.lastName)) or ValidateInstitutionNameLength(Person.lastName, &quot;1&quot;, &quot;65&quot;)">
+				<message id="PersonalInformation.FamName.Validation"><![CDATA[Last name cannot contain numbers or special characters or exceed 65 characters.]]></message>
+			</validation>
+			<validation expression="not(isNotNull(Person.PreferredName)) or ValidateInstitutionNameLength(Person.PreferredName, &quot;1&quot;, &quot;65&quot;)">
+				<message id="PersonalInformation.PrefName.Validation"><![CDATA[Preferred name cannot contain numbers or special characters or exceed 65 characters.]]></message>
+			</validation>
+			<validation expression="not(isNotNull(Person.LastNameAtBirth)) or ValidateInstitutionNameLength(Person.LastNameAtBirth, &quot;1&quot;, &quot;65&quot;)">
+				<message id="PersonalInformation.LName.Validation"><![CDATA[Last name at birth cannot contain numbers or special characters or exceed 65 characters.]]></message>
+			</validation>
+			<validation expression="not(isNotNull(Person.ParentLastName)) or ValidateInstitutionNameLength(Person.ParentLastName, &quot;1&quot;, &quot;65&quot;)">
+				<message id="PersonalInformation.LName.Parents.Validation"><![CDATA[Parent's last name at birth cannot contain numbers or special characters or exceed 65 characters.]]></message>
+			</validation> 
+			<!-- END TASK-27353 TASK-17150 -->
+			<validation expression="ValidateSINLength(Person.sinRaw)">
+				<message id="PersonalInformation.SIN.LengthValidation"><![CDATA[Please enter a valid Social Insurance Number with 9 digits.]]></message>
+			</validation>
+			
+			<validation expression="ValidateSINMOD10(Person.sinRaw)">
+				<message id="PersonalInformation.SIN.invalid"><![CDATA[Please enter a valid Social Insurance Number.]]></message>
+			</validation>
+			
+			<validation expression="ValidateFutureDate(Person.dateOfBirth)">
+				<message id="PersonalInformation.DOB.Validation"><![CDATA[Date of birth cannot be a future date.]]></message>
+			</validation>
+			
+			<!-- BEGIN - NLynch - Task 7361 SIN SIR Validation --> 
+			<validation expression="ValidateSINSPM(Person.sinRaw)">
+				<message id="PersonalInformation.SINSPM.Validation">Based on the information you provided it appears you have already applied for benefits. If you are applying for additional benefits for another period reapply at Canada.ca/reapply. If you believe you are receiving this message in error, please call us toll free at1-555-555-1234 between 8:30 AM and 4:30 PM, local time, Monday to Friday, except civic holidays.</message>
+			</validation>
+			<validation expression="ValidateSINService(Person.sinRaw, Person.firstName, Person.lastName, Person.dateOfBirth)">
+				<message id="PersonalInformation.SINService.Validation">Something doesn't look right. Please review the information entered and try again. If this situation continues, please call us toll free at 1-555-555-1234 between 8:30 AM and 4:30 PM, local time, Monday to Friday, except civic holidays.</message>
+			</validation>
+			<!-- END - NLynch - Task 7361 SIN SIR Validation --> 
+			
+			<!-- Begin - Life Event Change validations --> 
+			<validation expression="not(isNotNull(Person.sinRawDateChange)) or ValidateFutureDate(Person.sinRawDateChange)">
+				<message id="PersonalInformation.sinRawDateChange.Validation"><![CDATA[SIN change effective from cannot be a future date.]]></message>
+			</validation>
+			<validation expression="not(isNotNull(Person.nameDateChange)) or ValidateFutureDate(Person.nameDateChange)">
+				<message id="PersonalInformation.nameDateChange.Validation"><![CDATA[Name change effective from cannot be a future date.]]></message>
+			</validation>
+			<validation expression="ValidateDatastoreSINValueChanged(Person.sinRaw, Person.sinRawDateChange)">
+				<message id="PersonalInformation.SINValueChange.Validation"><![CDATA[SIN change effective from is required if your SIN has changed.]]></message>
+			</validation>
+			<validation expression="ValidateDatastoreNameValueChanged(Person.firstName, Person.middleName, Person.lastName, Person.PreferredName, Person.nameDateChange)">
+				<message id="PersonalInformation.NameValueChange.Validation"><![CDATA[Name change effective from is required if your name has changed.]]></message>
+			</validation>
+			<!-- End - Life Event Change validations --> 
+			
+			<validation expression="ValidateSINEffectiveDate(Person.sinRawDateChange)">
+				<message id="PersonalInformation.sinEffectiveDateChange.Validation"><![CDATA[The SIN cannot be updated with the effective date provided. Please contact us to resolve the issue.]]></message>
+			</validation>
+			
+			<title id="PersonalInformation.Title"><![CDATA[Personal Information]]></title>
+			<description id="MandatoryFieldsDescription"><![CDATA[All fields are mandatory unless specified as optional.]]></description>
+
+	     	<set-attribute expression="true" id="isPrimaryParticipant" />
+			
+			<cluster>
+				<title id="PersonalInformation.SINTitle"><![CDATA[Social Insurance Number]]></title>
+				<question id="sinRaw" mandatory="true">
+					<label id="PersonalInformation.SIN"><![CDATA[Social Insurance Number (without spaces or hyphens)]]></label>
+					<layout><class-names>wds-js-input-mask-sin wds-js-input-layout-size-medium</class-names></layout>
+				</question>	
+				<question id="sinRawDateChange">
+					<label id="PersonalInformation.SINDateChange"><![CDATA[SIN change effective from]]>	</label>
+                    <layout><type>date-picker</type><class-names>wds-js-input-mask-yyyy-mm-dd</class-names></layout>
+				</question>	
+			</cluster>
+			
+			<cluster>
+				<title id="PersonalInformation.FirstLastNameTitle"><![CDATA[First and last name]]></title>			
+				<question id="firstName" mandatory="true">
+					<label id="PersonalInformation.FName"><![CDATA[First given name (as indicated on your SIN card/letter)]]></label>
+				</question>	
+				<question id="middleName" >
+					<label id="PersonalInformation.OName"><![CDATA[Other given name(s)]]></label>
+					<hint-text id="PersonalInformation.OName.Hint"><![CDATA[Enter your other given name(s) as submitted in your SIN application.]]></hint-text>			
+				</question>	
+				<question id="lastName" mandatory="true">
+					<label id="PersonalInformation.FamName"><![CDATA[Last name (as indicated on your SIN card/letter)]]></label>
+				</question>	
+				<question id="PreferredName">
+					<label id="PersonalInformation.PrefName"><![CDATA[<b>Preferred name</b>]]></label>
+					<hint-text id="PersonalInformation.PrefName.hint"><![CDATA[When contacting you in regards to your case, what name would you prefer to be called when speaking to the Commission.]]></hint-text>
+				</question>
+				<question id="nameDateChange">
+					<label id="PersonalInformation.nameDateChange"><![CDATA[Name change effective from]]>	</label>
+                    <layout><type>date-picker</type><class-names>wds-js-input-mask-yyyy-mm-dd</class-names></layout>
+				</question>	
+			</cluster>
+
+			<cluster>
+				<title id="PersonalInformation.DOBLastNameAtBirthTitle"><![CDATA[Date of birth and last name at birth]]></title>	
+				<question id="LastNameAtBirth" mandatory="true">
+					<label id="PersonalInformation.LName"><![CDATA[Last name at birth]]></label>
+				</question>	
+				<question id="dateOfBirth" mandatory="true">
+					<label id="PersonalInformation.DOB"><![CDATA[Date of birth]]></label>
+                    <layout><type>date-picker</type><class-names>wds-js-input-mask-yyyy-mm-dd</class-names></layout>
+				</question>	
+				<question id="ParentLastName" mandatory="true" show-field-help="true">
+					<hint-text id="ParentLastName.hint"><![CDATA[ Enter family name at birth of one of your parents as submitted in your SIN application.Do not enter any first name.]]></hint-text>
+					<label id="PersonalInformation.LName.Parents"><![CDATA[Parent's last name at birth]]></label>
+				</question>	
+			</cluster>
+
+		</question-page>
+	</section>
+	
+	<!-- SUMMARY PAGE -->
+	<section>
+		<title id="Summary.Title">Summary</title>
+		<summary-page id="SummaryPage" 
+			entity="Person" 
+			show-back-button="true"
+			show-exit-button="true"
+			show-next-button="true" 
+			show-save-exit-button="false"
+			>
+			<title id="SummaryPage.Title"><![CDATA[Summary]]></title>
+			<next-button-label id="NextButton.Label">Continue</next-button-label>
+			
+			<!-- PERSONAL INFO SUMMARY - BEGIN -->
+			<cluster entity="Person">
+				<title id="PI.Title"><![CDATA[Personal information details]]></title>
+				<edit-link start-page="PersonalInformation" />	
+				<layout>
+                     <type>flow</type>
+                     <num-rows>3</num-rows>
+                     <label-alignment>right</label-alignment>
+                </layout> 
+		
+				<display-text id="PersonalInformation.SINTitle"><![CDATA[<h3>Social Insurance Number</h3>]]></display-text>
+				<question id="sinRaw" ><label id="PI.ApplDet.SIN"><![CDATA[<h4>Social Insurance Number<h4>]]></label></question>
+				<question id="sinRawDateChange"><label id="PersonalInformation.SINDateChange"><![CDATA[SIN change effective from]]></label></question>	
+				<display-text id="PersonalInformation.FirstLastNameTitle"><![CDATA[<h3>First and last name</h3>]]></display-text>
+				<question id="firstName" ><label id="PI.ApplDet.FirstName"><![CDATA[<h4>First given name (as indicated on your SIN card/letter)<h4>]]></label></question>
+				<question id="middleName" ><label id="PI.ApplDet.OGivenName"><![CDATA[<h4>Other given name(s)<h4>]]></label></question>
+				<question id="lastName" ><label id="PI.ApplDet.FamName"><![CDATA[<h4>Last name (as indicated on your SIN card/letter)<h4>]]></label></question>
+				<question id="PreferredName"><label id="PI.ApplDet.PrefName"><![CDATA[<b>Preferred name</b>]]></label></question>	
+				<question id="nameDateChange"><label id="PersonalInformation.nameDateChange"><![CDATA[SIN change effective from]]></label>    </question>	
+				<display-text id="PersonalInformation.DOBLastNameAtBirthTitle"><![CDATA[<h3>Date of birth and last name at birth</h3>]]></display-text>
+				<question id="LastNameAtBirth" ><label id="PI.ApplDet.LastNameBirth"><![CDATA[<h4>Last name at birth<h4>]]></label></question>
+				<question id="dateOfBirth" ><label id="PI.ApplDet.DOB"><![CDATA[<h4>Date of birth<h4>]]></label></question>
+				<question id="ParentLastName" ><label id="PI.ApplDet.ParentLastName"><![CDATA[<h4>Parent's last name at birth<h4>]]></label></question>
+			</cluster>
+			<!-- PERSONAL INFO  SUMMARY - END -->
+		</summary-page>
+	</section>
+	
+	<ieg-sub-script>
+		<identifier id="BDMStimulusApplicationSubmission" scriptversionnumber="V1" type="Sub"/>
+	</ieg-sub-script>
+			
+</ieg-script>

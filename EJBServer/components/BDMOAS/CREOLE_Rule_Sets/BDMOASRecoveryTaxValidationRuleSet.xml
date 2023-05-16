@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Feature 99651: Manage OAS RCV Tax -->
+<RuleSet name="BDMOASRecoveryTaxValidationRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+
+	<Class extends="DefaultEvidenceValidationResult"
+		extendsRuleSet="EvidenceValidationRuleSet" name="ValidationResult">
+
+		<Attribute name="description">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="Description"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASRecoveryTaxValidationRuleSet" />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="BDMOASRecoveryTax"
+					ruleset="BDMOASRecoveryTaxRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="standardValidations">
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass name="Validation"
+						ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="Validation"
+							ruleset="EvidenceValidationRuleSet" />
+					</listof>
+					<members>
+						<reference attribute="validYearFormatValidator" />
+						<reference attribute="validOASRecoveryTaxYearValidator" />
+						<reference attribute="monthlyRecoveryTaxAmountZeroOrNegetiveValidator" />
+						<reference
+							attribute="monthlyRecoveryAmountWithDeductionConfigAmountValidator" />
+						<reference attribute="isEndDateGreaterThanOASAnnualPaymentScheduleNextJuneMonthEndPaymentDateValidator" />
+					</members>
+				</fixedlist>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="preCreateValidations">
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass name="Validation"
+						ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="Validation"
+							ruleset="EvidenceValidationRuleSet" />
+					</listof>
+					<members>
+						<reference
+							attribute="startDateAfterCurrentDateValidator" />
+					</members>
+				</fixedlist>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="startDateAfterCurrentDateValidator">
+			<type>
+				<ruleclass name="Validation"
+					ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation"
+					ruleset="EvidenceValidationRuleSet">
+					<reference attribute="startDateAfterCurrentDateFailure" />
+					<reference
+						attribute="startDateAfterCurrentDateFailureMessage" />
+				</create>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="startDateAfterCurrentDateFailure">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<compare comparison="&lt;">
+					<reference attribute="startDate">
+						<reference attribute="evidence" />
+					</reference>
+					<call class="curam.ca.gc.bdm.creole.impl.Statics"
+						method="getCurrentDate">
+						<type>
+							<javaclass name="Boolean" />
+						</type>
+						<arguments />
+					</call>
+				</compare>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="startDateAfterCurrentDateFailureMessage">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage
+					key="ERR_START_LESS_THAN_CURRENT_DATE"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASRecoveryTaxValidationRuleSet">
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="preModifyValidations">
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass name="Validation"
+						ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="Validation"
+							ruleset="EvidenceValidationRuleSet" />
+					</listof>
+					<members>
+						<reference attribute="endDateLapsedValidator" />
+					</members>
+				</fixedlist>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="endDateLapsedValidator">
+			<type>
+				<ruleclass name="Validation"
+					ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation"
+					ruleset="EvidenceValidationRuleSet">
+					<reference attribute="endDateLapsedFailure" />
+					<reference attribute="endDateLapsedFailureMessage" />
+				</create>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="endDateLapsedFailure">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<compare comparison="&lt;">
+					<reference attribute="endDate">
+						<reference attribute="evidence" />
+					</reference>
+					<call class="curam.ca.gc.bdm.creole.impl.Statics"
+						method="getCurrentDate">
+						<type>
+							<javaclass name="Boolean" />
+						</type>
+						<arguments />
+					</call>
+				</compare>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="endDateLapsedFailureMessage">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="ERR_END_DATE_LAPSED"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASRecoveryTaxValidationRuleSet">
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="caseID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<reference attribute="caseID">
+					<reference attribute="evidence" />
+				</reference>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="concernRoleRecord">
+			<type>
+				<ruleclass name="ConcernRole"
+					ruleset="ParticipantEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<singleitem onEmpty="error" onMultiple="error">
+					<readall ruleclass="ConcernRole"
+						ruleset="ParticipantEntitiesRuleSet">
+						<match retrievedattribute="concernRoleID">
+							<reference attribute="caseParticipantRoleID">
+								<reference attribute="related_caseParticipantRole">
+									<reference attribute="evidence" />
+								</reference>
+							</reference>
+						</match>
+					</readall>
+				</singleitem>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="validYearFormatValidator">
+			<type>
+				<ruleclass name="Validation"
+					ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation"
+					ruleset="EvidenceValidationRuleSet">
+					<reference attribute="validYearFormatFailure" />
+					<reference attribute="validYearFormatFailureMessage" />
+				</create>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="validYearFormatFailure">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<not>
+					<call class="curam.ca.gc.bdmoas.creole.impl.Statics"
+						method="isValidYear">
+						<type>
+							<javaclass name="Boolean" />
+						</type>
+						<arguments>
+							<reference attribute="taxYear">
+								<reference attribute="evidence" />
+							</reference>
+						</arguments>
+					</call>
+				</not>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="validYearFormatFailureMessage">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="ERR_YEAR_MUST_BE_VALID_VALUE"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASRecoveryTaxValidationRuleSet">
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="validOASRecoveryTaxYearValidator">
+			<type>
+				<ruleclass name="Validation"
+					ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation"
+					ruleset="EvidenceValidationRuleSet">
+					<reference attribute="validOASRecoveryTaxYearFailure" />
+					<reference
+						attribute="validOASRecoveryTaxYearFailureMessage" />
+				</create>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="validOASRecoveryTaxYearFailure">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<not>
+					<call class="curam.ca.gc.bdmoas.creole.impl.Statics"
+						method="isYearWithInRangeFromPreviousYearsAndCurrentYear">
+						<type>
+							<javaclass name="Boolean" />
+						</type>
+						<arguments>
+							<reference attribute="taxYear">
+								<reference attribute="evidence" />
+							</reference>
+							<Number value="3"></Number>
+						</arguments>
+					</call>
+				</not>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="validOASRecoveryTaxYearFailureMessage">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage
+					key="ERR_OAS_RECOVERY_TAX_YEAR_MUST_BE_VALID_VALUE"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASRecoveryTaxValidationRuleSet">
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="monthlyRecoveryTaxAmountZeroOrNegetiveValidator">
+			<type>
+				<ruleclass name="Validation"
+					ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation"
+					ruleset="EvidenceValidationRuleSet">
+					<reference
+						attribute="monthlyRecoveryTaxAmountZeroOrNegetiveValidatorFailure" />
+					<reference
+						attribute="monthlyRecoveryTaxAmountZeroOrNegetiveFailureMessage" />
+				</create>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="monthlyRecoveryTaxAmountZeroOrNegetiveValidatorFailure">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<compare comparison="&lt;=">
+					<reference attribute="monthlyRecoveryTaxAmount">
+						<reference attribute="evidence" />
+					</reference>
+					<Number value="0.00" />
+				</compare>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="monthlyRecoveryTaxAmountZeroOrNegetiveFailureMessage">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage
+					key="ERR_OAS_MONTHLY_RECOVERY_TAX_AMOUNT_NEGETIVE"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASRecoveryTaxValidationRuleSet">
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+
+		<Attribute
+			name="monthlyRecoveryAmountWithDeductionConfigAmountValidator">
+			<type>
+				<ruleclass name="Validation"
+					ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation"
+					ruleset="EvidenceValidationRuleSet">
+					<reference
+						attribute="monthlyRecoveryAmountWithDeductionConfigAmountFailure" />
+					<reference
+						attribute="monthlyRecoveryAmountWithDeductionConfigAmountFailureMessage" />
+				</create>
+			</derivation>
+		</Attribute>
+
+		<Attribute
+			name="monthlyRecoveryAmountWithDeductionConfigAmountFailure">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<compare comparison="&gt;">
+					<reference attribute="monthlyRecoveryTaxAmount">
+						<reference attribute="evidence" />
+					</reference>
+					<reference
+						attribute="maximumAmountConfiguredForOASRCVDeduction" />
+				</compare>
+			</derivation>
+		</Attribute>
+
+		<Attribute
+			name="monthlyRecoveryAmountWithDeductionConfigAmountFailureMessage">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage
+					key="ERR_OAS_MONTHLY_RECOVERY_TAX_AMOUNT_MORE_THAN_DEDUCTON_MAX_CONFIG_AMOUNT"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASRecoveryTaxValidationRuleSet">
+					<reference
+						attribute="maximumAmountConfiguredForOASRCVDeduction" />
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="maximumAmountConfiguredForOASRCVDeduction">
+			<type>
+				<javaclass name="java.lang.Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.Statics"
+					method="readMaxAmountForDeduction">
+					<type>
+						<javaclass name="java.lang.Number" />
+					</type>
+					<arguments>
+						<Code table="DeductionName">
+							<String value="OASDN0001" />
+						</Code>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="isEndDateGreaterThanOASAnnualPaymentScheduleNextJuneMonthEndPaymentDateValidator">
+			<type>
+				<ruleclass name="Validation"
+					ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation"
+					ruleset="EvidenceValidationRuleSet">
+					<reference attribute="isEndDateGreaterThanOASAnnualPaymentScheduleNextJuneMonthEndPaymentDateFailure" />
+					<reference attribute="isEndDateGreaterThanOASAnnualPaymentScheduleNextJuneMonthEndPaymentDateFailureMessage" />
+				</create>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="isEndDateGreaterThanOASAnnualPaymentScheduleNextJuneMonthEndPaymentDateFailure">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<compare comparison="&gt;">
+					<reference attribute="endDate">
+						<reference attribute="evidence" />
+					</reference>
+					<reference
+						attribute="oasAnnualPaymentScheduleNextJuneMonthEndPaymentDate" />
+				</compare>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="isEndDateGreaterThanOASAnnualPaymentScheduleNextJuneMonthEndPaymentDateFailureMessage">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="ERR_END_DATE_BEYOND_NEXT_JUNE"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASRecoveryTaxValidationRuleSet">
+					<reference
+						attribute="oasAnnualPaymentScheduleNextJuneMonthEndPaymentDate" />
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="startDateYearValue">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdmoas.creole.impl.Statics"
+					method="getDateYearValue">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="startDate">
+							<reference attribute="evidence" />
+						</reference>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+
+
+		<Attribute name="startDateMonthValue">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdmoas.creole.impl.Statics"
+					method="getDateMonthValue">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="startDate">
+							<reference attribute="evidence" />
+						</reference>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="calculatedOASAnnualPaymentScheduleYearValue">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<when>
+						<condition>
+							<compare comparison="&gt;=">
+								<reference attribute="startDateMonthValue" />
+								<Number value="6" />
+							</compare>
+						</condition>
+						<value>
+							<arithmetic operation="+">
+								<reference attribute="startDateYearValue" />
+								<Number value="1" />
+							</arithmetic>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<reference attribute="startDateYearValue" />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+		<Attribute
+			name="oasAnnualPaymentScheduleNextJuneMonthEndPaymentDate">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdmoas.creole.impl.Statics"
+					method="getAnnualPaymentScheduleDate">
+					<type>
+						<javaclass name="curam.util.type.Date" />
+					</type>
+					<arguments>
+						<Number value="6" />
+						<reference attribute="calculatedOASAnnualPaymentScheduleYearValue">
+						</reference>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+
+	</Class>
+</RuleSet>

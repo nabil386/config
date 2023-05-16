@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EvidenceTypeVersion
+  businessEndDate="toDate"
+  businessStartDate="fromDate"
+  correctionOnly="true"
+  modifiable="true"
+  relatedParticipant="participant"
+>
+  <Model>
+    <Attributes>
+      <Attribute>
+        <RelatedCPAttribute
+          cpRoleType="MEM"
+          name="participant"
+          participantType="Person"
+        >
+          <CPSearchType code="PRI"/>
+          <CPSearchType code="MEM"/>
+        </RelatedCPAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          mandatory="true"
+          name="accountName"
+        >
+          <DomainType dataType="String">
+            <StringOptions
+              maxSize="60"
+              trimLeadingSpaces="true"
+              trimTrailingSpaces="true"
+            />
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          mandatory="true"
+          name="accountNumber"
+        >
+          <DomainType dataType="String">
+            <StringOptions
+              minSize="7"
+              maxSize="12"
+              trimLeadingSpaces="true"
+              trimTrailingSpaces="true"
+            />
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          mandatory="true"
+          name="accountType"
+        >
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="BankAccountType"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          mandatory="false"
+          name="sortCode"
+        >
+          <DomainType dataType="String">
+            <StringOptions
+              trimLeadingSpaces="true"
+              trimTrailingSpaces="true"
+            />
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          mandatory="true"
+          name="financialInstitutionNumber"
+        >
+          <DomainType dataType="String">
+            <StringOptions
+              maxSize="3"
+              minSize="3"
+              trimLeadingSpaces="true"
+              trimTrailingSpaces="true"
+            />
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          mandatory="true"
+          name="branchTransitNumber"
+        >
+          <DomainType dataType="String">
+            <StringOptions
+              minSize="5"
+              maxSize="5"
+              trimLeadingSpaces="true"
+              trimTrailingSpaces="true"
+            />
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          mandatory="true"
+          name="fromDate"
+        >
+          <DomainType dataType="Date"/>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute name="toDate">
+          <DomainType dataType="Date">
+            <DateOptions currentDate="LessThanOrEqualTo"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          mandatory="true"
+          name="accountStatus"
+        >
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="BankAccountStatus"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          defaultValue="false"
+          name="jointAccountInd"
+        >
+          <DomainType dataType="Boolean"/>
+        </DataAttribute>
+      </Attribute>
+      <!-- BEGIN TASK 12976 BDM Bank Account Reason -->
+      <Attribute>
+        <DataAttribute
+          mandatory="false"
+          name="bdmBankAccountReason"
+        >
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="BDMBankAccountReason"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <!-- END TASK 12976 BDM Bank Account Reason -->
+      <Attribute>
+        <CommentsAttribute name="comments"/>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          defaultValue="false"
+          name="preferredInd"
+        >
+          <DomainType dataType="Boolean"/>
+        </DataAttribute>
+      </Attribute>      
+    </Attributes>
+    <Relationships/>
+  </Model>
+  <Validations>
+    <PatternValidations>
+      <Validator>
+        <ComparisonValidator
+          operator="LessThanOrEqualTo"
+          shallow="false"
+          source="fromDate"
+          target="toDate"
+          useClause="false"
+          useLiteral="false"
+        />
+      </Validator>
+    </PatternValidations>
+    <CustomRulesValidation ruleSetName="PDCBankAccountValidationRuleSet"/>
+  </Validations>
+  <SummaryInformation>
+    <SummaryRuleset ruleSetName="BDMPDCBankAccountSummaryRuleSet"/>
+  </SummaryInformation>
+  <UserInterface
+    createDialogWidth="700"
+    modifyDialogWidth="700"
+  >
+    <Cluster>
+      <RelCPCluster
+        defaultToBlank="true"
+        fullCreateParticipant="false"
+        isOnCreatePage="true"
+        isOnModifyPage="true"
+        isOnViewPage="true"
+        modifyOption="no"
+        showParticipantTypeFilter="true"
+        useSingleName="false"
+      >
+        <StandardField source="participant"/>
+        <ClusterName id="ParticipantDetails"/>
+        <LabelName id="Participant.Description.ID2"/>
+      </RelCPCluster>
+    </Cluster>
+    <Cluster>
+      <StandardCluster
+        isOnCreatePage="true"
+        isOnModifyPage="true"
+        isOnViewPage="true"
+        numberOfColumns="2"
+      >
+        <Title id="Cluster.Title.BankAccountDetails"/>
+        <!-- BEGIN TASK 12976 BDM Bank Account Reason -->
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="bdmBankAccountReason"
+            useDefault="true"
+          >
+            <Label id="Field.Label.BDMBankAccountReason"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+    	  <SkipField/>
+		</StandardClusterField>
+        <!-- END TASK 12976 BDM Bank Account Reason -->
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="accountName"
+            useDefault="true"
+          >
+            <Label id="Field.Label.AccountName"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="false"
+            source="accountType"
+            useDefault="true"
+          >
+            <Label id="Field.Label.accountType"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="financialInstitutionNumber"
+            useDefault="true"
+          >
+            <Label id="Field.Label.FinancialInstitutionNumber"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="branchTransitNumber"
+            useDefault="true"
+          >
+            <Label id="Field.Label.BranchTransitNumber"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="accountNumber"
+            useDefault="true"
+          >
+            <Label id="Field.Label.AccountNumber"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="accountStatus"
+            useDefault="true"
+          >
+            <Label id="Field.Label.AccountStatus"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="fromDate"
+            useDefault="false"
+          >
+            <Label id="Field.Label.FromDate"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="toDate"
+            useDefault="false"
+          >
+            <Label id="Field.Label.ToDate"/>
+          </StandardField>
+        </StandardClusterField>       
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="jointAccountInd"
+            useDefault="true"
+          >
+            <Label id="Field.Label.JointAccount"/>
+          </StandardField>
+        </StandardClusterField>
+      </StandardCluster>
+    </Cluster>
+    <Cluster>
+      <CommentsCluster
+        isOnCreatePage="true"
+        isOnModifyPage="true"
+        isOnViewPage="true"
+      >
+        <Title id="Cluster.Title.Comments"/>
+        <StandardField source="comments"/>
+      </CommentsCluster>
+    </Cluster>
+  </UserInterface>
+</EvidenceTypeVersion>

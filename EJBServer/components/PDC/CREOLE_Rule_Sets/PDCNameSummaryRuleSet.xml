@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet
+  name="PDCNameSummaryRuleSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+>
+  <Class
+    extends="DefaultEvidenceSummary"
+    extendsRuleSet="EvidenceSummaryRuleSet"
+    name="PDCNameSummary"
+  >
+    <Attribute name="evidence">
+      <type>
+        <ruleclass
+          name="PDCName"
+          ruleset="PDCNameRuleSet"
+        />
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="summary">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <reference attribute="hasNoMiddleNameNoTitle"/>
+            </condition>
+            <value>
+              <ResourceMessage
+                key="summaryMessage1"
+                resourceBundle="curam.pdc.rules.DynEvd_PDCName_Summary"
+              >
+                <reference attribute="firstName">
+                  <reference attribute="evidence"/>
+                </reference>
+                <reference attribute="lastName">
+                  <reference attribute="evidence"/>
+                </reference>
+                <reference attribute="nameType">
+                  <reference attribute="evidence"/>
+                </reference>
+              </ResourceMessage>
+            </value>
+          </when>
+          <when>
+            <condition>
+              <reference attribute="hasMiddleNameNoTitle"/>
+            </condition>
+            <value>
+              <ResourceMessage
+                key="summaryMessage2"
+                resourceBundle="curam.pdc.rules.DynEvd_PDCName_Summary"
+              >
+                <reference attribute="firstName">
+                  <reference attribute="evidence"/>
+                </reference>
+                <reference attribute="middleName">
+                  <reference attribute="evidence"/>
+                </reference>
+                <reference attribute="lastName">
+                  <reference attribute="evidence"/>
+                </reference>
+                <reference attribute="nameType">
+                  <reference attribute="evidence"/>
+                </reference>
+              </ResourceMessage>
+            </value>
+          </when>
+          <when>
+            <condition>
+              <reference attribute="hasTitleNoMiddleName"/>
+            </condition>
+            <value>
+              <ResourceMessage
+                key="summaryMessage3"
+                resourceBundle="curam.pdc.rules.DynEvd_PDCName_Summary"
+              >
+                <reference attribute="firstName">
+                  <reference attribute="evidence"/>
+                </reference>
+                <reference attribute="lastName">
+                  <reference attribute="evidence"/>
+                </reference>
+                <reference attribute="title">
+                  <reference attribute="evidence"/>
+                </reference>
+                <reference attribute="nameType">
+                  <reference attribute="evidence"/>
+                </reference>
+              </ResourceMessage>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage
+                key="summaryMessage4"
+                resourceBundle="curam.pdc.rules.DynEvd_PDCName_Summary"
+              >
+                <reference attribute="firstName">
+                  <reference attribute="evidence"/>
+                </reference>
+                <reference attribute="middleName">
+                  <reference attribute="evidence"/>
+                </reference>
+                <reference attribute="lastName">
+                  <reference attribute="evidence"/>
+                </reference>
+                <reference attribute="title">
+                  <reference attribute="evidence"/>
+                </reference>
+                <reference attribute="nameType">
+                  <reference attribute="evidence"/>
+                </reference>
+              </ResourceMessage>
+            </value>
+          </otherwise>
+        </choose>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="hasMiddleName">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <not>
+          <equals>
+            <reference attribute="middleName">
+              <reference attribute="evidence"/>
+            </reference>
+            <null/>
+          </equals>
+        </not>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="hasNoMiddleName">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="middleName">
+            <reference attribute="evidence"/>
+          </reference>
+          <null/>
+        </equals>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="hasTitle">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <not>
+          <equals>
+            <reference attribute="title">
+              <reference attribute="evidence"/>
+            </reference>
+            <null/>
+          </equals>
+        </not>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="hasNoTitle">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="title">
+            <reference attribute="evidence"/>
+          </reference>
+          <null/>
+        </equals>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="hasMiddleNameAndTitle">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <all>
+          <!-- A fixed list of Boolean conditions -->
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <reference attribute="hasMiddleName"/>
+              <reference attribute="hasTitle"/>
+            </members>
+          </fixedlist>
+        </all>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="hasNoMiddleNameNoTitle">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <all>
+          <!-- A fixed list of Boolean conditions -->
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <reference attribute="hasNoMiddleName"/>
+              <reference attribute="hasNoTitle"/>
+            </members>
+          </fixedlist>
+        </all>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="hasMiddleNameNoTitle">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <all>
+          <!-- A fixed list of Boolean conditions -->
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <reference attribute="hasMiddleName"/>
+              <reference attribute="hasNoTitle"/>
+            </members>
+          </fixedlist>
+        </all>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="hasTitleNoMiddleName">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <all>
+          <!-- A fixed list of Boolean conditions -->
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <reference attribute="hasNoMiddleName"/>
+              <reference attribute="hasTitle"/>
+            </members>
+          </fixedlist>
+        </all>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+</RuleSet>

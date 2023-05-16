@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<ieg-script xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ieg-schema.xsd"
+finish-page="CommonIntake_finishInternalIntakeScript" 
+	quit-page="CommonIntake_quitInternalIntakeScript"	
+	show-sections="true"
+	show-progress-bar="true"
+	validate-save-and-exit="false"
+	>
+		
+	<identifier id="BDMOASGISApplicationCP" scriptversionnumber="V1" type="Intake" />
+
+	<section>
+		<title id="Section.Title.PartnerIncome">
+			<![CDATA[Spouse/Common-Law Partner Income]]>
+		</title>
+
+		<loop loop-type="for-each" entity="Person"
+			criteria="isPrimaryParticipant==false">	
+			<question-page 
+				id="PartnerIncome" 
+				entity="Person"
+				progress="0" 
+				show-back-button="true" 
+				show-exit-button="true"
+				criteria="isPrimaryParticipant==false"			
+				>
+				<title id="QuestionPage.Title.PartnerIncome">
+					<![CDATA[Income Details]]>
+				</title>
+				
+				<description id="QuestionPage.Description.MandatoryFields">
+					<![CDATA[All fields marked with * are mandatory.]]>
+				</description>			
+	
+				<validation expression="not(isNotNull(RetirementIncome.retirementDate)) or ValidateDateFirstOfMonth(RetirementIncome.retirementDate)">
+					<message id="Validation.Message.DateFirstOfMonth"><![CDATA[Selected Date must be 1st of the month.]]></message>
+				</validation>	
+	
+				<validation expression="not(isNotNull(RetirementIncome.reductionDate)) or ValidateDateFirstOfMonth(RetirementIncome.reductionDate)">
+					<message id="Validation.Message.DateFirstOfMonth"><![CDATA[Selected Date must be 1st of the month.]]></message>
+				</validation>	
+	
+				<cluster entity="RetirementIncome">
+					<title id="Cluster.Title.RetirementIncomeDetails">
+						<![CDATA[Retirement Income details]]>
+					</title>
+					<description
+						id="Cluster.Title.RetirementIncomeDetails.Desc">
+							<![CDATA[The Supplement amount that you are entitled to is based upon your previous years income, or your expected income, depending on the payment period.]]>
+					</description>					
+					<question id="isRetirdOrRetirng2Yrs" mandatory="true">
+						<label id="Question.Label.DidPartnerRetireOrExpctedIn2Years">
+							<![CDATA[Did the applicant indicate that their spouse/common-law partner retired from work in the last two years, or that they expect to retire in the next two years?]]>
+						</label>
+						<hint-text id="Question.Label.DidPartnerRetireOrExpctedIn2Years.Hint">
+							<![CDATA[If you are retired, an income estimate for this year may replace your net income from last year.]]>
+						</hint-text>						
+						<layout>
+							<width>50</width>							
+						</layout>							
+					</question>						
+				</cluster>	
+						
+				<condition expression="RetirementIncome.isRetirdOrRetirng2Yrs==&quot;YN1&quot; ">
+					<cluster entity="RetirementIncome">
+						<question id="retirementDate" mandatory="true" show-field-help="true">
+							<label id="Question.Label.RetirementDate">
+								<![CDATA[Retirement Date]]>
+							</label>
+							<hint-text id="Question.Label.RetirementDate.Hint">
+								<![CDATA[YYYY-MM-DD </br><p>Selected Date must be 1st of the month.</p>]]>
+							</hint-text>
+							<layout>
+                    			<type>date-picker</type>							
+								<width>50</width>							
+							</layout>														
+						</question>		
+					</cluster>
+				</condition>
+	
+				<cluster entity="RetirementIncome">
+					<question id="isPensionReduced2Yrs" mandatory="true">
+						<label id="Question.Label.DidPartnerPensionIncmRedcdOrExpectedIn2Yrs">
+							<![CDATA[Has the applicant indicated that their spouse/common-law partner's pension income has been reduced in the last two years or that they expect it will be reduced in the next two years?]]>
+						</label>
+						<hint-text id="Question.Label.DidPartnerPensionIncmRedcdOrExpectedIn2Yrs.Hint">
+							<![CDATA[If yes, we will send you a Statement of Estimated Income form to complete.]]>
+						</hint-text>						
+						<layout>
+							<width>50</width>							
+						</layout>							
+					</question>						
+				</cluster>	
+						
+				<condition expression="RetirementIncome.isPensionReduced2Yrs==&quot;YN1&quot; ">
+					<cluster entity="RetirementIncome">
+						<question id="reductionDate" mandatory="true" show-field-help="true">
+							<label id="Question.Label.DateOfReduction">
+								<![CDATA[Date of reduction]]>
+							</label>
+							<hint-text id="Question.Label.DateOfReduction.Hint">
+								<![CDATA[YYYY-MM-DD </br><p>Selected Date must be 1st of the month.</p>]]>
+							</hint-text>	
+							<layout>
+                    			<type>date-picker</type>							
+								<width>50</width>							
+							</layout>													
+						</question>		
+					</cluster>
+				</condition>										
+	
+				<cluster entity="Person">
+					<title id="Cluster.Title.ForeignIncomeDetails">
+						<![CDATA[Foreign Income details]]>
+					</title>
+					<description
+						id="Cluster.Title.ForeignIncomeDetails.Desc">
+							<![CDATA[Each year, you must report to Service Canada any income received from another country in Canadian funds. You must report the full amount of your foreign income even if it is not paid in Canada or if it is not taxable in Canada.]]>
+					</description>					
+					<question id="hasForeignIncome" mandatory="true">
+						<label id="Question.Label.DidPartnerReceiveForeignIncome">
+							<![CDATA[Did the applicant indicate that their spouse/common-law partner receives income from another country?]]>
+						</label>
+						<layout>
+							<width>50</width>							
+						</layout>							
+					</question>						
+				</cluster>										
+			</question-page>
+		</loop>
+	</section>
+</ieg-script>

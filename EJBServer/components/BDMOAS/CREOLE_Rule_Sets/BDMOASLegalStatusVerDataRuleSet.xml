@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMOASLegalStatusVerDataRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class extends="ActiveInEditEvidenceRow"
+		extendsRuleSet="PropagatorRuleSet" name="BDMOASLegalStatus">
+
+		<Attribute name="caseParticipantRoleID">
+			<Annotations />
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="legalStatus">
+			<Annotations />
+			<type>
+				<codetableentry table="BDMOASLegalStatus" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		 
+		 <Attribute name="otherLegalStatusDetails">
+			<Annotations />
+			<type>
+				<javaclass name="String"/>
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		 		 
+		<Attribute name="startDate">
+			<Annotations />
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="endDate">
+			<Annotations />
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="evidenceID">
+            <type>
+                <javaclass name="Number" />
+            </type>
+            <derivation>
+                <specified />
+            </derivation>
+        </Attribute>
+		<Attribute name="description">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage
+					key="DynamicEvidenceSuccessionSet.description"
+					resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules">
+					<reference attribute="successionID" />
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="related_caseParticipantRoleID">
+			<Annotations />
+			<type>
+				<ruleclass name="CaseParticipantRole"
+					ruleset="CaseEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<reference attribute="caseParticipantRoleRecord">
+					<create ruleclass="CaseParticipantRoleCalculator"
+						ruleset="DynamicEvidenceRuleSet">
+						<reference attribute="caseParticipantRoleID" />
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+				
+	</Class>
+</RuleSet>

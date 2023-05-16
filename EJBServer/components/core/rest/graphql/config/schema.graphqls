@@ -1,0 +1,268 @@
+extend type Query {
+
+	"""
+  	Reads an integrated case details, including a list of benefits belonging to the integrated case and a list of payments for the benefit case.
+  	"""
+    readIntegratedCase(case_id: GQL_ID!): DOMIntegratedCase
+    
+ 	"""
+   	Reads a Benefit Case details.
+ 	"""   
+    readBenefit(benefit_id: GQL_ID!): DOMBenefit
+    
+    """
+   	Reads the next payment details for a Benefit Case.
+ 	"""
+    readNextPayment(benefit_id: GQL_ID!): DOMNextPayment
+    
+    """
+   	Lists the payment details for a Benefit Case. You have the option to return only the last payment by setting the 'last_payment_ind' parameter to 'true'.
+ 	"""
+    listInstructionsByBenefitIDAndLastInstructionInd(benefit_id: GQL_ID!, last_payment_ind: Boolean): DOMInstructionList
+    
+    """
+   	Lists the decision details for a Benefit Case. You have the option to list the latest decision and/or the previous decision by setting those parameters to 'true'.
+   	When both parameters are set to false, a full list of decisions are be returned.
+ 	"""
+    listDecisions(benefit_id: GQL_ID!, latest_decision_ind: Boolean, prev_decision_ind: Boolean): DOMDecisionList
+    
+    """
+   	Reads the latest determination for a Benefit Case.
+ 	"""
+    readLatestDeterminationCreationDate(benefit_id: GQL_ID!): DOMDeterminationCreationDate
+    
+    """
+   	Lists all the next payment details for an Integrated Case. 
+ 	"""
+    listNextPayments(case_id: GQL_ID!): DOMIntegratedCaseNextPayments
+    
+    
+    """
+   	Reads the expected next payment details for an Integrated Case. 
+ 	"""
+    readExpectedNextPaymentByCaseID(case_id: GQL_ID!): DOMExpectedNextPayment
+}
+
+"""
+Contains details for an Integrated Case. It also lists all the benefits associated with the case. 
+"""
+type DOMIntegratedCase {
+	id: GQL_ID
+	reference: String
+	effective_date: GQL_Date
+	registration_date: GQL_Date
+	status: CodeItem @code
+	type: CodeItem @code
+	benefits: [DOMBenefit]
+}
+
+"""
+Contains details for a Benefit Case. It also includes a list of components, clients and last payments for the case. 
+"""
+type DOMBenefit {
+	id: GQL_ID
+	reference: String
+	type: CodeItem @code
+	product_name: CodeItem @code
+	product_type: CodeItem @code
+	status: CodeItem @code
+	effective_date: GQL_Date
+	period: DOMPeriod
+	components: [DOMComponent]
+	links: [DOMNavigationLink]
+	owner: DOMCaseOwner
+	clients: [DOMCaseMember]
+	last_payments: [DOMInstruction]
+}
+
+"""
+Contains the Navigation Link details. 
+"""
+type DOMNavigationLink {
+	link_name: String
+	url: String
+	preferred_tabs_list: String
+}
+
+"""
+Contains the start and end date for a period of time. 
+"""
+type DOMPeriod {
+	start_date: GQL_Date
+	end_date: GQL_Date
+}
+
+"""
+Contains details for a financial component. 
+"""
+type DOMComponent {
+	name: String
+	nominee_name: String
+	pattern_name: String
+	currency_type: CodeItem @code
+	eligible: Boolean
+}
+
+"""
+Contains details for a case nominee where a product component will be made payable. 
+"""
+type DOMNominee {
+	id: GQL_ID
+	case_role_id: GQL_ID
+	name: String
+	relationship: CodeItem @code
+	pattern_name: String
+	currency_type: CodeItem @code
+	status: CodeItem @code
+	type: CodeItem @code
+}
+
+"""
+Contains details for a case owner. 
+"""
+type DOMCaseOwner {
+	name: String
+	type: CodeItem @code
+}
+
+"""
+Contains details for the next payment including the overall totals, list of payments and deductions on a Benefit Case. 
+"""
+type DOMNextPayment {
+	benefit_id: GQL_ID
+	total_payment: GQL_Money
+	total_deduction: GQL_Money
+	total_entitlement: GQL_Money
+	total_under_payment: GQL_Money
+	total_under_payment_deduction: GQL_Money
+	due_date: GQL_Date
+	next_payments: [DOMNextPaymentDtls]	
+	deductions: [DOMDeduction]
+}
+
+"""
+Contains details for the list of next payment on a Benefit Case. 
+"""
+type DOMNextPaymentDtls {
+	amount: GQL_Money
+	due_date: GQL_Date
+	status: CodeItem @code
+	delivery_method: CodeItem @code
+	period: DOMPeriod
+	nominee: DOMNominee
+	component_name: String
+	type: CodeItem @code
+}
+
+"""
+Contains details for the last payment instruction on a Benefit Case. 
+"""
+type DOMInstruction {
+	id: GQL_ID
+	total_amount: GQL_Money
+	credit_total_amount: GQL_Money
+	debit_total_amount: GQL_Money
+	payment_date: GQL_Date
+	status: CodeItem @code
+	delivery_method: CodeItem @code
+	period: DOMPeriod
+	ilis: [DOMInstructionLineItem]
+}
+
+"""
+Contains details for the low level financial transactions on a Benefit Case. 
+"""
+type DOMInstructionLineItem {
+	id: GQL_ID
+	credit_amount: GQL_Money
+	debit_amount: GQL_Money
+	status: CodeItem @code
+	component_name: String
+	type: CodeItem @code
+	period: DOMPeriod
+	third_party_name: String
+	payment_correction_id : GQL_ID
+}
+
+"""
+Contains details for the deduction on a Benefit Case. 
+"""
+type DOMDeduction {
+	amount: GQL_Money
+	name: CodeItem @code
+	nominee: DOMNominee
+	period: DOMPeriod
+	third_party_name: String
+	payment_correction_id : GQL_ID
+}
+
+"""
+Contains details for a list of last payment instructions on the Benefit Case including the total amount. 
+"""
+type DOMInstructionList {
+	instructions: [DOMInstruction]
+	total_amount: GQL_Money
+}
+
+"""
+Contains details for a decision on a Benefit Case. 
+"""
+type DOMDecision {
+	decision: String
+	amount: GQL_Money
+	period: DOMPeriod
+	current: Boolean
+}
+
+"""
+Contains details for a list of decisions on a Benefit Case. 
+"""
+type DOMDecisionList {
+	decisions: [DOMDecision]
+}
+
+"""
+Contains the creation date time for the last determination. 
+"""
+type DOMDeterminationCreationDate {
+	creation_date_time: GQL_DateTime
+}
+
+"""
+Contains case member details for a case role.
+"""
+type DOMCaseMember {
+	case_role_id: GQL_ID
+	primary: Boolean
+	person: DOMPerson
+	period: DOMPeriod
+}
+
+"""
+Contains details for a person.
+"""
+type DOMPerson {
+	id: GQL_ID
+	first_name: String
+	last_name: String
+	birth_date: GQL_Date
+	death_date: GQL_Date
+	registered: Boolean
+}
+
+"""
+Contains the next payment details for an Integrated case.
+"""
+type DOMIntegratedCaseNextPayments {
+    amount: GQL_Money
+	due_date: GQL_Date
+	benefit_next_payment: [DOMNextPayment]	
+}
+
+"""
+Contains the expected next payment details on a Benefit Case.
+"""
+type DOMExpectedNextPayment {
+    amount: GQL_Money
+	due_date: GQL_Date
+}

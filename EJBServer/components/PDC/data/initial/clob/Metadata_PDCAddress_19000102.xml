@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EvidenceTypeVersion
+  businessEndDate="toDate"
+  businessStartDate="fromDate"
+  correctionOnly="true"
+  modifiable="true"
+  relatedParticipant="participant"
+>
+  <Model>
+    <Attributes>
+      <Attribute>
+        <RelatedCPAttribute
+          cpRoleType="MEM"
+          name="participant"
+          participantType="Person"
+        >
+          <CPSearchType code="PRI"/>
+          <CPSearchType code="MEM"/>
+        </RelatedCPAttribute>
+      </Attribute>
+      <Attribute>
+        <AddressAttribute
+          mandatory="true"
+          name="address"
+        />
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          mandatory="true"
+          name="fromDate"
+        >
+          <DomainType dataType="Date"/>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute name="toDate">
+          <DomainType dataType="Date"/>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          mandatory="true"
+          name="addressType"
+        >
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="AddressType"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <CommentsAttribute name="comments"/>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          defaultValue="false"
+          name="preferredInd"
+        >
+          <DomainType dataType="Boolean"/>
+        </DataAttribute>
+      </Attribute>
+    </Attributes>
+    <Relationships/>
+  </Model>
+  <Validations>
+    <PatternValidations>
+      <Validator>
+        <ComparisonValidator
+          operator="LessThanOrEqualTo"
+          shallow="false"
+          source="fromDate"
+          target="toDate"
+          useClause="false"
+          useLiteral="false"
+        />
+      </Validator>
+    </PatternValidations>
+    <CustomRulesValidation ruleSetName="PDCAddressValidationRuleSet"/>
+  </Validations>
+  <SummaryInformation>
+    <SummaryRuleset ruleSetName="PDCAddressSummaryRuleSet"/>
+  </SummaryInformation>
+  <UserInterface createDialogWidth="900">
+    <Cluster>
+      <RelCPCluster
+        fullCreateParticipant="false"
+        isOnCreatePage="true"
+        isOnModifyPage="false"
+        isOnViewPage="true"
+        modifyOption="no"
+        showParticipantTypeFilter="true"
+        useSingleName="false"
+      >
+        <StandardField source="participant"/>
+        <ClusterName id="Participant"/>
+        <RelCpPfx id="Participant.Description.ID2"/>
+      </RelCPCluster>
+    </Cluster>
+    <Cluster>
+      <StandardCluster
+        isOnCreatePage="true"
+        isOnModifyPage="true"
+        isOnViewPage="true"
+        numberOfColumns="2"
+      >
+        <Title id="Cluster.Title.AddressdDetails"/>
+        <StandardClusterField>
+          <StandardField
+            modifiable="false"
+            source="addressType"
+            useDefault="true"
+          >
+            <Label id="Field.Label.Type"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <SkipField/>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="fromDate"
+            useDefault="true"
+          >
+            <Label id="Field.Label.From"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="toDate"
+            useDefault="false"
+          >
+            <Label id="Field.Label.To"/>
+          </StandardField>
+        </StandardClusterField>
+      </StandardCluster>
+    </Cluster>
+    <Cluster>
+      <AddressCluster
+        isOnCreatePage="true"
+        isOnModifyPage="true"
+        isOnViewPage="true"
+        numberOfColumns="2"
+      >
+        <StandardField source="address"/>
+      </AddressCluster>
+    </Cluster>
+    <Cluster>
+      <StandardCluster
+        isOnCreatePage="true"
+        isOnModifyPage="true"
+        isOnViewPage="true"
+        labelWidth="40"
+        numberOfColumns="2"
+      >
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="preferredInd"
+            useDefault="true"
+          >
+            <Label id="Field.Label.PreferredInd"/>
+          </StandardField>
+        </StandardClusterField>
+      </StandardCluster>
+    </Cluster>
+    <Cluster>
+      <CommentsCluster
+        isOnCreatePage="true"
+        isOnModifyPage="true"
+        isOnViewPage="true"
+      >
+        <Title id="Cluster.Title.Comments"/>
+        <StandardField source="comments"/>
+      </CommentsCluster>
+    </Cluster>
+  </UserInterface>
+</EvidenceTypeVersion>

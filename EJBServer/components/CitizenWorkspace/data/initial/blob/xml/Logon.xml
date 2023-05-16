@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2016. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="page-schema.xsd">
+    <identifier name="Logon"/>
+    <server alias="DISPLAY" method="getForgottenPasswordLinkDetails"/>
+    <header>
+        <title id="Page.Title"/>
+        <description id="Page.Description"/>
+        <icon id="title_login"/>
+    </header>
+    <content>
+        <cluster>
+            <title id="LoginDetails.Title"/>
+            <description id="LoginDetails.Description"/>
+            <help id="LoginDetails.Help"/>
+            <field id="username" type="PAGE_PLAYER_STRING_50" mandatory="true" width="30">
+                <title id="Username.Label"/>
+            </field>
+            <field id="password" type="CW_PASSWORD" mandatory="true" dynamic="true" width="30">
+                <title id="Password.Label"/>
+            </field>
+            <layout>
+                <num-cols>1</num-cols>
+                <width>100</width>
+                <label-width>15</label-width>
+            </layout>
+        </cluster>
+        <!-- determine whether the Forgotten password link whould be shown -->
+        <container conditionalSource="/DISPLAY/xmlData/url-details[@show-url='true'][]" false="$empty">
+        
+        
+        	<container conditionalSource="/DISPLAY/xmlData/url-details[@external-url='false'][]" false="$empty">
+			<link page="ForgottenPassword">
+				<title id="ForgottenPasswordLink.Title"/>
+				<link-layout>
+					<margin-left>20%</margin-left>
+					<font-size>12px</font-size>
+				</link-layout>
+				<param name="title" id="ForgottenPasswordLink.Title"/>
+			</link>
+        	</container>
+        	
+        	<container conditionalSource="/DISPLAY/xmlData/url-details[@external-url='true'][]" false="$empty">
+			<link target="_blank">
+			    <title id="ForgottenPasswordLink.Title"/>
+			    <url source="/DISPLAY/xmlData/url-details/url"/>
+			    <link-layout>
+				<margin-left>20%</margin-left>
+				<font-size>12px</font-size>
+			    </link-layout>
+			    <param name="title" id="ForgottenPasswordLink.Title"/>
+			</link>
+        	</container>
+        	
+        </container>
+    </content>
+    <navigation>
+        <nav-button name="back" type="action"/>
+		<nav-button name="next" type="action"/> 
+    </navigation>
+</page>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet
+	name="BDMOASLivingApartforReasonsBeyondControlValidationRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class extends="DefaultEvidenceValidationResult"
+		extendsRuleSet="EvidenceValidationRuleSet" name="ValidationResult">
+
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="BDMOASLivingApartforReasonsBeyondControl"
+					ruleset="BDMOASLivingApartforReasonsBeyondControlRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="standardValidations">
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass name="Validation"
+						ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="Validation"
+							ruleset="EvidenceValidationRuleSet" />
+					</listof>
+					<members>
+						<reference
+							attribute="livingApartEvidenceWithMaritalRelationshipDateRangeValidator" />
+					</members>
+				</fixedlist>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="maritalRelationship">
+			<type>
+				<ruleclass name="BDMOASMaritalRelationship"
+					ruleset="BDMOASMaritalRelationshipRuleSet" />
+			</type>
+			<derivation>
+				<reference attribute="maritalRelationship">
+					<reference attribute="evidence" />
+				</reference>
+			</derivation>
+		</Attribute>
+
+		<Attribute
+			name="livingApartEvidenceWithMaritalRelationshipDateRangeValidator">
+			<type>
+				<ruleclass name="Validation"
+					ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation"
+					ruleset="EvidenceValidationRuleSet">
+					<reference
+						attribute="livingApartEvidenceWithMaritalRelationshipDateRangeFailure" />
+					<reference
+						attribute="livingApartEvidenceWithMaritalRelationshipDateRangeFailureMessage" />
+				</create>
+			</derivation>
+		</Attribute>
+
+		<Attribute
+			name="livingApartEvidenceWithMaritalRelationshipDateRangeFailure">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="java.lang.Boolean" />
+					</type>
+					<when>
+						<condition>
+							<any>
+								<fixedlist>
+									<listof>
+										<javaclass name="java.lang.Boolean" />
+									</listof>
+									<members>
+										<compare comparison="&lt;">
+											<reference attribute="startDate">
+												<reference attribute="evidence" />
+											</reference>
+											<reference attribute="startDate">
+												<reference attribute="maritalRelationship" />
+											</reference>
+										</compare>
+										<all>
+											<fixedlist>
+												<listof>
+													<javaclass name="java.lang.Boolean" />
+												</listof>
+												<members>
+													<not>
+														<equals>
+															<reference attribute="endDate">
+																<reference attribute="maritalRelationship" />
+															</reference>
+															<null />
+														</equals>
+													</not>
+													<not>
+														<equals>
+															<reference attribute="endDate">
+																<reference attribute="evidence" />
+															</reference>
+															<null />
+														</equals>
+													</not>
+													<compare comparison="&gt;">
+														<reference attribute="endDate">
+															<reference attribute="evidence" />
+														</reference>
+														<reference attribute="endDate">
+															<reference attribute="maritalRelationship" />
+														</reference>
+													</compare>
+												</members>
+											</fixedlist>
+										</all>
+										<all>
+											<fixedlist>
+												<listof>
+													<javaclass name="java.lang.Boolean" />
+												</listof>
+												<members>
+													<equals>
+														<reference attribute="endDate">
+															<reference attribute="evidence" />
+														</reference>
+														<null />
+													</equals>
+													<not>
+														<equals>
+															<reference attribute="endDate">
+																<reference attribute="maritalRelationship" />
+															</reference>
+															<null />
+														</equals>
+													</not>
+												</members>
+											</fixedlist>
+										</all>
+									</members>
+								</fixedlist>
+							</any>
+						</condition>
+						<value>
+							<true />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<false />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+		<Attribute
+			name="livingApartEvidenceWithMaritalRelationshipDateRangeFailureMessage">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage
+					key="ERR_LIVING_APART_FALLS_OUTSIDE_OF_MARITAL_RELATIONSHIP"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASLivingApartforReasonsBeyondControlValidationRuleSet">
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+
+	</Class>
+</RuleSet>

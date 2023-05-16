@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMOASLivingApartforReasonsBeyondControlRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class extends="DynamicEvidence"
+		extendsRuleSet="DynamicEvidenceRuleSet"
+		name="BDMOASLivingApartforReasonsBeyondControl">
+
+		<Attribute name="reasonForLivingApart">
+			<Annotations />
+			<type>
+				<codetableentry table="BDMOASLivingApartReason" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="livingApartReasonDescription">
+			<Annotations />
+			<type>
+				<javaclass name="java.lang.String" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="startDate">
+			<Annotations />
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="endDate">
+			<Annotations />
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="maritalRelationship">
+			<type>
+				<ruleclass name="BDMOASMaritalRelationship"
+					ruleset="BDMOASMaritalRelationshipRuleSet" />
+			</type>
+			<derivation>
+				<call
+					class="curam.dynamicevidence.cer.impl.DynamicEvidenceStatics"
+					method="getParent">
+					<type>
+						<ruleclass name="BDMOASMaritalRelationship"
+							ruleset="BDMOASMaritalRelationshipRuleSet" />
+					</type>
+					<arguments>
+						<this />
+						<String value="BDMOASMaritalRelationship" />
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		<Attribute
+			name="related_BDMOASConsentToBeDisadvantaged">
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass
+						name="BDMOASConsentToBeDisadvantaged"
+						ruleset="BDMOASConsentToBeDisadvantagedRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<call
+					class="curam.dynamicevidence.cer.impl.DynamicEvidenceStatics"
+					method="getChildList">
+					<type>
+						<javaclass name="java.util.List">
+							<ruleclass
+								name="BDMOASConsentToBeDisadvantaged"
+								ruleset="BDMOASConsentToBeDisadvantagedRuleSet" />
+						</javaclass>
+					</type>
+					<arguments>
+						<this />
+						<String value="BDMOASConsentToBeDisadvantaged" />
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

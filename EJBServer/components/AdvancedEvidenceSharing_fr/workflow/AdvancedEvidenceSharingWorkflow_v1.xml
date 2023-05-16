@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+ 
+  Copyright IBM Corporation 2017, 2021. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<workflow-process id="1126999418470912" process-version="1" language-version="1.0" released="true" category="PC2001" createdBy="admin" creationDate="20161123T142802"> 
+  <name>AdvancedEvidenceSharingWorkflow</name>  
+  <process-display-name> 
+    <localized-text> 
+      <locale language="fr">AdvancedEvidenceSharingWorkflow</locale>  
+      <locale language="en">AdvancedEvidenceSharingWorkflow</locale>
+    </localized-text> 
+  </process-display-name>  
+  <description> 
+    <localized-text> 
+      <locale language="fr">Ce flux de travaux est chargé de contrôler le flux d'informations collectées dans le système dans le cadre du partage d'informations collectées avancé. Il contrôle notamment le flux d'informations collectées d'un dossier source vers zéro ou plusieurs dossiers cible sur le système. Cela comprend non seulement le partage sur le(s) dossier(s) cible mais également les scénarios d'échec lorsque les informations collectées ne peuvent pas être partagées sans problème. Les clients doivent utiliser le flux de travaux prêt à l'emploi en l'état.</locale>  
+      <locale language="en">This workflow is responsible for controlling the flow of evidence in the system as part of Advanced Evidence Sharing. In particular it controls the flow of evidence from one source case to zero or many target cases on the system. This includes not only the successful sharing onto the target case(s) but also the failure scenarios where the evidence cannot be shared seamlessly. Customers should use the out-of-the-box workflow as is.</locale>
+    </localized-text> 
+  </description>  
+  <!-- Defining Broker Enactment point -->  
+  <enactment-mappings> 
+    <mapping> 
+      <source-attribute struct-name="curam.aes.sl.entity.struct.AESShareSetKey" name="shareSetID"/>  
+      <target-attribute wdo-name="AESShareSetKey" name="shareSetID"/> 
+    </mapping> 
+  </enactment-mappings>  
+  <!-- Defining Workflow Data Objects then they are available to be used in the activities and the transitions throughout the lifetime of the process instance -->  
+  <wdos> 
+    <wdo is-list-wdo="false" initialize-attributes="true"> 
+      <wdo-name>AESShareSetKey</wdo-name>  
+      <display-name> 
+        <localized-text> 
+          <locale language="fr">Clé AESShareSet</locale>  
+          <locale language="en">AESShareSet Key</locale>
+        </localized-text> 
+      </display-name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Cet objet de données de flux de travaux contient les détails nécessaires pour partager les informations collectées propagées sur les dossiers cible spécifiés par les plans de livraison.</locale>  
+          <locale language="en">This workflow data object contains the details required to share the propagated evidence onto the target cases specified by the delivery plans.</locale>
+        </localized-text> 
+      </description>  
+      <attributes> 
+        <attribute> 
+          <attribute-name>shareSetID</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">ID de l'ensemble de partage d'informations collectées avancé</locale>  
+              <locale language="en">Advanced Evidence Share Set ID</locale>
+            </localized-text> 
+          </display-name>  
+          <type>INT64</type>  
+          <required-at-enactment>true</required-at-enactment>  
+          <process-output>false</process-output> 
+        </attribute> 
+      </attributes> 
+    </wdo> 
+  </wdos>  
+  <!-- Defining Broker Push Workflow Activities -->  
+  <activities> 
+    <start-process-activity id="1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité de processus de début</locale>  
+          <locale language="en">Start Process Activity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de début</locale>  
+          <locale language="en">The start process activity</locale>
+        </localized-text> 
+      </description>  
+      <split type="none"> 
+        <transition-id idref="1"/> 
+      </split> 
+    </start-process-activity>  
+    <end-process-activity id="2"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de fin</locale>  
+          <locale language="en">End Process Activity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de fin</locale>  
+          <locale language="en">The end process activity</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/> 
+    </end-process-activity>  
+    <automatic-activity id="3" category="AC1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Initier le partage</locale>  
+          <locale language="en">Initiate Sharing</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Cette activité définit le statut du partage des informations collectées sur 'En cours'.</locale>  
+          <locale language="en">This activity sets the status of the evidence sharing to 'In Progress'.</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="3"/> 
+      </split>  
+      <bpo-mapping interface-name="curam.aes.sl.workflow.intf.AdvancedEvidenceSharingPushWorkflow" method-name="initiateSharing"> 
+        <formal-parameters> 
+          <formal-parameter index="0"> 
+            <struct type="curam.aes.sl.entity.struct.AESShareSetKey"> 
+              <field name="shareSetID"> 
+                <base-type type="INT64"> 
+                  <wdo-attribute wdo-name="AESShareSetKey" name="shareSetID"/> 
+                </base-type> 
+              </field> 
+            </struct> 
+          </formal-parameter> 
+        </formal-parameters> 
+      </bpo-mapping> 
+    </automatic-activity>  
+    <automatic-activity id="4" category="AC1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Calculer le plan de livraison de l'ensemble de partage</locale>  
+          <locale language="en">Calculate ShareSet DeliverPlan</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Cette activité calcule le ou les plans de livraison pour les informations collectées partagées.</locale>  
+          <locale language="en">This activity calculates the delivery plan(s) for the evidence being shared.</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="11"/> 
+      </split>  
+      <bpo-mapping interface-name="curam.aes.sl.workflow.intf.AdvancedEvidenceSharingPushWorkflow" method-name="calculateShareSetDeliverPlan"> 
+        <formal-parameters> 
+          <formal-parameter index="0"> 
+            <struct type="curam.aes.sl.entity.struct.AESShareSetKey"> 
+              <field name="shareSetID"> 
+                <base-type type="INT64"> 
+                  <wdo-attribute wdo-name="AESShareSetKey" name="shareSetID"/> 
+                </base-type> 
+              </field> 
+            </struct> 
+          </formal-parameter> 
+        </formal-parameters> 
+      </bpo-mapping> 
+    </automatic-activity>  
+    <automatic-activity id="5" category="AC1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Recommander les actions d'ensemble de partage</locale>  
+          <locale language="en">Recommend ShareSet Actions</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Cette activité recommande l'action à effectuer lors de la distribution des informations collectées partagées dans un dossier cible. Il existe un certain nombre d'actions pouvant être recommandées, notamment Insérer, Modifier, Supprimer, Ignorer et Intervention manuelle.</locale>  
+          <locale language="en">This activity recommends the action that should be taken when delivering shared evidence onto a target case. There are a number of actions that can be recommended, including Insert, Modify, Remove, Ignore and Manual Intervention.</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="7"/> 
+      </split>  
+      <bpo-mapping interface-name="curam.aes.sl.workflow.intf.AdvancedEvidenceSharingPushWorkflow" method-name="recommendShareSetAction"> 
+        <formal-parameters> 
+          <formal-parameter index="0"> 
+            <struct type="curam.aes.sl.entity.struct.AESShareSetKey"> 
+              <field name="shareSetID"> 
+                <base-type type="INT64"> 
+                  <wdo-attribute wdo-name="AESShareSetKey" name="shareSetID"/> 
+                </base-type> 
+              </field> 
+            </struct> 
+          </formal-parameter> 
+        </formal-parameters> 
+      </bpo-mapping> 
+    </automatic-activity>  
+    <automatic-activity id="6" category="AC1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Distribuer l'ensemble de partage</locale>  
+          <locale language="en">Deliver ShareSet</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Cette activité délivre les informations collectées dans un dossier cible en fonction de l'action déterminée pour cette livraison.</locale>  
+          <locale language="en">This activity delivers the evidence onto a target case in accordance with the action determined for that delivery.</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="17"/> 
+      </split>  
+      <bpo-mapping interface-name="curam.aes.sl.workflow.intf.AdvancedEvidenceSharingPushWorkflow" method-name="deliverShareSet"> 
+        <formal-parameters> 
+          <formal-parameter index="0"> 
+            <struct type="curam.aes.sl.entity.struct.AESShareSetKey"> 
+              <field name="shareSetID"> 
+                <base-type type="INT64"> 
+                  <wdo-attribute wdo-name="AESShareSetKey" name="shareSetID"/> 
+                </base-type> 
+              </field> 
+            </struct> 
+          </formal-parameter> 
+        </formal-parameters> 
+      </bpo-mapping> 
+    </automatic-activity>  
+    <automatic-activity id="7" category="AC1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activer l'ensemble de partage</locale>  
+          <locale language="en">Activate Share Set</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Cette activité active les informations collectées partagées sur tous les dossiers cible selon la configuration de partage.</locale>  
+          <locale language="en">This activity activates the shared evidence on all the target cases as per the sharing configuration.</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="14"/> 
+      </split>  
+      <bpo-mapping interface-name="curam.aes.sl.workflow.intf.AdvancedEvidenceSharingPushWorkflow" method-name="activateShareSet"> 
+        <formal-parameters> 
+          <formal-parameter index="0"> 
+            <struct type="curam.aes.sl.entity.struct.AESShareSetKey"> 
+              <field name="shareSetID"> 
+                <base-type type="INT64"> 
+                  <wdo-attribute wdo-name="AESShareSetKey" name="shareSetID"/> 
+                </base-type> 
+              </field> 
+            </struct> 
+          </formal-parameter> 
+        </formal-parameters> 
+      </bpo-mapping> 
+    </automatic-activity>  
+    <automatic-activity id="8" category="AC1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Ensemble de partage terminé</locale>  
+          <locale language="en">Complete ShareSet</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Cette activité est chargée de marquer un ensemble de partage d'informations collectées comme étant 'Terminé'. En cas d'erreurs se produisant lors du flux de travaux, l'ensemble de partage sera mis à jour avec 'Terminé avec résilience' et la notification appropriée sera émise.</locale>  
+          <locale language="en">This activity is responsible for marking a particular share set of evidence as 'Completed'. In the case of failures occurring during the workflow, the share set will be updated to 'Complete With Resilience' and the appropriate notification will be raised.</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="16"/> 
+      </split>  
+      <bpo-mapping interface-name="curam.aes.sl.workflow.intf.AdvancedEvidenceSharingPushWorkflow" method-name="completeShareSet"> 
+        <formal-parameters> 
+          <formal-parameter index="0"> 
+            <struct type="curam.aes.sl.entity.struct.AESShareSetKey"> 
+              <field name="shareSetID"> 
+                <base-type type="INT64"> 
+                  <wdo-attribute wdo-name="AESShareSetKey" name="shareSetID"/> 
+                </base-type> 
+              </field> 
+            </struct> 
+          </formal-parameter> 
+        </formal-parameters> 
+      </bpo-mapping> 
+    </automatic-activity>  
+    <automatic-activity id="9" category="AC1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Rappel</locale>  
+          <locale language="en">Callback</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Ce processus d'activité déclenche le mécanisme de rappel. Un mécanisme de rappel est utilisé par exemple lors du processus d'autorisation. L'autorisation a une dépendance sur les informations collectées partagées du dossier de demande vers le dossier en cours. Une fois les informations collectées partagées sur le dossier (en cours) cible, le dossier de demande doit recevoir une notification via le mécanisme de rappel. Dans le processus d'autorisation, le rappel est utilisé pour mettre à jour le statut du dossier de demande à 'Fermé'.</locale>  
+          <locale language="en">This activity process triggers the callback mechanism. An example of where a callback mechanism is used is during the authorization process. Authorization has a dependency on evidence being shared from the application case to the ongoing case. Once all the evidence has been shared onto the target (ongoing) case, the application case needs to be notified via the callback mechanism. In the authorization process, the callback is used to update the status of the application case to 'Closed'.</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="15"/> 
+      </split>  
+      <bpo-mapping interface-name="curam.aes.sl.workflow.intf.AdvancedEvidenceSharingPushWorkflow" method-name="callback"> 
+        <formal-parameters> 
+          <formal-parameter index="0"> 
+            <struct type="curam.aes.sl.entity.struct.AESShareSetKey"> 
+              <field name="shareSetID"> 
+                <base-type type="INT64"> 
+                  <wdo-attribute wdo-name="AESShareSetKey" name="shareSetID"/> 
+                </base-type> 
+              </field> 
+            </struct> 
+          </formal-parameter> 
+        </formal-parameters> 
+      </bpo-mapping> 
+    </automatic-activity> 
+  </activities>  
+  <!-- Defining Broker Activities Transitions -->  
+  <transitions> 
+    <!-- From Start Process to Enact Method -->  
+    <transition id="1" from-activity-idref="1" to-activity-idref="3"/>  
+    <!-- From Enact to the Delivery Plan Method -->  
+    <transition id="3" from-activity-idref="3" to-activity-idref="4"/>  
+    <!-- From Delivery Plan to Recommendations Method -->  
+    <transition id="11" from-activity-idref="4" to-activity-idref="5"/>  
+    <!-- From Delivery Plan to Evidence Delivery Method -->  
+    <transition id="18" from-activity-idref="5" to-activity-idref="6"/>  
+    <!-- From Evidence Delivery to Evidence Activation Method -->  
+    <transition id="17" from-activity-idref="6" to-activity-idref="7"/>  
+    <!-- From Evidence Activation to Complete Changes Method -->  
+    <transition id="14" from-activity-idref="7" to-activity-idref="8"/>  
+    <!-- From Complete Changes to Callback Method -->  
+    <transition id="16" from-activity-idref="8" to-activity-idref="9"/>  
+    <!-- From Callback to End Process -->  
+    <transition id="15" from-activity-idref="9" to-activity-idref="2"/> 
+  </transitions> 
+</workflow-process>

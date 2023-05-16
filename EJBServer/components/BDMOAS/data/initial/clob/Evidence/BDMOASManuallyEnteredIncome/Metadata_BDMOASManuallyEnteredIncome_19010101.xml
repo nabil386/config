@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TASK 74615 DEV: Implement Manually Entered Income -->
+<EvidenceTypeVersion modifiable="true"
+	relatedParticipant="caseParticipantRole"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../../../../../../../DynamicEvidenceMetadata.xsd">
+	<Model>
+		<Attributes>
+			<Attribute>
+				<RelatedCPAttribute cpRoleType="MEM" mandatory="true"
+					name="caseParticipantRole" participantType="Person">
+					<CPSearchType code="PRI" />
+					<CPSearchType code="MEM" />
+				</RelatedCPAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="year">
+					<DomainType dataType="String">
+						<StringOptions maxSize="4" trimLeadingSpaces="true"
+							trimTrailingSpaces="true" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="preferred" defaultValue="false">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMYesNo" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute
+					name="canadaPensionPlanOrQuebecPensionBenefit">
+					<DomainType dataType="Money" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="otherCanadianPensionIncome" volatile="true">
+					<DomainType dataType="Money" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="foreignPensionIncome">
+					<DomainType dataType="Money" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="employmentInsurance">
+					<DomainType dataType="Money" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="workersCompensationBenefits">
+					<DomainType dataType="Money" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="interestAndOtherInvestmentIncome">
+					<DomainType dataType="Money" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute
+					name="eligibleAndOtherThanEligibleDividends">
+					<DomainType dataType="Money" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="capitalGains">
+					<DomainType dataType="Money" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="netRentalIncome">
+					<DomainType dataType="Money" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="netEmploymentIncome">
+					<DomainType dataType="Money" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="netSelfEmploymentIncome">
+					<DomainType dataType="Money" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="otherIncome">
+					<DomainType dataType="Money" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<CommentsAttribute name="comments"/>
+			</Attribute>
+		</Attributes>
+		<Relationships />
+	</Model>
+	<Validations>
+		<PatternValidations>
+      <Validator>
+        <DuplicateValidator>
+          <DuplicateAttributes conjunction="AND">
+            <DuplicateAttribute name="caseParticipantRole"/>
+            <DuplicateAttribute name="year"/>
+            <ValidationMessageInformation>
+              <ValidationMessageMapping>
+                <ValidationMessage>
+                  <parameter name="caseParticipantRole"/>
+                  <ValidationMessageResource id="ERR_MULTIPLE_EVIDENCES_WITH_SAME_YEAR_EXISTS"/>
+                </ValidationMessage>
+              </ValidationMessageMapping>
+            </ValidationMessageInformation>
+          </DuplicateAttributes>
+        </DuplicateValidator>
+      </Validator>
+      </PatternValidations>
+	
+	<CustomRulesValidation
+	ruleSetName="BDMOASManuallyEnteredIncomeValidationRuleSet" />
+	</Validations>
+	<SummaryInformation>
+		<SummaryRuleset
+			ruleSetName="BDMOASManuallyEnteredIncomeSummaryRuleSet" />
+	</SummaryInformation>
+	<UserInterface>
+		<Cluster>
+			<RelCPCluster defaultToBlank="true"
+				enableMultiMemberUpdates="false" fullCreateParticipant="false"
+				isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true"
+				modifyOption="no" searchOption="Person"
+				showParticipantTypeFilter="true" useSingleName="false">
+				<StandardField source="caseParticipantRole" modifiable="false"/>
+				<ClusterName id="MRI.Cluster.Participant.Description" />
+				<LabelName id="MRI.Name.Label" />
+				<RelCpPfx id="MRI.Participant.Description" />
+				<FirstName id="MRI.First.Name.Label" />
+				<SecondName id="MRI.Second.Name.Label" />
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true"
+				numberOfColumns="2">
+				<Title id="IncomeDetails.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField modifiable="true" source="year"
+						useDefault="false">
+						<Label id="Year.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="preferred"
+						useDefault="false" useBlank="true">
+						<Label id="Preferred.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true"
+				numberOfColumns="2">
+				<Title id="Block1.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="canadaPensionPlanOrQuebecPensionBenefit" useDefault="false">
+						<Label id="CanadianPPOrQuebecPPBenefits.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true"
+				numberOfColumns="2">
+				<Title id="Block2.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="otherCanadianPensionIncome" useDefault="false">
+						<Label id="OtherCanadianPI.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="foreignPensionIncome" useDefault="false">
+						<Label id="ForeignPI.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true"
+				numberOfColumns="2">
+				<Title id="Block3.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="employmentInsurance" useDefault="false">
+						<Label id="EmploymentInsurance.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="workersCompensationBenefits" useDefault="false">
+						<Label id="WorkersCompensationBenefits.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true"
+				numberOfColumns="2">
+				<Title id="Block4.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="interestAndOtherInvestmentIncome" useDefault="false">
+						<Label id="InterestAndOtherInvestmentIncome.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true"
+				numberOfColumns="2">
+				<Title id="Block5.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="eligibleAndOtherThanEligibleDividends" useDefault="false">
+						<Label id="EligibleAndOtherThanEligibleDividends.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="capitalGains" useDefault="false">
+						<Label id="CapitalGains.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true"
+				numberOfColumns="2">
+				<Title id="Block6.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="netRentalIncome" useDefault="false" showLabel="true">
+						<Label id="NetRentalIncome.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true"
+				numberOfColumns="2" labelWidth="40">
+				<Title id="Block7.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="netEmploymentIncome" useDefault="false">
+						<Label id="NetEmploymentIncome.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true"
+				numberOfColumns="2">
+				<Title id="Block8.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="netSelfEmploymentIncome" useDefault="false">
+						<Label id="NetSelfEmploymentIncome.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true"
+				numberOfColumns="2">
+				<Title id="Block9.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField modifiable="true" source="otherIncome"
+						useDefault="false">
+						<Label id="OtherIncome.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<CommentsCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true">
+				<Title id="Comments.Cluster.Title" />
+				<StandardField source="comments" />
+			</CommentsCluster>
+		</Cluster>
+	</UserInterface>
+</EvidenceTypeVersion>

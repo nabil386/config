@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2015,2021. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+  This is the ant build file for RESTToolkit.
+
+  You can use "ant -projecthelp" to get information about the important targets in this
+  build file.
+-->
+
+<project name="RESTToolkit" 
+  xmlns:if="ant:if" 
+  xmlns:unless="ant:unless">
+
+  <import file="./rest_properties.xml" />
+  <import file="./rest_buildWar.xml" />
+  <import file="${sysenv.CURAMCDEJ}/bin/build-properties.xml" />
+  <import file="${sysenv.CURAMCDEJ}/bin/build-taskdefs.xml" />
+  <import file="${sysenv.CURAMSDEJ}/bin/app_macros.xml" />
+
+  <!--  *********************************************************************************************  -->
+  <!--  ***  2 top level targets for building the Rest Ear and building the Rest Development App  ***  -->
+  <!--  *********************************************************************************************  -->
+
+  <!-- The following targets have a condition set so nothing gets called if a config file is not found in the component dirs -->
+
+  <target name="buildRESTEAR" description="Build the REST EAR file">
+    <condition property="config.files.exist">
+      <resourcecount when="greater" count="0">
+        <fileset dir="${dir.components}" includes="*/rest/config/ResourcesConfig.xml"/>
+      </resourcecount>
+    </condition>
+    <antcall target="no.config.message"/>
+    <antcall target="build.ear">
+      <param name="config.files.exist" value="${config.files.exist}"/>
+    </antcall>
+  </target>
+
+  <target name="restEAR" description="Build the REST EAR file">
+    <condition property="config.files.exist">
+      <resourcecount when="greater" count="0">
+        <fileset dir="${dir.components}" includes="*/rest/config/ResourcesConfig.xml"/>
+      </resourcecount>
+    </condition>
+    <antcall target="no.config.message"/>
+    <antcall target="build.ear">
+      <param name="config.files.exist" value="${config.files.exist}"/>
+    </antcall>
+  </target>
+
+  <target name="rest" description="Build the development time, rest endpoint testing application">
+    <condition property="config.files.exist">
+      <resourcecount when="greater" count="0">
+        <fileset dir="${dir.components}" includes="*/rest/config/ResourcesConfig.xml"/>
+      </resourcecount>
+    </condition>
+    <antcall target="no.config.message"/>
+    <antcall target="build.devapp">
+      <param name="config.files.exist" value="${config.files.exist}"/>
+    </antcall>
+  </target>
+
+  <target name="no.config.message" unless="${config.files.exist}">
+    <echo message="No REST Configuration files exist, so nothing to do."/>
+  </target>
+
+  <!-- Target used for Dev purposes only -->
+  <target name="graphql" description="builds the GraphQL part of the REST framework. Note that this script should only be used for updating changes made in GraphQL classes only, and the full REST application must be built at least once first." >
+    <antcall target="copyGraphQLSourceAndJars" >
+      <param name="rest.war.dir" value="${rest.bld.devapp}"/>
+      <param name="copyToHere" value="${rest.bld.devapp}/WEB-INF/lib"/>
+    </antcall>
+  </target>
+
+  <!--  ****************************  -->
+  <!--  ***  Build the Rest Ear  ***  -->
+  <!--  ****************************  -->
+  <target name="build.ear" description="Builds rest ear file" if="${config.files.exist}">
+
+    <echo message="Building the Rest.ear..."/>
+
+    <delete dir="${rest.bld.ear}"/>
+    <mkdir dir="${rest.bld.ear}"/>
+
+    <antcall target="create.ear.metainf"/>
+
+    <antcall target="create.invalidation.module">
+      <param name="output.directory" value="${rest.bld.ear.parts}"/>
+    </antcall>
+
+    <antcall target="generate.war.file"/>
+
+    <antcall target="create.rest.ear"/>
+
+    <antcall target="copyRestEarToBuiltEarsLocation"/>
+
+  </target>
+
+  <!-- Create war file for the project -->
+  <target name="generate.war.file" depends="set.rest.vendor.property">
+
+    <antcall target="build.war.dir">
+      <param name="rest.war.dir" value="${rest.bld.ear.war}"/>
+      <param name="vendor.equals.wlp" value="${vendor.equals.wlp}"/>
+    </antcall>
+
+    <copy todir="${rest.bld.ear.war}">
+      <fileset dir="${dir.cde.ear}/WAS/war" excludes="**/web.xml" />
+      <fileset dir="${rest.component}/resources/ear/war" />
+    </copy>
+
+    <!--If building for Weblogic, overwrite the web.xml with a WLS vendor-specific version-->
+    <antcall target="wls.update.web.xml" />
+
+    <replace dir="${rest.bld.ear.war}/WEB-INF">
+      <include name="weblogic.xml"/>
+      <replacefilter token="$CURAM_PRINCIPAL_NAME$" value="${curam.principal.name}"/>
+    </replace>
+
+    <echo message="org.apache.commons.logging.LogFactory=org.apache.commons.logging.impl.LogFactoryImpl" file="${rest.bld.ear.war}/WEB-INF/classes/commons-logging.properties"/>
+
+    <antcall target="wlp.modify.rest.war.files" />
+
+    <jar destfile="${rest.bld.ear.war}/WEB-INF/lib/RESTToolkit_classes.jar">
+      <fileset dir="${rest.bld.ear.war}/WEB-INF/classes" />
+    </jar>
+
+    <!-- DisableIBMJAXWSEngine property is added to the manifest file to prevent an issue with annotations -->
+    <jar destfile="${rest.bld.ear.parts}/RestModule.war">
+      <fileset dir="${rest.bld.ear.war}" />
+      <manifest>
+        <attribute name="DisableIBMJAXWSEngine" value="true"/>
+      </manifest>
+    </jar>
+
+  </target>
+
+  <target name="wls.update.web.xml" if="vendor.equals.bea">
+    <copy todir="${rest.bld.ear.war}/WEB-INF"  overwrite="true">
+      <fileset dir="${rest.component}/resources/ear/wls/WEB-INF" includes="web.xml"/>
+    </copy>
+    <echo>Using Weblogic specific version of web.xml file</echo>
+  </target>
+
+  <target name="wlp.modify.rest.war.files" if="vendor.equals.wlp">
+
+    <copy todir="${rest.bld.ear.war}" verbose="true" overwrite="true">
+      <fileset dir="${dir.cde.ear}/WLP/war" includes="**/ServerConnection.properties" />
+      <filterset>
+        <filter token="SVRCONN_APP_NAME" value="${SERVER_MODEL_NAME}" />
+        <filter token="SVRCONN_MOD_NAME" value="coreinf-ejb" />
+      </filterset>
+    </copy>
+
+    <zip destfile="${rest.bld.ear.war}/WEB-INF/lib/omega3-coreInf.jar" update="true">
+      <zipfileset dir="${rest.bld.ear.war}/WEB-INF/classes" includes="curam/omega3/ServerConnection.properties" fullpath="curam/omega3/ServerConnection.properties"/>
+    </zip>
+
+  </target>
+
+  <!--  ************************************  -->
+  <!--  ***  CREATE.INVALIDATION.MODULE  ***  -->
+  <!--  ************************************  -->
+  <target name="create.invalidation.module">
+
+    <replace dir="${rest.bld.ear.parts}/META-INF">
+      <include name="ibm-application-ext.xmi"/>
+      <replacefilter token="@EJB_MODULE@" value="&lt;moduleExtensions xmi:type=&quot;applicationext:EjbModuleExtension&quot; xmi:id=&quot;EjbModule_InvalidationModule&quot; altRoot=&quot;ALT-INF/InvalidationModule.jar&quot;&gt;
+        &lt;module xmi:type=&quot;application:EjbModule&quot; href=&quot;META-INF/application.xml#EjbModule_InvalidationModule&quot;/&gt;
+        &lt;/moduleExtensions&gt;"/>
+    </replace>
+
+    <replace dir="${rest.bld.ear.parts}/META-INF">
+      <include name="application.xml"/>
+      <replacefilter token="@EJB_MODULE@" value="&lt;module id=&quot;EjbModule_InvalidationModule&quot;&gt;&lt;ejb&gt;InvalidationModule.jar&lt;/ejb&gt;&lt;/module&gt;"/>
+    </replace>
+
+    <replace dir="${rest.bld.ear.parts}/META-INF">
+      <include name="weblogic-application.xml"/>
+      <replacefilter token="@EJB_MODULE@" value="&lt;module-ref&gt;&lt;module-uri&gt;InvalidationModule.jar&lt;/module-uri&gt;&lt;/module-ref&gt;"/>
+    </replace>
+
+    <copy todir="${rest.bld.ear}/ejb-jar">
+      <fileset dir="${dir.cde.ear}/common/ejb-jar"/>
+      <fileset dir="${dir.cde.ear}/WAS/ejb-jar"/>
+    </copy>
+
+    <replace dir="${rest.bld.ear}/ejb-jar/META-INF">
+      <include name="weblogic-ejb-jar.xml"/>
+      <replacefilter token="$RUN_AS_USER_NAME$" value="${runas.user}"/>
+    </replace>
+
+    <jar destfile="${rest.bld.ear.parts}/InvalidationModule.jar">
+      <fileset dir="${rest.bld.ear}/ejb-jar" />
+    </jar>
+    <delete dir="${rest.bld.ear}/ejb-jar" />
+
+  </target>
+
+  <!-- Create the ear file -->
+  <target name="create.rest.ear" depends="set.rest.vendor.property">
+
+    <replace dir="${rest.bld.ear.parts}/META-INF">
+      <include name="application.xml"/>
+      <replacefilter token="@PROJECTNAME@" value="Rest"/>
+      <replacefilter token="@EJB_MODULE@" value=""/>
+      <replacefilter token="@WEB_MODULE@" value=""/>
+      <replacefilter token="@HELP_MODULE@" value=""/>
+      <replacefilter token="@SEARCH_MODULE@" value=""/>
+      <replacefilter token="@INFRASTRUCTURE_MODULE@" value=""/>
+      <replacefilter token="@FACADE_MODULE@" value=""/>
+    </replace>
+
+    <replace dir="${rest.bld.ear.parts}/META-INF">
+      <include name="ibm-application-ext.xmi"/>
+      <replacefilter token="@EJB_MODULE@" value=""/>
+      <replacefilter token="@INFRASTRUCTURE_MODULE@" value=""/>
+      <replacefilter token="@FACADE_MODULE@" value=""/>
+      <replacefilter token="@SEARCH_MODULE@" value=""/>
+    </replace>
+
+    <ear destfile="${rest.bld.ear}/Rest.ear" appxml="${rest.bld.ear.parts}/META-INF/application.xml" manifest="${dir.templates}/app-Manifest.mf" basedir="${rest.bld.ear.parts}" duplicate="preserve">
+    </ear>
+
+  </target>
+
+  <!-- Create META-INF for the ear and copy in vendor specific files for WLS & WAS app servers -->
+  <target name="create.ear.metainf">
+    <echo message="Copy META-INF files"/>
+    <copy toDir="${rest.bld.ear.parts}/META-INF">
+      <fileset dir="${dir.templates}">
+        <include name="*.xml"/>
+        <include name="*.mf"/>
+        <include name="*.policy"/>
+        <exclude name="weblogic-application.xml"/>
+      </fileset>
+    </copy>
+
+    <!-- Copy in the weblogic-appliction.xml file specific to the REST application -->
+  	<copy file="${rest.component}/resources/ear/wls/META-INF/weblogic-application.xml" tofile="${rest.bld.ear.parts}/META-INF/weblogic-application.xml"/>
+
+    <replace dir="${rest.bld.ear.parts}/META-INF">
+      <include name="application.xml"/>
+      <replacefilter token="@WEB_MODULE@" value="&lt;module id=&quot;WebModule_ClientModule&quot;&gt;&lt;web&gt;&lt;web-uri&gt;RestModule.war&lt;/web-uri&gt;&lt;context-root&gt;/${rest.context}&lt;/context-root&gt;&lt;/web&gt;&lt;/module&gt;"/>
+    </replace>
+
+  </target>
+
+  <target name="copyRestEarToBuiltEarsLocation" depends="set.rest.vendor.property">
+    <antcall target="copyRestEarToBuiltEarsLocation.was"/>
+    <antcall target="copyRestEarToBuiltEarsLocation.wls"/>
+    <antcall target="copyRestEarToBuiltEarsLocation.wlp"/>
+  </target>
+
+  <!-- IBM WebSphere -->
+  <target if="vendor.equals.ibm" name="copyRestEarToBuiltEarsLocation.was">
+    <copy file="${rest.bld.ear}/Rest.ear" tofile="${dir.ear}/WAS/Rest.ear" />
+  </target>
+  <!-- BEA Weblogic -->
+  <target if="vendor.equals.bea" name="copyRestEarToBuiltEarsLocation.wls">
+    <copy file="${rest.bld.ear}/Rest.ear" tofile="${dir.ear}/WLS/Rest.ear" />
+  </target>
+  <!-- WLP Liberty -->
+  <target if="vendor.equals.wlp" name="copyRestEarToBuiltEarsLocation.wlp">
+    <copy file="${rest.bld.ear}/Rest.ear" tofile="${dir.ear}/WLP/Rest.ear" />
+  </target>
+
+  <!-- Set the vendor property required to copy the EAR to the correct location -->
+  <target name="set.rest.vendor.property">
+    <condition property="vendor.equals.ibm">
+      <equals arg1="${as.vendor}" arg2="ibm" casesensitive="false" />
+    </condition>
+    <condition property="vendor.equals.bea">
+      <equals arg1="${as.vendor}" arg2="bea" casesensitive="false" />
+    </condition>
+    <condition property="vendor.equals.wlp">
+      <equals arg1="${as.vendor}" arg2="wlp" casesensitive="false" />
+    </condition>
+  </target>
+
+  <!--  **************************************  -->
+  <!--  ***  Build the Rest Development App  ***  -->
+  <!--  ****************************************  -->
+
+  <target name="build.devapp" description="Builds development time testing app" if="${config.files.exist}">
+    <antcall target="no.tomcat.message"/>
+    <antcall target="build.devapp.internal"/>
+  </target>
+
+  <!-- This target will only get called if CATALINA_HOME is set -->
+  <target name="build.devapp.internal" if="sysenv.CATALINA_HOME">
+    <echo message="Building the dev app..."/>
+    <antcall target="build.war.dir">
+      <param name="rest.war.dir" value="${rest.bld.devapp}"/>
+      <param name="vendor.equals.wlp" value="${vendor.equals.wlp}"/>
+    </antcall>
+
+    <copy todir="${rest.bld.devapp}">
+      <fileset dir="${rest.component}/resources/tomcat/war"/>
+    </copy>
+
+    <!-- Copy Tomcat context definition file so its picked up by Tomcat -->
+    <copy file="${rest.component}/resources/tomcat/context/Rest.xml" todir="${sysenv.CATALINA_HOME}/conf/Catalina/localhost/" overwrite="true">
+      <filterset>
+        <filter token="docBaseLocation" value="${rest.bld.devapp}"/>
+      </filterset>
+    </copy>
+  </target>
+
+  <!-- This target will only get called if CATALINA_HOME is not set -->
+  <target name="no.tomcat.message" unless="sysenv.CATALINA_HOME">
+    <echo message="CATALINA_HOME must be set before building the Rest Test App."/>
+  </target>
+</project>

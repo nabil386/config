@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Feature 99651: Manage OAS RCV Tax -->
+<EvidenceTypeVersion correctionOnly="true"
+	modifiable="true" relatedParticipant="caseParticipantRoleID"
+	businessStartDate="startDate" businessEndDate="endDate"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../../../../../../DynamicEvidenceMetadata.xsd">
+	<Model>
+		<Attributes>
+			<Attribute>
+				<RelatedCPAttribute cpRoleType="MEM"
+					name="caseParticipantRoleID" participantType="Person"
+					mandatory="true">
+					<CPSearchType code="PRI" />
+				</RelatedCPAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="false" name="taxReturnType">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMOASTaxReturnType" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="taxYear">
+					<DomainType dataType="String">
+						<StringOptions maxSize="4" trimLeadingSpaces="true"
+							trimTrailingSpaces="true" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true"
+					name="monthlyRecoveryTaxAmount">
+					<DomainType dataType="Money">
+						<NumericOptions
+							trimLeadingSpaces="true" trimTrailingSpaces="true" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="startDate">
+					<DomainType dataType="Date">
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="endDate" >
+					<DomainType dataType="Date">
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<CommentsAttribute name="comments" />
+			</Attribute>
+		</Attributes>
+		<Relationships />
+	</Model>
+	<Validations>
+		<PatternValidations>
+			<Validator>
+				<ComparisonValidator
+					operator="GreaterThanOrEqualTo" shallow="false" source="endDate"
+					target="startDate" useClause="false" useLiteral="false">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_START_DATE_CAN_NOT_BE_AFTER_END_DATE" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</ComparisonValidator>
+			</Validator>
+			<Validator>
+				<DuplicateValidator conjunction="AND"
+					endDate="endDate" startDate="startDate">
+					<DuplicateAttributes conjunction="AND">
+						<DuplicateAttribute
+							name="caseParticipantRoleID" />
+						<ValidationMessageInformation>
+							<ValidationMessageMapping>
+								<ValidationMessage>
+									<ValidationMessageResource
+										id="ERR_OVERLAPPING_OAS_RECOVERY_TAX" />
+								</ValidationMessage>
+							</ValidationMessageMapping>
+						</ValidationMessageInformation>
+					</DuplicateAttributes>
+				</DuplicateValidator>
+			</Validator>
+		</PatternValidations>
+		<CustomRulesValidation
+			ruleSetName="BDMOASRecoveryTaxValidationRuleSet" />
+	</Validations>
+	<SummaryInformation>
+		<SummaryRuleset
+			ruleSetName="BDMOASRecoveryTaxSummaryRuleSet" />
+	</SummaryInformation>
+	<UserInterface>
+		<Cluster>
+			<RelCPCluster defaultToBlank="false"
+				enableMultiMemberUpdates="false" fullCreateParticipant="false"
+				isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true"
+				modifyOption="no" showParticipantTypeFilter="true"
+				useSingleName="true">
+				<StandardField source="caseParticipantRoleID" />
+				<ClusterName id="Related.Participant.Cluster.ID1" />
+				<LabelName id="Name.Label.ID1" />
+				<FirstName id="First.Name.Label.ID1" />
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true" labelWidth="40"
+				numberOfColumns="2">
+				<Title id="Cluster.Title.OASRecoveryTaxDetails" />
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="taxReturnType" useBlank="true" useDefault="false">
+						<Label id="Field.Label.TaxReturnType" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="taxYear"
+						useBlank="true" useDefault="false">
+						<Label id="Field.Label.TaxYear" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="monthlyRecoveryTaxAmount" useBlank="true"
+						useDefault="false">
+						<Label id="Field.Label.MonthlyRecoveryTaxAmount" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<SkipField />
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="startDate"
+						useDefault="true">
+						<Label id="Field.Label.StartDate" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="endDate"
+						useDefault="false">
+						<Label id="Field.Label.EndDate" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<CommentsCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true">
+				<Title id="Comments.Cluster.Title.ID2" />
+				<StandardField source="comments" />
+			</CommentsCluster>
+		</Cluster>
+	</UserInterface>
+</EvidenceTypeVersion>

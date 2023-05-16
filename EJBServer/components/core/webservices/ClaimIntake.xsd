@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:cl="http://ws.curam/ClaimIntake" elementFormDefault="qualified" attributeFormDefault="unqualified" targetNamespace="http://ws.curam/ClaimIntake">
+  
+  <!-- BEGIN businesstypes -->
+  <xs:simpleType name="clientIdentifier">
+    <xs:annotation>
+       <xs:documentation>
+          This should be the C\u00FAram Client identifier.
+       </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="cl:ConcernRoleID"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="evidenceDescriptorIdentifier">
+     <xs:annotation>
+       <xs:documentation>
+          This should be the C\u00FAram Evidence Descriptor identifier.
+       </xs:documentation>
+       </xs:annotation>
+     <xs:restriction base="cl:InternalID"/>
+  </xs:simpleType>
+
+	<xs:simpleType name="evidenceIdentifier">
+     <xs:annotation>
+          <xs:documentation>
+             This should be the C\u00FAram Evidence identifier
+             evidence.
+          </xs:documentation>
+       </xs:annotation>
+     <xs:restriction base="cl:InternalID"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="caseIdentifier">
+    <xs:annotation>
+      <xs:documentation>
+          This should be the C\u00FAram Case identifier.
+       </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="cl:CaseID"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="addressData">
+    <xs:annotation>
+      <xs:documentation>This should be the C\u00FAram AddressData.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="cl:string"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="productIdentifier">
+    <xs:annotation>
+      <xs:documentation>This should be the C\u00FAram Product identifier.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="cl:string"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="providerLocationIdentifier">
+    <xs:annotation>
+      <xs:documentation>This should be the C\u00FAram ProviderLocation identifier.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="cl:InternalID"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="triageType">
+    <xs:annotation>
+      <xs:documentation>This should be the C\u00FAram Triage codetable value.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="cl:CodetableCode"/>
+  </xs:simpleType>
+  <!-- END businesstypes -->
+  
+  <!-- BEGIN builtintypes -->
+  <!-- No Blob support - it's tricky and could be expensive -->
+  <xs:simpleType name="date">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type date.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:date"/>
+  </xs:simpleType>   
+
+  <xs:simpleType name="string">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type string.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="boolean">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type boolean.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:boolean"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="datetime">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type date time.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:dateTime"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="double">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type double.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:double"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="float">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type float.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:float"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="int16">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type int16.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:short"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="int32">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type int32.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:int"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="int64">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type int64.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:long"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="int8">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type int8.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:byte"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="char">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type char.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:length value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="frequencypattern">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type frequency pattern.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{9}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="money">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type money.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:decimal">
+      <xs:fractionDigits value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!-- END builtintypes -->
+
+  <!-- BEGIN domaintypes -->
+  <xs:simpleType name="CaseID">
+    <xs:annotation>
+      <xs:documentation>This should be the C\u00FAram Case ID.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="cl:InternalID"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="InternalID">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram Internal ID.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:long"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="AlternateID">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram Atlernate ID.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="ConcernRoleID">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram ConcernRole ID.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="EvidenceFieldName">
+    <xs:annotation>
+      <xs:documentation>The name of the evidence field (column) in C\u00FAram.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="CodetableCode">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram code table code.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="10"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="EvidenceType">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram Evidence Type code table code.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="cl:CodetableCode"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="ProductProviderID">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram Product Provider ID.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="cl:ConcernRoleID"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="ProductDeliveryPatternID">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram Product Delivery Pattern ID.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="cl:ConcernRoleID"/>
+  </xs:simpleType>
+  <!-- END domaintypes -->
+
+  <xs:group name="claimIntakeRequired">
+    <xs:sequence>
+      <xs:element name="clientID" type="cl:clientIdentifier" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>
+            This should be the Client identifier for the
+            claim intake.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <xs:element name="productID" type="cl:productIdentifier" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>
+            This should contain the Product
+            identifier for the claim intake.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <xs:element name="providerID" type="cl:ProductProviderID" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>
+            This should be the Provider's Product identifier for the
+            claim intake.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <xs:element name="deliveryPattern" type="cl:ProductDeliveryPatternID" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>
+            This should be the Provider's Delivery Pattern
+            for the claim intake.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <xs:element name="receivedDate" type="cl:date" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>
+            This should be the date of receipt for the claim
+            intake.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <xs:element name="currency" type="cl:CodetableCode" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>
+            This should be the currency of the claim intake.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:group>
+
+  <xs:element name="claimIntake" type="cl:ClaimIntakeRequest"/>
+
+	
+  
+  <xs:complexType name="ClaimIntakeRequest">
+    <xs:annotation>
+      <xs:documentation>
+        The claim intake element can be composed of one or more claim
+        intake entries.
+      </xs:documentation>
+    </xs:annotation>
+      <xs:sequence>
+        <xs:element name="claimIntakeGroup" minOccurs="0" maxOccurs="unbounded" type="cl:claimIntakeGroup"/>          
+      </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="claimIntakeGroup">
+    <xs:sequence>
+      <xs:annotation>
+        <xs:documentation>
+          The claim intake group, comprising
+          of claimintake header information
+          and any other optional information.
+        </xs:documentation>
+      </xs:annotation>
+      
+      <xs:group ref="cl:claimIntakeRequired" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>
+            The claim intake group for all
+            required parameters.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:group>
+      <xs:element name="providerLocation" type="cl:providerLocationIdentifier" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>This should contain the optional
+            Provider Location identifier for the claim
+            intake.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      
+      <xs:element name="objective" type="cl:CodetableCode" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>This should contain the optional
+            objective code for the claim
+            intake.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      
+      <xs:element name="caseStartDate" type="cl:date" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>This should contain the optional
+            case start date for the claim
+            intake.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  
+  
+  <xs:element name="response" type="cl:ClaimIntakeResponse"/>
+  
+    <xs:complexType name="ClaimIntakeResponse">
+      <xs:sequence>
+        <xs:element name="claimIntake" type="cl:claimIntake"/>
+      </xs:sequence>
+      <xs:attribute name="Message" type="xs:string" use="optional"/>
+    </xs:complexType>
+  
+  <xs:complexType name="claimIntake">
+      <xs:sequence>
+        <xs:element name="caseID" type="cl:caseIdentifier"/>
+        <xs:element name="clientID" type="cl:clientIdentifier"/>
+        <xs:element name="exception" type="cl:exception" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="success" use="required" type="xs:boolean"/>
+  </xs:complexType>
+  
+  <xs:complexType name="exception">
+    <xs:sequence>
+      <xs:element name="message" type="xs:string"/>
+      <xs:element name="exceptionMessage" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>  
+  
+</xs:schema>

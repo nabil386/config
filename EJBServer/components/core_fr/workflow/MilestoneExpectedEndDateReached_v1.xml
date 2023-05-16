@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--  BEGIN CR00168004 , AK  -->
+<workflow-process category="PC13" createdBy="unauthenticated" creationDate="20071030T100414" id="73" language-version="1.0" process-version="1" released="true"> 
+  <!--  END CR00168004 -->  
+  <name>MilestoneExpectedEndDateReached</name>  
+  <!--BEGIN, CR00361282, CL -->  
+  <process-display-name> 
+    <localized-text> 
+      <locale language="fr">Date de fin attendue du jalon atteinte</locale>  
+      <locale language="en">Milestone Expected End Date Reached</locale>
+    </localized-text> 
+  </process-display-name>  
+  <!--END, CR00361282 -->  
+  <!-- BEGIN, CR00248295, NS -->  
+  <description> 
+    <localized-text> 
+      <locale language="fr">Avertit un propriétaire de dossier que la date de fin prévue d'un jalon a été atteinte et que le jalon n'est pas encore terminé. La notification sera uniquement créée si le type d'événement MILESTONEDELIVERY.EXPECTEDENDDATEREACHED est sélectionné pour l'événement Date de fin prévue non atteinte dans le cadre de la configuration du jalon et lors de l'exécution du traitement par lots ScanMilestoneDeliveryEndDate.</locale>  
+      <locale language="en">Notifies a case owner that the Expected End Date for a milestone has been reached and the milestone has not yet been completed. The notification will be created only if the MILESTONEDELIVERY.EXPECTEDENDDATEREACHED event type is selected for the Expected End Date Not Achieved event as part of the configuration of the milestone and the ScanMilestoneDeliveryEndDate batch process is executed.</locale>
+    </localized-text> 
+  </description>  
+  <!-- END, CR00248295 -->  
+  <enactment-mappings> 
+    <mapping> 
+      <source-attribute name="caseIDAndType.caseID" struct-name="curam.core.sl.struct.CaseIDMilestoneTypeAndOwner"/>  
+      <target-attribute name="caseID" wdo-name="MilestoneDeliveryWDO"/> 
+    </mapping>  
+    <mapping> 
+      <source-attribute name="milestoneDeliveryID" struct-name="curam.core.sl.entity.struct.MilestoneDeliveryDtls"/>  
+      <target-attribute name="milestoneDeliveryID" wdo-name="MilestoneDeliveryWDO"/> 
+    </mapping> 
+  </enactment-mappings>  
+  <wdos> 
+    <wdo initialize-attributes="false" is-list-wdo="false"> 
+      <wdo-name>MilestoneDeliveryWDO</wdo-name>  
+      <display-name> 
+        <localized-text> 
+          <locale language="fr">WDO de livraison de jalon</locale>  
+          <locale language="en">Milestone Delivery WDO</locale>
+        </localized-text> 
+      </display-name>  
+      <attributes> 
+        <attribute> 
+          <attribute-name>type</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">type</locale>  
+              <locale language="en">type</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>false</required-at-enactment> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>caseID</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">ID du dossier</locale>  
+              <locale language="en">caseID</locale>
+            </localized-text> 
+          </display-name>  
+          <type>INT64</type>  
+          <required-at-enactment>true</required-at-enactment> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>milestoneDeliveryID</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">milestoneDeliveryID</locale>  
+              <locale language="en">milestoneDeliveryID</locale>
+            </localized-text> 
+          </display-name>  
+          <type>INT64</type>  
+          <required-at-enactment>true</required-at-enactment> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>ownerID</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">OwnerID</locale>  
+              <locale language="en">OwnerID</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>false</required-at-enactment> 
+        </attribute> 
+      </attributes> 
+    </wdo> 
+  </wdos>  
+  <activities> 
+    <start-process-activity id="1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité de processus de début</locale>  
+          <locale language="en">Start Process Activity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de début</locale>  
+          <locale language="en">The start process activity</locale>
+        </localized-text> 
+      </description>  
+      <split type="none"> 
+        <transition-id idref="1"/> 
+      </split> 
+    </start-process-activity>  
+    <end-process-activity id="2"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de fin</locale>  
+          <locale language="en">End Process Activity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de fin</locale>  
+          <locale language="en">The end process activity</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/> 
+    </end-process-activity>  
+    <automatic-activity id="6"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Obtenir des détails</locale>  
+          <locale language="en">Get Details</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="2"/> 
+      </split>  
+      <bpo-mapping interface-name="curam.core.sl.intf.MilestoneDelivery" method-name="readCaseIDTypeAndCaseOwner"> 
+        <formal-parameters> 
+          <formal-parameter index="0"> 
+            <struct type="curam.core.sl.entity.struct.MilestoneDeliveryKey"> 
+              <field name="milestoneDeliveryID"> 
+                <base-type type="INT64"> 
+                  <wdo-attribute name="milestoneDeliveryID" wdo-name="MilestoneDeliveryWDO"/> 
+                </base-type> 
+              </field> 
+            </struct> 
+          </formal-parameter> 
+        </formal-parameters>  
+        <return> 
+          <struct> 
+            <field name="caseIDAndType"> 
+              <struct> 
+                <field name="caseID"> 
+                  <base-type> 
+                    <wdo-attribute name="caseID" wdo-name="MilestoneDeliveryWDO"/> 
+                  </base-type> 
+                </field>  
+                <field name="type"> 
+                  <base-type> 
+                    <wdo-attribute name="type" wdo-name="MilestoneDeliveryWDO"/> 
+                  </base-type> 
+                </field> 
+              </struct> 
+            </field>  
+            <field name="ownerDetails"> 
+              <struct> 
+                <field name="userName"> 
+                  <base-type> 
+                    <wdo-attribute name="ownerID" wdo-name="MilestoneDeliveryWDO"/> 
+                  </base-type> 
+                </field> 
+              </struct> 
+            </field> 
+          </struct> 
+        </return> 
+      </bpo-mapping> 
+    </automatic-activity>  
+    <route-activity id="7"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Envoyer une notification</locale>  
+          <locale language="en">Send Notification</locale>
+        </localized-text> 
+      </name>  
+      <notification delivery-mechanism="DM1"> 
+        <subject> 
+          <message> 
+            <message-text> 
+              <localized-text> 
+                <locale language="fr">Le jalon de type %1s a atteint sa date de fin prévue, mais n'est pas encore terminé.</locale>  
+                <locale language="en">Milestone of type %1s has reached it's expected end date but has not yet been completed.</locale>
+              </localized-text> 
+            </message-text>  
+            <message-parameters> 
+              <wdo-attribute name="type" wdo-name="MilestoneDeliveryWDO"/> 
+            </message-parameters> 
+          </message> 
+        </subject>  
+        <body> 
+          <message> 
+            <message-text> 
+              <localized-text> 
+                <locale language="fr">Le jalon de type %1s a atteint sa date de fin prévue, mais n'est pas encore terminé.</locale>  
+                <locale language="en">Milestone of type %1s has reached it's expected end date but has not yet been completed.</locale>
+              </localized-text> 
+            </message-text>  
+            <message-parameters> 
+              <wdo-attribute name="type" wdo-name="MilestoneDeliveryWDO"/> 
+            </message-parameters> 
+          </message> 
+        </body>  
+        <allocation-strategy identifier="curam.core.sl.intf.NotificationAllocationFunction.usersSupervisorStrategy" type="function"> 
+          <function-mappings> 
+            <formal-parameters> 
+              <formal-parameter index="0"> 
+                <base-type type="STRING"> 
+                  <wdo-attribute name="ownerID" wdo-name="MilestoneDeliveryWDO"/> 
+                </base-type> 
+              </formal-parameter> 
+            </formal-parameters> 
+          </function-mappings> 
+        </allocation-strategy>  
+        <actions> 
+          <action page-id="ServicePlanDelivery_viewMilestone" principal-action="false"> 
+            <message> 
+              <message-text> 
+                <localized-text> 
+                  <locale language="fr">Afficher la page du jalon</locale>  
+                  <locale language="en">View Milestone Page</locale>
+                </localized-text> 
+              </message-text> 
+            </message>  
+            <link-parameter name="milestoneDeliveryID"> 
+              <wdo-attribute name="milestoneDeliveryID" wdo-name="MilestoneDeliveryWDO"/> 
+            </link-parameter> 
+          </action>  
+          <action page-id="Case_resolveCaseHome" principal-action="false"> 
+            <message> 
+              <message-text> 
+                <localized-text> 
+                  <locale language="fr">Afficher la page d'accueil du dossier</locale>  
+                  <locale language="en">View Case Home page</locale>
+                </localized-text> 
+              </message-text> 
+            </message>  
+            <link-parameter name="caseID"> 
+              <wdo-attribute name="caseID" wdo-name="MilestoneDeliveryWDO"/> 
+            </link-parameter> 
+          </action> 
+        </actions> 
+      </notification>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="3"/> 
+      </split> 
+    </route-activity> 
+  </activities>  
+  <transitions> 
+    <transition from-activity-idref="1" id="1" to-activity-idref="6"/>  
+    <transition from-activity-idref="6" id="2" to-activity-idref="7"/>  
+    <transition from-activity-idref="7" id="3" to-activity-idref="2"/> 
+  </transitions> 
+</workflow-process>

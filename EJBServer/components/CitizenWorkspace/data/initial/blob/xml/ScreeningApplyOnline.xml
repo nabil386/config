@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed Materials - Property of IBM
+    
+    Copyright IBM Corporation 2012, 2016. All Rights Reserved.
+    
+    US Government Users Restricted Rights - Use, duplication or disclosure 
+    restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<page
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="page-schema.xsd"
+>
+  <identifier name="Select Program"/>
+  <server
+    alias="DISPLAY"
+    method="listProgramsToApplyFromScreening"
+  >
+    <param
+      name="applicationKey$applicationID"
+      path="/PAGE/applicationID"
+    />
+    <param
+      name="programKey$programTypeID"
+      path="/PAGE/programID"
+    />
+    <param
+      name="programKey$playerID"
+      path="/PAGE/id"
+    />
+  </server>
+  <header>
+    <title source="/DISPLAY/xmlData/application/title"/>
+    <description source="/DISPLAY/xmlData/application/description"/>
+    <icon id="title_selectprogram"/>
+  </header>
+  <content>
+    <forward
+      name="applicationID"
+      source="/PAGE/applicationID"
+      target="/ans/applicationID"
+    />
+    <container style="cw-text-pluggable">
+      <description id="List.Description"/>
+      <param
+        name="description-css-class"
+        value="eligible-icon right-align"
+      />
+      <param
+        name="description-icon"
+        value="icon_eligible_nextsteps"
+      />
+    </container>
+    <container>
+      <title id="List.Title"/>
+      <help id="List.Help"/>
+
+
+      <container style="select-all">
+        <title id="List.SelectAll"/>
+        <param
+          name="target"
+          value="in-cluster"
+        />
+      </container>
+      <list>
+        <field
+          source="/DISPLAY/xmlData/program[]/id"
+          target="/prog[]"
+          type="CW_PROGRAM_SELECT"
+        >
+          <title source="/DISPLAY/xmlData/program[]/title"/>
+          <description source="/DISPLAY/xmlData/program[]/description"/>
+          <help source="/DISPLAY/xmlData/program[]/url"/>
+          <param
+            id="Help.Label"
+            name="help-label"
+          />
+          <param
+            name="auto-select"
+            source="/DISPLAY/xmlData/program[]/selected"
+          />
+          <param
+            name="highlight"
+            source="/DISPLAY/xmlData/program[]/eligible"
+          />
+          <param
+            id="Eligible.Label"
+            name="highlight-text"
+          />
+        </field>
+      </list>
+    </container>
+  </content>
+  <navigation>
+		<nav-button name="exit" page="ResolveCitizenHome" page-type="resolve" />
+        <nav-button name="back" page="ScreeningNextSteps" />
+        <nav-button name="next" type="action" />
+    </navigation>
+</page>

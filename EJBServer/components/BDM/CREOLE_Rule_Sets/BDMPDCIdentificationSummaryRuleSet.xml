@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Task 63026 DEV: Implement SIN Masking Via Summary Rule Set -->
+<RuleSet name="BDMPDCIdentificationSummaryRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../build/svr/creole.gen/schema/RuleSet.xsd">
+
+	<Class name="BDMPDCIdentificationSummary"
+		extends="DefaultEvidenceSummary"
+		extendsRuleSet="EvidenceSummaryRuleSet">
+
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="PDCIdentification"
+					ruleset="PDCIdentificationRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="summary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="SummaryMessage"
+					resourceBundle="curam.ca.gc.bdm.evidence.BDMPDCIdentificationSummaryRuleSet">
+					<reference attribute="altIDType">
+						<reference attribute="evidence" />
+					</reference>
+					<reference attribute="identifierDisplay" />
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="identifierDisplay">
+			<type>
+				<javaclass name="java.lang.String" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="java.lang.String" />
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<reference attribute="altIDType">
+									<reference attribute="evidence" />
+								</reference>
+								<Code table="ConcernRoleAlternateID">
+									<String value="BDMCA80002" />
+								</Code>
+							</equals>
+						</condition>
+						<value>
+							<call class="curam.ca.gc.bdm.creole.impl.Statics"
+								method="maskSIN">
+								<type>
+									<javaclass name="java.lang.String" />
+								</type>
+								<arguments>
+									<reference attribute="alternateID">
+										<reference attribute="evidence" />
+									</reference>
+								</arguments>
+							</call>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<reference attribute="alternateID">
+								<reference attribute="evidence" />
+							</reference>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+	</Class>
+
+</RuleSet>

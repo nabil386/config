@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+  Copyright 2010-2011 Curam Software Ltd.
+  All rights reserved.
+
+  This software is the confidential and proprietary information of Curam
+  Software, Ltd. (&quot;Confidential Information&quot;).  You shall not disclose such
+  Confidential Information and shall use it only in accordance with the
+  terms of the license agreement you entered into with Curam Software.
+-->
+<!--
+
+  A set of interface classes to be used for CREOLE-based programs implementing program recommendation.
+
+  Customers of Program Recommendation must provide implementations for the classes in this rule set.
+  However, rather than directly extending the classes, rule set developers should instead extend
+  the default implementations provided by the DefaultProgramRecommendationRuleSet. These
+  classes provide some isolation against future changes.
+
+-->
+<RuleSet
+  name="ProgramRecommendationRuleSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+>
+
+
+  <!--
+    Class which provides recommendations for a program.
+  -->
+  <Class
+    abstract="true"
+    name="ProgramRecommender"
+  >
+
+
+    <!-- The identifier of the program -->
+    <!-- BEGIN, CR00316611, RB -->
+    <!-- BEGIN, CR00340176, MST -->
+    <Attribute name="productID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00340176 -->
+
+
+    <Attribute name="startDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="endDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00316611 -->
+
+
+    <!-- The case ID -->
+    <Attribute name="caseID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The list of simulated determinations -->
+    <Attribute name="simulatedDeterminations">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="SimulatedDetermination"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <!-- BEGIN, CR00316611, RB -->
+  <!-- An overall case for which program recommendations are required.  -->
+  <Class name="IntegratedCase">
+
+
+    <!-- Simple English-only text description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <XmlMessage>Integrated Case: <replace>
+            <reference attribute="caseID"/>
+          </replace></XmlMessage>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The identifier of the case -->
+    <Attribute name="caseID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The recommenders for the programs being requested.  -->
+    <Attribute name="programRecommenders">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="ProgramRecommender"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!--
+        The overall program recommendation result for the integrated case.
+
+        Subclasses must not override this implementation. -->
+    <Attribute name="programRecommendationResult">
+      <type>
+        <javaclass name="curam.creoleprogramrecommendation.impl.ProgramRecommendationResult"/>
+      </type>
+      <derivation>
+        <call
+          class="curam.creoleprogramrecommendation.impl.Statics"
+          method="programRecommendationResult"
+        >
+          <type>
+            <javaclass name="curam.creoleprogramrecommendation.impl.ProgramRecommendationResult"/>
+          </type>
+          <arguments>
+            <this/>
+          </arguments>
+        </call>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+  <!-- END, CR00316611 -->
+
+
+  <!--
+    A rule class representing a potential delivery case. Contains both eligibility and display rule objects.
+  -->
+  <Class
+    abstract="true"
+    name="SimulatedDetermination"
+  >
+
+
+    <!-- Description of this simulated determination. -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Eligibility Case -->
+    <Attribute name="programRecommendationCase">
+      <type>
+        <ruleclass name="ProgramRecommendationCase"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Display Cases -->
+    <Attribute name="programRecommendationDisplayCases">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="ProgramRecommendationDisplayCase"
+            ruleset="ProgramRecommendationDisplayRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- BEGIN, CR00323679, PD-->
+    <Attribute name="members">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Member"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00323679 -->
+
+
+    <!-- BEGIN, CR00332324, MST -->
+    <!-- BEGIN, CR00335709, MST -->
+    <Attribute name="productID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00335709 -->
+    <!-- END, CR00332324 -->
+
+
+    <!-- BEGIN, CR00369873, MST -->
+    <Attribute name="productDeliveryID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00369873-->
+
+
+  </Class>
+
+
+  <!--
+    This abstract class ultimately inherits from the ProductEligibilityEntitlementRuleSet.AbstractCase class.
+
+    Customers of Program Recommendation must provide an implementation for this class.
+
+  -->
+  <Class
+    abstract="true"
+    extends="DefaultCase"
+    extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet"
+    name="ProgramRecommendationCase"
+  >
+
+
+    <!--
+      The potential eligibility of the case according to rules for program recommendation.
+    -->
+    <Attribute name="programRecommendationEligibilityTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Boolean"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!--
+
+      The objective timelines for this program recommendation case.
+
+      Each objective timeline is for a particular type of objective; its
+      entitlement/value/target may vary over time.
+    -->
+    <Attribute name="programRecommendationObjectiveTimelines">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="AbstractObjectiveTimeline"
+            ruleset="ProductEligibilityEntitlementRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- BEGIN, CR00316611, RB -->
+    <!-- An estimate of the monthly amount payable -->
+    <Attribute name="monthlyAmountTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Number"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <!-- Whether this case should be treated on an emergency basis -->
+    <Attribute name="isEmergencyCase">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00316611 -->
+
+
+  </Class>
+
+
+  <!-- BEGIN, CR00323679, PD-->
+  <Class name="Member">
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <XmlMessage> Simulated Determination Member CaseParticipantRoleID: 
+          <replace>
+            <reference attribute="caseParticipantRoleID"/>
+          </replace>
+        </XmlMessage>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="caseParticipantRoleID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="mandatoryMemberIndicator">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- BEGIN, CR00369873, MST -->
+    <Attribute name="startDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="endDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00369873 -->
+
+
+  </Class>
+  <!-- END, CR00323679 -->
+
+
+</RuleSet>

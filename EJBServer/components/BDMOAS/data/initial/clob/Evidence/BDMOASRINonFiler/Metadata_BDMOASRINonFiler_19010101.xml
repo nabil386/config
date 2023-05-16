@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TASK 103431 DEV: Implement OAS RI Non-Filer Evidence -->
+<EvidenceTypeVersion modifiable="true"
+	relatedParticipant="caseParticipantRole"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../../../../../../../DynamicEvidenceMetadata.xsd">
+	<Model>
+		<Attributes>
+			<Attribute>
+				<RelatedCPAttribute cpRoleType="MEM" mandatory="true"
+					name="caseParticipantRole" participantType="Person">
+					<CPSearchType code="PRI" />
+					<CPSearchType code="MEM" />
+				</RelatedCPAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="taxYear">
+					<DomainType dataType="String">
+						<StringOptions maxSize="4" trimLeadingSpaces="true"
+							trimTrailingSpaces="true" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="nonFilerStatus">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMOASRINonFilerStatus" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="nonFilerReason">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMOASRINonFilerReason" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>		
+			<Attribute>
+				<CommentsAttribute name="comments"/>
+			</Attribute>
+		</Attributes>
+		<Relationships />
+	</Model>
+	
+	<Validations>
+		<PatternValidations>
+      <Validator>
+        <DuplicateValidator>
+          <DuplicateAttributes conjunction="AND">
+            <DuplicateAttribute name="caseParticipantRole"/>
+            <DuplicateAttribute name="taxYear"/>
+            <ValidationMessageInformation>
+              <ValidationMessageMapping>
+                <ValidationMessage>
+                  <parameter name="taxYear"/>
+                  <ValidationMessageResource id="ERR_MULTIPLE_EVIDENCES_WITH_SAME_YEAR_EXISTS"/>
+                </ValidationMessage>
+              </ValidationMessageMapping>
+            </ValidationMessageInformation>
+          </DuplicateAttributes>
+        </DuplicateValidator>
+      </Validator>
+      </PatternValidations>
+	
+	<CustomRulesValidation
+	ruleSetName="BDMOASRINonFilerValidationRuleSet" />
+	</Validations>
+	
+	<SummaryInformation>
+    <SummaryMapping>
+      <Summary>
+        <parameter name="nonFilerStatus"/>
+        <parameter name = "taxYear" />
+        <SummaryResource id="StandardSummary.SummaryMessage"/>
+      </Summary>
+    </SummaryMapping>
+  </SummaryInformation>
+	
+	<UserInterface>
+		<Cluster>
+			<RelCPCluster defaultToBlank="false"
+				enableMultiMemberUpdates="false" fullCreateParticipant="false"
+				isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true"
+				modifyOption="no"
+				showParticipantTypeFilter="true" useSingleName="false">
+				<StandardField source="caseParticipantRole"
+					modifiable="false"/>
+        		<ClusterName id="Participant.Cluster.ID3"/>
+        		<LabelName id="Participant.Description.ID3"/>
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true"
+				numberOfColumns="2">
+				<Title id="Cluster.Title.Details" />
+				<StandardClusterField>
+					<StandardField modifiable="true" source="taxYear"
+						useDefault="false">
+						<Label id="TaxYear.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="nonFilerStatus"
+						useDefault="false" useBlank="true">
+						<Label id="Status.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>		
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true"
+				numberOfColumns="1">
+				<Title id="Cluster.Title.Reason" />
+				<StandardClusterField>
+					<StandardField modifiable="true" source="nonFilerReason" 
+						useDefault="false" useBlank="true">
+						<Label id="Reason.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<CommentsCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true">
+				<Title id="Comments.Cluster.Title" />
+				<StandardField source="comments" />
+			</CommentsCluster>
+		</Cluster>
+	</UserInterface>
+</EvidenceTypeVersion>

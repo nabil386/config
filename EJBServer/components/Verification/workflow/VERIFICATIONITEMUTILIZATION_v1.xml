@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--  BEGIN CR00168004 , AK-->
+<workflow-process
+  category="PC11"
+  createdBy="unauthenticated"
+  creationDate="20061117T125747"
+  id="113"
+  language-version="1.0"
+  process-version="1"
+  released="true"
+>
+  <!-- END CR00168004 -->
+  <name>VERIFICATIONITEMUTILIZATION</name>
+
+
+  <!--BEGIN, CR00361282, CL -->
+  <process-display-name>
+    <localized-text>
+      <locale language="en">Verification Item Utilization</locale>
+    </localized-text>
+  </process-display-name>
+  <!--END, CR00361282 -->
+
+
+  <!-- BEGIN, CR00248295, NS -->
+  <description>
+    <localized-text>
+      <locale language="en">Handles processing that occurs when a verification item is added to evidence within a case that requires verification that has an expiry date. This includes calculating a warning date and expiry date, notifying the case worker and creating a communication that can be sent to the client in advance of the expiry date, if warning days are specified, notifying the case worker when the expiry date is reached, and setting the verification status to 'Not Verified'.</locale>
+    </localized-text>
+  </description>
+  <!-- END, CR00248295 -->
+
+
+  <enactment-mappings>
+    <mapping>
+      <source-attribute
+        name="verificationItemUtilizationID"
+        struct-name="curam.verification.sl.entity.struct.VerificationItemUtilizationKey"
+      />
+      <target-attribute
+        name="verificationItemUtilizationID"
+        wdo-name="VerificationItemUtilizationDetails"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="verificationItemProvidedID"
+        struct-name="curam.verification.sl.infrastructure.entity.struct.VerificationItemProvidedKey"
+      />
+      <target-attribute
+        name="verificationItemProvidedID"
+        wdo-name="verificationItemProvided"
+      />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo is-list-wdo="false">
+      <wdo-name>VerificationItemUtilizationDetails</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">VerificationItemUtilizationDetails</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>verificationItemUtilizationID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">verificationItemUtilizationID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+        </attribute>
+        <attribute>
+          <attribute-name>warningDateDeadline</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">warningDateDeadline</locale>
+            </localized-text>
+          </display-name>
+          <type>INT32</type>
+          <required-at-enactment>false</required-at-enactment>
+        </attribute>
+        <attribute>
+          <attribute-name>expiryDateDeadline</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">expiryDateDeadline</locale>
+            </localized-text>
+          </display-name>
+          <type>INT32</type>
+          <required-at-enactment>false</required-at-enactment>
+        </attribute>
+        <attribute>
+          <attribute-name>futureIndicator</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">futureIndicator</locale>
+            </localized-text>
+          </display-name>
+          <type>BOOLEAN</type>
+          <required-at-enactment>false</required-at-enactment>
+        </attribute>
+        <attribute>
+          <attribute-name>warningDateInFuture</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">warningDateInFuture</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>false</required-at-enactment>
+          <constant-value>3</constant-value>
+        </attribute>
+        <attribute>
+          <attribute-name>warningDateInPast</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">warningDateInPast</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>false</required-at-enactment>
+          <constant-value>2</constant-value>
+        </attribute>
+        <attribute>
+          <attribute-name>warningDateEmpty</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">warningDateEmpty</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>false</required-at-enactment>
+          <constant-value>1</constant-value>
+        </attribute>
+        <attribute>
+          <attribute-name>warningDateStatus</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">warningDateStatus</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>false</required-at-enactment>
+        </attribute>
+      </attributes>
+    </wdo>
+    <wdo is-list-wdo="false">
+      <wdo-name>verificationItemProvided</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">verificationItemProvided</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>verificationItemProvidedID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">verificationItemProvidedID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="1">
+      <name>
+        <localized-text>
+          <locale language="en">Start Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The start process activity</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="1"/>
+      </split>
+    </start-process-activity>
+    <end-process-activity id="2">
+      <name>
+        <localized-text>
+          <locale language="en">End Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+    </end-process-activity>
+    <automatic-activity id="3">
+      <name>
+        <localized-text>
+          <locale language="en">calculateWarningDates</locale>
+        </localized-text>
+      </name>
+      <join type="none"/>
+      <split type="xor">
+        <transition-id idref="20"/>
+        <transition-id idref="22"/>
+      </split>
+      <bpo-mapping
+        interface-name="curam.verification.sl.infrastructure.intf.ProcessVerificationItemExpiryDate"
+        method-name="calculateWarningDate"
+      >
+        <formal-parameters>
+          <formal-parameter index="0">
+            <struct type="curam.verification.sl.entity.struct.VerificationItemUtilizationKey">
+              <field name="verificationItemUtilizationID">
+                <base-type type="INT64">
+                  <wdo-attribute
+                    name="verificationItemUtilizationID"
+                    wdo-name="VerificationItemUtilizationDetails"
+                  />
+                </base-type>
+              </field>
+            </struct>
+          </formal-parameter>
+          <formal-parameter index="1">
+            <struct type="curam.verification.sl.infrastructure.entity.struct.VerificationItemProvidedKey">
+              <field name="verificationItemProvidedID">
+                <base-type type="INT64">
+                  <wdo-attribute
+                    name="verificationItemProvidedID"
+                    wdo-name="verificationItemProvided"
+                  />
+                </base-type>
+              </field>
+            </struct>
+          </formal-parameter>
+        </formal-parameters>
+        <return>
+          <struct>
+            <field name="warningDateStatus">
+              <base-type>
+                <wdo-attribute
+                  name="warningDateStatus"
+                  wdo-name="VerificationItemUtilizationDetails"
+                />
+              </base-type>
+            </field>
+            <field name="warningDateDeadline">
+              <base-type>
+                <wdo-attribute
+                  name="warningDateDeadline"
+                  wdo-name="VerificationItemUtilizationDetails"
+                />
+              </base-type>
+            </field>
+          </struct>
+        </return>
+      </bpo-mapping>
+    </automatic-activity>
+    <automatic-activity id="5">
+      <name>
+        <localized-text>
+          <locale language="en">calculateExpiryDate</locale>
+        </localized-text>
+      </name>
+      <join type="none"/>
+      <split type="xor">
+        <transition-id idref="11"/>
+        <transition-id idref="27"/>
+      </split>
+      <bpo-mapping
+        interface-name="curam.verification.sl.infrastructure.intf.ProcessVerificationItemExpiryDate"
+        method-name="calculateExpiryDate"
+      >
+        <formal-parameters>
+          <formal-parameter index="0">
+            <struct type="curam.verification.sl.entity.struct.VerificationItemUtilizationKey">
+              <field name="verificationItemUtilizationID">
+                <base-type type="INT64">
+                  <wdo-attribute
+                    name="verificationItemUtilizationID"
+                    wdo-name="VerificationItemUtilizationDetails"
+                  />
+                </base-type>
+              </field>
+            </struct>
+          </formal-parameter>
+          <formal-parameter index="1">
+            <struct type="curam.verification.sl.infrastructure.entity.struct.VerificationItemProvidedKey">
+              <field name="verificationItemProvidedID">
+                <base-type type="INT64">
+                  <wdo-attribute
+                    name="verificationItemProvidedID"
+                    wdo-name="verificationItemProvided"
+                  />
+                </base-type>
+              </field>
+            </struct>
+          </formal-parameter>
+        </formal-parameters>
+        <return>
+          <struct>
+            <field name="expiryDateInFutureInd">
+              <base-type>
+                <wdo-attribute
+                  name="futureIndicator"
+                  wdo-name="VerificationItemUtilizationDetails"
+                />
+              </base-type>
+            </field>
+            <field name="expiryDateDeadline">
+              <base-type>
+                <wdo-attribute
+                  name="expiryDateDeadline"
+                  wdo-name="VerificationItemUtilizationDetails"
+                />
+              </base-type>
+            </field>
+          </struct>
+        </return>
+      </bpo-mapping>
+    </automatic-activity>
+    <automatic-activity id="11">
+      <name>
+        <localized-text>
+          <locale language="en">WarningDateInPast</locale>
+        </localized-text>
+      </name>
+      <join type="xor"/>
+      <split type="none">
+        <transition-id idref="19"/>
+      </split>
+      <bpo-mapping
+        interface-name="curam.verification.sl.infrastructure.intf.ProcessVerificationItemExpiryDate"
+        method-name="sendWarningNotification"
+      >
+        <formal-parameters>
+          <formal-parameter index="0">
+            <struct type="curam.verification.sl.entity.struct.VerificationItemUtilizationKey">
+              <field name="verificationItemUtilizationID">
+                <base-type type="INT64">
+                  <wdo-attribute
+                    name="verificationItemUtilizationID"
+                    wdo-name="VerificationItemUtilizationDetails"
+                  />
+                </base-type>
+              </field>
+            </struct>
+          </formal-parameter>
+          <formal-parameter index="1">
+            <struct type="curam.verification.sl.infrastructure.entity.struct.VerificationItemProvidedKey">
+              <field name="verificationItemProvidedID">
+                <base-type type="INT64">
+                  <wdo-attribute
+                    name="verificationItemProvidedID"
+                    wdo-name="verificationItemProvided"
+                  />
+                </base-type>
+              </field>
+            </struct>
+          </formal-parameter>
+        </formal-parameters>
+      </bpo-mapping>
+    </automatic-activity>
+    <automatic-activity id="14">
+      <name>
+        <localized-text>
+          <locale language="en">ExpiryDateReached</locale>
+        </localized-text>
+      </name>
+      <join type="xor"/>
+      <split type="none">
+        <transition-id idref="28"/>
+      </split>
+      <bpo-mapping
+        interface-name="curam.verification.sl.infrastructure.intf.ProcessVerificationItemExpiryDate"
+        method-name="sendItemExpiryNotification"
+      >
+        <formal-parameters>
+          <formal-parameter index="0">
+            <struct type="curam.verification.sl.entity.struct.VerificationItemUtilizationKey">
+              <field name="verificationItemUtilizationID">
+                <base-type type="INT64">
+                  <wdo-attribute
+                    name="verificationItemUtilizationID"
+                    wdo-name="VerificationItemUtilizationDetails"
+                  />
+                </base-type>
+              </field>
+            </struct>
+          </formal-parameter>
+          <formal-parameter index="1">
+            <struct type="curam.verification.sl.infrastructure.entity.struct.VerificationItemProvidedKey">
+              <field name="verificationItemProvidedID">
+                <base-type type="INT64">
+                  <wdo-attribute
+                    name="verificationItemProvidedID"
+                    wdo-name="verificationItemProvided"
+                  />
+                </base-type>
+              </field>
+            </struct>
+          </formal-parameter>
+        </formal-parameters>
+      </bpo-mapping>
+    </automatic-activity>
+    <route-activity
+      category="AC1"
+      id="12"
+    >
+      <name>
+        <localized-text>
+          <locale language="en">warningDateRoute</locale>
+        </localized-text>
+      </name>
+      <join type="xor"/>
+      <split type="none">
+        <transition-id idref="21"/>
+      </split>
+    </route-activity>
+    <route-activity id="13">
+      <name>
+        <localized-text>
+          <locale language="en">calcWarningRoute</locale>
+        </localized-text>
+      </name>
+      <join type="none"/>
+      <split type="xor">
+        <transition-id idref="23"/>
+        <transition-id idref="24"/>
+      </split>
+    </route-activity>
+    <event-wait-activity id="8">
+      <name>
+        <localized-text>
+          <locale language="en">WarningDateEventWait</locale>
+        </localized-text>
+      </name>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="17"/>
+      </split>
+      <event-wait wait-on-all-events="false">
+        <events>
+          <event
+            event-class="Verification"
+            event-type="WarningDateElapsed"
+            identifier="1"
+          >
+            <event-match-attribute
+              name="verificationItemProvidedID"
+              wdo-name="verificationItemProvided"
+            />
+          </event>
+        </events>
+        <deadline complete-activity="false">
+          <duration>
+            <mapped-duration>
+              <wdo-attribute
+                name="warningDateDeadline"
+                wdo-name="VerificationItemUtilizationDetails"
+              />
+            </mapped-duration>
+          </duration>
+          <deadline-handler
+            interface-name="curam.verification.sl.infrastructure.intf.ProcessVerificationItemExpiryDate"
+            method-name="warningDateReached"
+          >
+            <formal-parameters>
+              <formal-parameter index="0">
+                <struct type="curam.verification.sl.infrastructure.entity.struct.VerificationItemProvidedKey">
+                  <field name="verificationItemProvidedID">
+                    <base-type type="INT64">
+                      <wdo-attribute
+                        name="verificationItemProvidedID"
+                        wdo-name="verificationItemProvided"
+                      />
+                    </base-type>
+                  </field>
+                </struct>
+              </formal-parameter>
+            </formal-parameters>
+          </deadline-handler>
+          <deadline-output-mappings/>
+        </deadline>
+      </event-wait>
+    </event-wait-activity>
+    <event-wait-activity id="9">
+      <name>
+        <localized-text>
+          <locale language="en">ExpiryDateEventWait</locale>
+        </localized-text>
+      </name>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="25"/>
+      </split>
+      <event-wait wait-on-all-events="false">
+        <events>
+          <event
+            event-class="Verification"
+            event-type="ExpiryDateElapsed"
+            identifier="1"
+          >
+            <event-match-attribute
+              name="verificationItemProvidedID"
+              wdo-name="verificationItemProvided"
+            />
+          </event>
+        </events>
+        <deadline complete-activity="false">
+          <duration>
+            <mapped-duration>
+              <wdo-attribute
+                name="expiryDateDeadline"
+                wdo-name="VerificationItemUtilizationDetails"
+              />
+            </mapped-duration>
+          </duration>
+          <deadline-handler
+            interface-name="curam.verification.sl.infrastructure.intf.ProcessVerificationItemExpiryDate"
+            method-name="expiryDateReached"
+          >
+            <formal-parameters>
+              <formal-parameter index="0">
+                <struct type="curam.verification.sl.entity.struct.VerificationItemUtilizationKey">
+                  <field name="verificationItemUtilizationID">
+                    <base-type type="INT64">
+                      <wdo-attribute
+                        name="verificationItemUtilizationID"
+                        wdo-name="VerificationItemUtilizationDetails"
+                      />
+                    </base-type>
+                  </field>
+                </struct>
+              </formal-parameter>
+              <formal-parameter index="1">
+                <struct type="curam.verification.sl.infrastructure.entity.struct.VerificationItemProvidedKey">
+                  <field name="verificationItemProvidedID">
+                    <base-type type="INT64">
+                      <wdo-attribute
+                        name="verificationItemProvidedID"
+                        wdo-name="verificationItemProvided"
+                      />
+                    </base-type>
+                  </field>
+                </struct>
+              </formal-parameter>
+            </formal-parameters>
+          </deadline-handler>
+          <deadline-output-mappings/>
+        </deadline>
+      </event-wait>
+    </event-wait-activity>
+  </activities>
+  <transitions>
+    <transition
+      from-activity-idref="1"
+      id="1"
+      to-activity-idref="3"
+    />
+    <transition
+      from-activity-idref="5"
+      id="11"
+      to-activity-idref="9"
+    >
+      <condition>
+        <expression
+          conjunction="and"
+          data-item-lhs="VerificationItemUtilizationDetails.futureIndicator"
+          data-item-rhs="true"
+          id="1"
+          operation="=="
+        />
+      </condition>
+    </transition>
+    <transition
+      from-activity-idref="8"
+      id="17"
+      to-activity-idref="11"
+    />
+    <transition
+      from-activity-idref="11"
+      id="19"
+      to-activity-idref="12"
+    />
+    <transition
+      from-activity-idref="3"
+      id="20"
+      to-activity-idref="12"
+    >
+      <condition>
+        <expression
+          conjunction="and"
+          data-item-lhs="VerificationItemUtilizationDetails.warningDateStatus"
+          data-item-rhs="VerificationItemUtilizationDetails.warningDateEmpty"
+          id="1"
+          operation="=="
+        />
+      </condition>
+    </transition>
+    <transition
+      from-activity-idref="12"
+      id="21"
+      to-activity-idref="5"
+    />
+    <transition
+      from-activity-idref="3"
+      id="22"
+      to-activity-idref="13"
+    />
+    <transition
+      from-activity-idref="13"
+      id="23"
+      to-activity-idref="11"
+    >
+      <condition>
+        <expression
+          conjunction="and"
+          data-item-lhs="VerificationItemUtilizationDetails.warningDateStatus"
+          data-item-rhs="VerificationItemUtilizationDetails.warningDateInPast"
+          id="1"
+          operation="=="
+        />
+      </condition>
+    </transition>
+    <transition
+      from-activity-idref="13"
+      id="24"
+      to-activity-idref="8"
+    />
+    <transition
+      from-activity-idref="9"
+      id="25"
+      to-activity-idref="14"
+    />
+    <transition
+      from-activity-idref="5"
+      id="27"
+      to-activity-idref="14"
+    />
+    <transition
+      from-activity-idref="14"
+      id="28"
+      to-activity-idref="2"
+    />
+  </transitions>
+</workflow-process>

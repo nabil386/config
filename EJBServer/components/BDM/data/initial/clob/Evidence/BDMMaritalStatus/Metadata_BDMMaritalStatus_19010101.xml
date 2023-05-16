@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Task 58899 DEV: Implement Manage Client Marital Status -->
+<EvidenceTypeVersion modifiable="true"
+	businessStartDate="startDate" businessEndDate="endDate"
+	relatedParticipant="caseParticipantRoleID" enableSaveAndNew="false"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/DynamicEvidenceSchema.xsd">
+	<Model>
+		<Attributes>
+			<Attribute>
+				<RelatedCPAttribute cpRoleType="MEM" 
+					name="caseParticipantRoleID" participantType="Person">
+					<CPSearchType code="PRI" />
+					<CPSearchType code="MEM" />
+				</RelatedCPAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="maritalStatus"
+					volatile="true">
+					<DomainType dataType="Codetable">
+						<CodetableOptions codetableName="BDMMaritalStatus" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="startDate" mandatory="true">
+					<DomainType dataType="Date" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="endDate">
+					<DomainType dataType="Date" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="bdmReceivedFrom"
+					defaultValue="RF3">
+					<DomainType dataType="Codetable">
+						<CodetableOptions codetableName="BDMReceivedFrom" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="bdmReceivedFromCountry">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMSourceCountry" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="bdmModeOfReceipt">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMModeOfReceipt" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<CommentsAttribute name="comments" />
+			</Attribute>
+		</Attributes>
+		<Relationships />
+	</Model>
+	<Validations>
+		<PatternValidations>
+			<Validator>
+				<ComparisonValidator
+					operator="LessThanOrEqualTo" shallow="false" source="startDate"
+					target="endDate" useClause="false" useLiteral="false" />
+			</Validator>
+			<Validator>
+				<DuplicateValidator>
+					<DuplicateAttributes>
+						<DuplicateAttribute
+							name="caseParticipantRoleID" />
+						<ValidationMessageInformation>
+							<ValidationMessageMapping>
+								<ValidationMessage>
+									<ValidationMessageResource
+										id="ERR_ONLY_ONE_RECORD" />
+								</ValidationMessage>
+							</ValidationMessageMapping>
+						</ValidationMessageInformation>
+					</DuplicateAttributes>
+				</DuplicateValidator>
+			</Validator>
+		</PatternValidations>
+		<CustomRulesValidation
+			ruleSetName="BDMMaritalStatusValidationRuleSet" />
+	</Validations>
+	<SummaryInformation>
+		<SummaryMapping>
+			<Summary>
+				<parameter name="maritalStatus" />
+				<SummaryResource id="SummaryMessage" />
+			</Summary>
+		</SummaryMapping>
+	</SummaryInformation>
+	<UserInterface>
+		<Cluster>
+			<RelCPCluster defaultToBlank="false"
+				enableMultiMemberUpdates="false" fullCreateParticipant="false"
+				isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true"
+				modifyOption="no" showParticipantTypeFilter="true"
+				useSingleName="false">
+				<StandardField source="caseParticipantRoleID" />
+				<ClusterName id="Related.Participant.Cluster.Title" />
+				<LabelName id="Related.Participant.Name.Label" />
+				<RelCpPfx id="Related.Participant.Description" />
+				<FirstName id="Related.Participant.First.Name.Label" />
+				<SecondName id="Related.Participant.Second.Name.Label" />
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true" labelWidth="40"
+				numberOfColumns="2">
+				<Title id="MaritalStatus.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField source="maritalStatus"
+						modifiable="true" useDefault="false" useBlank="true">
+						<Label id="MaritalStatus.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+                    <SkipField />
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField source="startDate" modifiable="true"
+						useDefault="false" useBlank="true">
+						<Label id="StartDate.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField source="endDate" modifiable="true"
+						useDefault="false">
+						<Label id="EndDate.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="false" numberOfColumns="2">
+				<Title id="Cluster.Title.ReceiptDetails" />
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="bdmReceivedFrom" useDefault="true" useBlank="false">
+						<Label id="Field.Label.ReceivedFrom" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="bdmReceivedFromCountry" useDefault="false" useBlank="true">
+						<Label id="Field.Label.ReceivedFromCountry" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="bdmModeOfReceipt" useDefault="false" useBlank="true">
+						<Label id="Field.Label.ModeOfReceipt" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="false"
+				isOnModifyPage="false" isOnViewPage="true" numberOfColumns="2">
+				<Title id="Cluster.Title.ReceiptDetailsView" />
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="bdmReceivedFrom" useDefault="true" useBlank="false">
+						<Label id="Field.Label.ReceivedFromView" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="bdmReceivedFromCountry" useDefault="false" useBlank="true">
+						<Label id="Field.Label.ReceivedFromCountryView" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<SkipField />
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="bdmModeOfReceipt" useDefault="false" useBlank="true">
+						<Label id="Field.Label.ModeOfReceiptView" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<CommentsCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true">
+				<Title id="Comments.Cluster.Title" />
+				<StandardField source="comments" />
+			</CommentsCluster>
+		</Cluster>
+	</UserInterface>
+</EvidenceTypeVersion>

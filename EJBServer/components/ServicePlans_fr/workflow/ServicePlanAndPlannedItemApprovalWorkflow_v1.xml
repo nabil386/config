@@ -1,0 +1,817 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<workflow-process category="PC5" createdBy="admin" creationDate="20090325T024239" id="28532" language-version="1.0" process-version="1" released="true"> 
+  <name>ServicePlanAndPlannedItemApprovalWorkflow</name>  
+  <!--BEGIN, CR00361282, CL -->  
+  <process-display-name> 
+    <localized-text> 
+      <locale language="fr">Plan de service et flux de travaux d'approbation d'élément planifié</locale>  
+      <locale language="en">Service Plan And Planned Item Approval Workflow</locale>
+    </localized-text> 
+  </process-display-name>  
+  <!--END, CR00361282 -->  
+  <description> 
+    <localized-text> 
+      <locale language="fr">Il s'agit du flux de travaux d'approbation maître applicable lorsque les distributions de plans de service et les éléments planifiés individuels sont soumis pour approbation.</locale>  
+      <locale language="en">This is the master approval workflow for when service plan deliveries and individual planned items are submitted for approval.</locale>
+    </localized-text> 
+  </description>  
+  <enactment-mappings> 
+    <mapping> 
+      <source-attribute name="enactedFrom" struct-name="curam.serviceplans.workflow.wfl.struct.CaseIDAndEnactedFromDetails"/>  
+      <target-attribute name="enactedFrom" wdo-name="PlannedItemApprovalWDO"/> 
+    </mapping>  
+    <mapping> 
+      <source-attribute name="caseID" struct-name="curam.serviceplans.workflow.wfl.struct.CaseIDAndEnactedFromDetails"/>  
+      <target-attribute name="caseID" wdo-name="PlannedItemApprovalWDO"/> 
+    </mapping>  
+    <mapping> 
+      <source-attribute name="key.plannedItemID" struct-name="curam.serviceplans.workflow.wfl.struct.PlannedItemIDKeyList"/>  
+      <target-attribute name="plannedItemID" wdo-name="PlannedItemsWDO"/> 
+    </mapping> 
+  </enactment-mappings>  
+  <wdos> 
+    <wdo initialize-attributes="false" is-list-wdo="false"> 
+      <wdo-name>PlannedItemApprovalWDO</wdo-name>  
+      <display-name> 
+        <localized-text> 
+          <locale language="fr">PlannedItemApprovalWDO</locale>  
+          <locale language="en">PlannedItemApprovalWDO</locale>
+        </localized-text> 
+      </display-name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Objet de données principal utilisé tout au long du flux de travaux.</locale>  
+          <locale language="en">Main WDO object used throughout the workflow.</locale>
+        </localized-text> 
+      </description>  
+      <attributes> 
+        <attribute> 
+          <attribute-name>approvalType</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">approvalType</locale>  
+              <locale language="en">approvalType</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>false</required-at-enactment>  
+          <process-output>false</process-output>  
+          <initial-value>AW1</initial-value> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>outstandingApprovals</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">outstandingApprovals</locale>  
+              <locale language="en">outstandingApprovals</locale>
+            </localized-text> 
+          </display-name>  
+          <type>BOOLEAN</type>  
+          <required-at-enactment>false</required-at-enactment>  
+          <process-output>false</process-output>  
+          <initial-value>false</initial-value> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>userApprovalRejected</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">userApprovalRejected</locale>  
+              <locale language="en">userApprovalRejected</locale>
+            </localized-text> 
+          </display-name>  
+          <type>BOOLEAN</type>  
+          <required-at-enactment>false</required-at-enactment>  
+          <process-output>false</process-output>  
+          <initial-value>false</initial-value> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>enactedFrom</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">enactedFrom</locale>  
+              <locale language="en">enactedFrom</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>true</required-at-enactment>  
+          <process-output>false</process-output> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>caseID</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">ID du dossier</locale>  
+              <locale language="en">caseID</locale>
+            </localized-text> 
+          </display-name>  
+          <type>INT64</type>  
+          <required-at-enactment>true</required-at-enactment>  
+          <process-output>false</process-output> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>approvalResult</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">approvalResult</locale>  
+              <locale language="en">approvalResult</locale>
+            </localized-text> 
+          </display-name>  
+          <type>BOOLEAN</type>  
+          <required-at-enactment>false</required-at-enactment>  
+          <process-output>false</process-output> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>eventType</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">type_événement</locale>  
+              <locale language="en">eventType</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>false</required-at-enactment>  
+          <process-output>false</process-output>  
+          <initial-value>NoEvent</initial-value> 
+        </attribute> 
+      </attributes> 
+    </wdo>  
+    <wdo initialize-attributes="false" is-list-wdo="true"> 
+      <wdo-name>PlannedItemsWDO</wdo-name>  
+      <display-name> 
+        <localized-text> 
+          <locale language="fr">PlannedItemsWDO</locale>  
+          <locale language="en">PlannedItemsWDO</locale>
+        </localized-text> 
+      </display-name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Contient une liste des ID d'éléments planifiés et de leur type nécessitant une approbation.  Cette liste peut en faire apparaître un seul ou plusieurs.</locale>  
+          <locale language="en">Contains a list of planned item id's and their type that need approving.  Please note that this list may contain 1 or many.</locale>
+        </localized-text> 
+      </description>  
+      <attributes> 
+        <attribute> 
+          <attribute-name>plannedItemID</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">plannedItemID</locale>  
+              <locale language="en">plannedItemID</locale>
+            </localized-text> 
+          </display-name>  
+          <type>INT64</type>  
+          <required-at-enactment>true</required-at-enactment>  
+          <process-output>false</process-output> 
+        </attribute> 
+      </attributes> 
+    </wdo>  
+    <wdo initialize-attributes="false" is-list-wdo="false"> 
+      <wdo-name>ApprovalConstantsWDO</wdo-name>  
+      <display-name> 
+        <localized-text> 
+          <locale language="fr">ApprovalConstantsWDO</locale>  
+          <locale language="en">ApprovalConstantsWDO</locale>
+        </localized-text> 
+      </display-name>  
+      <attributes> 
+        <attribute> 
+          <attribute-name>PREAPPROVAL</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">PREAPPROVAL</locale>  
+              <locale language="en">PREAPPROVAL</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>false</required-at-enactment>  
+          <process-output>false</process-output>  
+          <constant-value>AW1</constant-value> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>POSTAPPROVAL</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">POSTAPPROVAL</locale>  
+              <locale language="en">POSTAPPROVAL</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>false</required-at-enactment>  
+          <process-output>false</process-output>  
+          <constant-value>AW2</constant-value> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>FAILEDPIUSERAPPROVAL</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">FAILEDPIUSERAPPROVAL</locale>  
+              <locale language="en">FAILEDPIUSERAPPROVAL</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>false</required-at-enactment>  
+          <process-output>false</process-output>  
+          <constant-value>ServicePlans.PlannedItemUserApprovalFail</constant-value> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>PASSEDPIUSERAPPROVAL</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">PASSEDPIUSERAPPROVAL</locale>  
+              <locale language="en">PASSEDPIUSERAPPROVAL</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>false</required-at-enactment>  
+          <process-output>false</process-output>  
+          <constant-value>ServicePlans.PlannedItemUserApprovalPass</constant-value> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>TRUE</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Oui</locale>  
+              <locale language="en">TRUE</locale>
+            </localized-text> 
+          </display-name>  
+          <type>BOOLEAN</type>  
+          <required-at-enactment>false</required-at-enactment>  
+          <process-output>false</process-output>  
+          <constant-value>true</constant-value> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>FALSE</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">FAUX</locale>  
+              <locale language="en">FALSE</locale>
+            </localized-text> 
+          </display-name>  
+          <type>BOOLEAN</type>  
+          <required-at-enactment>false</required-at-enactment>  
+          <process-output>false</process-output>  
+          <constant-value>false</constant-value> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>ONE</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">ONE</locale>  
+              <locale language="en">ONE</locale>
+            </localized-text> 
+          </display-name>  
+          <type>INT16</type>  
+          <required-at-enactment>false</required-at-enactment>  
+          <process-output>false</process-output>  
+          <constant-value>1</constant-value> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>ZERO</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">ZERO</locale>  
+              <locale language="en">ZERO</locale>
+            </localized-text> 
+          </display-name>  
+          <type>INT16</type>  
+          <required-at-enactment>false</required-at-enactment>  
+          <process-output>false</process-output>  
+          <constant-value>0</constant-value> 
+        </attribute> 
+      </attributes> 
+    </wdo> 
+  </wdos>  
+  <activities> 
+    <start-process-activity id="1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité de processus de début</locale>  
+          <locale language="en">Start Process Activity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de début</locale>  
+          <locale language="en">The start process activity</locale>
+        </localized-text> 
+      </description>  
+      <split type="none"> 
+        <transition-id idref="1"/> 
+      </split> 
+    </start-process-activity>  
+    <end-process-activity id="2"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de fin</locale>  
+          <locale language="en">End Process Activity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de fin</locale>  
+          <locale language="en">The end process activity</locale>
+        </localized-text> 
+      </description>  
+      <join type="xor"/> 
+    </end-process-activity>  
+    <automatic-activity category="AC1" id="8"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Vérifier tous les critères d'approbation terminés</locale>  
+          <locale language="en">Check All Pre Approval Criteria Complete</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="xor"> 
+        <transition-id idref="8"/>  
+        <transition-id idref="40"/> 
+      </split>  
+      <bpo-mapping interface-name="curam.serviceplans.workflow.wfl.intf.PlannedItemApprovals" method-name="checkAllPreApprovalsComplete"> 
+        <formal-parameters> 
+          <formal-parameter index="0"> 
+            <struct type="curam.serviceplans.workflow.wfl.struct.PlannedItemIDKeyList"> 
+              <field name="key"> 
+                <struct type="curam.serviceplans.sl.struct.PlannedItemKey"> 
+                  <field name="plannedItemID"> 
+                    <base-type type="INT64"> 
+                      <wdo-attribute name="plannedItemID" wdo-name="PlannedItemsWDO"/> 
+                    </base-type> 
+                  </field> 
+                </struct> 
+              </field> 
+            </struct> 
+          </formal-parameter> 
+        </formal-parameters>  
+        <return> 
+          <struct> 
+            <field name="key"> 
+              <struct> 
+                <field name="plannedItemID"> 
+                  <base-type> 
+                    <wdo-attribute name="plannedItemID" wdo-name="PlannedItemsWDO"/> 
+                  </base-type> 
+                </field> 
+              </struct> 
+            </field>  
+            <field name="outstandingApprovals"> 
+              <struct> 
+                <field name="outstandingApprovals"> 
+                  <base-type> 
+                    <wdo-attribute name="outstandingApprovals" wdo-name="PlannedItemApprovalWDO"/> 
+                  </base-type> 
+                </field> 
+              </struct> 
+            </field> 
+          </struct> 
+        </return> 
+      </bpo-mapping> 
+    </automatic-activity>  
+    <automatic-activity category="AC1" id="15"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Définir le type d'approbation sur Post</locale>  
+          <locale language="en">Set Approval Type to Post</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="21"/> 
+      </split>  
+      <bpo-mapping interface-name="curam.serviceplans.workflow.wfl.intf.PlannedItemApprovals" method-name="setApprovalTypeToPost"> 
+        <return> 
+          <struct> 
+            <field name="approvalType"> 
+              <base-type> 
+                <wdo-attribute name="approvalType" wdo-name="PlannedItemApprovalWDO"/> 
+              </base-type> 
+            </field> 
+          </struct> 
+        </return> 
+      </bpo-mapping> 
+    </automatic-activity>  
+    <automatic-activity category="AC1" id="16"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Mettre à jour le statut de traitement de l'approbation de l'élément planifié</locale>  
+          <locale language="en">Update Planned Item Approval Processing Status</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="50"/> 
+      </split>  
+      <bpo-mapping interface-name="curam.serviceplans.workflow.wfl.intf.PlannedItemApprovals" method-name="setApprovalProcessingStatusToApprovalsComplete"> 
+        <formal-parameters> 
+          <formal-parameter index="0"> 
+            <struct type="curam.serviceplans.workflow.wfl.struct.PlannedItemIDKeyList"> 
+              <field name="key"> 
+                <struct type="curam.serviceplans.sl.struct.PlannedItemKey"> 
+                  <field name="plannedItemID"> 
+                    <base-type type="INT64"> 
+                      <wdo-attribute name="plannedItemID" wdo-name="PlannedItemsWDO"/> 
+                    </base-type> 
+                  </field> 
+                </struct> 
+              </field> 
+            </struct> 
+          </formal-parameter> 
+        </formal-parameters> 
+      </bpo-mapping> 
+    </automatic-activity>  
+    <subflow-activity category="AC1" id="13"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Traiter l'élément planifié</locale>  
+          <locale language="en">Process Planned Item</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="16"/> 
+      </split>  
+      <subflow synchronous="true" workflow-process="ProcessPlannedItem"/>  
+      <input-mappings> 
+        <mapping> 
+          <source-attribute name="plannedItemID" wdo-name="PlannedItemsWDO[Context_Loop.loopCount]"/>  
+          <target-attribute name="plannedItemID" wdo-name="PlannedItemWDO"/> 
+        </mapping> 
+      </input-mappings> 
+    </subflow-activity>  
+    <subflow-activity category="AC1" id="5"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Traiter les critères pré-approbation</locale>  
+          <locale language="en">Process Pre Approval Criteria</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Sous-flux qui traitera les critères pré-approbation de l'élément planifié.</locale>  
+          <locale language="en">Subflow which will process the planned item's pre approval criteria.</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="3"/> 
+      </split>  
+      <subflow synchronous="false" workflow-process="ProcessPlannedItemApprovalCriteria"/>  
+      <input-mappings> 
+        <mapping> 
+          <source-attribute name="plannedItemID" wdo-name="PlannedItemsWDO[Context_Loop.loopCount]"/>  
+          <target-attribute name="plannedItemID" wdo-name="ApprovalCriteriaWDO"/> 
+        </mapping>  
+        <mapping> 
+          <source-attribute name="approvalType" wdo-name="PlannedItemApprovalWDO"/>  
+          <target-attribute name="approvalType" wdo-name="ApprovalCriteriaWDO"/> 
+        </mapping>  
+        <mapping> 
+          <source-attribute name="caseID" wdo-name="PlannedItemApprovalWDO"/>  
+          <target-attribute name="caseID" wdo-name="ApprovalCriteriaWDO"/> 
+        </mapping>  
+        <mapping> 
+          <source-attribute name="enactingUser" wdo-name="Context_RuntimeInformation"/>  
+          <target-attribute name="userName" wdo-name="ApprovalCriteriaWDO"/> 
+        </mapping> 
+      </input-mappings> 
+    </subflow-activity>  
+    <subflow-activity category="AC1" id="9"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Traiter les vérifications d'approbation</locale>  
+          <locale language="en">Process User Approval Checks</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="xor"> 
+        <transition-id idref="28"/>  
+        <transition-id idref="43"/> 
+      </split>  
+      <subflow synchronous="true" workflow-process="ProcessUserApprovalChecks"/>  
+      <input-mappings> 
+        <mapping> 
+          <source-attribute name="plannedItemID" wdo-name="PlannedItemsWDO"/>  
+          <target-attribute name="plannedItemID" wdo-name="PlannedItemListWDO"/> 
+        </mapping>  
+        <mapping> 
+          <source-attribute name="enactingUser" wdo-name="Context_RuntimeInformation"/>  
+          <target-attribute name="userName" wdo-name="UserApprovalChecksWDO"/> 
+        </mapping>  
+        <mapping> 
+          <source-attribute name="caseID" wdo-name="PlannedItemApprovalWDO"/>  
+          <target-attribute name="caseID" wdo-name="UserApprovalChecksWDO"/> 
+        </mapping>  
+        <mapping> 
+          <source-attribute name="enactedFrom" wdo-name="PlannedItemApprovalWDO"/>  
+          <target-attribute name="enactedFrom" wdo-name="UserApprovalChecksWDO"/> 
+        </mapping> 
+      </input-mappings>  
+      <output-mappings> 
+        <mapping> 
+          <source-attribute name="userApprovalRejected" wdo-name="UserApprovalChecksWDO"/>  
+          <target-attribute name="userApprovalRejected" wdo-name="PlannedItemApprovalWDO"/> 
+        </mapping> 
+      </output-mappings> 
+    </subflow-activity>  
+    <subflow-activity category="AC1" id="14"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Traiter les résultats à partir du traitement de l'élément planifié</locale>  
+          <locale language="en">Process Result From Planned Item Processing</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="xor"> 
+        <transition-id idref="51"/>  
+        <transition-id idref="18"/> 
+      </split>  
+      <subflow synchronous="true" workflow-process="ProcessResultFromPlannedItemProcessing"/>  
+      <input-mappings> 
+        <mapping> 
+          <source-attribute name="plannedItemID" wdo-name="PlannedItemsWDO"/>  
+          <target-attribute name="plannedItemID" wdo-name="PlannedItemsWDO"/> 
+        </mapping> 
+      </input-mappings>  
+      <output-mappings> 
+        <mapping> 
+          <source-attribute name="plannedItemID" wdo-name="PlannedItemsWDO"/>  
+          <target-attribute name="plannedItemID" wdo-name="PlannedItemsWDO"/> 
+        </mapping> 
+      </output-mappings> 
+    </subflow-activity>  
+    <subflow-activity category="AC1" id="18"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Traiter les critères post-approbation</locale>  
+          <locale language="en">Process Post Approval Criteria</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="23"/> 
+      </split>  
+      <subflow synchronous="false" workflow-process="ProcessPlannedItemApprovalCriteria"/>  
+      <input-mappings> 
+        <mapping> 
+          <source-attribute name="plannedItemID" wdo-name="PlannedItemsWDO[Context_Loop.loopCount]"/>  
+          <target-attribute name="plannedItemID" wdo-name="ApprovalCriteriaWDO"/> 
+        </mapping>  
+        <mapping> 
+          <source-attribute name="approvalType" wdo-name="PlannedItemApprovalWDO"/>  
+          <target-attribute name="approvalType" wdo-name="ApprovalCriteriaWDO"/> 
+        </mapping>  
+        <mapping> 
+          <source-attribute name="caseID" wdo-name="PlannedItemApprovalWDO"/>  
+          <target-attribute name="caseID" wdo-name="ApprovalCriteriaWDO"/> 
+        </mapping>  
+        <mapping> 
+          <source-attribute name="enactingUser" wdo-name="Context_RuntimeInformation"/>  
+          <target-attribute name="userName" wdo-name="ApprovalCriteriaWDO"/> 
+        </mapping> 
+      </input-mappings> 
+    </subflow-activity>  
+    <route-activity category="AC1" id="22"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Join3</locale>  
+          <locale language="en">Join3</locale>
+        </localized-text> 
+      </name>  
+      <join type="xor"/>  
+      <split type="none"> 
+        <transition-id idref="48"/> 
+      </split> 
+    </route-activity>  
+    <route-activity category="AC1" id="25"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Join1</locale>  
+          <locale language="en">Join1</locale>
+        </localized-text> 
+      </name>  
+      <join type="xor"/>  
+      <split type="none"> 
+        <transition-id idref="42"/> 
+      </split> 
+    </route-activity>  
+    <route-activity category="AC1" id="26"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Join2</locale>  
+          <locale language="en">Join2</locale>
+        </localized-text> 
+      </name>  
+      <join type="xor"/>  
+      <split type="none"> 
+        <transition-id idref="52"/> 
+      </split> 
+    </route-activity>  
+    <loop-begin-activity category="AC1" id="3"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">startLoopForProcessingPreApprovalCriteria [Début]</locale>  
+          <locale language="en">startLoopForProcessingPreApprovalCriteria [Begin]</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="2"/> 
+      </split>  
+      <loop-type name="do-while"/>  
+      <condition> 
+        <expression conjunction="and" data-item-lhs="Context_Loop.loopCount" data-item-rhs="PlannedItemsWDO.size()" id="1" operation="&lt;"/> 
+      </condition>  
+      <block-endpoint-ref activity-id="4"/> 
+    </loop-begin-activity>  
+    <loop-begin-activity category="AC1" id="6"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">startLoopForCheckPreApprovalComplete [Début]</locale>  
+          <locale language="en">startLoopForCheckPreApprovalComplete [Begin]</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="6"/> 
+      </split>  
+      <loop-type name="do-while"/>  
+      <condition> 
+        <expression conjunction="and" data-item-lhs="PlannedItemApprovalWDO.outstandingApprovals" data-item-rhs="ApprovalConstantsWDO.TRUE" id="1" operation="=="/> 
+      </condition>  
+      <block-endpoint-ref activity-id="7"/> 
+    </loop-begin-activity>  
+    <loop-begin-activity category="AC1" id="11"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">startLoopForProcessingPlannedItem [Début]</locale>  
+          <locale language="en">startLoopForProcessingPlannedItem [Begin]</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="15"/> 
+      </split>  
+      <loop-type name="do-while"/>  
+      <condition> 
+        <expression conjunction="and" data-item-lhs="Context_Loop.loopCount" data-item-rhs="PlannedItemsWDO.size()" id="1" operation="&lt;"/> 
+      </condition>  
+      <block-endpoint-ref activity-id="12"/> 
+    </loop-begin-activity>  
+    <loop-begin-activity category="AC1" id="19"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">startLoopForProcessingPostApprovalCriteria [Début]</locale>  
+          <locale language="en">startLoopForProcessingPostApprovalCriteria [Begin]</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="22"/> 
+      </split>  
+      <loop-type name="do-while"/>  
+      <condition> 
+        <expression conjunction="and" data-item-lhs="Context_Loop.loopCount" data-item-rhs="PlannedItemsWDO.size()" id="1" operation="&lt;"/> 
+      </condition>  
+      <block-endpoint-ref activity-id="20"/> 
+    </loop-begin-activity>  
+    <loop-end-activity category="AC1" id="4"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">startLoopForProcessingPreApprovalCriteria [Fin]</locale>  
+          <locale language="en">startLoopForProcessingPreApprovalCriteria [End]</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="4"/> 
+      </split>  
+      <block-endpoint-ref activity-id="3"/> 
+    </loop-end-activity>  
+    <loop-end-activity category="AC1" id="7"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">startLoopForCheckPreApprovalComplete [Fin]</locale>  
+          <locale language="en">startLoopForCheckPreApprovalComplete [End]</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="xor"> 
+        <transition-id idref="49"/>  
+        <transition-id idref="10"/> 
+      </split>  
+      <block-endpoint-ref activity-id="6"/> 
+    </loop-end-activity>  
+    <loop-end-activity category="AC1" id="12"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">startLoopForProcessingPlannedItem [Fin]</locale>  
+          <locale language="en">startLoopForProcessingPlannedItem [End]</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="17"/> 
+      </split>  
+      <block-endpoint-ref activity-id="11"/> 
+    </loop-end-activity>  
+    <loop-end-activity category="AC1" id="20"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">startLoopForProcessingPostApprovalCriteria [Fin]</locale>  
+          <locale language="en">startLoopForProcessingPostApprovalCriteria [End]</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="24"/> 
+      </split>  
+      <block-endpoint-ref activity-id="19"/> 
+    </loop-end-activity>  
+    <event-wait-activity category="AC1" id="17"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Attendre les résultats de la pré-approbation</locale>  
+          <locale language="en">Wait for Pre Approval Results</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="26"/> 
+      </split>  
+      <event-wait wait-on-all-events="false"> 
+        <events> 
+          <event event-class="ServicePlans" event-type="PlannedItemUserApprovalPass" identifier="1"> 
+            <event-match-attribute name="plannedItemID" wdo-name="PlannedItemsWDO"/>  
+            <multiple-occurring-event> 
+              <list-wdo-name>PlannedItemsWDO</list-wdo-name> 
+            </multiple-occurring-event> 
+          </event>  
+          <event event-class="ServicePlans" event-type="PlannedItemUserApprovalFail" identifier="2"> 
+            <event-match-attribute name="plannedItemID" wdo-name="PlannedItemsWDO"/>  
+            <multiple-occurring-event> 
+              <list-wdo-name>PlannedItemsWDO</list-wdo-name> 
+            </multiple-occurring-event> 
+          </event> 
+        </events>  
+        <event-output-mappings> 
+          <event-type name="eventType" wdo-name="PlannedItemApprovalWDO"/> 
+        </event-output-mappings>  
+        <deadline complete-activity="true"> 
+          <duration> 
+            <seconds>180</seconds> 
+          </duration> 
+        </deadline> 
+      </event-wait> 
+    </event-wait-activity> 
+  </activities>  
+  <transitions> 
+    <transition from-activity-idref="1" id="1" to-activity-idref="3"/>  
+    <transition from-activity-idref="3" id="2" to-activity-idref="5"/>  
+    <transition from-activity-idref="5" id="3" to-activity-idref="4"/>  
+    <transition from-activity-idref="4" id="4" to-activity-idref="6"/>  
+    <transition from-activity-idref="6" id="6" to-activity-idref="8"/>  
+    <transition from-activity-idref="8" id="8" to-activity-idref="17"> 
+      <condition> 
+        <expression conjunction="and" data-item-lhs="PlannedItemApprovalWDO.outstandingApprovals" data-item-rhs="ApprovalConstantsWDO.TRUE" id="1" operation="=="/> 
+      </condition> 
+    </transition>  
+    <transition from-activity-idref="7" id="10" to-activity-idref="9"/>  
+    <transition from-activity-idref="11" id="15" to-activity-idref="13"/>  
+    <transition from-activity-idref="13" id="16" to-activity-idref="12"/>  
+    <transition from-activity-idref="12" id="17" to-activity-idref="14"/>  
+    <transition from-activity-idref="14" id="18" to-activity-idref="15"/>  
+    <transition from-activity-idref="15" id="21" to-activity-idref="19"/>  
+    <transition from-activity-idref="19" id="22" to-activity-idref="18"/>  
+    <transition from-activity-idref="18" id="23" to-activity-idref="20"/>  
+    <transition from-activity-idref="20" id="24" to-activity-idref="16"/>  
+    <transition from-activity-idref="17" id="26" to-activity-idref="25"/>  
+    <transition from-activity-idref="9" id="28" to-activity-idref="22"> 
+      <condition> 
+        <expression conjunction="and" data-item-lhs="PlannedItemApprovalWDO.userApprovalRejected" data-item-rhs="ApprovalConstantsWDO.TRUE" id="1" operation="=="/> 
+      </condition> 
+    </transition>  
+    <transition from-activity-idref="8" id="40" to-activity-idref="25"/>  
+    <transition from-activity-idref="25" id="42" to-activity-idref="7"/>  
+    <transition from-activity-idref="9" id="43" to-activity-idref="11"/>  
+    <transition from-activity-idref="22" id="48" to-activity-idref="2"/>  
+    <transition from-activity-idref="7" id="49" to-activity-idref="2"> 
+      <condition> 
+        <expression conjunction="or" data-item-lhs="PlannedItemsWDO.size()" data-item-rhs="ApprovalConstantsWDO.ZERO" id="1" operation="=="/> 
+      </condition> 
+    </transition>  
+    <transition from-activity-idref="16" id="50" to-activity-idref="26"/>  
+    <transition from-activity-idref="14" id="51" to-activity-idref="26"> 
+      <condition> 
+        <expression conjunction="and" data-item-lhs="PlannedItemsWDO.size()" data-item-rhs="ApprovalConstantsWDO.ZERO" id="1" operation="=="/> 
+      </condition> 
+    </transition>  
+    <transition from-activity-idref="26" id="52" to-activity-idref="22"/> 
+  </transitions> 
+</workflow-process>

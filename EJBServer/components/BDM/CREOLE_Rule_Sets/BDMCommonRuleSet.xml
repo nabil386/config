@@ -1,0 +1,869 @@
+<RuleSet name="BDMCommonRuleSet">
+
+
+	<!-- ********************************* -->
+	<!-- *****BDMAgeCalculator :  Calculates age on a GivenDate for a concernRole based on their dateOfBirth *****-->
+	<!-- ********************************* -->
+	<Class name="BDMAgeCalculator">
+	
+		<Annotations>
+		  <Label label-id="BDMAgeCalculator.label.1" name="BDM Age Calculator"/>
+		</Annotations>
+	
+	    <Attribute name="concernRoleID">
+			<type>
+				<javaclass name="Number" /> 
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>		
+		
+		<Attribute name="dateOfBirth">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+	
+		<Attribute name="givenDate">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="age">
+		  <type>
+			<javaclass name="Number"/>
+		  </type>
+		  <derivation>
+			<call class="curam.ca.gc.bdm.creole.impl.Statics"
+			  method="getPersonAgeAsOnGivenDate">
+			  <type>
+				<javaclass name="Number" />
+			  </type>
+			  <arguments>		          
+				<reference attribute="concernRoleID"/>
+				<reference attribute="dateOfBirth"/>
+				<reference attribute="givenDate"/>  
+			  </arguments>
+			</call>
+		  </derivation>
+		</Attribute>
+		
+	</Class>	
+
+	
+	<!-- ********************************* -->
+	<!-- *****PDCIdentificationCalculator for Evidence : PDCIdentification *****-->
+	<!-- ********************************* -->
+	<Class name="PDCIdentificationCalculator">
+	
+		<Annotations>
+		  <Label label-id="PDCIdentificationCalculator.label.1" name="PDC Identification Calculator"/>
+		</Annotations>
+
+		<Initialization>
+			<Attribute name="pdcIdentificationRecord">
+				<type>
+					<ruleclass name="PDCIdentification" ruleset="PDCIdentificationDataRuleSet" />
+				</type>
+			</Attribute>
+		</Initialization>
+
+		<Attribute name="hasValidSINTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<existencetimeline>
+					<intervaltype>
+						<javaclass name="Boolean" />
+					</intervaltype>
+					<intervalfromdate>
+						<reference attribute="fromDate">
+							<reference attribute="pdcIdentificationRecord" />
+						</reference>
+					</intervalfromdate>
+					<intervaltodate>
+						<reference attribute="toDate">
+							<reference attribute="pdcIdentificationRecord" />
+						</reference>
+					</intervaltodate>
+					<preExistenceValue>
+						<false />
+					</preExistenceValue>
+					<existenceValue> 
+						 <equals>
+							<reference attribute="isSINExistsAndValid" />
+							<true /> 
+						</equals> 
+					</existenceValue>
+					<postExistenceValue>
+						<false />
+					</postExistenceValue>
+				</existencetimeline>
+			</derivation>
+		</Attribute>
+
+
+		<Attribute name="isSINExistsAndValid">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+		 <derivation>
+			<all>
+				<fixedlist>
+					<listof>
+						<javaclass name="Boolean" />
+					</listof>
+					<members> 
+						<equals>
+							<reference attribute="altIDType">
+								<reference attribute="pdcIdentificationRecord" />
+							</reference>
+							<Code table="ConcernRoleAlternateID">
+								<String value="BDMCA80002" /> <!-- TODO Change it to new CODE for SIN -->
+							</Code>
+						</equals>  
+						 <equals>
+								<reference attribute="isSINNumberStartsWith9Series" />
+								<false /> 
+						 </equals> 
+					</members>
+				</fixedlist>
+			</all>
+		 </derivation>
+		</Attribute> 	 
+
+
+	   <Attribute name="isSINNumberStartsWith9Series">
+		<type>
+			<javaclass name="Boolean" />
+		</type>
+		<derivation>
+			<call class="curam.ca.gc.bdm.creole.impl.Statics"
+				method="isSINNumberStartsWith9Series">
+				<type>
+					<javaclass name="Boolean" />
+				</type>
+				<arguments>
+					<reference attribute="alternateID">
+						<reference attribute="pdcIdentificationRecord" />
+					</reference>
+				</arguments>
+			</call>
+		</derivation>
+	   </Attribute> 	 
+
+	</Class>
+	
+	
+
+	<!-- BDMPersonBirthDeathCalculator -->
+	<!-- Calculator that uses birthAndDeathDetailsEvidence to provide some useful timelines about a person -->
+	<!-- Possible to use without birthAndDeathDetailsEvidence by specifying dateOfBirth and dateofDeath -->
+	<Class name="BDMPersonBirthDeathCalculator">
+	
+		<Annotations>
+		  <Label label-id="BDMPersonBirthDeathCalculator.label.1" name="BDM Person Birth Death Calculator"/>
+		</Annotations>
+	
+		<!-- evidence used for age/existence calculations  -->
+		<Attribute name="birthAndDeathDetailsEvidence">
+			<type>
+				<ruleclass name="BirthAndDeathEvidence" ruleset="ParticipantEvidenceRuleSet"/>
+			</type>
+			<derivation>
+				<specified/>
+			</derivation>
+		</Attribute>
+
+		<!-- the person's date of birth -->
+		<Attribute name="dateOfBirth">
+			<type>
+				<javaclass name="curam.util.type.Date"/>
+			</type>
+			<derivation>
+				<reference attribute = "dateOfBirth">
+					<reference attribute="birthAndDeathDetailsEvidence"/>
+				</reference>
+			</derivation>
+		</Attribute>
+		
+		<!-- the person's date of death -->
+		<Attribute name="dateOfDeath">
+			<type>
+				<javaclass name="curam.util.type.Date"/>
+			</type>
+			<derivation>
+				<reference attribute = "dateOfDeath">
+					<reference attribute="birthAndDeathDetailsEvidence"/>
+				</reference>
+			</derivation>
+		</Attribute>
+		
+		<!-- A timeline representing the person's age. will start at 0 and remain 0 up until the person's 1st birthday. -->
+		<!-- maxAge is currently set to 125 within the static class -->
+		<Attribute name="ageTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number"/>
+				</javaclass>
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.Statics" method="getAgeTimeline">
+					<type>
+						<javaclass name="curam.creole.value.Timeline">
+							<javaclass name="Number"/>
+						</javaclass>
+					</type>
+					<arguments>
+						<reference attribute="dateOfBirth"/>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		
+		<!-- a timeline that is true during the time a person is alive. while they are currently alive, "true" will extend out until the end of time -->
+		<Attribute name="isAliveTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean"/>
+				</javaclass>
+			</type>
+			<derivation>
+				<existencetimeline>
+					<intervaltype>
+						<javaclass name="Boolean"/>
+					</intervaltype>
+					<intervalfromdate>
+						<reference attribute="dateOfBirth"/>
+					</intervalfromdate>
+					<intervaltodate>
+						<reference attribute="dateOfDeath"/>
+					</intervaltodate>
+					<preExistenceValue>
+						<false/>
+					</preExistenceValue>
+					<existenceValue>
+						<true/>
+					</existenceValue>
+					<postExistenceValue>
+						<false/>
+					</postExistenceValue>
+				</existencetimeline>
+			</derivation>
+		</Attribute>
+	</Class>
+	
+	<!-- BDMIdentificationsCalculator -->
+	<!-- A calculator class for making determinations about a person's identifications evidence -->
+	<Class name="BDMIdentificationsCalculator">
+	
+		<Annotations>
+		  <Label label-id="BDMIdentificationsCalculator.label.1" name="BDM Identifications Calculator"/>
+		</Annotations>
+	
+		<!-- Accepts a list of a person's IdentificationsEvidence -->	
+		<Initialization>
+			<Attribute name="identificationEvidenceList">
+				<type>
+					<javaclass name="java.util.List">
+						<ruleclass name="IdentificationEvidence" ruleset="ParticipantEvidenceRuleSet"/>
+					</javaclass>
+				</type>
+			</Attribute>
+		</Initialization>
+		
+		<!-- Filtered list of a person's SIN evidence -->
+		<Attribute name="sinEvidenceList">
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass name="IdentificationEvidence" ruleset="ParticipantEvidenceRuleSet"/>
+				</javaclass>
+			</type>
+			<derivation>
+				<filter>
+					<list>
+						<reference attribute="identificationEvidenceList"/>
+					</list>
+					<listitemexpression>
+						<equals>
+							<reference attribute="altIDType">
+								<current/>
+							</reference>
+							<Code table="ConcernRoleAlternateID">
+								<String value="BDMCA80002" /><!-- TODO Change it to new CODE for SIN -->
+							</Code>	
+						</equals>
+					</listitemexpression>
+				</filter>
+			</derivation>
+		</Attribute>
+		
+		<!-- A list of BDMSINCalculators - one for each evidence in SINEvidenceList -->
+		<Attribute name="sinCalculators">
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass name="SINCalculator"/>
+				</javaclass>
+			</type>
+			<derivation>
+				<dynamiclist>
+					<list>
+						<reference attribute="sinEvidenceList"/>
+					</list>
+					<listitemexpression>
+						<create ruleclass="SINCalculator">
+							<current/>
+						</create>
+					</listitemexpression>
+				</dynamiclist>
+			</derivation>
+		</Attribute>
+		
+		<!-- A composite timeline that is true whenever a valid piece of SIN evidence is active for a person -->
+		<Attribute name="hasValidSINTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean"/>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<dynamiclist>
+							<list>
+								<reference attribute="sinCalculators"/>
+							</list>
+							<listitemexpression>
+								<intervalvalue>
+									<reference attribute="isValidSINTimeline">
+										<current/>
+									</reference>
+								</intervalvalue>
+							</listitemexpression>
+						</dynamiclist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		
+		<!-- A composite timeline that has the sin number whenever a valid piece of SIN evidence is active for a person -->
+		
+		<Attribute name="sinTimelineList">
+			<type>
+				<javaclass name="java.util.List">
+					<javaclass name="curam.creole.value.Timeline">
+						<javaclass name="String"/>
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<dynamiclist>
+					<list>
+						<reference attribute="sinCalculators"/>
+					</list>
+					<listitemexpression>
+						<reference attribute="sinExistenceTimeline">
+							<current/>
+						</reference>
+					</listitemexpression>
+				</dynamiclist>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="filterSINTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="List">
+						<javaclass name="String"/>
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<filter>
+						<list>
+							<dynamiclist>
+								<list>	
+									<reference attribute="sinTimelineList"/>
+								</list>
+								<listitemexpression>
+									<intervalvalue>
+										<current/>
+									</intervalvalue>
+								</listitemexpression>
+							</dynamiclist>
+						</list>
+						<listitemexpression>
+							<not>
+								<equals>
+									<current/>
+									<null/>
+								</equals>
+							</not>
+						</listitemexpression>
+					</filter>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="sinTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="String"/>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<singleitem onEmpty="returnNull" onMultiple="returnFirst">
+						<intervalvalue>
+							<reference attribute="filterSINTimeline"/>
+						</intervalvalue>
+					</singleitem>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+	</Class>
+	
+	<!-- SINCalculator -->
+	<!-- Calculator for a single piece of SIN Identifications evidence -->
+	<!-- Class will allow for other identification types to provided, but should *only* be used for SIN -->
+	<Class name="SINCalculator">
+	
+		<Annotations>
+		  <Label label-id="SINCalculator.label.1" name="SIN Calculator"/>
+		</Annotations>
+	
+		<!-- SIN Identification evidence to be tested -->
+		<Initialization>
+			<Attribute name="sinIdentificationEvidence">
+				<type>
+					<ruleclass name="IdentificationEvidence" ruleset="ParticipantEvidenceRuleSet"/>
+				</type>
+			</Attribute>
+		</Initialization>
+		
+		<!-- A timeline with the value of sin active only for the period between the from and to dates of the identifciations evidence -->
+		<Attribute name="sinExistenceTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="java.lang.String"/>
+				</javaclass>
+			</type>
+			<derivation>
+				<existencetimeline>
+					<intervaltype>
+						<javaclass name="String"/>
+					</intervaltype>
+					<intervalfromdate>
+						<reference attribute="fromDate">
+							<reference attribute="sinIdentificationEvidence"/>
+						</reference>
+					</intervalfromdate>
+					<intervaltodate>
+						<reference attribute="toDate">
+							<reference attribute="sinIdentificationEvidence"/>
+						</reference>
+					</intervaltodate>
+					<preExistenceValue>
+						<null/>
+					</preExistenceValue>
+					<existenceValue>
+						<reference attribute="alternateID">
+							<reference attribute="sinIdentificationEvidence" />
+						</reference>
+					</existenceValue>
+					<postExistenceValue>
+						<null/>
+					</postExistenceValue>
+				</existencetimeline>
+			</derivation>
+		</Attribute>
+		
+		<!-- A timeline with the value of isValidSIN active only for the period between the from and to dates of the identifciations evidence -->
+		<Attribute name="isValidSINTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean"/>
+				</javaclass>
+			</type>
+			<derivation>
+				<existencetimeline>
+					<intervaltype>
+						<javaclass name="Boolean"/>
+					</intervaltype>
+					<intervalfromdate>
+						<reference attribute="fromDate">
+							<reference attribute="sinIdentificationEvidence"/>
+						</reference>
+					</intervalfromdate>
+					<intervaltodate>
+						<reference attribute="toDate">
+							<reference attribute="sinIdentificationEvidence"/>
+						</reference>
+					</intervaltodate>
+					<preExistenceValue>
+						<false/>
+					</preExistenceValue>
+					<existenceValue>
+						<reference attribute="isValidSIN"/>
+					</existenceValue>
+					<postExistenceValue>
+						<false/>
+					</postExistenceValue>
+				</existencetimeline>
+			</derivation>
+		</Attribute>
+		
+		<!-- returns true if identification evidence is of type SIN and does not start with a 9 -->
+		<Attribute name="isValidSIN">
+			<type>
+				<javaclass name="Boolean"/>
+			</type>
+			<derivation>
+				<all>
+					<fixedlist>
+						<listof>
+							<javaclass name="Boolean"/>
+						</listof>
+						<members>
+							<not>
+								<reference attribute="is9SeriesSIN"/>
+							</not>
+						</members>
+					</fixedlist>
+				</all>
+			</derivation>
+		</Attribute>
+		
+		<!-- returns true if the SIN starts with a 9 -->
+		<Attribute name="is9SeriesSIN">
+			<type>
+				<javaclass name="Boolean"/>
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.Statics"
+					method="isSINNumberStartsWith9Series">
+					<type>
+						<javaclass name="Boolean" />
+					</type>
+					<arguments>
+						<reference attribute="alternateID">
+							<reference attribute="sinIdentificationEvidence" />
+						</reference>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+	</Class>
+	
+	<!-- IncomeCalculator -->
+	<!--  A calculator used to assert facts about a member's income evidence -->
+	<Class name="IncomeCalculator">
+		
+		<Annotations>
+		  <Label label-id="IncomeCalculator.label.1" name="Income Calculator"/>
+		</Annotations>
+	
+		<Initialization>
+			<Attribute name="incomeEvidences">
+				<type>
+					<javaclass name="List">
+						<ruleclass 
+							name="Income"
+							ruleset="IncomeDataRuleSet"/>
+					</javaclass>
+				</type>
+			</Attribute>
+		</Initialization>
+		
+		<!-- Timelines representing a memebers multiple incomes -->
+		
+		<Attribute name="grossIncomeTimelines">
+			<type>
+				<javaclass name="List">
+					<javaclass name="curam.creole.value.Timeline">
+						<javaclass name="Number"/>
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<dynamiclist>
+					<list>
+						<reference attribute="incomeEvidences"/>
+					</list>
+					<listitemexpression>
+						<existencetimeline>
+							<intervaltype>
+								<javaclass name="Number" />
+							</intervaltype>
+							<intervalfromdate>
+								<reference attribute="startDate">
+									<current/>
+								</reference>
+							</intervalfromdate>
+							<intervaltodate>
+								<reference attribute="endDate">
+									<current/>
+								</reference>
+							</intervaltodate>
+							<preExistenceValue>
+								<Number value="0"/>
+							</preExistenceValue>
+							<existenceValue> 
+								<reference attribute="income">
+									<current/>
+								</reference>
+							</existenceValue>
+							<postExistenceValue>
+								<Number value="0"/>
+							</postExistenceValue>
+						</existencetimeline>
+					</listitemexpression>
+				</dynamiclist>
+			</derivation>
+		</Attribute>
+		
+		<!-- Timeline representing a collapsed version of grossIncomeTimelines list via a sum -->
+		<Attribute name="grossIncomeTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number"/>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<sum>
+						<dynamiclist>
+							<list>
+								<reference attribute="grossIncomeTimelines"/>
+							</list>
+							<listitemexpression>
+								<intervalvalue>
+									<current/>
+								</intervalvalue>
+							</listitemexpression>
+						</dynamiclist>
+					</sum>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+	</Class>
+	
+	<!-- IncarcerationCalculator -->
+	<!-- A calculator used to assert facts about a member's incarceration evidence -->
+	<Class name="IncarcerationCalculator">
+	
+		<Annotations>
+		  <Label label-id="IncarcerationCalculator.label.1" name="Incarceration Calculator"/>
+		</Annotations>
+	
+		<Initialization>
+			<Attribute name="incarcerationEvidences">
+				<type>
+					<javaclass name="List">
+						<ruleclass name="Incarceration" ruleset="IncarcerationDataRuleSet" />
+					</javaclass>
+				</type>
+			</Attribute>
+		</Initialization>
+		
+		<!-- Timelines representing a memebers multiple incarceration periods -->	
+		<Attribute name="incarcerationTimelines">
+			<type>
+				<javaclass name="List">
+					<javaclass name="curam.creole.value.Timeline">
+						<javaclass name="Boolean"/>
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<dynamiclist>
+					<list>
+						<reference attribute="incarcerationEvidences"/>
+					</list>
+					<listitemexpression>
+						<existencetimeline>
+							<intervaltype>
+								<javaclass name="Boolean" />
+							</intervaltype>
+							<intervalfromdate>
+								<reference attribute="startDate">
+									<current/>
+								</reference>
+							</intervalfromdate>
+							<intervaltodate>
+								<reference attribute="endDate">
+									<current/>
+								</reference>
+							</intervaltodate>
+							<preExistenceValue>
+								<false />
+							</preExistenceValue>
+							<existenceValue> 
+								<true/>
+							</existenceValue>
+							<postExistenceValue>
+								<false />
+							</postExistenceValue>
+						</existencetimeline>
+					</listitemexpression>
+				</dynamiclist>
+			</derivation>
+		</Attribute>
+		
+		<!-- Timeline representing the period wherein the member is incarcerated -->
+		<Attribute name="incarcerationTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean"/>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<dynamiclist>
+							<list>
+								<reference attribute="incarcerationTimelines"/>
+							</list>
+							<listitemexpression>
+								<intervalvalue>
+									<current/>
+								</intervalvalue>
+							</listitemexpression>
+						</dynamiclist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+	</Class>
+	
+	<Class name="FrequencyConversionCalculator">
+	
+		<Annotations>
+		  <Label label-id="FrequencyConversionCalculator.label.1" name="Frequency Conversion Calculator"/>
+		</Annotations>
+	
+		<Initialization>
+			<Attribute name="inputFrequency">
+				<type>
+					<codetableentry table="FrequencyCode"/>
+				</type>
+			</Attribute>
+			<Attribute name="value">
+				<type>
+					<javaclass name="Number"/>
+				</type>
+			</Attribute>
+		</Initialization>
+		
+		<Attribute name="dailyAmount">
+			<type>
+				<javaclass name="Number"/>
+			</type>
+			<derivation>
+				<arithmetic operation="/" rounding="down" decimalPlaces="10">
+					<reference attribute="value"/>
+					<reference attribute="dailyConversionInverseRatio"/>
+				</arithmetic>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="weeklyAmount">
+			<type>
+				<javaclass name="Number"/>
+			</type>
+			<derivation>
+				<arithmetic operation="*" rounding="down" decimalPlaces="10">
+					<reference attribute="value"/>
+					<reference attribute="weeklyConversionRatio"/>
+				</arithmetic>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="weeklyConversionRatio">
+			<type>
+				<javaclass name="Number"/>
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number"/>
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<reference attribute="inputFrequency"/>
+								<Code table="FrequencyCode">
+									<String value="FC1"/>
+								</Code>
+							</equals>
+						</condition>
+						<value>
+							<Number value="7"/>
+						</value>
+					</when>
+					<when>
+						<condition>
+							<equals>
+								<reference attribute="inputFrequency"/>
+								<Code table="FrequencyCode">
+									<String value="FC2"/>
+								</Code>
+							</equals>
+						</condition>
+						<value>
+							<Number value="1"/>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<Number value="0"/>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="dailyConversionInverseRatio">
+			<type>
+				<javaclass name="Number"/>
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number"/>
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<reference attribute="inputFrequency"/>
+								<Code table="FrequencyCode">
+									<String value="FC2"/>
+								</Code>
+							</equals>
+						</condition>
+						<value>
+							<Number value="7"/>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<Number value="1"/>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

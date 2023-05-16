@@ -1,0 +1,150 @@
+<EvidenceTypeVersion businessStartDate="deemedDate"
+	correctionOnly="true" modifiable="true"
+	relatedParticipant="caseParticipantRole"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../../../../../../../DynamicEvidenceMetadata.xsd">
+	<Model>
+		<Attributes>
+			<Attribute>
+				<RelatedCPAttribute cpRoleType="MEM"
+					name="caseParticipantRole" participantType="Person">
+					<CPSearchType code="PRI" />
+				</RelatedCPAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="deemedDate">
+					<DomainType dataType="Date">
+						<DateOptions currentDate="LessThanOrEqualTo" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true"
+					name="deemedDateReason">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMOASDeemedDateReason" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="otherDeemedDateReason">
+					<DomainType dataType="String">
+						<StringOptions maxSize="144"
+							trimLeadingSpaces="true" trimTrailingSpaces="true" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="country">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMSourceCountry" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<CommentsAttribute name="comments" />
+			</Attribute>
+		</Attributes>
+		<Relationships>
+			<Relationship>
+				<MandatoryParent evidenceTypeCode="OASDET0006"
+					name="applicationDetails" />
+			</Relationship>
+		</Relationships>
+	</Model>
+	<Validations>
+		<PatternValidations>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="deemedDateReason"
+					sourceLiteral="Other" target="otherDeemedDateReason"
+					unidirectional="true" useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_OTHER_REASON_REQUIRED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="deemedDateReason"
+					sourceLiteral="Protective Date under SSA" target="country"
+					unidirectional="true" useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_COUNTRY_REQUIRED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+		</PatternValidations>
+		<CustomRulesValidation
+			ruleSetName="BDMOASDeemedDateValidationRuleSet" />
+	</Validations>
+	<SummaryInformation>
+		<SummaryRuleset
+			ruleSetName="BDMOASDeemedDateSummaryRuleSet" />
+	</SummaryInformation>
+	<UserInterface>
+		<Cluster>
+			<RelCPCluster defaultToBlank="false"
+				enableMultiMemberUpdates="false" fullCreateParticipant="false"
+				isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true"
+				modifyOption="no" showParticipantTypeFilter="true"
+				useSingleName="false">
+				<StandardField source="caseParticipantRole" />
+				<ClusterName id="Related.Participant.Cluster" />
+				<LabelName id="Participant.Field.Label" />
+				<FirstName id="First.Name.Label.ID3" />
+				<SecondName id="Second.Name.Label.ID3" />
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true" labelWidth="40"
+				numberOfColumns="2">
+				<Title id="DeemedDate.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField modifiable="true" source="deemedDate"
+						useDefault="false">
+						<Label id="DeemedDate.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="deemedDateReason" useBlank="true" useDefault="false">
+						<Label id="DeemedDateReason.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="otherDeemedDateReason" useDefault="false">
+						<Label id="OtherDeemedDateReason.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="country"
+						useBlank="true" useDefault="false">
+						<Label id="Country.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<CommentsCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true">
+				<Title id="Comments.Cluster.Title" />
+				<StandardField source="comments" />
+			</CommentsCluster>
+		</Cluster>
+	</UserInterface>
+</EvidenceTypeVersion>

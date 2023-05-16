@@ -1,0 +1,1103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ieg-script xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ieg-schema.xsd" finish-page="CommonIntake_finishInternalIntakeScript" quit-page="CommonIntake_quitInternalIntakeScript" show-sections="true" show-progress-bar="true" validate-save-and-exit="false">
+	<identifier id="BDMOASGISCombinedApplicationAP" scriptversionnumber="V1" type="Intake"/>
+	<!-- SUMMARY PAGE -->
+	<section>
+	
+	<callout expression="CopyPartnerDetailsTemp()" id="CopyPartnerDetailsTemp"/>	
+	
+		<title id="Summary.Title"><![CDATA[Summary]]></title>
+		<summary-page id="SummaryPage" entity="Person" show-back-button="true" show-exit-button="true" show-save-exit-button="true">
+			<title id="SummaryPage.Title"><![CDATA[Summary]]></title>
+			<next-button-label id="NextButton.Label"><![CDATA[Continue]]></next-button-label>
+			<!-- PERSONAL INFO SUMMARY - BEGIN -->
+
+			<cluster>
+				<title id="PI.ApplDet"><![CDATA[Personal information]]></title>
+				<edit-link start-page="PersonalInformation" skip-to-summary="false"/>
+				<display-text id="PI.Cluster.IntakeDet"><![CDATA[<h3>Intake Details</h3>]]></display-text>				
+				<layout>
+					<label-width>0</label-width>
+				</layout>				
+			</cluster>
+
+			<cluster entity="Application">		
+				<question id="receiptDate">
+					<label id="PI.IntakeDet.Question.ReceiptDate"><![CDATA[<h4>Receipt Date<h4>]]></label>
+				</question>				
+			</cluster>
+
+			<cluster>
+				<layout>
+					<label-width>0</label-width>
+				</layout>
+				<display-text id="PI.Cluster.PersonalInfoDet"><![CDATA[<h3>Personal Information</h3>]]></display-text>
+			</cluster>
+
+			<cluster entity="Person" criteria="isPrimaryParticipant==true">	
+			
+			
+				<question id="personTitle">
+					<label id="PI.PersonalInfo.Question.Title"><![CDATA[<h4>Title<h4>]]></label>
+				</question>				
+				<question id="sinRaw">
+					<label id="PI.ApplDet.SIN"><![CDATA[<h4>Social Insurance Number<h4>]]></label>
+				</question>								
+				<question id="oasAccntNum">
+					<label id="PI.PersonalInfo.Question.OASAccntNum"><![CDATA[<h4>OAS Account Number<h4>]]></label>
+				</question>				
+				<question id="firstName">
+					<label id="PI.ApplDet.FirstName"><![CDATA[<h4>First given name (as indicated on your SIN card/letter)<h4>]]></label>
+				</question>
+				<question id="middleName">
+					<label id="PI.ApplDet.OGivenName"><![CDATA[<h4>Other given name(s)<h4>]]></label>
+				</question>
+				<question id="lastName">
+					<label id="PI.ApplDet.FamName"><![CDATA[<h4>Last name (as indicated on your SIN card/letter)<h4>]]></label>
+				</question>
+		
+				<question id="LastNameAtBirth">
+					<label id="PI.ApplDet.LastNameBirth"><![CDATA[<h4>Last name at birth<h4>]]></label>
+				</question>
+			
+				<question id="dateOfBirth">
+					<label id="PI.ApplDet.DOB"><![CDATA[<h4>Date of birth<h4>]]></label>
+				</question>
+				<skip-field/>				
+			</cluster>			
+			<!-- PERSONAL INFO  SUMMARY - END -->
+
+			<!-- ADDRESS INFO SUMMARY - BEGIN -->
+			<cluster>
+				<title id="AddressInformation.Title"><![CDATA[Address information]]></title>
+				<edit-link start-page="AddressInformationResidential" skip-to-summary="false"/>
+				<display-text id="AddressInformation.DisplayText"><![CDATA[<h3>Partner Residential address</h3>]]></display-text>
+						
+				<layout>
+					<label-width>0</label-width>
+				</layout>				
+			</cluster>
+			
+			
+			<cluster entity="Person" criteria="isPrimaryParticipant==true">
+				    <question id="tempPartResAddress">
+						<label id="AddressInformation.ResAddr"><![CDATA[Residential Address]]></label>
+					</question>
+					
+				</cluster>
+			<cluster entity="Person" criteria="isPrimaryParticipant==true">
+				    <question id="tempPartMailAddress">
+						<label id="AddressInformation.MailAddr"><![CDATA[Mailing Address]]></label>
+					</question>
+			</cluster>
+				
+			<!-- 	TODO	: Revisit and fix it.		
+			<cluster entity="Person">
+				<question id="resMail">
+					<label id="AddressInformation.ResAddr.MailingRed"><![CDATA[<h4>Is your mailing address different from your residential address?<h4>]]></label>
+				</question>
+			</cluster>
+					
+			<condition expression="isNotNull(Person.resMail) and Person.resMail==&quot;YN2&quot;">
+				<cluster entity="Person" criteria="isPrimaryParticipant==false">
+				    <question id="tempPartMailAddress">
+						<label id="AddressInformation.MailAddr"><![CDATA[Mailing Address]]></label>
+					</question>
+				</cluster>
+				</condition>
+				 -->
+				 
+			<!-- ADDRESS INFO SUMMARY - END -->
+			
+			<condition expression="Person.isPrimaryParticipant==true">
+			<!-- LANGUAGE PREF. - BEING -->
+			<cluster entity="CommunicationPref">
+				<title id="ContactInfo.Title"><![CDATA[Contact information]]></title>			
+				<display-text id="CommunicationPref.Title"><![CDATA[<h3>Preferred Contact Information</h3>]]></display-text>				
+				<display-text id="WrittenComm.LabelTag"><![CDATA[<h3>Language preferences</h3>]]></display-text>
+				<edit-link start-page="CommunicationPref" skip-to-summary="false"/>
+				<layout>
+					<label-width>0</label-width>
+				</layout>
+			</cluster>
+
+			<cluster entity="CommunicationPref">
+				<question id="languageS">
+					<label id="CommunicationDetails.SectionOne.SpokenLanguageQuestion"><![CDATA[<h4>Preferred Language of Communication?<h4>]]></label>
+				</question>
+			</cluster>
+
+			<!-- LANGUAGE PREF. - END -->
+			<!-- COMMUNICATION DETAILS SUMMARY- BEGIN -->
+			<cluster>
+				<layout>
+					<label-width>0</label-width>
+				</layout>
+				<display-text id="CommunicationDetails.SectionOne.PTelephoneTitle"><![CDATA[<h3>Preferred phone number</h3>]]></display-text>
+			</cluster>
+			
+			<cluster entity="CommunicationDetails">
+				<question id="phoneType">
+					<label id="CommunicationDetails.SectionOne.ATelephoneTypeTitle"/>
+				</question>
+				<question id="countryCode">
+					<label id="CommunicationDetails.SectionOne.ATelephoneCCode"><![CDATA[Country code]]></label>
+				</question>
+				<question id="fullPhoneNumber">
+					<label id="CommunicationDetails.SectionOne.ATelephoneNumber"><![CDATA[Phone number (5551212)]]></label>
+				</question>
+				<question id="phoneExt">
+					<label id="CommunicationDetails.SectionOne.ATelephoneExt"><![CDATA[Extension]]></label>
+				</question>
+				<skip-field/>
+			</cluster>
+			
+			<!-- ALTERNATE COMMUNICATION INFORMATION START -->
+			<condition expression="isNotNull(CommunicationDetails.phoneNumber) and CommunicationDetails.phoneNumber!=&quot;&quot;">
+				<cluster>
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+					<display-text id="CommunicationDetails.Title.ContactInfoTitle"><![CDATA[<h3>Alternate contact information</h3>]]></display-text>
+				</cluster>
+				<cluster entity="CommunicationDetails" criteria="isPrimaryCommunication==false">
+					<question id="phoneType">
+						<label id="CommunicationDetails.SectionOne.ATelephoneTypeTitle"/>
+					</question>
+					<question id="countryCode">
+						<label id="CommunicationDetails.SectionOne.ATelephoneCCode"><![CDATA[Country code]]></label>
+					</question>
+					<question id="fullPhoneNumber">
+						<label id="CommunicationDetails.SectionOne.ATelephoneNumber"><![CDATA[Phone number (5551212)]]></label>
+					</question>
+					<question id="phoneExt">
+						<label id="CommunicationDetails.SectionOne.ATelephoneExt"><![CDATA[Extension]]></label>
+					</question>
+					<skip-field/>
+				</cluster>
+			</condition>
+			<!-- COMMUNICATION DETAILS SUMMARY- END -->
+			</condition>
+			
+			
+			
+			<!-- BEGIN OAS Pension -->
+			<cluster>
+				<title id="QuestionPage.Title.OASPension"><![CDATA[Old Age Security Pension]]></title>
+				<edit-link start-page="OASPensionStartDate" skip-to-summary="false"/>
+				<display-text id="QuestionPage.Title.OASPensionStartDate"><![CDATA[<h3>Old Age Security Pension Start Date</h3>]]></display-text>
+				<layout>
+					<label-width>0</label-width>
+				</layout>
+			</cluster>
+			
+			<cluster entity="OASPension">
+				<question id="reqPensionStartOption">
+					<label id="Question.Label.RequestedPensionStartOption"><![CDATA[When does applicant want their Old Age Security pension to start?]]></label>
+				</question>
+			</cluster>
+						
+			<condition expression="isNotNull(OASPension.reqPensionStartOption) and OASPension.reqPensionStartOption==&quot;BDMOASPSO2&quot;">
+				<cluster entity="OASPension">
+					<question id="reqPensionStartDate">
+						<label id="Question.Label.RequestedPensionStartDate"><![CDATA[Requested pension start date]]></label>
+					</question>
+				</cluster>	
+			</condition>	
+			<!-- END OAS Pension -->
+			<!-- BEGIN Legal Status -->			
+			<!-- BEGIN OAS Pension -->
+			<cluster>
+				<display-text id="Cluster.Title.CountryOfBirth"><![CDATA[<h3>Country of Birth</h3>]]></display-text>
+				<layout>
+					<label-width>0</label-width>
+				</layout>
+			</cluster>	
+
+			<cluster entity="LegalStatus">
+				<question id="isOutOfCABorned">
+					<label id="Question.Label.IsBornedOutsideCanada"><![CDATA[Did the applicant indicate they were born outside of Canada?]]></label>
+				</question>
+			</cluster>
+			
+			<condition expression="isNotNull(Person.residentialCountry) and Person.residentialCountry==&quot;CA&quot;">
+				<cluster>
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+					<display-text id="Cluster.Title.LegalStatus"><![CDATA[<h3>Legal Status</h3>]]></display-text>
+				</cluster>
+				<cluster entity="LegalStatus">
+					<question id="inCALegalStatus">
+						<label id="Question.Label.LivingInCanadaLegalStatus"><![CDATA[Applicant is living in Canada and is a]]></label>
+					</question>
+				</cluster>	
+			</condition>	
+			<condition expression="(isNotNull(Person.residentialCountry) and Person.residentialCountry==&quot;CA&quot;) and (isNotNull(LegalStatus.inCALegalStatus) and LegalStatus.inCALegalStatus==&quot;LST6&quot;)">
+				<cluster entity="LegalStatus">
+					<question id="inCALegalStatusOthr">
+						<label id="Question.Label.LivingInCanadaLegalStatusOther"><![CDATA[Specify Legal Status, if Other is selected]]></label>
+					</question>
+				</cluster>	
+			</condition>
+			<condition expression="(isNotNull(Person.residentialCountry) and Person.residentialCountry==&quot;CA&quot;) and (isNotNull(LegalStatus.isOutOfCABorned) and LegalStatus.isOutOfCABorned==&quot;YN1&quot;)">
+				<cluster entity="LegalStatus">
+					<question id="isSponseredInCA">
+						<label id="Question.Label.IsApplicantEneteredOnSponsorship"><![CDATA[If applicant entered Canada from another country, were they admitted into Canada under a sponsorship agreement?]]></label>
+					</question>
+				</cluster>	
+			</condition>				
+			<condition expression="isNotNull(Person.residentialCountry) and Person.residentialCountry!=&quot;CA&quot;">
+				<cluster entity="LegalStatus">
+					<question id="outOfCALegalStatus">
+						<label id="Question.Label.LivingOutOfCanadaLegalStatus">
+							<![CDATA[Applicant is living outside of Canada and before they left they were a]]>
+						</label>
+					</question>		
+				</cluster>	
+			</condition>
+
+			<condition expression="isNotNull(LegalStatus.outOfCALegalStatus) and LegalStatus.outOfCALegalStatus==&quot;LST6&quot;">
+				<cluster entity="LegalStatus">
+					<question id="outOfCALegalStatusOthr">
+						<label id="Question.Label.LivingOutOfCanadaLegalStatusOther">
+							<![CDATA[Specify Legal Status, if Other is selected]]>
+						</label>
+					</question>		
+				</cluster>
+			</condition>
+
+			<condition expression="isNotNull(LegalStatus.isOutOfCABorned) and LegalStatus.isOutOfCABorned==&quot;YN1&quot;">
+				<cluster>
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+					<display-text id="Cluster.Title.FirstEntryInToCanada"><![CDATA[<h3>First entry into Canada</h3>]]></display-text>
+				</cluster>
+				<cluster entity="LegalStatus">
+					<question id="canadaFirstEntryDate">
+						<label id="Question.Label.FirstEntryDateInToCanada">
+							<![CDATA[On what date did the applicant first enter Canada?]]>
+						</label>
+					</question>
+				</cluster>	
+			</condition>
+
+			<condition expression="isNotNull(LegalStatus.isOutOfCABorned) and LegalStatus.isOutOfCABorned==&quot;YN1&quot;">
+				<cluster entity="LegalStatus">
+					<question id="immigrationDocType">
+						<label id="Question.Label.TypeOfImmigrationDocument">
+							<![CDATA[What type of immigration document did the applicant have when they entered Canada?]]>
+						</label>
+					</question>		
+				</cluster>	
+			</condition>			
+
+			<condition expression="isNotNull(LegalStatus.immigrationDocType) and LegalStatus.immigrationDocType==&quot;IDOC6&quot;">
+				<cluster entity="LegalStatus">
+					<question id="immigrationDocTypOthr">
+						<label id="Question.Label.ImmigrationDocTypeOther">
+							<![CDATA[Other (Specify)]]>
+						</label>
+					</question>		
+				</cluster>
+			</condition>			
+
+			<cluster>
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+					<display-text id="Cluster.Title.ResidenceHistory"><![CDATA[<h3>Residence History</h3>]]></display-text>
+			</cluster>
+			
+			<cluster entity="LegalStatus">
+				<question id="isLivedInCASinceAge18">
+					<label id="Question.Label.IsLivedInCanadaSinceAge18">
+						<![CDATA[Has the applicant always lived in Canada since age 18?]]>
+					</label>					
+				</question>
+			</cluster>
+			
+			
+			<cluster>
+					<display-text id="Cluster.Title.ResidenceHistory"><![CDATA[<h3>Residence History</h3>]]></display-text>
+					<layout>
+						<label-width>0</label-width>
+					</layout>					
+			</cluster>
+							
+			<list entity="Person" criteria="isPrimaryParticipant==true">
+				<edit-link start-page="ResidenceHistory" />
+				<delete-link />
+				<list entity="ResidenceHistory">					
+					<column id="residenceHistCountry">
+						<title id="Question.Label.Country">
+							<![CDATA[Country]]>
+						</title>
+					</column>
+					<column id="residenceHistStartDate">
+						<title id="Question.Label.StartDate">
+							<![CDATA[Start Date]]>
+						</title>
+					</column>
+					<column id="residenceHistEndDate">
+						<title id="Question.Label.EndDate">
+							<![CDATA[End Date]]>
+						</title>
+					</column>
+					<column id="didWorkInCountry">
+						<title id="Question.Label.DidApplicantWorkedInCountry">
+							<![CDATA[Did applicant indicate they worked in this country?]]>
+						</title>
+					</column>
+					<column id="didApplyForBenfInCountry">
+						<title id="Question.Label.DidApplicantAppliedForBenefitInCountry">
+							<![CDATA[Did applicant indicate they have applied for a benefit from this country?]]>
+						</title>
+					</column>
+					<column id="foreignCountryIDNumber">
+						<title id="Question.Label.InsuranceOrIDNumberFromCountry">
+							<![CDATA[Insurance or identification number from this country]]>
+						</title>
+					</column>																							
+				</list>
+			</list>
+			
+			
+			  <cluster>
+			  		<display-text id="Cluster.Title.NatureOfAbsences"><![CDATA[<h3>Nature of Absences</h3>]]></display-text>
+					<layout>
+						<label-width>0</label-width>
+					</layout>						
+				</cluster>
+				
+				<cluster entity="AbsenceDetails">
+					<question id="absenceReason">
+						<label id="Question.Label.NatureOfAbsencesIfApplicable">
+							<![CDATA[Nature of Absences (if applicant indicated any)]]>
+						</label>
+					</question>						
+				</cluster>
+				
+				
+			<!-- BEGIN GIS -->
+			<cluster>
+				<title id="QuestionPage.Title.GIS"><![CDATA[Guaranteed Income Supplement]]></title>
+				<edit-link start-page="GIS" skip-to-summary="false"/>
+				<display-text id="QuestionPage.Title.GIS.App"><![CDATA[<h3>Guaranteed Income Supplement Application</h3>]]></display-text>				
+				<layout>
+					<label-width>0</label-width>
+				</layout>
+			</cluster>
+			<cluster entity="GIS">			
+				<question id="applyingForGISInd">
+					<label id="Question.Label.ApplyingForGIS"><![CDATA[Does the applicant want to apply for Guaranteed Income Supplement?]]></label>
+				</question>
+			</cluster>
+			<condition expression="isNotNull(GIS.applyingForGISInd) and GIS.applyingForGISInd==&quot;YN1&quot;">
+				<cluster entity="GIS">		
+					<question id="isAnyGISSecCompleted">
+						<label id="Question.Label.IsAnyGISSectionCompleted">
+							<![CDATA[Did the applicant complete any Guaranteed Income Supplement related sections?]]>
+						</label>
+					</question>			
+				</cluster>
+			</condition>
+				
+			
+			<condition expression="Person.isPrimaryParticipant==true">
+			
+			       <cluster>
+			            <display-text id="Cluster.Title.RetirementIncomeDetails"><![CDATA[<h3>Retirement Income details</h3>]]></display-text>	
+						<layout>
+							<label-width>0</label-width>
+						</layout>						
+					</cluster>
+					
+					<cluster entity="RetirementIncome">
+						<question id="isRetirdOrRetirng2Yrs">
+							<label id="Question.Label.DidPartnerRetireOrExpctedIn2Years">
+								<![CDATA[Did the applicant indicate that their spouse/common-law partner retired from work in the last two years, or that they expect to retire in the next two years?]]>
+							</label>
+						</question>						
+					</cluster>	
+					
+					<condition expression="isNotNull(RetirementIncome.isRetirdOrRetirng2Yrs) and RetirementIncome.isRetirdOrRetirng2Yrs==&quot;YN1&quot; ">
+						<cluster entity="RetirementIncome">
+							<question id="retirementDate">
+								<label id="Question.Label.RetirementDate">
+									<![CDATA[Retirement Date]]>
+								</label>							
+							</question>		
+						</cluster>
+					</condition>
+
+					<cluster entity="RetirementIncome">
+						<question id="isPensionReduced2Yrs">
+							<label id="Question.Label.DidPartnerPensionIncmRedcdOrExpectedIn2Yrs">
+								<![CDATA[Has the applicant indicated that their spouse/common-law partner's pension income has been reduced in the last two years or that they expect it will be reduced in the next two years?]]>
+							</label>
+						</question>						
+					</cluster>	
+					
+					<condition expression="isNotNull(RetirementIncome.isPensionReduced2Yrs) and RetirementIncome.isPensionReduced2Yrs==&quot;YN1&quot; ">
+						<cluster entity="RetirementIncome">
+							<question id="reductionDate">
+								<label id="Question.Label.DateOfReduction">
+									<![CDATA[Date of reduction]]>
+								</label>							
+							</question>		
+						</cluster>
+					</condition>										
+
+					<cluster>
+						<display-text id="Cluster.Title.ForeignIncomeDetails"><![CDATA[<h3>Foreign Income details</h3>]]></display-text>
+						<layout>
+							<label-width>0</label-width>
+						</layout>						
+					</cluster>
+					
+					<cluster entity="ForeignIncome">
+						<question id="isReceivingForeignIncome">
+							<label id="Question.Label.DidPartnerReceiveForeignIncome">
+								<![CDATA[Did the applicant indicate that their spouse/common-law partner receives income from another country?]]>
+							</label>
+						</question>						
+					</cluster>	
+					
+					<condition expression="isNotNull(ForeignIncome.isReceivingForeignIncome) and ForeignIncome.isReceivingForeignIncome==&quot;YN1&quot; ">
+						<cluster entity="ForeignIncome">
+							<question id="foreignIncomeType">
+								<label id="Question.Label.TypeOfForeignIncome">
+									<![CDATA[Type of Foreign Income]]>
+								</label>
+							</question>		
+						</cluster>
+					</condition>
+					
+					<condition expression="isNotNull(ForeignIncome.isReceivingForeignIncome) and ForeignIncome.isReceivingForeignIncome==&quot;YN1&quot; ">
+						<cluster entity="ForeignIncome">
+							<question id="annualForeignIncomeStr">
+								<label id="Question.Label.AnnualForeignIncome">
+									<![CDATA[Annual Foreign Income Amount & Currency]]>
+								</label>
+							</question>		
+						</cluster>
+					</condition>							
+			</condition> 
+			
+			
+			<cluster>
+					<display-text id="Cluster.Title.MaritalStatus"><![CDATA[<h3>Marital Status</h3>]]></display-text>>
+					<layout>
+						<label-width>0</label-width>
+					</layout>											
+				</cluster>
+				
+				<cluster entity="MaritalStatusInfo">
+					<question id="currentMaritalStatus">
+						<label id="Question.Label.CurrentMaritalStatus">
+							<![CDATA[Current Marital Status]]>
+						</label>						
+					</question>						
+				</cluster>	
+				
+				<condition expression="isNotNull(MaritalStatusInfo.currentMaritalStatus) and MaritalStatusInfo.currentMaritalStatus!=&quot;MS1&quot;">
+					<cluster entity="MaritalStatusInfo">
+						<question id="maritalDate">
+							<label id="Question.Label.Date">
+								<![CDATA[Date]]>
+							</label>
+						</question>		
+					</cluster>
+				</condition>
+
+			<condition expression="isNotNull(MaritalStatusInfo.currentMaritalStatus) and (MaritalStatusInfo.currentMaritalStatus==&quot;MS3&quot;  or MaritalStatusInfo.currentMaritalStatus==&quot;MS5&quot; or MaritalStatusInfo.currentMaritalStatus==&quot;MS6&quot;)" >
+				<cluster entity="MaritalStatusInfo">
+					<display-text id="Cluster.Title.LivingApartReasons"><![CDATA[<h3>Living apart for reasons beyond contro</h3>]]></display-text>							
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+				</cluster>
+				<cluster entity="MaritalStatusInfo">
+					<question id="isSeparated">
+						<label id="Question.Label.LivingApartReasonsBeyondControl">
+							<![CDATA[Are the applicant and their spouse/common-law partner living apart for reasons beyond their control?]]>
+						</label>
+					</question>						
+				</cluster>						
+			</condition>
+			<condition expression="isNotNull(MaritalStatusInfo.isSeparated) and MaritalStatusInfo.isSeparated==&quot;YN1&quot;">
+				<cluster entity="MaritalStatusInfo">
+					<question id="seperationDate">
+						<label id="Question.Label.SeparatedDate">
+							<![CDATA[Date]]>
+						</label>
+					</question>		
+				</cluster>
+			</condition>					
+			<!-- END GIS -->
+			
+			<!-- BEGIN SpousalOrCLP Info -->
+			<condition expression="(isNotNull(GIS.applyingForGISInd) and GIS.applyingForGISInd==&quot;YN1&quot;) or (isNotNull(GIS.isAnyGISSecCompleted) and GIS.isAnyGISSecCompleted==&quot;YN1&quot;)">
+					<cluster>
+						<title id="QuestionPage.Title.SpouseOrCLPDetails"><![CDATA[Spouse/Common-Law Partner Details]]></title>
+						<edit-link start-page="PartnerDetails" skip-to-summary="false"/>
+						<layout>
+							<label-width>0</label-width>
+						</layout>
+						<display-text id="Cluster.Title.SpouseOrCLPDetails"><![CDATA[<h3>Spouse/Common-Law Partner Details</h3>]]></display-text>	
+					</cluster>
+
+					<cluster entity="Person" criteria="isPrimaryParticipant==false">
+						<question id="personTitle">
+							<label id="Question.Label.Title">
+								<![CDATA[Title]]>
+							</label>					
+						</question>
+						
+						<question id="sinRawAP">
+							<label id="PersonalInformation.SIN">
+								<![CDATA[<span style="color: red;">*</span>Social Insurance Number (without spaces or hyphens)]]>
+							</label>				
+						</question>	
+
+						<question id="oasAccntNum">
+							<label id="PersonalInformation.OASAccntNum">
+								<![CDATA[<span style="color: red;">*</span>OAS Account Number]]>
+							</label>				
+						</question>					
+						
+						<question id="firstName">
+							<label id="PersonalInformation.FName">
+								<![CDATA[<span style="color: red;">*</span>First name (as indicated on your SIN card/letter)]]>
+							</label>
+						</question>	
+						<question id="middleName" >
+							<label id="PersonalInformation.OName">
+								<![CDATA[Middle name(s)]]>
+							</label>
+						</question>	
+						<question id="lastName">
+							<label id="PersonalInformation.FamName">
+								<![CDATA[Last name (as indicated on your SIN card/letter)]]>
+							</label>
+						</question>	
+		 
+						<question id="LastNameAtBirth">
+							<label id="PersonalInformation.LName">
+								<![CDATA[Last name at birth]]>
+							</label>
+						</question>	
+						<question id="dateOfBirth">
+							<label id="PersonalInformation.DOB">
+								<![CDATA[Date of birth]]>
+							</label>                  
+						</question>	
+						<question id="isDiffResiAddressForPartner">
+							<label id="Question.Label.IsDiffResiAddrForPartner">
+								<![CDATA[Did the applicant provide a different residential address for spouse/common-law partner?]]>
+							</label>                   
+						</question>					
+					</cluster>	
+
+					<!-- Partner Residential Address -->
+					
+			
+					<cluster>
+					    <display-text id="AddressInformation.DisplayText"><![CDATA[<h3>Partner Residential address</h3>]]></display-text>
+				
+						<layout>
+							<label-width>0</label-width>
+						</layout>
+					</cluster>
+					
+			
+			<!-- Residential Address CA -->
+			<!-- <condition expression="Person.isPrimaryParticipant==false and Person.residentialCountry==&quot;CA&quot;"> -->
+		     
+				<cluster entity="Person" criteria="isPrimaryParticipant==false">
+				    <question id="tempPartResAddress">
+						<label id="AddressInformation.ResAddr"><![CDATA[Residential Address]]></label>
+					</question>
+					
+				</cluster>
+			 						
+					<cluster>
+					    <display-text id="Cluster.Title.RetirementIncomeDetails"><![CDATA[<h3>Retirement Income details</h3>]]></display-text>	
+						<layout>
+							<label-width>0</label-width>
+						</layout>						
+					</cluster>
+					
+					
+					<cluster entity="Person" criteria="isPrimaryParticipant==false">
+						<question id="tempIsRetirdOrRetirng2Yrs">
+							<label id="Question.Label.DidPartnerRetireOrExpctedIn2Years">
+								<![CDATA[Did the applicant indicate that their spouse/common-law partner retired from work in the last two years, or that they expect to retire in the next two years?]]>
+							</label>
+						</question>						
+
+							<question id="tempRetirementDate" >
+								<label id="Question.Label.RetirementDate">
+									<![CDATA[Retirement Date]]>
+								</label>							
+							</question>		
+
+						<question id="tempIsPensionReduced2Yrs">
+							<label id="Question.Label.DidPartnerPensionIncmRedcdOrExpectedIn2Yrs">
+								<![CDATA[Has the applicant indicated that their spouse/common-law partner's pension income has been reduced in the last two years or that they expect it will be reduced in the next two years?]]>
+							</label>
+						</question>						
+							<question id="tempReductionDate" >
+								<label id="Question.Label.DateOfReduction">
+									<![CDATA[Date of reduction]]>
+								</label>							
+							</question>		
+					</cluster>			
+
+					<cluster>
+						<display-text id="Cluster.Title.ForeignIncomeDetails"><![CDATA[<h3>Foreign Income details</h3>]]></display-text>
+						<layout>
+							<label-width>0</label-width>
+						</layout>						
+					</cluster>
+					
+					<cluster entity="Person" criteria="isPrimaryParticipant==false">
+						<question id="tempIsReceivingForeignIncome">
+							<label id="Question.Label.DidPartnerReceiveForeignIncome">
+								<![CDATA[Did the applicant indicate that their spouse/common-law partner receives income from another country?]]>
+							</label>
+						</question>						
+					
+							<question id="tempForeignIncomeType">
+								<label id="Question.Label.TypeOfForeignIncome">
+									<![CDATA[Type of Foreign Income]]>
+								</label>
+							</question>		
+
+							<question id="tempAnnualForeignIncomeStr" >
+								<label id="Question.Label.AnnualForeignIncome">
+									<![CDATA[Annual Foreign Income Amount & Currency]]>
+								</label>
+							</question>		
+					</cluster>						
+
+					<cluster>
+					    <display-text id="QuestionPage.Title.SponsorshipDetails"><![CDATA[<h3>Sponsorship Details</h3>]]></display-text>
+						<layout>
+							<label-width>0</label-width>
+						</layout>						
+					</cluster>
+					
+					<cluster entity="Person" criteria="isPrimaryParticipant==false">
+						<question id="tempIsSpouseOrCLPartnrSponsored">
+							<label id="Question.Label.IsSponsorsed">
+								<![CDATA[Did applicant indicate that their spouse/common-law partner was admitted to Canada under a sponsorship agreement?]]>
+							</label>
+						</question>						
+					</cluster>
+					
+				</condition>
+					
+					
+					<cluster>
+					    <title id="Cluster.Title.PaymentInformation"><![CDATA[Payment information]]></title>
+					    <edit-link start-page="PaymentInformation" skip-to-summary="false"/>
+						<display-text id="Cluster.Title.PaymentInformationDisplay"><![CDATA[<h3>Retirement Income details</h3>]]></display-text>	
+						<layout>
+							<label-width>0</label-width>
+						</layout>						
+					</cluster>
+					
+					<condition expression="Person.isPrimaryParticipant==true">
+						<cluster entity="Person" criteria="isPrimaryParticipant==true">
+							<question id="preferredPaymentMethod">
+								<label id="Bank.preferredPaymentMethod.Label">How would the applicant like to receive their
+									payments?
+								</label>
+							</question>
+					
+						</cluster>
+					
+						<cluster entity="Payment">
+							<question id="preferredBankAccount">
+								<label id="Bank.preferredBankAccount.Label">Did the applicant indicate they would like to use one
+									of these existing direct deposit accounts or did they provide new
+									direct deposit information?
+								</label>
+							</question>
+						</cluster>
+					
+						<condition expression="Payment.preferredBankAccount==&quot;BDMBAC8001&quot; and Person.hasActiveBankAccounts">
+							<cluster entity="PaymentBanks">
+								<question id="preferredBankForProgram">
+									<label id="Bank.preferredBankForProgram.Label"><![CDATA[Which bank account would you like to use?]]></label>
+								</question>
+							</cluster>
+						</condition>
+						<condition expression="(Person.preferredPaymentMethod==&quot;EFT&quot; and Person.hasActiveBankAccounts==false)  or Payment.preferredBankAccount==&quot;BDMBAC8000&quot;">
+							<cluster entity="Payment">
+								<question id="bankAccountName">
+									<label id="Bank.bankAccountName.Label"><![CDATA[Name(s) on the account]]></label>
+								</question>
+								<question id="bankBranchNum">
+									<label id="Bank.bankBranchNum.Label"><![CDATA[Branch Transit Number]]></label>
+								</question>
+								<question id="bankInstNum">
+									<label id="Bank.BankInstNum.Label"><![CDATA[Financial Institution Number]]></label>
+								</question>
+								<question id="accountNumber">
+									<label id="Bank.account.Label"><![CDATA[Account Number]]></label>
+								</question>
+							</cluster>
+						</condition>
+						
+						<cluster entity="WorldIncome">
+							<question id="yearNdThresholdAmt">
+								<label id="Question.Label.SelectYearAndThresholdAmount">
+									<![CDATA[Select the year and threshold amount as indicated on the form]]>
+								</label>
+													
+							</question>			
+							<question id="isNonResidntNdIncmLTThrshld">
+								<label id="Question.Label.IsNRCAndWorldIncomeGTThreshold">
+									<![CDATA[Did the applicant indicate that they are not a resident of Canada for tax purposes and their net world income is more than the threshold?]]>
+								</label>
+								
+							</question>		
+						</cluster>
+						
+						
+					<cluster entity="TaxInfo">
+						<question id="dedFedTax">
+							<label id="Question.Label.MonthlyTaxDeduction">
+								<![CDATA[Does the applicant want Federal income tax deducted from their monthly payment?]]>
+							</label>
+							
+						</question>
+					</cluster>	
+					<condition expression="TaxInfo.dedFedTax==&quot;YN1&quot;">
+						<cluster entity="TaxInfo">	
+							<question id="dedMethod">
+								<label id="Question.Label.TaxDedtnInPercentageOrDollar">
+									<![CDATA[Does the applicant want a percentage or a dollar amount for deduction?]]>
+								</label>
+								
+							</question>	
+						</cluster>
+					</condition>
+	
+					<condition expression="TaxInfo.dedMethod==&quot;BDMTDM8000&quot;">
+						<cluster entity="TaxInfo">
+							<question id="dollarAmount">
+								<label id="Question.Label.DollarAmountDeduction">
+									<![CDATA[Indicate a dollar amount applicant wants deducted for income tax (for example: 100.00).]]>
+								</label>
+								
+							</question>	
+						</cluster>
+					</condition>
+					<condition expression="TaxInfo.dedMethod==&quot;BDMTDM8001&quot;">
+						<cluster entity="TaxInfo">
+							<question id="dollarPerct">
+								<label id="Question.Label.PercentageAmountDeduction">
+									<![CDATA[Indicate a percentage applicant wants deducted for income tax (for example: 20).]]>
+								</label>
+								
+							</question>
+						</cluster>	
+					</condition>
+	
+				</condition>
+				
+				
+				<cluster>
+					    <title id="Cluster.Title.DeclarationSign"><![CDATA[Payment information]]></title>
+					    <edit-link start-page="DeclarationAndSignatureDetails" skip-to-summary="false"/>
+						<display-text id="Cluster.Title.DeclarationSign.Description"><![CDATA[<h3>Retirement Income details</h3>]]></display-text>	
+						<layout>
+							<label-width>0</label-width>
+						</layout>						
+				</cluster>
+					
+				<condition expression="not(isNotNull(Declaration.didAplicntSignedWithMark)) or not(Declaration.didAplicntSignedWithMark==&quot;YN1&quot;)">
+					<cluster entity="Declaration">
+						<question id="didAplicntSigned">
+							<label id="Question.Label.ApplicantSigned">
+								<![CDATA[Did the applicant sign the declaration?]]>
+							</label>
+							
+						</question>		
+					</cluster>
+				</condition>
+							
+				<condition expression="not(isNotNull(Declaration.didAplicntSigned)) or not(Declaration.didAplicntSigned==&quot;YN1&quot;)">
+					<cluster entity="Declaration">		
+						<question id="didAplicntSignedWithMark" >
+							<label id="Question.Label.ApplicantSignedWithMark">
+								<![CDATA[Did the applicant sign the declaration with a mark?]]>
+							</label>
+																	
+						</question>			
+					</cluster>
+				</condition>
+				
+				<condition expression="(isNotNull(Declaration.didAplicntSigned) and Declaration.didAplicntSigned==&quot;YN1&quot;) or (isNotNull(Declaration.didAplicntSignedWithMark) and Declaration.didAplicntSignedWithMark==&quot;YN1&quot;)">
+					<cluster entity="Declaration">		
+						<question id="aplicntSignedDate">
+							<label id="Question.Label.SignedDate">
+								<![CDATA[Date signed]]>
+							</label>
+													
+						</question>			
+					</cluster>
+				</condition>
+	
+				<condition expression="(isNotNull(MaritalStatusInfo.currentMaritalStatus) and MaritalStatusInfo.currentMaritalStatus!=&quot;MS1&quot;) or Person.spouseOrCLPDetailsEnteredInd">
+					<cluster>
+						<display-text id="Cluster.Title.SPCLDeclarationSign">
+							<![CDATA[Spouse/Common-Law Partner's declaration and signature]]>
+						</display-text>			
+						<layout>
+							<label-width>0</label-width>
+						</layout>			
+					</cluster>
+				</condition>
+	
+					<condition expression="(isNotNull(MaritalStatusInfo.currentMaritalStatus) and MaritalStatusInfo.currentMaritalStatus!=&quot;MS1&quot;) or Person.spouseOrCLPDetailsEnteredInd">
+						<cluster entity="Declaration">
+							<question id="didSpouseOrCLPSigned" >
+								<label id="Question.Label.SPCLSigned">
+									<![CDATA[Did the applicant's spouse/common-law partner sign the declaration?]]>
+								</label>
+													
+							</question>		
+						</cluster>
+					</condition>	
+	
+					<condition expression="(isNotNull(MaritalStatusInfo.currentMaritalStatus) and MaritalStatusInfo.currentMaritalStatus!=&quot;MS1&quot;) or Person.spouseOrCLPDetailsEnteredInd">
+						<cluster entity="Declaration">		
+							<question id="didSpouseOrCLPSignedWithMark" >
+								<label id="Question.Label.SPCLSignedWithMark">
+									<![CDATA[Did the applicant's spouse/common-law partner sign the declaration with a mark?]]>
+								</label>	
+																
+							</question>			
+						</cluster>
+					</condition>				
+				
+	
+					<condition expression="((isNotNull(Declaration.didSpouseOrCLPSigned) and Declaration.didSpouseOrCLPSigned==&quot;YN1&quot;) or (isNotNull(Declaration.didSpouseOrCLPSignedWithMark) and Declaration.didSpouseOrCLPSignedWithMark==&quot;YN1&quot;))">	
+						<cluster entity="Declaration">		
+							<question id="spouseOrCLPSignedDate">
+								<label id="Question.Label.SignedDate">
+									<![CDATA[Date signed]]>
+								</label>
+													
+							</question>			
+						</cluster>
+					</condition>	
+	
+				<cluster entity="Declaration">
+					<display-text id="Cluster.Title.WAPDeclarationSign">
+						<![CDATA[Witness or Authorized Person's declaration and signature]]>
+					</display-text>
+					<layout>
+							<label-width>0</label-width>
+						</layout>
+					<question id="didTPSignedAsWitness">
+						<label id="Question.Label.ThirdPartySignedAsWitness">
+							<![CDATA[Did the Third Party sign as the witness?]]>
+						</label>
+										
+					</question>	
+					
+					<question id="didTPSignedBehalfOfAplcnt">
+						<label id="Question.Label.ThirdPartySignedAsAPForApplicant">
+							<![CDATA[Did the Third Party sign as the Authorized person on behalf of Applicant?]]>
+						</label>
+										
+					</question>		
+				</cluster>
+				
+		
+				<condition expression="(isNotNull(Declaration.didTPSignedAsWitness) and Declaration.didTPSignedAsWitness==&quot;YN1&quot;) or (isNotNull(Declaration.didTPSignedBehalfOfAplcnt) and Declaration.didTPSignedBehalfOfAplcnt==&quot;YN1&quot;)">
+					<cluster entity="Declaration">		
+						<question id="thirdPartySignedDate">
+							<label id="Question.Label.SignedDate">
+								<![CDATA[Date signed]]>
+							</label>
+												
+						</question>			
+					</cluster>
+				</condition>
+				
+				<cluster entity="Declaration">
+					<question id="didTPSignedBehalfOfSpouse">
+						<label id="Question.Label.ThirdPartySignedAsAPForSPCL">
+							<![CDATA[Did the Third Party sign as the Authorized person on behalf of applicant's spouse/common-law partner?]]>
+						</label>
+										
+					</question>		
+				</cluster>
+		
+				<condition expression="isNotNull(Declaration.didTPSignedBehalfOfSpouse) and Declaration.didTPSignedBehalfOfSpouse==&quot;YN1&quot;">
+					<cluster entity="Declaration">		
+						<question id="tpSignedDateBehalfOfSpouse">
+							<label id="Question.Label.SignedDate">
+								<![CDATA[Date signed]]>
+							</label>
+												
+						</question>			
+					</cluster>
+				</condition>	
+	
+				<condition expression="(isNotNull(Declaration.didTPSignedAsWitness) and Declaration.didTPSignedAsWitness==&quot;YN1&quot;) or (isNotNull(Declaration.didTPSignedBehalfOfAplcnt) and Declaration.didTPSignedBehalfOfAplcnt==&quot;YN1&quot;) or (isNotNull(Declaration.didTPSignedBehalfOfSpouse) and Declaration.didTPSignedBehalfOfSpouse==&quot;YN1&quot;)">
+					<cluster entity="Declaration">
+						<question id="thirdPartyName">
+							<label id="Question.Label.Name">
+								<![CDATA[Name]]>
+							</label>
+						</question>		
+					</cluster>	
+				</condition>
+				
+				<condition expression="(isNotNull(Declaration.didTPSignedAsWitness) and Declaration.didTPSignedAsWitness==&quot;YN1&quot;) or (isNotNull(Declaration.didTPSignedBehalfOfAplcnt) and Declaration.didTPSignedBehalfOfAplcnt==&quot;YN1&quot;) or (isNotNull(Declaration.didTPSignedBehalfOfSpouse) and Declaration.didTPSignedBehalfOfSpouse==&quot;YN1&quot;)">
+					<cluster entity="Declaration">
+						<question id="relationshipToApplicant">
+							<label id="Question.Label.RelationToApplicant">
+								<![CDATA[Relationship to applicant]]>
+							</label>
+												
+						</question>		
+					</cluster>	
+				</condition>
+				
+				<condition expression="((isNotNull(Declaration.didTPSignedAsWitness) and Declaration.didTPSignedAsWitness==&quot;YN1&quot;) or (isNotNull(Declaration.didTPSignedBehalfOfAplcnt) and Declaration.didTPSignedBehalfOfAplcnt==&quot;YN1&quot;) or (isNotNull(Declaration.didTPSignedBehalfOfSpouse) and Declaration.didTPSignedBehalfOfSpouse==&quot;YN1&quot;)) and Declaration.mailingCountry==&quot;CA&quot;">				
+				<cluster entity="MailingAddress" grouping-id="WitnessMailingAddress">
+					<display-text id="AddressInformation.MailAddr.Title"><![CDATA[<h3>Witness or Authorized Person's Mailing Address</h3>]]></display-text>
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+				</cluster>
+
+				<!-- Mailing Address CA -->
+				<list entity="Declaration" criteria="mailingCountry==&quot;CA&quot;">
+							<list entity="MailingAddress" criteria="country==&quot;CA&quot;">
+							<column id="addressLine3">
+							<title id="AddressInformation.MailAddr.POBox"><![CDATA[Mailing PO Box/Rural Route/General Delivery]]></title>
+						</column>
+						<column id="suiteNum">
+							<title id="AddressInformation.MailAddr.AptNum"><![CDATA[Mailing unit/apt/suite number]]></title>
+						</column>
+						<column id="addressLine1">
+							<title id="AddressInformation.MailAddr.StreetNum"><![CDATA[Mailing street number]]></title>
+						</column>
+						<column id="addressLine2">
+							<title id="AddressInformation.MailAddr.StreetName"><![CDATA[Mailing street name]]></title>
+						</column>
+						<column id="city">
+							<title id="AddressInformation.MailAddr.City"><![CDATA[Mailing City, Town or Village]]></title>
+						</column>
+						<column id="province">
+							<title id="AddressInformation.MailAddr.Prov"><![CDATA[Mailing Province or Territory]]></title>
+						</column>
+						<column id="postalCode">
+							<title id="AddressInformation.MailAddr.PostalCode"><![CDATA[Mailing postal code]]></title>
+						</column>
+						<column id="country">
+							<title id="AddressInformation.MailAddr.Country"><![CDATA[ Mailing country]]></title>
+						</column>
+							</list>
+							</list>
+	
+			</condition>
+			
+			<condition expression="((isNotNull(Declaration.didTPSignedAsWitness) and Declaration.didTPSignedAsWitness==&quot;YN1&quot;) or (isNotNull(Declaration.didTPSignedBehalfOfAplcnt) and Declaration.didTPSignedBehalfOfAplcnt==&quot;YN1&quot;) or (isNotNull(Declaration.didTPSignedBehalfOfSpouse) and Declaration.didTPSignedBehalfOfSpouse==&quot;YN1&quot;)) and Declaration.mailingCountry==&quot;US&quot;">				
+				<cluster entity="MailingAddress" grouping-id="WitnessMailingAddress">
+					<display-text id="AddressInformation.MailAddr.Title"><![CDATA[<h3>Witness or Authorized Person's Mailing Address</h3>]]></display-text>
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+				</cluster>
+
+			<!-- Mailing Address US -->
+				<list entity="Declaration" criteria="mailingCountry==&quot;US&quot;">
+							<list entity="IntlMailAddress" criteria="country==&quot;US&quot;">
+							<column id="addressLine3">
+							<title id="AddressInformation.MailAddr.POBox"><![CDATA[Mailing PO Box/Rural Route/General Delivery]]></title>
+						</column>
+						<column id="suiteNum">
+							<title id="AddressInformation.MailAddr.AptNum"><![CDATA[Mailing unit/apt/suite number]]></title>
+						</column>
+						<column id="addressLine1">
+							<title id="AddressInformation.MailAddr.StreetNum"><![CDATA[Mailing street number]]></title>
+						</column>
+						<column id="addressLine2">
+							<title id="AddressInformation.MailAddr.StreetName"><![CDATA[Mailing street name]]></title>
+						</column>
+						<column id="city">
+							<title id="AddressInformation.MailAddr.City"><![CDATA[Mailing City, Town or Village]]></title>
+						</column>
+						<column id="state">
+							<title id="AddressInformation.MailAddr.State"><![CDATA[Mailing State]]></title>
+						</column>
+						<column id="zipCode">
+							<title id="AddressInformation.MailAddr.ZipCode"><![CDATA[Mailing Zip Code]]></title>
+						</column>
+						<column id="country">
+							<title id="AddressInformation.MailAddr.Country"><![CDATA[Mailing country]]></title>
+						</column>
+							</list>
+							</list>
+
+			</condition>			
+			
+			<condition expression="((isNotNull(Declaration.didTPSignedAsWitness) and Declaration.didTPSignedAsWitness==&quot;YN1&quot;) or (isNotNull(Declaration.didTPSignedBehalfOfAplcnt) and Declaration.didTPSignedBehalfOfAplcnt==&quot;YN1&quot;) or (isNotNull(Declaration.didTPSignedBehalfOfSpouse) and Declaration.didTPSignedBehalfOfSpouse==&quot;YN1&quot;)) and (Declaration.mailingCountry!=&quot;CA&quot; and Declaration.mailingCountry!=&quot;US&quot;)">				
+				<cluster entity="MailingAddress" grouping-id="WitnessMailingAddress">
+					<display-text id="AddressInformation.MailAddr.Title"><![CDATA[<h3>Witness or Authorized Person's Mailing Address</h3>]]></display-text>
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+				</cluster>	
+
+				<!-- Mailing Address INTL -->
+				<list entity="Declaration" criteria="mailingCountry!=&quot;CA&quot; and mailingCountry!=&quot;US&quot;">
+							<list entity="IntlMailAddress" criteria="country!=&quot;CA&quot; and country!=&quot;US&quot;">
+							<column id="addressLine3">
+							<title id="AddressInformation.MailAddr.POBox"><![CDATA[Mailing PO Box/Rural Route/General Delivery]]></title>
+						</column>
+						<column id="suiteNum">
+							<title id="AddressInformation.MailAddr.AptNum"><![CDATA[Mailing unit/apt/suite number]]></title>
+						</column>
+						<column id="addressLine1">
+							<title id="AddressInformation.MailAddr.StreetNumOne"><![CDATA[Mailing street 1]]></title>
+						</column>
+						<column id="addressLine2">
+							<title id="AddressInformation.MailAddr.StreetNameTwo"><![CDATA[Mailing street 2]]></title>
+						</column>
+						<column id="city">
+							<title id="AddressInformation.MailAddr.City"><![CDATA[Mailing City, Town or Village]]></title>
+						</column>
+						<column id="addressLine4">
+							<title id="AddressInformation.MailAddr.Intl.State"><![CDATA[Mailing State/Province/Region]]></title>
+						</column>
+						<column id="zipCode">
+							<title id="AddressInformation.MailAddr.ZipCode"><![CDATA[Mailing Zip Code]]></title>
+						</column>
+						<column id="country">
+							<title id="AddressInformation.MailAddr.Country"><![CDATA[Mailing country]]></title>
+						</column>
+							</list>
+							</list>	
+								
+			</condition>		
+					
+
+			<!-- END SpousalOrCLP Info  -->
+				
+			<!-- END DECLARATION AND SIGNATURE -->					
+		</summary-page>
+	</section>
+</ieg-script>

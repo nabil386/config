@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<ieg-script xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ieg-schema.xsd"
+	finish-page="IEG2_resolveFinishScript"
+	quit-page="IEG2_resolveFinishScript">
+	<identifier id="IEGSample" scriptversionnumber="V1" type="Intake" />
+	<section>
+		<title id="AboutYouSection.Title">
+			<![CDATA[About You]]>
+		</title>
+		<icon enabled-image="sample_about_you"
+			current-image="sample_about_you" />
+		<question-page id="AboutYouPage" entity="Person"
+			criteria="isPrimary==true" progress="0" show-back-button="false">
+			<title id="PrimaryPersonPage.Title">
+				<![CDATA[About You]]>
+			</title>
+			<description id="PrimaryPersonPage.Description">
+				<![CDATA[Please enter some information about yourself]]>
+			</description>
+			<icon image="sample_title_aboutyou"/>
+			<legislation id="PrimaryPersonPage.Legislation">http://www.ibm.com/software/products/en/social-programs</legislation>
+                        <policy id="PrimaryPersonPage.Policy">http://www.ibm.com/software/products/en/social-programs</policy>
+			<set-attribute id="isPrimary" expression="true" />
+			<validation
+				expression="Person.middleName != &quot;J&quot;">
+				<message id="FIRSTNAME_NOTBLANK_ID">
+					<![CDATA[Your middle name can't be 'J']]>
+				</message>
+			</validation>
+			<cluster>
+				<layout>
+					<label-width>0</label-width>
+				</layout>
+				<display-text id="RequiredFields.Text">
+					<![CDATA[<span style="color: orange;">* indicates a required field</span>]]>
+				</display-text>
+			</cluster>
+			<cluster>
+				<title id="DetailsCluster.Title">
+					<![CDATA[Personal Details]]>
+				</title>
+				<description id="DetailsCluster.Description">
+					<![CDATA[Enter your details here]]>
+				</description>
+				<help-text id="DetailsCluster.HelpText">
+					<![CDATA[Use this screen to enter the following details about yourself]]>
+				</help-text>
+				<layout>
+					<num-cols>2</num-cols>
+				</layout>
+				<question id="firstName" mandatory="true">
+					<label id="FirstName.Label">
+						<![CDATA[First Name:]]>
+					</label>
+					<help-text id="FirstName.HelpText">
+						<![CDATA[Your first, or given name]]>
+					</help-text>
+					<legislation id="FirstName.Legislation">http://www.ibm.com/software/products/en/social-programs</legislation>
+                                        <policy id="FirstName.Policy">http://www.ibm.com/software/products/en/social-programs</policy>
+				</question>
+				<question id="middleName">
+					<label id="MiddleName.Label">
+						<![CDATA[Middle Name:]]>
+					</label>
+					<help-text id="MiddleName.HelpText">
+						<![CDATA[Your middle name or initial]]>
+					</help-text>
+					<legislation id="MiddleName.Legislation">http://www.ibm.com/software/products/en/social-programs</legislation>
+                                        <policy id="MiddleName.Policy">http://www.ibm.com/software/products/en/social-programs</policy>
+				</question>
+				<question id="lastName">
+					<label id="lastName.Label">
+						<![CDATA[Last Name:]]>
+					</label>
+					<help-text id="LastName.HelpText">
+						<![CDATA[Your last, or family name]]>
+					</help-text>
+					<legislation id="LastName.Legislation">http://www.ibm.com/software/products/en/social-programs</legislation>
+                                        <policy id="LastName.Policy">http://www.ibm.com/software/products/en/social-programs</policy>
+				</question>
+				<question id="gender" mandatory="true">
+					<label id="Gender.Label">
+						<![CDATA[Gender:]]>
+					</label>
+					<help-text id="Gender.HelpText">
+						<![CDATA[Your gender (choose from either male or female]]>
+					</help-text>
+				</question>
+				<question id="dateOfBirth" mandatory="true" show-field-help="true">
+					<label id="DateOfBirth.Label">
+						<![CDATA[Date Of Birth:]]>
+					</label>
+					<help-text id="DateOfBirth.HelpText">
+						<![CDATA[Your date of birth (Format is: mm/dd/yyyy)]]>
+					</help-text>
+				</question>
+			</cluster>
+			<cluster>
+				<question id="isStudent" control-question="true"
+					control-question-type="IEG_BOOLEAN">
+					<label id="IsStudent.Label">
+						<![CDATA[Are you a student?]]>
+					</label>
+				</question>
+			</cluster>
+			<condition expression="isStudent==true">
+				<cluster>
+					<question id="schoolName">
+						<label id="SchoolName.Label">
+							<![CDATA[School Name:]]>
+						</label>
+					</question>
+				</cluster>
+			</condition>
+		</question-page>
+		<summary-page id="AboutYouSummary" entity="Person"
+			criteria="isPrimary==true" progress="10">
+			<title id="AboutYouSummary.Title">
+				<![CDATA[Information about you]]>
+			</title>
+			<description id="AboutYouSummary.Description">
+				<![CDATA[Here's the information you've entered about yourself]]>
+			</description>
+			<icon image="sample_title_aboutyou"/>
+			<cluster>
+				<title id="DetailsCluster.Title">
+					<![CDATA[Person Details]]>
+				</title>
+				<description id="DetailsCluster.Description">
+					<![CDATA[Enter the details for this person here]]>
+				</description>
+				<edit-link start-page="AboutYouPage" />
+				<layout>
+					<num-cols>2</num-cols>
+				</layout>
+				<question id="firstName">
+					<label id="FirstName.Label">
+						<![CDATA[First Name:]]>
+					</label>
+				</question>
+				<question id="middleName">
+					<label id="MiddleName.Label">
+						<![CDATA[Middle Name:]]>
+					</label>
+				</question>
+				<question id="lastName">
+					<label id="lastName.Label">
+						<![CDATA[Last Name:]]>
+					</label>
+				</question>
+				<question id="gender">
+					<label id="Gender.Label">
+						<![CDATA[Gender:]]>
+					</label>
+				</question>
+				<question id="dateOfBirth">
+					<label id="DateOfBirth.Label">
+						<![CDATA[Date Of Birth:]]>
+					</label>
+				</question>
+			</cluster>
+			<cluster>
+				<question id="isStudent" control-question="true"
+					control-question-type="IEG_BOOLEAN">
+					<label id="IsStudent.Label">
+						<![CDATA[Are you a student?]]>
+					</label>
+				</question>
+			</cluster>
+			<condition expression="isStudent==true">
+				<cluster>
+					<question id="schoolName">
+						<label id="SchoolName.Label">
+							<![CDATA[School Name:]]>
+						</label>
+					</question>
+				</cluster>
+			</condition>
+		</summary-page>
+	</section>
+	<section>
+		<title id="Household.Title">
+			<![CDATA[Household]]>
+		</title>
+		<icon enabled-image="sample_household"
+			disabled-image="sample_household_disabled"
+			current-image="sample_household" />
+		<question-page id="HouseholdPage" progress="10">
+			<title id="LoopControlPage.Title">
+				<![CDATA[Household Details]]>
+			</title>
+			<description id="LoopControlPage.Description">
+				<![CDATA[Please tell us some information about your household]]>
+			</description>
+			<icon image="sample_title_household"/>
+			<cluster>
+				<title id="DetailsCluster.Title">
+					<![CDATA[Details]]>
+				</title>
+				<question id="numPeople" control-question="true"
+					control-question-type="IEG_INT32" mandatory="true">
+					<label id="NumPeople.Label">
+						<![CDATA[How many other people are in your household?]]>
+					</label>
+				</question>
+			</cluster>
+		</question-page>
+		<loop loop-type="for" loop-expression="numPeople"
+			entity="Person" criteria="isPrimary==false">
+			<question-page id="PersonDetailsPage"
+				show-person-tabs="true" progress="20">
+				<title id="PersonDetailsPage.Title">
+					<![CDATA[Household Member Details]]>
+				</title>
+				<description id="PersonDetailsPage.Description">
+					<![CDATA[Please enter the details for the next person in your household]]>
+				</description>
+				<icon image="sample_title_household"/>
+				<cluster>
+					<title id="DetailsCluster.Title">
+						<![CDATA[Person Details]]>
+					</title>
+					<description id="DetailsCluster.Description">
+						<![CDATA[Enter the details for this person below]]>
+					</description>
+					<question id="firstName" mandatory="true">
+						<label id="FirstName.Label">
+							<![CDATA[First Name:]]>
+						</label>
+					</question>
+					<question id="middleName">
+						<label id="MiddleName.Label">
+							<![CDATA[Middle Name:]]>
+						</label>
+					</question>
+					<question id="lastName">
+						<label id="lastName.Label">
+							<![CDATA[Last Name:]]>
+						</label>
+					</question>
+					<question id="gender" mandatory="true">
+						<label id="Gender.Label">
+							<![CDATA[Gender:]]>
+						</label>
+					</question>
+					<question id="dateOfBirth" mandatory="true">
+						<label id="DateOfBirth.Label">
+							<![CDATA[Date Of Birth:]]>
+						</label>
+					</question>
+				</cluster>
+				<cluster>
+					<question id="isStudent" control-question="true"
+						control-question-type="IEG_BOOLEAN">
+						<label id="IsStudent.Label">
+							<![CDATA[Is this person a student?]]>
+						</label>
+					</question>
+				</cluster>
+				<condition expression="isStudent==true">
+					<cluster>
+						<question id="schoolName">
+							<label id="SchoolName.Label">
+								<![CDATA[School Name:]]>
+							</label>
+						</question>
+					</cluster>
+				</condition>
+			</question-page>
+		</loop>
+		<relationship-page id="RelationshipPage" show-person-tabs="true"
+			progress="40">
+			<title id="RelationshipPage.Title">
+				<![CDATA[Household Relationships]]>
+			</title>
+			<description id="RelationshipPage.Description">
+				<![CDATA[Please enter the relationships for %1s below]]>
+				<argument id="Person.firstName" />
+			</description>
+			<icon image="sample_title_household"/>
+			<question id="caretakerInd">
+				<label id="CaretakerInd.Label">
+					<![CDATA[Is this a non-parent caretaker relationship?]]>
+				</label>
+			</question>
+		</relationship-page>
+		<summary-page id="HouseholdSummary" progress="45">
+			<title id="HouseholdSummary.Title">
+				<![CDATA[Household Summary]]>
+			</title>
+			<icon image="sample_title_household"/>
+			<list entity="Person" criteria="isPrimary==false">
+				<title id="PersonList.Title">
+					<![CDATA[People in your household]]>
+				</title>
+				<description id="PersonList.Description">
+					<![CDATA[Here are some details about all the people you have entered for your household]]>
+				</description>
+				<edit-link start-page="PersonDetailsPage" />
+				<delete-link />
+				<add-link start-page="PersonDetailsPage"
+					end-page="RelationshipPage" />
+				<column id="firstName">
+					<title id="FirstName.Title">
+						<![CDATA[First Name]]>
+					</title>
+				</column>
+				<column id="lastName">
+					<title id="LastName.Title">
+						<![CDATA[Last Name]]>
+					</title>
+				</column>
+				<column id="gender">
+					<title id="Gender.Title">
+						<![CDATA[Gender]]>
+					</title>
+				</column>
+			</list>
+			<relationship-summary-list>
+				<title id="RelationshipSummaryList.Title">
+					<![CDATA[Person Relationships Summary]]>
+				</title>
+				<description
+					id="PersonRelationshipSummaryList.Description">
+					<![CDATA[Person Relationship Summary Details]]>
+				</description>
+				<column id="caretakerInd">
+					<title id="CaretakerInd.Title">
+						<![CDATA[NPCR]]>
+					</title>
+				</column>
+				<edit-link start-page="RelationshipPage"/>
+			</relationship-summary-list>
+		</summary-page>
+	</section>
+	<section>
+		<title id="ExtraHouseholdInfo.Title">
+			<![CDATA[Extra Info]]>
+		</title>
+		<question-page id="HouseholdInfo" progress="50">
+			<title id="HouseholdInfo.Title">
+				<![CDATA[Extra Household Information]]>
+			</title>
+			<description id="HouseholdInfo.Description">
+				<![CDATA[Please answer the questions below to give us some more information on the people in your household]]>
+			</description>
+			<cluster>
+				<question id="anyoneBlind" control-question="true"
+					control-question-type="IEG_BOOLEAN">
+					<label id="AnyoneBlind.Label">
+						<![CDATA[Is anyone in your household blind?]]>
+					</label>
+				</question>
+			</cluster>
+			<condition expression="anyoneBlind==true">
+				<cluster>
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+					<list-question entity="Person" id="isBlind">
+						<label id="IsBlind.Label">
+							<![CDATA[Please choose the people who are blind:]]>
+						</label>
+						<item-label>
+							<label-element attribute-id="firstName" />
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>
+			<cluster>
+				<question id="anyonePregnant" control-question="true"
+					control-question-type="IEG_BOOLEAN">
+					<label id="AnyonePregnant.Label">
+						<![CDATA[Is anyone in your household pregnant?]]>
+					</label>
+				</question>
+			</cluster>
+			<condition expression="anyonePregnant==true">
+				<cluster>
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+					<list-question entity="Person" id="isPregnant"
+						criteria="(gender==&quot;SX2&quot;) and (age &gt; 14)">
+						<label id="IsPregnant.Label">
+							<![CDATA[Please choose the women who are pregnant:]]>
+						</label>
+						<item-label>
+							<label-element attribute-id="firstName" />
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>
+		</question-page>
+		<summary-page id="ExtraHHSummary" progress="55">
+			<title id="ExtraHHSummary.Title">
+				<![CDATA[Household Information]]>
+			</title>
+			<description id="ExtraHHSummary.Description">
+				<![CDATA[Here's a summary of the extra information you;ve given us about your household]]>
+			</description>
+			<cluster>
+				<question id="anyoneBlind" control-question="true"
+					control-question-type="IEG_BOOLEAN">
+					<label id="AnyoneBlind.Label">
+						<![CDATA[Is anyone in your household blind?]]>
+					</label>
+				</question>
+			</cluster>
+			<condition expression="anyoneBlind==true">
+				<cluster>
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+					<list-question entity="Person" id="isBlind">
+						<label id="IsBlind.Label">
+							<![CDATA[Please choose the people who are blind:]]>
+						</label>
+						<item-label>
+							<label-element attribute-id="firstName" />
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>
+			<cluster>
+				<question id="anyonePregnant" control-question="true"
+					control-question-type="IEG_BOOLEAN">
+					<label id="AnyonePregnant.Label">
+						<![CDATA[Is anyone in your household pregnant?]]>
+					</label>
+				</question>
+			</cluster>
+			<condition expression="anyonePregnant==true">
+				<cluster>
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+					<list-question entity="Person" id="isPregnant"
+						criteria="(gender==&quot;SX2&quot;) and (age &gt; 14)">
+						<label id="IsPregnant.Label">
+							<![CDATA[Please choose the women who are pregnant:]]>
+						</label>
+						<item-label>
+							<label-element attribute-id="firstName" />
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>
+		</summary-page>
+	</section>
+	<section>
+		<title id="IncomeSection.Title">
+			<![CDATA[Income]]>
+		</title>
+		<icon enabled-image="sample_job_income"
+			disabled-image="sample_job_income_disabled"
+			current-image="sample_job_income" />
+		<question-page id="AnyIncomesPage" progress="60">
+			<title id="IncomeListQuestionPage.Title">
+				<![CDATA[Who in your household has income?]]>
+			</title>
+			<icon image="sample_title_income"/>
+			<cluster>
+				<question id="anyoneHaveIncome" control-question="true"
+					control-question-type="IEG_BOOLEAN">
+					<label id="AnyoneIncome.Label">
+						<![CDATA[Does anyone have income?]]>
+					</label>
+				</question>
+			</cluster>
+			<condition expression="anyoneHaveIncome==true">
+				<cluster>
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+					<list-question id="hasIncome" entity="Person">
+						<label id="HasIncome.Label">
+							<![CDATA[Which people have income?]]>
+						</label>
+						<item-label>
+							<label-element attribute-id="firstName" />
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>
+		</question-page>
+		<loop loop-type="for-each" entity="Person"
+			criteria="hasIncome==true">
+			<loop loop-type="while" loop-expression="hasMoreIncome"
+				entity="Income">
+				<question-page id="IncomePage" entity="Income"
+					show-person-tabs="true" progress="70">
+					<title id="IncomePage.Title">
+						<![CDATA[Income Details]]>
+					</title>
+					<icon image="sample_title_income"/>
+					<cluster>
+						<title id="IncomeDetails.Title">
+							<![CDATA[Income Details]]>
+						</title>
+						<question id="type">
+							<label id="Type.Label">
+								<![CDATA[Type:]]>
+							</label>
+						</question>
+						<question id="amount">
+							<label id="Amount.Label">
+								<![CDATA[Amount:]]>
+							</label>
+						</question>
+						<question id="hasMoreIncome"
+							control-question="true" control-question-type="IEG_BOOLEAN">
+							<label id="ContinueQuestion.Label">
+								<![CDATA[Does %1s have any more income?]]>
+								<argument id="Person.firstName" />
+							</label>
+						</question>
+					</cluster>
+				</question-page>
+			</loop>
+		</loop>
+		<summary-page id="IncomeSummary" progress="75">
+			<title id="IncomeSummary.Title">
+				<![CDATA[Income Summary]]>
+			</title>
+			<description id="Page1.Description">
+				<![CDATA[Here's a summary of the incomes we've captured for your household]]>
+			</description>
+			<icon image="sample_title_income"/>
+			<list entity="Person" show-icons="true"
+				criteria="hasIncome==true">
+				<title id="IncomeList.Title">
+					<![CDATA[Income]]>
+				</title>
+				<description id="IncomeList.Description">
+					<![CDATA[Here's the income details you've entered for all the people in your household]]>
+				</description>
+				<edit-link start-page="IncomePage" />
+				<delete-link />
+				<add-link start-page="IncomePage" />
+				<column id="firstName">
+					<title id="FirstName.Title">
+						<![CDATA[First Name]]>
+					</title>
+				</column>
+				<list entity="Income">
+					<column id="type">
+						<title id="IncomeType.Title">
+							<![CDATA[Income Type]]>
+						</title>
+					</column>
+					<column id="amount">
+						<title id="IncomeAmount.Title">
+							<![CDATA[Income Amount]]>
+						</title>
+					</column>
+				</list>
+			</list>
+		</summary-page>
+	</section>
+	<section>
+		<title id="InsuranceSection.Title">
+			<![CDATA[Insurance]]>
+		</title>
+		<icon enabled-image="sample_insurance"
+			current-image="sample_insurance"
+			disabled-image="sample_insurance_disabled" />
+		<question-page id="InsurancePage" entity="Insurance"
+			progress="80">
+			<title id="InsuranceDetails.Title">
+				<![CDATA[Insurance Details]]>
+			</title>
+			<description id="GeneralInsuranceDetails.Description">
+				<![CDATA[Please enter these general insurance details]]>
+			</description>
+			<icon image="sample_title_insurance"/>
+			<cluster>
+				<title id="PolicyDetails.Title">
+					<![CDATA[Policy details]]>
+				</title>
+				<question id="policyType">
+					<label id="PolicyType.Label">
+						<![CDATA[What type of insurance policy do you have?]]>
+					</label>
+				</question>
+				<question id="policyNumber">
+					<label id="PolicyNumber.Label">
+						<![CDATA[What is the number of your insurance policy?]]>
+					</label>
+				</question>
+			</cluster>
+			<cluster>
+				<layout>
+					<label-width>0</label-width>
+				</layout>
+				<list-question
+					link-entity="InsuranceRelationship.personID" entity="Person">
+					<label id="InsuranceMembers.Label">
+						<![CDATA[Select Insurance Member]]>
+					</label>
+					<item-label>
+						<label-element attribute-id="firstName" />
+					</item-label>
+				</list-question>
+			</cluster>
+		</question-page>
+		<summary-page id="InsuranceSummary" entity="Insurance"
+			progress="100">
+			<title id="InsuranceSummary.Title">
+				<![CDATA[Insurance Summary]]>
+			</title>
+			<icon image="sample_title_insurance"/>
+			<list entity="Insurance">
+				<title id="InsuranceList.Title">
+					<![CDATA[Insurance Details]]>
+				</title>
+				<column id="policyType">
+					<title id="PolicyType.Title">
+						<![CDATA[Policy Type]]>
+					</title>
+				</column>
+				<column id="policyNumber">
+					<title id="PolicyNumber.Title">
+						<![CDATA[Policy Number]]>
+					</title>
+				</column>
+			</list>
+		</summary-page>
+	</section>
+</ieg-script>

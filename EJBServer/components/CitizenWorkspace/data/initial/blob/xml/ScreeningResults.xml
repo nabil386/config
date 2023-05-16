@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="page-schema.xsd">
+  <identifier name="ScreeningResults" />
+  
+  <server alias="DISPLAY" class="ScreeningResults"
+    method="getScreeningResults">
+    <param name="key$playerID" path="id" />
+    <param name="key$iegExecutionID" path="iegExecutionID" />
+  </server>
+  <header>
+    <title id="Page.Title" />
+    <description source="/DISPLAY/xmlData/description" />
+    <icon id="icon_am_i_eligible" />
+  </header>
+  <content>
+    <forward source="/PAGE/iegExecutionID" target="/ans/iegExecutionID" name="iegExecutionID"/>
+
+  <!-- Rescreening link -->
+  <container conditionalSource="/DISPLAY/xmlData/rescreening[@allowRescreening='true'][]" false="$empty">
+    <param name="css-class" value="screening-results-rescreening-link"/>
+    <field source="/DISPLAY/xmlData/rescreening/label" />
+    <field source="/PAGE/iegExecutionID" type="CW_HYPERLINKS">
+      <title id="Rescreening.Link.Label" />
+      <param name="in-title" value="false" />
+      <param name="uri-prefix" source="/DISPLAY/xmlData/rescreening/url"/>
+      <param name="open-new" value="false"/>
+      <param name="in-title" value="true" />
+    </field>
+    <field source="/DISPLAY/xmlData/rescreening/labelSuffix" />
+  </container>
+
+  <container>
+    <param name="css-class" value="screening-results-eligible"/>
+    <container conditionalSource="/DISPLAY/xmlData/program[@eligible='true'][]" false="$empty">
+      <title id="Eligible.Title" />
+      <help id="Eligible.Help" />
+      
+      <list>
+        <container style="cw-text-pluggable" source="/DISPLAY/xmlData/program[@eligible='true'][]" width="30">
+          <title source="/DISPLAY/xmlData/program[@eligible='true'][]/name/label" />
+          <description source="/DISPLAY/xmlData/program[@eligible='true'][]/description" />
+          
+          <field source="/DISPLAY/xmlData/program[@eligible='true'][]/name" type="CW_HYPERLINKS">
+            <title id="MoreInfo.Link.Label" />
+            <param name="in-title" value="true" />
+            <param name="uri-extension" value="uri" />
+            <param name="title" id="MoreInfo.Link.Label"/>
+            <param name="title-param" source="/DISPLAY/xmlData/program[@eligible='true'][]/name/label"/>    
+            <param name="open-new" value="true"/>        
+          </field>
+        </container>
+      </list>
+    </container>
+  </container>
+
+  <container>
+    <param name="css-class" value="screening-results-not-eligible"/>
+    <container conditionalSource="/DISPLAY/xmlData/program[@eligible='false'][]" false="$empty">
+      <title id="Not.Eligible.Title" />
+      <help id="Not.Eligible.Help" />
+      
+      <list>
+        <container style="cw-text-pluggable" source="/DISPLAY/xmlData/program[@eligible='false'][]" width="30">
+          <title source="/DISPLAY/xmlData/program[@eligible='false'][]/name/label" />
+          <description source="/DISPLAY/xmlData/program[@eligible='false'][]/description" />
+          
+          <field source="/DISPLAY/xmlData/program[@eligible='false'][]/name" type="CW_HYPERLINKS">
+            <title id="MoreInfo.Link.Label" />
+            <param name="in-title" value="true" />
+            <param name="uri-extension" value="uri" />
+            <param name="title" id="MoreInfo.Link.Label"/>
+            <param name="title-param" source="/DISPLAY/xmlData/program[@eligible='false'][]/name/label"/>
+            <param name="open-new" value="true"/>     
+          </field>
+          
+        </container>
+      </list>
+    </container>
+  </container>
+
+  </content>
+  
+  <navigation>
+    <nav-button name="exit" page="ResolveCitizenHome" page-type="resolve" />
+    <nav-button name="print" type="print" />
+    <nav-button name="next" type="action" />
+  </navigation>
+</page>

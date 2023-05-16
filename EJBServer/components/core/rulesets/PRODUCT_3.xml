@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/CuramRulesSchema.xsd"
+>
+  <Product
+    comment=""
+    id="PRODUCT_3"
+    legislationbase=""
+    producttype="RT1"
+  >
+    <Label
+      highlightonfailure="true"
+      legislationlink=""
+    >
+      <RuleName>
+        <Text
+          locale="en_US"
+          value="Overpayment evidence"
+        />
+      </RuleName>
+      <SuccessText>
+        <Text
+          locale="en_US"
+          value="Overpayment evidence succeeded"
+        />
+      </SuccessText>
+      <FailureText>
+        <Text
+          locale="en_US"
+          value="Overpayment evidence failed"
+        />
+      </FailureText>
+    </Label>
+    <DataAccess name="Globals">
+      <DataItem name="dateOfCalculation"/>
+      <DataItem name="deliveryFrequency"/>
+      <DataItem name="personReferenceNumber"/>
+      <DataItem name="claimReferenceNumber"/>
+      <DataItem name="assessmentReferenceNumber"/>
+    </DataAccess>
+    <DataAccess name="OverpaymentCaseEvidence">
+      <DataItem name="caseClosedInd"/>
+      <DataItem name="caseSuspendedInd"/>
+      <DataItem name="productAvailableInd"/>
+      <DataItem name="locationAvailableInd"/>
+      <DataItem name="overpaymentAmount"/>
+    </DataAccess>
+    <DataAccess name="OverpaymentRulesConstants">
+      <DataItem name="kOMinAge"/>
+      <DataItem name="kOMaxAge"/>
+      <DataItem name="kOverpaymentAmountLowerBound"/>
+    </DataAccess>
+    <RuleGroup
+      assessmentquerymode="querysingleitem"
+      executionmode="executeall"
+      id="1"
+      operation="and"
+      summaryitem="true"
+    >
+      <Label
+        highlightonfailure="true"
+        legislationlink=""
+      >
+        <RuleName>
+          <Text
+            locale="en_US"
+            value="Basic Rules"
+          />
+        </RuleName>
+        <SuccessText>
+          <Text
+            locale="en_US"
+            value="Basic Rules Succeeded"
+          />
+        </SuccessText>
+        <FailureText>
+          <Text
+            locale="en_US"
+            value="Basic Rules Failed"
+          />
+        </FailureText>
+      </Label>
+      <Rule
+        id="2"
+        rulemode="notquotation"
+        summaryitem="true"
+      >
+        <Label
+          highlightonfailure="true"
+          legislationlink=""
+        >
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Case Open"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Case is open"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Case is closed"
+            />
+          </FailureText>
+        </Label>
+        <Condition
+          dataitemlhs="OverpaymentCaseEvidence.caseClosedInd"
+          dataitemrhs="true"
+          id="3"
+          operation="!="
+        />
+      </Rule>
+      <Rule
+        id="4"
+        rulemode="notquotation"
+        summaryitem="true"
+      >
+        <Label
+          highlightonfailure="true"
+          legislationlink=""
+        >
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Case Suspended"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Case is not suspended"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Case is suspended"
+            />
+          </FailureText>
+        </Label>
+        <Condition
+          dataitemlhs="OverpaymentCaseEvidence.caseSuspendedInd"
+          dataitemrhs="true"
+          id="5"
+          operation="!="
+        />
+      </Rule>
+      <Rule
+        id="6"
+        rulemode="notquotation"
+        summaryitem="true"
+      >
+        <Label
+          highlightonfailure="true"
+          legislationlink=""
+        >
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Product Available"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Product is available"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Product is not available"
+            />
+          </FailureText>
+        </Label>
+        <Condition
+          dataitemlhs="OverpaymentCaseEvidence.productAvailableInd"
+          dataitemrhs="true"
+          id="7"
+          operation="=="
+        />
+      </Rule>
+      <Rule
+        id="8"
+        rulemode="notquotation"
+        summaryitem="true"
+      >
+        <Label
+          highlightonfailure="true"
+          legislationlink=""
+        >
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Product is available from selected Location"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Product is available from selected location"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Product is not available from selected location"
+            />
+          </FailureText>
+        </Label>
+        <Condition
+          dataitemlhs="OverpaymentCaseEvidence.locationAvailableInd"
+          dataitemrhs="true"
+          id="9"
+          operation="=="
+        />
+      </Rule>
+    </RuleGroup>
+    <ObjectiveGroup
+      comment=""
+      conjunction="highestvalue"
+      id="10"
+      priority="1"
+    >
+      <Label
+        highlightonfailure="true"
+        legislationlink=""
+      >
+        <RuleName>
+          <Text
+            locale="en_US"
+            value="Overpayment Group "
+          />
+        </RuleName>
+        <SuccessText>
+          <Text
+            locale="en_US"
+            value="Overpayment Group Succeeded"
+          />
+        </SuccessText>
+        <FailureText>
+          <Text
+            locale="en_US"
+            value="Overpayment Group Failed"
+          />
+        </FailureText>
+      </Label>
+      <Objective
+        comment=""
+        deductionallowable="true"
+        description=""
+        id="11"
+        priority="1"
+        ratefctype="CT2"
+        ratetarget="RC1"
+        ratetype="PC18"
+        recordid="10"
+        targetid="0"
+      >
+        <Label
+          highlightonfailure="true"
+          legislationlink=""
+        >
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Overpayment Rate Objective"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Overpayment Rate Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Overpayment Rate Failed"
+            />
+          </FailureText>
+        </Label>
+        <ObjectiveTag
+          comment=""
+          id="12"
+          name=""
+          pattern="200100000"
+          recordid="10"
+          type="RTT3"
+          value="OverpaymentCaseEvidence.overpaymentAmount"
+        />
+        <ObjectiveTag
+          comment=""
+          id="13"
+          name=""
+          pattern="000100000"
+          recordid="11"
+          type="RTT3"
+          value="OverpaymentCaseEvidence.overpaymentAmount"
+        />
+        <ObjectiveTag
+          comment=""
+          id="17"
+          name="Weekly"
+          pattern="100100000"
+          recordid="12"
+          type="RTT3"
+          value="OverpaymentCaseEvidence.overpaymentAmount"
+        />
+        <RuleGroup
+          assessmentquerymode="querysingleitem"
+          executionmode="executeall"
+          id="14"
+          operation="and"
+          summaryitem="true"
+        >
+          <Label
+            highlightonfailure="true"
+            legislationlink=""
+          >
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Benefit Overpayment Rate Rules"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Benefit Overpayment Rate Rules Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Benefit Overpayment Rate Rules Failed"
+              />
+            </FailureText>
+          </Label>
+          <Rule
+            id="15"
+            rulemode="all"
+            summaryitem="true"
+          >
+            <Label
+              highlightonfailure="true"
+              legislationlink=""
+            >
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Overpayment Amount not zero"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Overpayment Amount greater than zero"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Overpayment Amount greater than zero"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              dataitemlhs="OverpaymentCaseEvidence.overpaymentAmount"
+              dataitemrhs="OverpaymentRulesConstants.kOverpaymentAmountLowerBound"
+              id="16"
+              operation="&gt;"
+            />
+          </Rule>
+        </RuleGroup>
+
+
+      </Objective>
+    </ObjectiveGroup>
+  </Product>
+</RuleSet>

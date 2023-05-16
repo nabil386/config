@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2016. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<!--
+  
+  This is the ant ieg build file for Curam projects.
+  
+-->
+
+<project name="app_ieg" default="ieg.importscript">
+  
+  <!-- Required JDE properties used in the targets. -->
+  <import file="${sysenv.CURAMSDEJ}/bin/app_properties.xml" />
+  <import file="${sysenv.CURAMSDEJ}/bin/app_utilities.xml" />
+  
+  <!--  **********************************************  -->
+  <!--  ***  Check ieg import file name property   ***  -->
+  <!--  **********************************************  -->
+  <target name="check.ieg.import.filename.available" unless="script.file">
+    <fail message="The property 'script.file' must be set. Please use -Dscript.file"/>
+  </target>
+
+  <!--  *******************************************************  -->
+  <!--  ***  Check ieg import overwrite indicator property  ***  -->
+  <!--  *******************************************************  -->
+  <target name="check.ieg.import.overwriteInd.available" unless="overwrite.ieg">
+    <condition property="overwrite.ieg" value="true">
+       <istrue value="${overwrite}"/>
+    </condition>
+    <property name="overwrite.ieg" value="false"/>
+  </target>
+  
+  <!--  *****************************************************************  -->
+  <!--  ***  Check ieg import generate properties indicator property  ***  -->
+  <!--  *****************************************************************  -->
+  <target name="check.ieg.import.generateProperties.available" unless="generate.properties.ieg">
+    <condition property="generate.properties.ieg" value="${generate.properties}">
+       <isset property="generate.properties"/>
+    </condition>
+    <property name="generate.properties.ieg" value="true"/>
+  </target>
+  
+  <!--  ***********************************************  -->
+  <!--  ***  Check  script import file environment  ***  -->
+  <!--  ***********************************************  -->
+  <target name="check.ieg.file.import.env"
+    depends="check.ieg.import.filename.available, check.ieg.import.overwriteInd.available, check.ieg.import.generateProperties.available">
+    <available property="script.import.file.exists"
+      file="${script.file}" type="file"/>
+    <fail unless="script.import.file.exists"
+       message="The IEG script definition file ${script.file} specified does not exist."/>
+  </target>
+  
+  <!--  **********************************************  -->
+  <!--  ***  Build script file import properties   ***  -->
+  <!--  **********************************************  -->
+  <target name="build.script.file.import.properties" depends="check.ieg.file.import.env">
+	<property name="batch.program"
+      value="curam.ieg.facade.intf.IEGScriptAdmin.importScriptCLI"/>
+    <property name="batch.parameters"
+      value="fileName=${script.file},overwriteInd=${overwrite.ieg},generateProperties=${generate.properties.ieg}"/>
+    <property name="batch.username"  value="superuser"/>
+  </target>
+  
+  <!--  ***********************  -->
+  <!--  ***  IMPORT SCRIPT  ***  -->
+  <!--  ***********************  -->  
+  <target name="ieg.importscript" depends="build.script.file.import.properties"
+    description="Import an IEG script definition (use -Dscript.file=  -Doverwrite= -Dgenerate.properties=)">
+
+	<ant
+      antfile="${dir.sde.bin}/app_batchlauncher.xml"
+      target="main"
+      inheritall="false">
+      <property name="batch.program" value="${batch.program}"/>
+      <property name="batch.parameters" value="${batch.parameters}"/>
+      <property name="batch.username" value="${batch.username}"/>
+      <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+      <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+    </ant>
+
+    <echo>The IEG script definition file ${script.file} has been imported into the database</echo>
+    
+  </target>
+  
+  <!--  *****************  -->
+  <!--  ***  THE END  ***  -->
+  <!--  *****************  -->
+  
+</project>

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="BDMDataRetention">
+
+	<property environment="sysenv."/>
+	
+	
+	<import file="${sysenv.CURAMSDEJ}/bin/app_properties.xml"/>
+	
+	<property name="dir.bld.svr.workflow" value="${sysenv.SERVER_DIR}/build/svr/workflow"/>
+	<property name="dir.handcrafted.sql" value="${sysenv.SERVER_DIR}/components/BDM/data/dataretention"/>
+	
+	<target name="bdm.data.retention"
+		depends="
+		databasesql,
+		bdm.properties.backup,
+		bdm.copy.properties,
+		insertproperties,
+		bdm.analyze.properties,
+		bdm.delete.old.properties.backup,
+		bdm.insertlobdata,
+		insertuserpreferences,
+		inserttabconfiguration,
+		bdm.insertrulesets,
+		bdm.copy.processdefinition,
+		bdm.importworkflows,
+		bdm.reset.processdefinition.ids,
+		bdm.reset.processdefinition.definition,
+		prepare.application.data
+		"
+		description="Scripts to retain data on properties, rules, IEG and workflow tables" />
+		
+	<target name="bdm.dataretention.workflow"
+		depends="databasesql,bdm.copy.processdefinition,bdm.importworkflows"
+		description="Import workflow process definition" />
+		
+	<target name="bdm.setupDB" depends="check.db.type,run.database.ora,get.decrypted.db.password" description="Setting database" />
+	
+	<target name="bdm.properties.backup">
+		<echo message="Create Properties backup table, if it does not exist."/>
+		<sql 
+			driver="${db.driver}"
+			url="${db.url}" 
+			userid="${curam.db.username}" 
+			password="${decrypted.db.password}"
+			autocommit="true" 
+			onerror="continue" 
+			encoding="UTF-8">
+			<transaction src="${dir.handcrafted.sql}/PROPERTIESBACKUP.SQL" />
+			<classpath>
+				<path refid="database.common.classpath" />
+			</classpath>
+		</sql>
+	</target>
+	
+	<tstamp>
+		<format property="build.datetime" pattern="yy-MM-dd HH:mm:ss" />
+	</tstamp>
+	
+	<target name="bdm.copy.properties">
+		<echo message="Create data from Properties table to the BDM properties backup table"/>
+		<echo message="The timestamp set for BDMPROPERTIESBACKUP is ${build.datetime}"/>
+		<copy file="${dir.handcrafted.sql}/COPYPROPERTIES.SQL" toFile="${dir.handcrafted.sql}/COPYPROPERTIES_TEMP.SQL">
+			<filterset>
+				<filter token="BUILDDATETIME" value="${build.datetime}" />
+			</filterset>
+		</copy>
+		<sql 
+			driver="${db.driver}"
+			url="${db.url}" 
+			userid="${curam.db.username}" 
+			password="${decrypted.db.password}"
+			autocommit="true" 
+			encoding="UTF-8">
+			<transaction src="${dir.handcrafted.sql}/COPYPROPERTIES_TEMP.SQL" />
+			<classpath>
+				<path refid="database.common.classpath" />
+			</classpath>
+		</sql>
+		<delete file="${dir.handcrafted.sql}/COPYPROPERTIES_TEMP.SQL" />
+	</target>
+
+
+	<target name="bdm.analyze.properties">
+		<echo message="Analyze Properties for Inserts, Updates and Deletes"/>
+		<copy file="${dir.handcrafted.sql}/ANALYZEPROPERTIES.SQL" toFile="${dir.handcrafted.sql}/ANALYZEPROPERTIES_TEMP.SQL">
+			<filterset>
+				<filter token="BUILDDATETIME" value="${build.datetime}" />
+			</filterset>
+		</copy>
+		<sql 
+			driver="${db.driver}"
+			url="${db.url}" 
+			userid="${curam.db.username}" 
+			password="${decrypted.db.password}"
+			autocommit="true" 
+			encoding="UTF-8"
+			output="bdmanalyzeproperties.log">
+			<transaction src="${dir.handcrafted.sql}/ANALYZEPROPERTIES_TEMP.SQL" />
+			<classpath>
+				<path refid="database.common.classpath" />
+			</classpath>
+		</sql>
+		<delete file="${dir.handcrafted.sql}/ANALYZEPROPERTIES_TEMP.SQL" />
+	</target>
+	
+	
+	<target name="bdm.delete.old.properties.backup">
+		<echo message="Deleting Properties backed up more than 365 days."/>
+		<sql 
+			driver="${db.driver}"
+			url="${db.url}" 
+			userid="${curam.db.username}" 
+			password="${decrypted.db.password}"
+			autocommit="true" 
+			onerror="continue" 
+			encoding="UTF-8">
+			<transaction src="${dir.handcrafted.sql}/DELETEOLDPROPERTIESBACKUP.SQL" />
+			<classpath>
+				<path refid="database.common.classpath" />
+			</classpath>
+		</sql>
+	</target>
+	
+	<target name="bdm.insertlobdata">
+		<echo message="Executing insertlobdata" />
+		<antcall target="app_database.insertlobdata" />
+	</target>
+	
+	<target name="bdm.insertrulesets">
+		<echo message="Executing creole.upload.rulesets" />
+		<antcall target="creole.upload.rulesets" />
+	</target>
+	
+	<target name="bdm.copy.processdefinition">
+		<echo message="Backup ProcessDefinition and start with an empty table."/>
+		<sql 
+			driver="${db.driver}"
+			url="${db.url}" 
+			userid="${curam.db.username}" 
+			password="${decrypted.db.password}"
+			autocommit="true" 
+			onerror="continue" 
+			encoding="UTF-8">
+			<transaction src="${dir.handcrafted.sql}/COPYPROCESSDEFINITION.SQL" />
+			<classpath>
+				<path refid="database.common.classpath" />
+			</classpath>
+		</sql>
+	</target>
+	
+	<target name="bdm.importworkflows">
+		<echo message="Importing workflows"/>
+		<ant antfile="${sysenv.SERVER_DIR}/build.xml" target="app_workflow.copyworkflowxml" />
+		<antcall target="bdm.processdefinition.unique.ids" />
+		<ant antfile="${sysenv.SERVER_DIR}/build.xml" target="importworkflows" >
+			<property name="workflow.dir" value="${dir.bld.svr.workflow}" />
+			<property name="overwrite" value="false" />
+		</ant>
+	</target>
+
+	<target name="bdm.processdefinition.unique.ids">
+		<echo message="Updating processDefinitions for unique ID"/>
+		<ant antfile="${dir.sde.bin}/app_batchlauncher.xml" target="main" inheritall="false" > 
+			<property name="batch.program" value="curam.ca.gc.bdm.batch.bdmprocessdefinitionimportbatch.intf.BDMProcessDefinitionImportBatch.process" />
+			<property name="batch.parameters" value="workflowDirectory=${dir.bld.svr.workflow}" />
+			<property name="batch.username" value="${batch.username}" />
+			<property name="curam.disable.dynamic.properties" value="true" />
+			<property name="disable.database.callback" value="${disable.database.callback.flag}" />
+			<property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}" />
+		</ant>
+	</target>
+	
+	<target name="bdm.reset.processdefinition.ids">
+		<echo message="Resetting ProcessDefinition id's"/>
+		<sql 
+			driver="${db.driver}"
+			url="${db.url}" 
+			userid="${curam.db.username}" 
+			password="${decrypted.db.password}"
+			autocommit="true" 
+			onerror="continue" 
+			encoding="UTF-8">
+			<transaction src="${dir.handcrafted.sql}/RESETPROCESSDEFINITIONIDS.SQL" />
+			<classpath>
+				<path refid="database.common.classpath" />
+			</classpath>
+		</sql>
+	</target>
+	
+	<target name="bdm.reset.processdefinition.definition">
+		<echo message="Resetting ProcessDefinition Definitions"/>
+		<sql 
+			driver="${db.driver}"
+			url="${db.url}" 
+			userid="${curam.db.username}" 
+			password="${decrypted.db.password}"
+			autocommit="true" 
+			onerror="continue" 
+			encoding="UTF-8">
+			<transaction src="${dir.handcrafted.sql}/RESETPROCESSDEFINITIONDEFINITION.SQL" />
+			<classpath>
+				<path refid="database.common.classpath" />
+			</classpath>
+		</sql>
+	</target>
+
+</project> 

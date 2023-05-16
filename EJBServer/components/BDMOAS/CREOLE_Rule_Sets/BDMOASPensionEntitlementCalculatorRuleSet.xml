@@ -1,0 +1,393 @@
+<RuleSet name="BDMOASPensionEntitlementCalculatorRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class name="BDMOASPensionEntitlementCalculator"
+		extends="BDMOASAbstractEntitlementCalculator"
+		extendsRuleSet="BDMOASEntitlementCalculatorRuleSet">
+		<Attribute name="isEntitledTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="isEligibleTimeline">
+					<reference attribute="eligibilityCalculator" />
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="isOverAge75RateTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<legislationChange>
+					<intervaltype>
+						<javaclass name="Boolean" />
+					</intervaltype>
+					<era>
+						<from>
+							<null />
+						</from>
+						<value>
+							<timelineoperation>
+								<false />
+							</timelineoperation>
+						</value>
+					</era>
+					<era>
+						<from>
+							<Date value="2022-07-01" />
+						</from>
+						<value>
+							<timelineoperation>
+								<compare comparison=">=">
+									<intervalvalue>
+										<reference attribute="subsequentMonthAgeTimeline">
+											<reference attribute="participantCalculator">
+												<reference attribute="eligibilityCalculator" />
+											</reference>
+										</reference>
+									</intervalvalue>
+									<Number value="75" />
+								</compare>
+							</timelineoperation>
+						</value>
+					</era>
+				</legislationChange>
+			</derivation>
+		</Attribute>
+		<Attribute name="isDeferringTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Timeline">
+							<javaclass name="Boolean" />
+						</javaclass>
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<reference attribute="earliestPotentialEffectiveDate">
+									<reference attribute="eligibilityCalculator" />
+								</reference>
+								<reference attribute="effectiveDate">
+									<reference attribute="eligibilityCalculator" />
+								</reference>
+							</equals>
+						</condition>
+						<value>
+							<timelineoperation>
+								<false />
+							</timelineoperation>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<existencetimeline>
+								<intervaltype>
+									<javaclass name="Boolean" />
+								</intervaltype>
+								<intervalfromdate>
+									<reference attribute="earliestPotentialEffectiveDate">
+										<reference attribute="eligibilityCalculator" />
+									</reference>
+								</intervalfromdate>
+								<intervaltodate>
+									<call class="curam.ca.gc.bdm.creole.impl.Statics"
+										method="addDaysToDate">
+										<type>
+											<javaclass name="curam.util.type.Date" />
+										</type>
+										<arguments>
+											<reference attribute="effectiveDate">
+												<reference attribute="eligibilityCalculator" />
+											</reference>
+											<Number value="-1" />
+										</arguments>
+									</call>
+								</intervaltodate>
+								<preExistenceValue>
+									<false />
+								</preExistenceValue>
+								<existenceValue>
+									<true />
+								</existenceValue>
+								<postExistenceValue>
+									<false />
+								</postExistenceValue>
+							</existencetimeline>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="isValidDeferralMonthTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="isDeferringTimeline" />
+			</derivation>
+		</Attribute>
+		<Attribute name="maximumEntitlementAmountTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="Number" />
+						</type>
+						<when>
+							<condition>
+								<intervalvalue>
+									<reference attribute="isOverAge75RateTimeline" />
+								</intervalvalue>
+							</condition>
+							<value>
+								<intervalvalue>
+									<rate column="OASRCT0001" table="OASRTT0001"
+										row="OASRRT0002" />
+								</intervalvalue>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<intervalvalue>
+									<rate column="OASRCT0001" table="OASRTT0001"
+										row="OASRRT0001" />
+								</intervalvalue>
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="numberOfValidDeferralMonths">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdmoas.creole.impl.Statics"
+					method="getTotalTrueMonths">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="isValidDeferralMonthTimeline" />
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		<Attribute name="actuarialFactor">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<arithmetic operation="*">
+					<reference attribute="numberOfValidDeferralMonths" />
+					<Number value="0.006" />
+				</arithmetic>
+			</derivation>
+		</Attribute>
+		<Attribute name="actuarialAdjustmentTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<arithmetic operation="*" decimalPlaces="2"
+						rounding="half_even">
+						<intervalvalue>
+							<reference attribute="rawEntitlementAmountTimeline" />
+						</intervalvalue>
+						<reference attribute="actuarialFactor" />
+					</arithmetic>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="rawEntitlementAmountTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="Number" />
+						</type>
+						<when>
+							<condition>
+								<intervalvalue>
+									<reference attribute="isEntitledTimeline" />
+								</intervalvalue>
+							</condition>
+							<value>
+								<arithmetic operation="*" decimalPlaces="2"
+									rounding="half_even">
+									<intervalvalue>
+										<reference
+											attribute="maximumEntitlementAmountTimeline" />
+									</intervalvalue>
+									<arithmetic operation="/">
+										<reference attribute="fortieths" />
+										<Number value="40" />
+									</arithmetic>
+								</arithmetic>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<Number value="0" />
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="entitlementAmountTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<sum>
+						<fixedlist>
+							<listof>
+								<javaclass name="Number" />
+							</listof>
+							<members>
+								<intervalvalue>
+									<reference attribute="rawEntitlementAmountTimeline" />
+								</intervalvalue>
+								<intervalvalue>
+									<reference attribute="actuarialAdjustmentTimeline" />
+								</intervalvalue>
+							</members>
+						</fixedlist>
+					</sum>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="eligibilityCalculator">
+			<type>
+				<ruleclass name="BDMOASPensionEligibilityCalculator"
+					ruleset="BDMOASPensionEligibilityCalculatorRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="BDMOASPensionEligibilityCalculator"
+					ruleset="BDMOASPensionEligibilityCalculatorRuleSet">
+					<reference attribute="caseParticipantRoleID" />
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="fortieths">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<when>
+						<condition>
+							<compare comparison="&lt;">
+								<reference attribute="entitlementYearsAtEffectiveDate" />
+								<Number value="40" />
+							</compare>
+						</condition>
+						<value>
+							<reference attribute="entitlementYearsAtEffectiveDate" />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<Number value="40" />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="aggregateEntitlementYearTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdmoas.creole.impl.Statics"
+					method="getAggregateResidenceTimeline">
+					<type>
+						<javaclass name="curam.creole.value.Timeline">
+							<javaclass name="Number" />
+						</javaclass>
+					</type>
+					<arguments>
+						<reference attribute="entitlementPeriodList">
+							<reference attribute="residenceCalculator">
+								<reference attribute="eligibilityCalculator" />
+							</reference>
+						</reference>
+						<null />
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		<Attribute name="entitlementYearsAtEffectiveDate">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<property name="valueOn">
+					<object>
+						<reference attribute="aggregateEntitlementYearTimeline" />
+					</object>
+					<arguments>
+						<reference attribute="effectiveDate">
+							<reference attribute="eligibilityCalculator" />
+						</reference>
+					</arguments>
+				</property>
+			</derivation>
+		</Attribute>
+		<Attribute name="isPortableTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<compare comparison="&gt;=">
+						<intervalvalue>
+							<reference attribute="aggregateResidenceYearTimeline">
+								<reference attribute="eligibilityCalculator" />
+							</reference>
+						</intervalvalue>
+						<Number value="20" />
+					</compare>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

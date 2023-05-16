@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- This is the interface ruleset Evidence Summary Information.            -->
+<!-- The individual elements of a summary information are declared as       -->
+<!-- abstract. If an Evidence Type Version metadata specifies that CER is to-->
+<!-- be used for calculating summary information, the Summary Rule Class in -->
+<!-- the corresponding CER Ruleset should extend from the                   -->
+<!-- AbstractEvidenceSummary class specified in this rule set.              -->
+<RuleSet
+  name="EvidenceValidationRuleSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../CREOLEInfrastructure/xsd/curam/creole/xsd/RuleSetLax.xsd"
+>
+  <Class
+    abstract="true"
+    name="AbstractEvidenceValidationResult"
+  >
+    <Attribute name="evidence">
+      <type>
+        <ruleclass
+          name="DynamicEvidence"
+          ruleset="DynamicEvidenceRuleSet"
+        />
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <Attribute name="validationMode">
+      <type>
+        <ruleclass name="ValidationMode"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="detailsValidations">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Validation"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <Attribute name="preCreateValidations">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Validation"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <Attribute name="preModifyValidations">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Validation"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <Attribute name="postCreateValidations">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Validation"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <Attribute name="postModifyValidations">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Validation"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <Attribute name="standardValidations">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Validation"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <Class name="Validation">
+    <Initialization>
+      <Attribute name="isFailure">
+        <type>
+          <javaclass name="Boolean"/>
+        </type>
+      </Attribute>
+      <Attribute name="failureMessage">
+        <type>
+          <javaclass name="curam.creole.value.Message"/>
+        </type>
+      </Attribute>
+    </Initialization>
+    <Attribute name="informationalType">
+      <type>
+        <javaclass name="curam.dynamicevidence.validation.impl.InformationalType"/>
+      </type>
+      <derivation>
+        <call
+          class="curam.dynamicevidence.validation.impl.InformationalType"
+          method="error"
+        >
+          <type>
+            <javaclass name="curam.dynamicevidence.validation.impl.InformationalType"/>
+          </type>
+        </call>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="Validation.description"
+          resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules"
+        >             
+                </ResourceMessage>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <Class name="ValidationMode">
+    <Initialization>
+      <Attribute name="mode">
+        <type>
+          <javaclass name="curam.dynamicevidence.validation.impl.ValidationMode"/>
+        </type>
+      </Attribute>
+    </Initialization>
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="ValidationMode.description"
+          resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules"
+        >             
+                    </ResourceMessage>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <Class
+    abstract="true"
+    extends="AbstractEvidenceValidationResult"
+    name="DefaultEvidenceValidationResult"
+  >
+
+
+    <Attribute name="detailsValidations">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Validation"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+    <Attribute name="preCreateValidations">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Validation"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+    <Attribute name="preModifyValidations">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Validation"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+    <Attribute name="postCreateValidations">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Validation"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+    <Attribute name="postModifyValidations">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Validation"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+    <Attribute name="standardValidations">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Validation"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+  </Class>
+</RuleSet>

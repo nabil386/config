@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet> 
+  <Product comment="" id="PRODUCT_10" legislationbase="" producttype="RT1"> 
+    <Label highlightonfailure="true"> 
+      <RuleName> 
+        <Text locale="fr" value="Surfacturation de passif"/> 
+      </RuleName>  
+      <SuccessText> 
+        <Text locale="fr" value="Réussite du produit"/> 
+      </SuccessText>  
+      <FailureText> 
+        <Text locale="fr" value="Echec du produit"/> 
+      </FailureText> 
+    </Label>  
+    <DataAccess name="Globals"> 
+      <DataItem name="dateOfCalculation"/>  
+      <DataItem name="deliveryFrequency"/>  
+      <DataItem name="personReferenceNumber"/>  
+      <DataItem name="claimReferenceNumber"/>  
+      <DataItem name="assessmentReferenceNumber"/> 
+    </DataAccess>  
+    <DataAccess name="LiabilityOverbillingCaseEvidence"> 
+      <DataItem name="caseClosedInd"/>  
+      <DataItem name="caseSuspendedInd"/>  
+      <DataItem name="productAvailableInd"/>  
+      <DataItem name="locationAvailableInd"/>  
+      <DataItem name="overbillingAmount"/> 
+    </DataAccess>  
+    <DataAccess name="LiabilityOverbillingRulesConstants"> 
+      <DataItem name="kUMinAge"/>  
+      <DataItem name="kUMaxAge"/>  
+      <DataItem name="kOverbillingAmountLowerBound"/> 
+    </DataAccess>  
+    <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="1" operation="and" summaryitem="true"> 
+      <Label highlightonfailure="true"> 
+        <RuleName> 
+          <Text locale="fr" value="Conditions préalables"/> 
+        </RuleName>  
+        <SuccessText> 
+          <Text locale="fr" value="Conditions préalables satisfaites"/> 
+        </SuccessText>  
+        <FailureText> 
+          <Text locale="fr" value="Conditions préalables non satisfaites"/> 
+        </FailureText> 
+      </Label>  
+      <Rule id="2" rulemode="notquotation" summaryitem="true"> 
+        <Label highlightonfailure="true"> 
+          <RuleName> 
+            <Text locale="fr" value="Ouverture du dossier"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Le dossier est ouvert"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Le dossier est clos"/> 
+          </FailureText> 
+        </Label>  
+        <Condition dataitemlhs="LiabilityOverbillingCaseEvidence.caseClosedInd" dataitemrhs="true" id="3" operation="!="/> 
+      </Rule>  
+      <Rule id="4" rulemode="notquotation" summaryitem="true"> 
+        <Label highlightonfailure="true"> 
+          <RuleName> 
+            <Text locale="fr" value="Dossier suspendu"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Le dossier n'est pas suspendu"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Le dossier est suspendu"/> 
+          </FailureText> 
+        </Label>  
+        <Condition dataitemlhs="LiabilityOverbillingCaseEvidence.caseSuspendedInd" dataitemrhs="true" id="5" operation="!="/> 
+      </Rule>  
+      <Rule id="6" rulemode="notquotation" summaryitem="true"> 
+        <Label highlightonfailure="true"> 
+          <RuleName> 
+            <Text locale="fr" value="Produit disponible"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Le produit est disponible"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Le produit n'est pas disponible"/> 
+          </FailureText> 
+        </Label>  
+        <Condition dataitemlhs="LiabilityOverbillingCaseEvidence.productAvailableInd" dataitemrhs="true" id="7" operation="=="/> 
+      </Rule>  
+      <Rule id="8" rulemode="notquotation" summaryitem="true"> 
+        <Label highlightonfailure="true"> 
+          <RuleName> 
+            <Text locale="fr" value="Le produit est disponible à partir de l'emplacement sélectionné"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Le produit est disponible à partir de l'emplacement sélectionné"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Le produit n'est pas disponible à partir de l'emplacement sélectionné"/> 
+          </FailureText> 
+        </Label>  
+        <Condition dataitemlhs="LiabilityOverbillingCaseEvidence.locationAvailableInd" dataitemrhs="true" id="9" operation="=="/> 
+      </Rule> 
+    </RuleGroup>  
+    <ObjectiveGroup comment="" conjunction="highestvalue" id="10" priority="1"> 
+      <Label highlightonfailure="true"> 
+        <RuleName> 
+          <Text locale="fr" value="Groupe de composants de surfacturation de passif"/> 
+        </RuleName>  
+        <SuccessText> 
+          <Text locale="fr" value="Réussite de la surfacturation de passif"/> 
+        </SuccessText>  
+        <FailureText> 
+          <Text locale="fr" value="Echec de la surfacturation de passif"/> 
+        </FailureText> 
+      </Label>  
+      <Objective comment="" deductionallowable="true" description="" id="11" priority="1" ratefctype="CT1" ratetarget="RC1" ratetype="PC149" recordid="11" targetid="0"> 
+        <Label highlightonfailure="true"> 
+          <RuleName> 
+            <Text locale="fr" value="Taux de surfacturation de passif"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Réussite de la surfacturation de passif"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Echec de la surfacturation de passif"/> 
+          </FailureText> 
+        </Label>  
+        <ObjectiveTag comment="" id="12" name="" pattern="200100000" recordid="12" type="RTT3" value="LiabilityOverbillingCaseEvidence.overbillingAmount"/>  
+        <ObjectiveTag comment="" id="13" name="" pattern="000100000" recordid="13" type="RTT3" value="LiabilityOverbillingCaseEvidence.overbillingAmount"/>  
+        <ObjectiveTag comment="" id="17" name="Weekly" pattern="100100000" recordid="17" type="RTT3" value="LiabilityOverbillingCaseEvidence.overbillingAmount"/>  
+        <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="14" operation="and" summaryitem="true"> 
+          <Label highlightonfailure="true"> 
+            <RuleName> 
+              <Text locale="fr" value="Règles de taux de surfacturation de passif"/> 
+            </RuleName>  
+            <SuccessText> 
+              <Text locale="fr" value="Réussite des règles de taux de surfacturation de passif"/> 
+            </SuccessText>  
+            <FailureText> 
+              <Text locale="fr" value="Echec des règles de taux de surfacturation de passif"/> 
+            </FailureText> 
+          </Label>  
+          <Rule id="15" rulemode="all" summaryitem="true"> 
+            <Label highlightonfailure="true"> 
+              <RuleName> 
+                <Text locale="fr" value="Le montant de surfacturation n'est pas égal à zéro"/> 
+              </RuleName>  
+              <SuccessText> 
+                <Text locale="fr" value="Le montant de surfacturation est supérieur à zéro"/> 
+              </SuccessText>  
+              <FailureText> 
+                <Text locale="fr" value="Le montant de surfacturation est inférieur ou égal à zéro"/> 
+              </FailureText> 
+            </Label>  
+            <Condition dataitemlhs="LiabilityOverbillingCaseEvidence.overbillingAmount" dataitemrhs="LiabilityOverbillingRulesConstants.kOverbillingAmountLowerBound" id="16" operation="&gt;"/> 
+          </Rule> 
+        </RuleGroup> 
+      </Objective> 
+    </ObjectiveGroup> 
+  </Product> 
+</RuleSet>

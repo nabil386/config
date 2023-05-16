@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2009, 2011-2012 Curam Software Ltd.                    -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- This workflow is used to generate a service invoice exception task.    -->
+<!--BEGIN, CR00235681, PM-->
+<workflow-process category="PC2" createdBy="unauthenticated" creationDate="20060116T152555" id="5" language-version="1.0" process-version="1" released="true"> 
+  <!--  END, CR00235681-->  
+  <name>IMPLEMENTATIONDEADLINETASK</name>  
+  <process-display-name> 
+    <localized-text> 
+      <locale language="fr">Tâche d'échéance d'implémentation</locale>  
+      <locale language="en">Implementation Dead Line Task</locale>
+    </localized-text> 
+  </process-display-name>  
+  <description> 
+    <localized-text> 
+      <locale language="fr">
+        <!-- BEGIN, CR00306765, AKr -->
+        <!-- END, CR00306765 -->Crée une tâche pour le propriétaire de dossier de chaque dossier et/ou anomalie connexe lorsqu'une
+        décision est prise en appel pour informer l'utilisateur qu'il peut implémenter la décision prise
+        en appel.
+      </locale>  
+      <locale language="en">Creates a task for the case owner of each related case and/or issue when
+        an appeal is decided to inform the user to implement the decision for 
+        the appeal.</locale>
+    </localized-text> 
+  </description>  
+  <enactment-mappings> 
+    <mapping> 
+      <source-attribute name="caseID" struct-name="curam.core.sl.struct.TaskCreateDetails"/>  
+      <target-attribute name="caseID" wdo-name="IMPLEMENTATIONDEADLINE"/> 
+    </mapping>  
+    <mapping> 
+      <source-attribute name="deadlineDateTime" struct-name="curam.core.sl.struct.TaskCreateDetails"/>  
+      <target-attribute name="deadlineDate" wdo-name="DeadlineDate"/> 
+    </mapping> 
+  </enactment-mappings>  
+  <wdos> 
+    <wdo> 
+      <wdo-name>IMPLEMENTATIONDEADLINE</wdo-name>  
+      <display-name> 
+        <localized-text> 
+          <locale language="fr">IMPLEMENTATIONDEADLINE</locale>  
+          <locale language="en">IMPLEMENTATIONDEADLINE</locale>
+        </localized-text> 
+      </display-name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">IMPLEMENTATIONDEADLINE</locale>  
+          <locale language="en">IMPLEMENTATIONDEADLINE</locale>
+        </localized-text> 
+      </description>  
+      <attributes> 
+        <attribute> 
+          <attribute-name>caseID</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">ID du dossier</locale>  
+              <locale language="en">caseID</locale>
+            </localized-text> 
+          </display-name>  
+          <type>INT64</type>  
+          <required-at-enactment>true</required-at-enactment> 
+        </attribute> 
+      </attributes> 
+    </wdo>  
+    <wdo> 
+      <wdo-name>DeadlineDate</wdo-name>  
+      <display-name> 
+        <localized-text> 
+          <locale language="fr">DeadlineDate</locale>  
+          <locale language="en">DeadlineDate</locale>
+        </localized-text> 
+      </display-name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">DeadlineDate</locale>  
+          <locale language="en">DeadlineDate</locale>
+        </localized-text> 
+      </description>  
+      <attributes> 
+        <attribute> 
+          <attribute-name>deadlineDate</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">DeadlineDate</locale>  
+              <locale language="en">deadlineDate</locale>
+            </localized-text> 
+          </display-name>  
+          <type>DATETIME</type>  
+          <required-at-enactment>true</required-at-enactment> 
+        </attribute> 
+      </attributes> 
+    </wdo> 
+  </wdos>  
+  <activities> 
+    <start-process-activity id="29718"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité de processus de démarrage</locale>  
+          <locale language="en">StartProcessActivity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de début</locale>  
+          <locale language="en">The start process activity</locale>
+        </localized-text> 
+      </description>  
+      <split type="none"> 
+        <transition-id idref="29722"/> 
+      </split> 
+    </start-process-activity>  
+    <end-process-activity id="29719"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité de processus de fin</locale>  
+          <locale language="en">EndProcessActivity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de fin</locale>  
+          <locale language="en">The end process activity</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/> 
+    </end-process-activity>  
+    <manual-activity category="AC1" id="29720"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">ImplementDecision</locale>  
+          <locale language="en">ImplementDecision</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">ImplementDecision</locale>  
+          <locale language="en">ImplementDecision</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="29723"/> 
+      </split>  
+      <task> 
+        <message> 
+          <message-text> 
+            <localized-text> 
+              <locale language="fr">Implémentation de l'appel pour le dossier %1n</locale>  
+              <locale language="en">Appeal Implementation for case %1n</locale>
+            </localized-text> 
+          </message-text>  
+          <message-parameters> 
+            <wdo-attribute name="caseID" wdo-name="IMPLEMENTATIONDEADLINE"/> 
+          </message-parameters> 
+        </message>  
+        <actions> 
+          <action page-id="Case_resolveCaseHome" principal-action="true"> 
+            <message> 
+              <message-text> 
+                <localized-text> 
+                  <locale language="fr">Implémentation de l'appel pour le dossier %1n</locale>  
+                  <locale language="en">Appeal Implementation for case %1n</locale>
+                </localized-text> 
+              </message-text>  
+              <message-parameters> 
+                <wdo-attribute name="caseID" wdo-name="IMPLEMENTATIONDEADLINE"/> 
+              </message-parameters> 
+            </message>  
+            <link-parameter name="caseID"> 
+              <wdo-attribute name="caseID" wdo-name="IMPLEMENTATIONDEADLINE"/> 
+            </link-parameter> 
+          </action> 
+        </actions>  
+        <allow-deadline-override>false</allow-deadline-override>  
+        <allow-task-forwarding>false</allow-task-forwarding> 
+      </task>  
+      <allocation-strategy identifier="HEARINGSCHEDULER" type="target"/>  
+      <event-wait> 
+        <events> 
+          <event event-class="APPEAL" event-type="IMPLEMENTATIONDEADLINETASK" identifier="29721"> 
+            <event-match-attribute name="caseID" wdo-name="IMPLEMENTATIONDEADLINE"/> 
+          </event> 
+        </events> 
+      </event-wait>  
+      <biz-object-associations> 
+        <biz-object-association biz-object-type="BOT1"> 
+          <wdo-attribute name="caseID" wdo-name="IMPLEMENTATIONDEADLINE"/> 
+        </biz-object-association> 
+      </biz-object-associations> 
+    </manual-activity> 
+  </activities>  
+  <transitions> 
+    <transition from-activity-idref="29718" id="29722" to-activity-idref="29720"/>  
+    <transition from-activity-idref="29720" id="29723" to-activity-idref="29719"/> 
+  </transitions> 
+</workflow-process>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="PDCAddressRuleSet">
+  <Class
+    extends="DynamicEvidence"
+    extendsRuleSet="DynamicEvidenceRuleSet"
+    name="PDCAddress"
+  >
+    <Attribute name="fromDate">
+      <Annotations/>
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+    <Attribute name="addressType">
+      <Annotations/>
+      <type>
+        <codetableentry table="AddressType"/>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+    <Attribute name="toDate">
+      <Annotations/>
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+    <Attribute name="preferredInd">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.Boolean"/>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+    <Attribute name="participant">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="related_participant">
+      <Annotations/>
+      <type>
+        <ruleclass
+          name="CaseParticipantRole"
+          ruleset="CaseEntitiesRuleSet"
+        />
+      </type>
+      <derivation>
+        <reference attribute="caseParticipantRoleRecord">
+          <create
+            ruleclass="CaseParticipantRoleCalculator"
+            ruleset="DynamicEvidenceRuleSet"
+          >
+            <reference attribute="participant"/>
+          </create>
+        </reference>
+      </derivation>
+    </Attribute>
+    <Attribute name="address">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="related_address">
+      <Annotations/>
+      <type>
+        <ruleclass
+          name="Address"
+          ruleset="ParticipantEntitiesRuleSet"
+        />
+      </type>
+      <derivation>
+        <reference attribute="addressRecord">
+          <create
+            ruleclass="AddressCalculator"
+            ruleset="DynamicEvidenceRuleSet"
+          >
+            <reference attribute="address"/>
+          </create>
+        </reference>
+      </derivation>
+    </Attribute>
+  </Class>
+</RuleSet>

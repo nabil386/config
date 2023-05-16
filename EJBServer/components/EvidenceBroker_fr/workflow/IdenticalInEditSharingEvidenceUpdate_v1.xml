@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2013. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<workflow-process category="PC2001" createdBy="admin" creationDate="20081023T094229" id="108" language-version="1.0" process-version="1" released="true"> 
+  <name>IdenticalInEditSharingEvidenceUpdate</name>  
+  <process-display-name> 
+    <localized-text> 
+      <locale language="fr">Mise à jour des informations collectées identiques impliquées dans un partage</locale>  
+      <locale language="en">Identical Sharing Evidence Update</locale>
+    </localized-text> 
+  </process-display-name>  
+  <description> 
+    <localized-text> 
+      <locale language="fr">Avertit le propriétaire d'un dossier que des informations collectées sont partagées depuis un autre dossier et doivent être examinées et acceptées.</locale>  
+      <locale language="en">Notifies the case owner of a case that identical evidence is being shared from another case and needs to be reviewed and accepted.</locale>
+    </localized-text> 
+  </description>  
+  <enactment-mappings> 
+    <mapping> 
+      <source-attribute name="caseID" struct-name="curam.core.struct.CaseHeaderKey"/>  
+      <target-attribute name="caseID" wdo-name="IdenticalEvidenceSharingWDO"/> 
+    </mapping>  
+    <mapping> 
+      <source-attribute name="caseReference" struct-name="curam.core.struct.CaseReference"/>  
+      <target-attribute name="caseReference" wdo-name="IdenticalEvidenceSharingWDO"/> 
+    </mapping>  
+    <mapping> 
+      <source-attribute name="evidenceDescriptorID" struct-name="curam.core.sl.infrastructure.entity.struct.EvidenceDescriptorKey"/>  
+      <target-attribute name="evidenceDescriptorID" wdo-name="IdenticalEvidenceSharingWDO"/> 
+    </mapping>  
+    <mapping> 
+      <source-attribute name="evidenceDesc" struct-name="curam.core.sl.infrastructure.struct.EvidenceTypeAndDesc"/>  
+      <target-attribute name="evidenceType" wdo-name="IdenticalEvidenceSharingWDO"/> 
+    </mapping> 
+  </enactment-mappings>  
+  <wdos> 
+    <wdo initialize-attributes="false" is-list-wdo="false"> 
+      <wdo-name>IdenticalEvidenceSharingWDO</wdo-name>  
+      <display-name> 
+        <localized-text> 
+          <locale language="fr">IdenticalEvidenceSharingWDO</locale>  
+          <locale language="en">IdenticalEvidenceSharingWDO</locale>
+        </localized-text> 
+      </display-name>  
+      <attributes> 
+        <attribute> 
+          <attribute-name>caseID</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">ID du dossier</locale>  
+              <locale language="en">caseID</locale>
+            </localized-text> 
+          </display-name>  
+          <type>INT64</type>  
+          <required-at-enactment>true</required-at-enactment>  
+          <process-output>false</process-output> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>caseReference</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Référence du dossier</locale>  
+              <locale language="en">caseReference</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>true</required-at-enactment>  
+          <process-output>false</process-output> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>evidenceDescriptorID</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">evidenceDescriptorID</locale>  
+              <locale language="en">evidenceDescriptorID</locale>
+            </localized-text> 
+          </display-name>  
+          <type>INT64</type>  
+          <required-at-enactment>true</required-at-enactment>  
+          <process-output>false</process-output> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>evidenceType</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">evidenceType</locale>  
+              <locale language="en">evidenceType</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>true</required-at-enactment>  
+          <process-output>false</process-output> 
+        </attribute> 
+      </attributes> 
+    </wdo> 
+  </wdos>  
+  <activities> 
+    <start-process-activity id="1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité de processus de début</locale>  
+          <locale language="en">Start Process Activity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de début</locale>  
+          <locale language="en">The start process activity</locale>
+        </localized-text> 
+      </description>  
+      <split type="none"> 
+        <transition-id idref="1"/> 
+      </split> 
+    </start-process-activity>  
+    <end-process-activity id="2"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de fin</locale>  
+          <locale language="en">End Process Activity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de fin</locale>  
+          <locale language="en">The end process activity</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/> 
+    </end-process-activity>  
+    <manual-activity category="AC1" id="4"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Synchronisation de partage d'informations collectées identiques</locale>  
+          <locale language="en">Identical Evidence Sharing Synchronization</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Notification émise dans le cadre d'un partage d'informations collectées identiques suite à une mise à jour d'informations collectées.</locale>  
+          <locale language="en">Notification issued following identical evidence sharing as a result of evidence update.</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/>  
+      <split type="and"> 
+        <transition-id idref="5"/>  
+        <transition-id idref="7"/> 
+      </split>  
+      <task> 
+        <message> 
+          <message-text> 
+            <localized-text> 
+              <!--  BEGIN, CR00236468, GYH -->  
+              <locale language="fr">Une mise à jour a été reçue pour les informations collectées partagées %1s dans le dossier %2s.</locale>  
+              <!--  END, CR00236468 -->  
+              <locale language="en">An update received to shared identical evidence %1s on Case %2s.</locale>
+            </localized-text> 
+          </message-text>  
+          <message-parameters> 
+            <wdo-attribute name="evidenceType" wdo-name="IdenticalEvidenceSharingWDO"/>  
+            <wdo-attribute name="caseReference" wdo-name="IdenticalEvidenceSharingWDO"/> 
+          </message-parameters> 
+        </message>  
+        <actions> 
+          <action open-modal="true" page-id="WorkflowEvents_identicalEvidenceSynchronizationComplete" principal-action="true"> 
+            <message> 
+              <message-text> 
+                <localized-text> 
+                  <locale language="fr">J'ai terminé de travailler sur cette tâche.</locale>  
+                  <locale language="en">I have completed all work on this task.</locale>
+                </localized-text> 
+              </message-text> 
+            </message>  
+            <link-parameter name="evidenceDescriptorID"> 
+              <wdo-attribute name="evidenceDescriptorID" wdo-name="IdenticalEvidenceSharingWDO"/> 
+            </link-parameter> 
+          </action>  
+          <action open-modal="true" page-id="WorkflowEvents_cannotCompleteIdenticalEvidenceSynchronization" principal-action="true"> 
+            <message> 
+              <message-text> 
+                <localized-text> 
+                  <locale language="fr">Il existe des anomalies en attente pour cette tâche.  Faites-les remonter au superviseur.</locale>  
+                  <locale language="en">There are outstanding issues on this task.  Escalate to supervisor.</locale>
+                </localized-text> 
+              </message-text> 
+            </message>  
+            <link-parameter name="evidenceDescriptorID"> 
+              <wdo-attribute name="evidenceDescriptorID" wdo-name="IdenticalEvidenceSharingWDO"/> 
+            </link-parameter> 
+          </action>  
+          <!--  BEGIN, CR00236468, GYH -->  
+          <action page-id="EvidenceBroker_resolveInEditEvidence" principal-action="false"> 
+            <message> 
+              <message-text> 
+                <localized-text> 
+                  <locale language="fr">Réviser les informations collectées en cours d'édition</locale>  
+                  <locale language="en">Review In-Edit Evidence</locale>
+                </localized-text> 
+              </message-text> 
+            </message>  
+            <link-parameter name="caseID"> 
+              <wdo-attribute name="caseID" wdo-name="IdenticalEvidenceSharingWDO"/> 
+            </link-parameter> 
+          </action>  
+          <!--  END, CR00236468 --> 
+        </actions>  
+        <allow-deadline-override>true</allow-deadline-override>  
+        <allow-task-forwarding>true</allow-task-forwarding> 
+      </task>  
+      <allocation-strategy identifier="curam.core.sl.intf.WorkflowAllocationFunction.caseOwnerAllocationStrategy" type="function"> 
+        <function-mappings> 
+          <formal-parameters> 
+            <formal-parameter index="0"> 
+              <struct type="curam.core.sl.struct.CaseIDKey"> 
+                <field name="caseID"> 
+                  <base-type type="INT64"> 
+                    <wdo-attribute name="caseID" wdo-name="IdenticalEvidenceSharingWDO"/> 
+                  </base-type> 
+                </field> 
+              </struct> 
+            </formal-parameter> 
+          </formal-parameters> 
+        </function-mappings> 
+      </allocation-strategy>  
+      <event-wait wait-on-all-events="false"> 
+        <events> 
+          <event event-class="EvidenceBroker" event-type="IdenticalEvidenceSynchronized" identifier="1"> 
+            <event-match-attribute name="evidenceDescriptorID" wdo-name="IdenticalEvidenceSharingWDO"/> 
+          </event>  
+          <event event-class="EvidenceBroker" event-type="IdenticalEvidenceNotSynchronized" identifier="2"> 
+            <event-match-attribute name="evidenceDescriptorID" wdo-name="IdenticalEvidenceSharingWDO"/> 
+          </event>  
+          <event event-class="TASK" event-type="CLOSED" identifier="3"> 
+            <event-match-attribute name="taskID" wdo-name="Context_Task"/> 
+          </event> 
+        </events> 
+      </event-wait>  
+      <biz-object-associations> 
+        <biz-object-association biz-object-type="BOT1"> 
+          <wdo-attribute name="caseID" wdo-name="IdenticalEvidenceSharingWDO"/> 
+        </biz-object-association> 
+      </biz-object-associations> 
+    </manual-activity>  
+    <manual-activity id="7"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">La synchronisation n'a pas pu être effectuée.</locale>  
+          <locale language="en">Synchronization could not be completed</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="8"/> 
+      </split>  
+      <task> 
+        <message> 
+          <message-text> 
+            <localized-text> 
+              <locale language="fr">Echec de la création des informations collectées entrantes %1s dans le dossier %2s.</locale>  
+              <locale language="en">Failed to create incoming evidence %1s on Case %2s.</locale>
+            </localized-text> 
+          </message-text>  
+          <message-parameters> 
+            <wdo-attribute name="evidenceType" wdo-name="IdenticalEvidenceSharingWDO"/>  
+            <wdo-attribute name="caseReference" wdo-name="IdenticalEvidenceSharingWDO"/> 
+          </message-parameters> 
+        </message>  
+        <actions> 
+          <action open-modal="true" page-id="WorkflowEvents_supervisorEvidenceSynchronizationComplete" principal-action="true"> 
+            <message> 
+              <message-text> 
+                <localized-text> 
+                  <locale language="fr">J'ai résolu toutes les anomalies associées à cette tâche.</locale>  
+                  <locale language="en">I have resolved all issues associated with this task</locale>
+                </localized-text> 
+              </message-text> 
+            </message>  
+            <link-parameter name="evidenceDescriptorID"> 
+              <wdo-attribute name="evidenceDescriptorID" wdo-name="IdenticalEvidenceSharingWDO"/> 
+            </link-parameter> 
+          </action> 
+        </actions>  
+        <allow-deadline-override>true</allow-deadline-override>  
+        <allow-task-forwarding>true</allow-task-forwarding> 
+      </task>  
+      <allocation-strategy identifier="curam.core.sl.intf.NotificationAllocationFunction.caseSupervisorStrategy" type="function"> 
+        <function-mappings> 
+          <formal-parameters> 
+            <formal-parameter index="0"> 
+              <base-type type="INT64"> 
+                <wdo-attribute name="caseID" wdo-name="IdenticalEvidenceSharingWDO"/> 
+              </base-type> 
+            </formal-parameter> 
+          </formal-parameters> 
+        </function-mappings> 
+      </allocation-strategy>  
+      <event-wait wait-on-all-events="false"> 
+        <events> 
+          <event event-class="EvidenceBroker" event-type="IdenticalEvidenceSynchronized" identifier="1"> 
+            <event-match-attribute name="evidenceDescriptorID" wdo-name="IdenticalEvidenceSharingWDO"/> 
+          </event>  
+          <event event-class="EvidenceBroker" event-type="SupervisorSynchronizeTaskComplete" identifier="2"> 
+            <event-match-attribute name="evidenceDescriptorID" wdo-name="IdenticalEvidenceSharingWDO"/> 
+          </event>  
+          <event event-class="TASK" event-type="CLOSED" identifier="3"> 
+            <event-match-attribute name="taskID" wdo-name="Context_Task"/> 
+          </event> 
+        </events> 
+      </event-wait>  
+      <biz-object-associations> 
+        <biz-object-association biz-object-type="BOT1"> 
+          <wdo-attribute name="caseID" wdo-name="IdenticalEvidenceSharingWDO"/> 
+        </biz-object-association> 
+      </biz-object-associations> 
+    </manual-activity>  
+    <route-activity id="6"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité d'acheminement</locale>  
+          <locale language="en">Route Activity</locale>
+        </localized-text> 
+      </name>  
+      <join type="and"/>  
+      <split type="none"> 
+        <transition-id idref="6"/> 
+      </split> 
+    </route-activity> 
+  </activities>  
+  <transitions> 
+    <transition from-activity-idref="1" id="1" to-activity-idref="4"/>  
+    <transition from-activity-idref="4" id="5" to-activity-idref="6"/>  
+    <transition from-activity-idref="6" id="6" to-activity-idref="2"/>  
+    <transition from-activity-idref="4" id="7" to-activity-idref="7"> 
+      <condition> 
+        <expression conjunction="and" data-item-lhs="Context_Event.fullyQualifiedEventType" data-item-rhs="&quot;EvidenceBroker.IdenticalEvidenceNotSynchronized&quot;" id="1" operation="=="/> 
+      </condition> 
+    </transition>  
+    <transition from-activity-idref="7" id="8" to-activity-idref="6"/> 
+  </transitions> 
+</workflow-process>

@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<RuleSet name="BDMPDCAddressVerificationRuleSet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../catalog/RuleSet.xsd">
+    <Class extends="VerificationDeterminator" extendsRuleSet="VerificationRuleSet" name="BDMPDCAddressVerificationDeterminator">
+		<Annotations>
+		  <Label label-id="BDMPDCAddressVerificationDeterminator.label.1" name="BDM Address Integrity Rules Conditional Verification Rules Class"/>
+		</Annotations>
+        <Attribute name="displayName">
+            <type>
+                <javaclass name="curam.creole.value.Message"/>
+            </type>
+            <derivation>
+                <ResourceMessage key="BDMVerification.Address.DisplayName"	resourceBundle="curam.bdm.verification.BDMVerification"/>
+            </derivation>
+        </Attribute> 
+        
+        <Attribute name="reasonSkipped">
+            <type>
+                <codetableentry table="VerificationSkippedReason"/>
+            </type>
+            <derivation>
+        		<choose>
+          			<type>
+            			<codetableentry table="VerificationSkippedReason"/>
+          			</type>
+          			<when>
+            			<condition>
+              				<not>
+                				<reference attribute="isConditionalVerificationRequired"/>
+              				</not>
+            			</condition>
+            			<value>
+              				<Code table="VerificationSkippedReason">
+                				<String value="VSR2001"/>
+              				</Code>
+            			</value>
+          			</when>
+          			<otherwise>
+            			<value>
+              				<Code table="VerificationSkippedReason">
+                				<String value="VSR2001"/>
+              				</Code>
+            			</value>
+          			</otherwise>
+        		</choose>
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="determine">
+            <type>
+                <ruleclass	name="VerificationDeterminatorResult"	ruleset="VerificationRuleSet"/>
+            </type>
+            <derivation>
+                <create	ruleclass="VerificationDeterminatorResult"	ruleset="VerificationRuleSet">
+                    <specify attribute="result">
+                        <reference attribute="isConditionalVerificationRequired"/>
+                    </specify>
+                    <specify attribute="reason">
+                        <reference attribute="reasonSkipped"/>
+                    </specify>
+                </create>
+            </derivation>
+        </Attribute> 
+		<Attribute name="isConditionalVerificationRequired">
+			<Annotations>
+			  <Label label-id="BDMPDCAddressVerificationDeterminator.label.2" name="BDM Address Integrity Rules Conditional check"/>
+			</Annotations>
+			<type>
+				<javaclass name="Boolean"/>
+			</type>
+			<derivation>
+				<all>
+					<fixedlist>
+						<listof>
+							<javaclass name="Boolean" />
+						</listof>
+						<members>
+							<!-- TASK BEGIN 21500 - Null Check -->
+							<not>
+								<equals>
+									<reference attribute="addressEvidenceRecord" />
+									<null />
+								</equals>
+							</not>
+							<!-- TASK END 21500--> 
+							<reference attribute="isAddressTypeIntegrityCheckRequired" />
+							<any>
+								<fixedlist>
+									<listof>
+										<javaclass name="Boolean" />
+									</listof>
+									<members> 
+										<reference
+											attribute="isAddressReviewRequiredOnSIRResponse" />
+										<reference
+											attribute="individualPerAddressUseCountAboveThreshold" />
+										<reference
+											attribute="benefitPerAddressUseCountAboveThreshold" />
+										<reference
+											attribute="benefitPerBenfitTypeAddressUseCountAboveThreshold" />
+									</members>
+								</fixedlist>
+							</any>
+						</members>
+					</fixedlist>
+				</all>
+			</derivation>
+		</Attribute>
+        
+		<!-- Individual Per Address -->
+		<Attribute name="individualPerAddressCountThresholdLimit">			
+            <type>
+                <javaclass name="Number"/>        
+            </type>
+            <derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.BDMVerificationStatics" method="getIndividualPerAddressLimit">
+				<type>
+					<javaclass name="Number"/>  
+				</type>
+				<arguments/>
+				</call>
+            </derivation>
+        </Attribute>
+		
+        <Attribute name="individualPerAddressUseCountAboveThreshold">
+			<Annotations>
+			  <Label label-id="BDMPDCAddressVerificationDeterminator.label.3" name="BDM Address Integrity Rules - IntegrityRule0002 - Address Rules"/>
+			</Annotations>
+            <type>
+                <javaclass name="Boolean"/>
+            </type>
+            <derivation>
+                <compare comparison="&gt;=">
+					<reference attribute="individualPerAddressUseCount"/>
+					<reference attribute="individualPerAddressCountThresholdLimit"/>							  
+				</compare>
+            </derivation>
+        </Attribute>
+		
+        <Attribute name="individualPerAddressUseCount">
+            <type>
+                <javaclass name="Number"/>        
+            </type>
+            <derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.BDMVerificationStatics" method="getIndividualPerAddressUseCount">
+				<type>
+					<javaclass name="Number"/>  
+				</type>
+					<arguments>
+						<reference attribute="addressData">
+							<reference attribute="related_address">
+								<reference attribute="addressEvidenceRecord"/>
+							</reference>
+						</reference>
+						<reference attribute="addressType">
+								<reference attribute="addressEvidenceRecord"/>
+						</reference>						
+					</arguments>
+				</call>
+            </derivation>
+        </Attribute>
+				
+		<Attribute name="benefitPerAddressCountThresholdLimit">
+            <type>
+                <javaclass name="Number"/>        
+            </type>
+            <derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.BDMVerificationStatics" method="getBenefitPerAddressLimit">
+				<type>
+					<javaclass name="Number"/>  
+				</type>
+				<arguments/>
+				</call>
+            </derivation>
+        </Attribute>
+		<Attribute name="benefitPerAddressUseCountAboveThreshold">
+			<Annotations>
+			  <Label label-id="BDMPDCAddressVerificationDeterminator.label.4" name="BDM Address Integrity Rules - IntegrityRule0003 - Address Rules"/>
+			</Annotations>
+            <type>
+                <javaclass name="Boolean"/>
+            </type>
+            <derivation>
+                <compare comparison="&gt;=">
+					<reference attribute="benefitPerAddressUseCount"/>
+					<reference attribute="benefitPerAddressCountThresholdLimit"/>							  
+				</compare>
+            </derivation>
+        </Attribute>
+		
+        <Attribute name="benefitPerAddressUseCount">
+            <type>
+                <javaclass name="Number"/>        
+            </type>
+            <derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.BDMVerificationStatics" method="getBenefitPerAddressUseCount">
+				<type>
+					<javaclass name="Number"/>  
+				</type>
+					<arguments>
+						<reference attribute="addressData">
+							<reference attribute="related_address">
+								<reference attribute="addressEvidenceRecord"/>
+							</reference>
+						</reference>
+						<reference attribute="addressType">
+								<reference attribute="addressEvidenceRecord"/>
+						</reference>						
+					</arguments>
+				</call>
+            </derivation>
+        </Attribute>
+		
+		
+		<Attribute name="benefitPerBenfitTypeAddressUseCountAboveThreshold">
+			<Annotations>
+			  <Label label-id="BDMPDCAddressVerificationDeterminator.label.5" name="BDM Address Integrity Rules - IntegrityRule0004 - Address Rules"/>
+			</Annotations>
+            <type>
+                <javaclass name="Boolean"/>        
+            </type>
+            <derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.BDMVerificationStatics" method="getBenefitPerAddressPerBenefitTypeUseCountCheck">
+				<type>
+					<javaclass name="Boolean"/>  
+				</type>
+					<arguments>
+						<reference attribute="addressData">
+							<reference attribute="related_address">
+								<reference attribute="addressEvidenceRecord"/>
+							</reference>
+						</reference>
+						<reference attribute="participantRoleID">
+							<reference attribute="related_participant">
+								<reference attribute="addressEvidenceRecord"/>
+							</reference>
+						</reference>
+						<reference attribute="addressType">
+								<reference attribute="addressEvidenceRecord"/>
+						</reference>
+					</arguments>					
+				</call>
+            </derivation>
+        </Attribute>		
+		
+		<Attribute name="addressEvidenceRecord">
+            <type>
+                <ruleclass name="PDCAddress" ruleset="BDMPDCAddressVerDataRuleSet"/>        
+            </type>
+            <derivation>
+                <singleitem onMultiple="returnFirst" onEmpty="returnNull">
+                    <readall ruleclass="PDCAddress" ruleset="BDMPDCAddressVerDataRuleSet">
+                        <match retrievedattribute="evidenceDescriptorID">
+                            <reference attribute="evidenceDescriptorID">
+                                <reference attribute="verificationDeterminatorParams"/>
+                            </reference>
+                        </match>
+                    </readall>
+                </singleitem>
+            </derivation>
+        </Attribute>
+		
+		<Attribute name="bdmSINIdentificationStatusRecord">
+            <type>
+                <ruleclass name="BDMSINIdentificationStatus" ruleset="BDMSINIdentificationStatusDataRuleSet"/>        
+            </type>
+            <derivation>
+                <singleitem onMultiple="returnFirst" onEmpty="returnNull">
+                    <readall ruleclass="BDMSINIdentificationStatus" ruleset="BDMSINIdentificationStatusDataRuleSet">
+                        <match retrievedattribute="caseID">
+                            <reference attribute="caseID">
+                                <reference attribute="verificationDeterminatorParams"/>
+                            </reference>
+						</match>
+                    </readall>
+                </singleitem>
+            </derivation>
+        </Attribute>
+		
+		<Attribute name="isAddressReviewRequiredOnSIRResponse">
+			<Annotations>
+			  <Label label-id="BDMPDCIdentificationVerificationDeterminator.label.2" name="BDM SIN Integrity Rules - IntegrityRule0005 - SIN Rules"/>
+			</Annotations>
+			<type>
+				<javaclass name="Boolean"/>
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Boolean"/>
+					</type>					
+					<when>
+						<condition>
+							<not>
+								<equals>
+									<reference attribute="bdmSINIdentificationStatusRecord"/>									
+									<null />
+								</equals>
+							</not>
+            			</condition>
+            			<value>
+							<equals>
+								<reference attribute="addressReviewFlag">
+									<reference attribute="bdmSINIdentificationStatusRecord"/>
+								</reference>
+								<Code table="BDMSIRCheckResult">
+									<String value="BDMSCR02"/>
+								</Code>
+							</equals>             				
+            			</value>
+          			</when>
+          			<otherwise>
+            			<value>
+              				<false/>
+            			</value>
+          			</otherwise>					
+				</choose>				
+			</derivation>
+		</Attribute>
+        
+		<Attribute name="isAddressTypeIntegrityCheckRequired">
+            <type>
+                <javaclass name="Boolean"/>        
+            </type>
+            <derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.BDMVerificationStatics" method="isAddressTypeIntegrityCheckRequired">
+				<type>
+					<javaclass name="Boolean"/>  
+				</type>
+					<arguments>
+						<reference attribute="addressType">
+								<reference attribute="addressEvidenceRecord"/>
+						</reference>						
+					</arguments>
+				</call>
+            </derivation>
+        </Attribute>
+		
+    </Class>
+</RuleSet>

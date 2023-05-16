@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet
+	name="BDMOASLivingApartforReasonsBeyondControlSummaryRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class extends="DefaultEvidenceSummary"
+		extendsRuleSet="EvidenceSummaryRuleSet" name="SummaryInformation">
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="BDMOASLivingApartforReasonsBeyondControl"
+					ruleset="BDMOASLivingApartforReasonsBeyondControlRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="maritalRelationship">
+			<type>
+				<ruleclass name="BDMOASMaritalRelationship"
+					ruleset="BDMOASMaritalRelationshipRuleSet" />
+			</type>
+			<derivation>
+				<reference attribute="maritalRelationship">
+					<reference attribute="evidence" />
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="summary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Message" />
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<Number value="0" />
+								<reference attribute="relatedCaseParticipantRoleID">
+									<reference attribute="maritalRelationship" />
+								</reference>
+							</equals>
+						</condition>
+						<value>
+							<null />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<not>
+								<equals>
+									<Number value="0" />
+									<reference attribute="relatedCaseParticipantRoleID">
+										<reference attribute="maritalRelationship" />
+									</reference>
+								</equals>
+							</not>
+						</condition>
+						<value>
+							<ResourceMessage
+								key="livingApartforResonsBeyondControl.Summary"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASLivingApartforReasonsBeyondControlSummaryRuleSet">
+								<reference attribute="concernRoleName">
+									<singleitem onEmpty="error" onMultiple="error">
+										<readall ruleclass="ConcernRole"
+											ruleset="ParticipantEntitiesRuleSet">
+											<match retrievedattribute="concernRoleID">
+												<reference attribute="participantRoleID">
+													<reference
+														attribute="related_relatedCaseParticipantRoleID">
+														<reference attribute="maritalRelationship" />
+													</reference>
+												</reference>
+											</match>
+										</readall>
+									</singleitem>
+								</reference>
+								<reference attribute="reasonForLivingApart">
+									<reference attribute="evidence" />
+								</reference>
+							</ResourceMessage>
+
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<null />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

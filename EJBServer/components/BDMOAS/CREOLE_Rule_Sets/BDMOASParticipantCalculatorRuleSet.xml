@@ -1,0 +1,265 @@
+<RuleSet name="BDMOASParticipantCalculatorRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class name="BDMOASParticipantCalculator"
+		extends="BDMParticipantCalculator"
+		extendsRuleSet="BDMParticipantCalculatorRuleSet">
+		<Attribute name="caseParticipantData">
+			<type>
+				<ruleclass name="BDMOASCaseParticipantData"
+					ruleset="BDMOASDataRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="BDMOASCaseParticipantData"
+					ruleset="BDMOASDataRuleSet">
+					<reference attribute="caseParticipantRoleID" />
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="dateOfDeath">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.util.type.Date" />
+					</type>
+					<when>
+						<condition>
+							<reference attribute="isProspectPerson" />
+						</condition>
+						<value>
+							<reference attribute="dateOfDeath">
+								<reference attribute="prospectPersonRecord" />
+							</reference>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<reference attribute="dateOfDeath">
+								<reference attribute="personRecord" />
+							</reference>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="isAliveDuringMonthTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<existencetimeline>
+					<intervaltype>
+						<javaclass name="Boolean" />
+					</intervaltype>
+					<intervalfromdate>
+						<call class="curam.ca.gc.bdmoas.creole.impl.Statics"
+							method="getStartOfMonth">
+							<type>
+								<javaclass name="curam.util.type.Date" />
+							</type>
+							<arguments>
+								<reference attribute="dateOfBirth" />
+							</arguments>
+						</call>
+					</intervalfromdate>
+					<intervaltodate>
+						<choose>
+							<type>
+								<javaclass name="curam.util.type.Date" />
+							</type>
+							<when>
+								<condition>
+									<equals>
+										<null />
+										<reference attribute="dateOfDeath" />
+									</equals>
+								</condition>
+								<value>
+									<null />
+								</value>
+							</when>
+							<otherwise>
+								<value>
+									<call class="curam.ca.gc.bdmoas.creole.impl.Statics"
+										method="getEndOfMonth">
+										<type>
+											<javaclass name="curam.util.type.Date" />
+										</type>
+										<arguments>
+											<reference attribute="dateOfDeath" />
+										</arguments>
+									</call>
+								</value>
+							</otherwise>
+						</choose>
+					</intervaltodate>
+					<preExistenceValue>
+						<false />
+					</preExistenceValue>
+					<existenceValue>
+						<true />
+					</existenceValue>
+					<postExistenceValue>
+						<false />
+					</postExistenceValue>
+				</existencetimeline>
+			</derivation>
+		</Attribute>
+		<Attribute name="subsequentMonthAgeTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.Statics"
+					method="getSubsequentMonthNumberTimeline">
+					<type>
+						<javaclass name="curam.creole.value.Timeline">
+							<javaclass name="Number" />
+						</javaclass>
+					</type>
+					<arguments>
+						<reference attribute="ageTimeline" />
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		<Attribute name="rawIsCanadianResidentialAddressTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<Timeline>
+					<intervaltype>
+						<javaclass name="Boolean" />
+					</intervaltype>
+					<initialvalue>
+						<false />
+					</initialvalue>
+					<intervals>
+						<dynamiclist>
+							<list>
+								<reference attribute="residentialAddressRecordList">
+									<reference attribute="caseParticipantData" />
+								</reference>
+							</list>
+							<listitemexpression>
+								<Interval>
+									<intervaltype>
+										<javaclass name="Boolean" />
+									</intervaltype>
+									<start>
+										<reference attribute="fromDate">
+											<current />
+										</reference>
+									</start>
+									<value>
+										<equals>
+											<reference attribute="countryCode">
+												<reference attribute="related_address">
+													<current />
+												</reference>
+											</reference>
+											<Code table="AddressCountry">
+												<String value="CA" />
+											</Code>
+										</equals>
+									</value>
+								</Interval>
+							</listitemexpression>
+						</dynamiclist>
+					</intervals>
+				</Timeline>
+			</derivation>
+		</Attribute>
+		<Attribute name="earliestResidentialAddressFromDate">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<reference attribute="fromDate">
+					<singleitem onMultiple="returnFirst" onEmpty="error">
+						<sort>
+							<list>
+								<reference attribute="residentialAddressRecordList">
+									<reference attribute="caseParticipantData" />
+								</reference>
+							</list>
+							<sortorder>
+								<sortitem direction="ascending">
+									<reference attribute="fromDate">
+										<current />
+									</reference>
+								</sortitem>
+							</sortorder>
+						</sort>
+					</singleitem>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="isCanadianResidentialAddressTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<fixedlist>
+							<listof>
+								<javaclass name="Boolean" />
+							</listof>
+							<members>
+								<intervalvalue>
+									<existencetimeline>
+										<intervaltype>
+											<javaclass name="Boolean" />
+										</intervaltype>
+										<intervalfromdate>
+											<null />
+										</intervalfromdate>
+										<intervaltodate>
+											<reference
+												attribute="earliestResidentialAddressFromDate" />
+										</intervaltodate>
+										<preExistenceValue>
+											<false />
+										</preExistenceValue>
+										<existenceValue>
+											<property name="valueOn">
+												<object>
+													<reference
+														attribute="rawIsCanadianResidentialAddressTimeline" />
+												</object>
+												<arguments>
+													<reference
+														attribute="earliestResidentialAddressFromDate" />
+												</arguments>
+											</property>
+										</existenceValue>
+										<postExistenceValue>
+											<false />
+										</postExistenceValue>
+									</existencetimeline>
+								</intervalvalue>
+								<intervalvalue>
+									<reference
+										attribute="rawIsCanadianResidentialAddressTimeline" />
+								</intervalvalue>
+							</members>
+						</fixedlist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

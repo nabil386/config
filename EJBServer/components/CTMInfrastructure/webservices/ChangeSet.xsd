@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+    Copyright 2010-2011 Curam Software Ltd.
+    All rights reserved.
+
+    This software is the confidential and proprietary information of Curam
+    Software, Ltd. ("Confidential Information"). You shall not disclose
+    such Confidential Information and shall use it only in accordance with the
+    terms of the license agreement you entered into with Curam Software.
+-->
+   
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://www.curam.com" 
+        xmlns:cns="http://www.curam.com"
+        elementFormDefault="qualified">
+
+    <element name="ChangeSet" type="cns:TransportChangeSetRequest"/>
+    
+    <complexType name="TransportChangeSetRequest">
+        <sequence>
+            <sequence>
+                <element ref="cns:IdentifierHeader" />
+                <element ref="cns:RevertHeader"/>
+                <element name="VersionHeader" type="xsd:string"/>
+                <element name="LocaleHeader" type="xsd:string"/>
+                <element ref="cns:AuditHeader" />
+                <element name="IntegrityHeader" type="xsd:long"/>
+                <element ref="cns:InstructionHeader" />
+                <element ref="cns:BusinessObjectContent" />
+            </sequence>
+        </sequence>
+    </complexType>
+    
+    <element  name="IdentifierHeader">
+        <complexType>
+            <sequence>
+                <element  name="ChangeSetIdentifier" type="xsd:string" />
+                <element  name="Comments" type="xsd:string"/>
+                <element  name="CreatedBy" type="xsd:string"/>
+                <element  name="CreatedDate" type="xsd:dateTime"/>
+                <element  name="ReleasedBy" type="xsd:string"/>
+                <element  name="ReleasedDate" type="xsd:dateTime"/>
+                <element  name="RemoteSystem" type="xsd:string"/>
+                <element  name="RemoteSystemURL" type="xsd:string"/>
+            </sequence>
+        </complexType>
+    </element >
+    
+    <element name="RevertHeader">
+        <simpleType>
+            <restriction base="xsd:string">
+                <pattern value="true|false"/>
+            </restriction>
+        </simpleType>
+    </element>
+    
+    <element  name="AuditHeader">
+        <complexType>
+            <sequence>
+                <element  ref="cns:ChangeSetAudit" minOccurs="1" maxOccurs="unbounded" />
+            </sequence>
+        </complexType>
+    </element >
+    
+    <element name="ChangeSetAudit">
+        <complexType>
+            <sequence>
+                <element name="Action" type="xsd:string"/>
+                 <element name="ActionBy" type="xsd:string"/>
+                <element name="ActionTime" type="dateTime"/>
+                <element name="SourceSystem" type="xsd:string"/>
+            </sequence>
+        </complexType>
+    </element>
+    
+    <element name="InstructionHeader">
+        <complexType>
+            <sequence>
+                <element ref="cns:Add" minOccurs="0"/>
+                <element ref="cns:Delete" minOccurs="0"/>
+            </sequence>
+        </complexType>
+    </element>
+    
+    <element name="Add">
+        <complexType>
+            <sequence>
+                <element ref="cns:Instruction" maxOccurs="unbounded" />
+            </sequence>
+        </complexType>
+    </element>
+    
+    <element name="Delete">
+        <complexType>
+            <sequence>
+                <element ref="cns:Instruction" maxOccurs="unbounded" />
+            </sequence>
+        </complexType>
+    </element>
+    
+    <element name="Instruction" type="xsd:string" />
+    
+    <element name="BusinessObjectContent">
+        <complexType>
+            <sequence>
+                <element ref="cns:BusinessObject" maxOccurs="unbounded" />
+            </sequence>
+        </complexType>
+    </element>
+    
+    <element name="BusinessObject">
+        <complexType>
+            <sequence>
+                <element ref="cns:BusinessObjectHeader"/>
+                <element ref="cns:BusinessObjectBody"/>
+            </sequence>
+            <attribute name="boname" type="xsd:string" use="optional"/>
+        </complexType>
+    </element>
+    
+    <element name="BusinessObjectHeader">
+        <complexType>
+            <sequence>
+                <element ref="cns:BusinessObjectIdentifierHeader" />
+                <element ref="cns:BusinessObjectDependencyHeader" />
+                <element ref="cns:BusinessObjectAuditHeader" />
+            </sequence>
+        </complexType>
+    </element>
+    
+    <element name="BusinessObjectAuditHeader">
+        <complexType>
+            <sequence>
+                <any maxOccurs="unbounded"/>
+            </sequence>
+        </complexType>
+    </element>
+    
+    <element name="BusinessObjectDependencyHeader">
+        <annotation>
+            <documentation> Some types of Business Object have dependencies on other types of Business Object. 
+                These dependencies are essentially foreign key relationships between the entities in the different types of Business Object. </documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <element name="DependentBusinessObject" type="cns:DependentBusinessObject" minOccurs="0" maxOccurs="unbounded"/>
+            </sequence>
+        </complexType>
+    </element>
+    
+    <complexType name="DependentBusinessObject">
+        <sequence>
+            <element name="DependentBusinessObjectKey" type="xsd:int" minOccurs="0"/>
+            <element name="DependentBusinessObjectType" type="xsd:string"/>
+        </sequence>
+    </complexType>
+    
+    <element name="BusinessObjectIdentifierHeader">
+        <complexType>
+            <sequence>
+                <element name="BusinessObjectKey" type="xsd:int"/>
+                <element name="BusinessObjectType" type="xsd:string"/>
+            </sequence>
+        </complexType>
+    </element>
+    
+    <element name="BusinessObjectBody">
+        <complexType>
+            <sequence>
+                <any maxOccurs="unbounded"/> 
+            </sequence>
+        </complexType>
+    </element>
+   
+     <element name="response" type="cns:TransportChangeSetResponse"/>
+
+    <complexType name="TransportChangeSetResponse">
+        <sequence>
+            <element name="transportChangeSet" type="cns:transportResponse"/>
+        </sequence>
+        <attribute name="message" type="xsd:string" use="optional"/>
+    </complexType>
+
+    <complexType name="transportResponse">
+        <sequence>
+            <element name="changeSetName" type="xsd:string"></element>
+            <element name="exception" type="cns:transportException" minOccurs="0"/>
+        </sequence>
+        <attribute name="success" use="required" type="boolean"/>
+    </complexType>
+
+    <complexType name="transportException">
+        <sequence>
+            <element name="message" type="xsd:string"/>
+            <element name="exceptionMessage" type="xsd:string" minOccurs="0"/>
+        </sequence>
+    </complexType>
+
+</schema>

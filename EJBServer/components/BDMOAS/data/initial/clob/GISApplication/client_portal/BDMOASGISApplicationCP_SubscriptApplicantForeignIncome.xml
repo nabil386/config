@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<ieg-script xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ieg-schema.xsd"
+finish-page="CommonIntake_finishInternalIntakeScript" 
+	quit-page="CommonIntake_quitInternalIntakeScript"	
+	show-sections="true"
+	show-progress-bar="true"
+	validate-save-and-exit="false"
+	>
+		
+	<identifier id="BDMOASGISApplicationCP" scriptversionnumber="V1" type="Intake" />
+
+	<section>
+
+		<title id="Section.Title.ApplicantsForeignIncome">
+			<![CDATA[Foreign Income]]>
+		</title>
+		<loop loop-type="for-each" entity="Person"
+			criteria="isPrimaryParticipant==true">
+			<condition expression="Person.hasForeignIncome==&quot;YN1&quot;">
+
+					<loop loop-type="while" loop-expression="hasMoreForeignIncomeToEnter==&quot;YN1&quot;"
+						entity="ForeignIncome">
+						<question-page id="ApplicantsForeignIncome" 
+							progress="0"
+							show-back-button="true"
+							show-next-button="true" 
+							show-save-exit-button="true" 
+							entity="ForeignIncome"
+							show-exit-button="true"				
+							>
+							<title id="QuestionPage.Title.ApplicantsForeignIncome"><![CDATA[Foreign Income]]></title>
+																
+							<description id="QuestionPage.Description.MandatoryFields">
+								<![CDATA[All the fields marked * are mandatory.]]>
+							</description>
+
+							<validation expression="not(isNotNull(ForeignIncome.incomeTpOthrDesc)) or ValidateMinimumLength(ForeignIncome.incomeTpOthrDesc, &quot;3&quot;)">
+						    	<message id="Validation.Message.DescriptionMinimum3Chars"><![CDATA[Description must be atleast 3 characters.]]></message>
+						    </validation>
+
+							<cluster entity="ForeignIncome">
+								<title id="Cluster.Title.ForeignIncomedetails">
+									<![CDATA[Foreign Income details]]>
+								</title>
+								<description
+									id="Cluster.Title.ForeignIncomedetails.Description">
+										<![CDATA[Please enter each type of foreign income you receive for the current and previous calendar year.]]>
+								</description>								
+								<question id="incomeYear" mandatory="true">
+									<label id="Question.Label.Year"><![CDATA[Year]]></label>
+								</question>
+								<question id="incomeAmount" mandatory="true">
+									<label id="Question.Label.Amountreported"><![CDATA[Amount reported]]></label>
+								</question>
+								<question id="incomeType" mandatory="true">
+									<label id="Question.Label.IncomeType"><![CDATA[Type of Income]]></label>
+								</question>
+							</cluster>
+
+							<condition expression="ForeignIncome.incomeType==&quot;IT15&quot;">
+								<cluster entity="ForeignIncome">
+									<question id="incomeTpOthrDesc" mandatory="true">
+										<label id="Question.Label.Description"><![CDATA[Description]]></label>
+									</question>
+								</cluster>
+							</condition>			
+
+							<cluster entity="ForeignIncome">
+								<question id="incomeCountry" mandatory="true">
+									<label id="Question.Label.Country"><![CDATA[Country]]></label>
+								</question>
+								<question id="incomeCurrency" mandatory="true">
+									<label id="Question.Label.Currency"><![CDATA[Currency]]></label>
+								</question>				
+							</cluster>			
+
+							<cluster entity="ForeignIncome">
+								<question id="hasMoreForeignIncomeToEnter"
+									control-question="true" control-question-type="IEG_YES_NO" mandatory="true">
+									<label id="Question.Label.FrgnIncmToReport">
+										<![CDATA[Do you have another foreign income to report?]]>
+									</label>
+								</question>				
+							</cluster>							
+						</question-page>								
+					</loop>
+				</condition>
+			</loop>					
+	</section>
+</ieg-script>

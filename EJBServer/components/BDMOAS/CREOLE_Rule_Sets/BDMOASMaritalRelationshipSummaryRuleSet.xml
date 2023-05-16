@@ -1,0 +1,417 @@
+<RuleSet name="BDMOASMaritalRelationshipSummaryRuleSet">
+	<Class extends="DefaultEvidenceSummary"
+		extendsRuleSet="EvidenceSummaryRuleSet" name="SummaryInformation">
+
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="BDMOASMaritalRelationship"
+					ruleset="BDMOASMaritalRelationshipRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="summary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Message" />
+					</type>
+					<when>
+						<condition>
+							<all>
+								<fixedlist>
+									<listof>
+										<javaclass name="java.lang.Boolean" />
+									</listof>
+									<members>
+										<equals>
+											<reference attribute="relatedCaseParticipantRoleID">
+												<reference attribute="evidence" />
+											</reference>
+											<Number value="0" />
+										</equals>
+										<equals>
+											<reference attribute="relationshipStatus">
+												<reference attribute="evidence" />
+											</reference>
+											<!-- 'MR1' description 'Married' -->
+											<Code table="BDMOASMaritalRelation">
+												<String value="MR1" />
+											</Code>
+										</equals>
+									</members>
+								</fixedlist>
+							</all>
+						</condition>
+						<value>
+							<ResourceMessage key="Married.SummaryMessage"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASMaritalRelationshipSummaryRuleSet">
+							</ResourceMessage>
+						</value>
+					</when>
+					<when>
+						<condition>
+							<all>
+								<fixedlist>
+									<listof>
+										<javaclass name="java.lang.Boolean" />
+									</listof>
+									<members>
+										<not>
+											<equals>
+												<reference
+													attribute="relatedCaseParticipantRoleID">
+													<reference attribute="evidence" />
+												</reference>
+												<Number value="0" />
+											</equals>
+										</not>
+										<equals>
+											<reference attribute="relationshipChangeType">
+												<reference attribute="evidence" />
+											</reference>
+											<null />
+										</equals>
+										<equals>
+											<reference attribute="relationshipStatus">
+												<reference attribute="evidence" />
+											</reference>
+											<!-- 'MR1' description 'Married' -->
+											<Code table="BDMOASMaritalRelation">
+												<String value="MR1" />
+											</Code>
+										</equals>
+									</members>
+								</fixedlist>
+							</all>
+						</condition>
+						<value>
+							<ResourceMessage
+								key="MarriedToRelatedPaticipant.SummaryMessage"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASMaritalRelationshipSummaryRuleSet">
+								<reference attribute="concernRoleName">
+									<singleitem onEmpty="error" onMultiple="error">
+										<readall ruleclass="ConcernRole"
+											ruleset="ParticipantEntitiesRuleSet">
+											<match retrievedattribute="concernRoleID">
+												<reference attribute="participantRoleID">
+													<reference
+														attribute="related_relatedCaseParticipantRoleID">
+														<reference attribute="evidence" />
+													</reference>
+												</reference>
+											</match>
+										</readall>
+									</singleitem>
+								</reference>
+							</ResourceMessage>
+						</value>
+					</when>
+					<when>
+						<condition>
+							<all>
+								<fixedlist>
+									<listof>
+										<javaclass name="java.lang.Boolean" />
+									</listof>
+									<members>
+										<not>
+											<equals>
+												<reference
+													attribute="relatedCaseParticipantRoleID">
+													<reference attribute="evidence" />
+												</reference>
+												<Number value="0" />
+											</equals>
+										</not>
+										<equals>
+											<reference attribute="relationshipChangeType">
+												<reference attribute="evidence" />
+											</reference>
+											<null />
+										</equals>
+										<equals>
+											<reference attribute="relationshipStatus">
+												<reference attribute="evidence" />
+											</reference>
+											<!-- 'MR2' description 'Common-Law' -->
+											<Code table="BDMOASMaritalRelation">
+												<String value="MR2" />
+											</Code>
+										</equals>
+									</members>
+								</fixedlist>
+							</all>
+						</condition>
+						<value>
+							<ResourceMessage
+								key="CommonLawPartnerOfRelatedPaticipant.SummaryMessage"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASMaritalRelationshipSummaryRuleSet">
+								<reference attribute="concernRoleName">
+									<singleitem onEmpty="error" onMultiple="error">
+										<readall ruleclass="ConcernRole"
+											ruleset="ParticipantEntitiesRuleSet">
+											<match retrievedattribute="concernRoleID">
+												<reference attribute="participantRoleID">
+													<reference
+														attribute="related_relatedCaseParticipantRoleID">
+														<reference attribute="evidence" />
+													</reference>
+												</reference>
+											</match>
+										</readall>
+									</singleitem>
+								</reference>
+							</ResourceMessage>
+						</value>
+					</when>
+					<when>
+						<condition>
+							<all>
+								<fixedlist>
+									<listof>
+										<javaclass name="java.lang.Boolean" />
+									</listof>
+									<members>
+										<equals>
+											<reference attribute="relatedCaseParticipantRoleID">
+												<reference attribute="evidence" />
+											</reference>
+											<Number value="0" />
+										</equals>
+										<equals>
+											<reference attribute="relationshipChangeType">
+												<reference attribute="evidence" />
+											</reference>
+											<null />
+										</equals>
+										<equals>
+											<reference attribute="relationshipStatus">
+												<reference attribute="evidence" />
+											</reference>
+											<!-- 'MR2' description 'Common-Law' -->
+											<Code table="BDMOASMaritalRelation">
+												<String value="MR2" />
+											</Code>
+										</equals>
+									</members>
+								</fixedlist>
+							</all>
+						</condition>
+						<value>
+							<ResourceMessage
+								key="CommonLawPartner.SummaryMessage"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASMaritalRelationshipSummaryRuleSet">
+							</ResourceMessage>
+						</value>
+					</when>
+					<when>
+						<condition>
+							<all>
+								<fixedlist>
+									<listof>
+										<javaclass name="java.lang.Boolean" />
+									</listof>
+									<members>
+										<not>
+											<equals>
+												<reference
+													attribute="relatedCaseParticipantRoleID">
+													<reference attribute="evidence" />
+												</reference>
+												<Number value="0" />
+											</equals>
+										</not>
+										<not>
+											<equals>
+												<reference attribute="relationshipChangeType">
+													<reference attribute="evidence" />
+												</reference>
+												<null />
+											</equals>
+										</not>
+										<equals>
+											<reference attribute="relationshipStatus">
+												<reference attribute="evidence" />
+											</reference>
+											<!-- 'MR1' description 'Married' -->
+											<Code table="BDMOASMaritalRelation">
+												<String value="MR1" />
+											</Code>
+										</equals>
+										<equals>
+											<reference attribute="relationshipChangeType">
+												<reference attribute="evidence" />
+											</reference>
+											<!-- 'MCT3' description 'Separation' -->
+											<Code table="BDMOASMaritalChangeType">
+												<String value="MCT3" />
+											</Code>
+										</equals>
+									</members>
+								</fixedlist>
+							</all>
+						</condition>
+						<value>
+							<ResourceMessage
+								key="SeparatedFromRelatedParticipant.SummaryMessage"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASMaritalRelationshipSummaryRuleSet">
+								<reference attribute="concernRoleName">
+									<singleitem onEmpty="error" onMultiple="error">
+										<readall ruleclass="ConcernRole"
+											ruleset="ParticipantEntitiesRuleSet">
+											<match retrievedattribute="concernRoleID">
+												<reference attribute="participantRoleID">
+													<reference
+														attribute="related_relatedCaseParticipantRoleID">
+														<reference attribute="evidence" />
+													</reference>
+												</reference>
+											</match>
+										</readall>
+									</singleitem>
+								</reference>
+							</ResourceMessage>
+						</value>
+					</when>
+					<when>
+						<condition>
+							<all>
+								<fixedlist>
+									<listof>
+										<javaclass name="java.lang.Boolean" />
+									</listof>
+									<members>
+										<not>
+											<equals>
+												<reference
+													attribute="relatedCaseParticipantRoleID">
+													<reference attribute="evidence" />
+												</reference>
+												<Number value="0" />
+											</equals>
+										</not>
+										<not>
+											<equals>
+												<reference attribute="relationshipChangeType">
+													<reference attribute="evidence" />
+												</reference>
+												<null />
+											</equals>
+										</not>
+										<equals>
+											<reference attribute="relationshipStatus">
+												<reference attribute="evidence" />
+											</reference>
+											<!-- 'MR1' description 'Married' -->
+											<Code table="BDMOASMaritalRelation">
+												<String value="MR1" />
+											</Code>
+										</equals>
+									</members>
+								</fixedlist>
+							</all>
+						</condition>
+						<value>
+							<ResourceMessage
+								key="MarriedToRelatedParticipantButRelationshipEnded.SummaryMessage"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASMaritalRelationshipSummaryRuleSet">
+								<reference attribute="concernRoleName">
+									<singleitem onEmpty="error" onMultiple="error">
+										<readall ruleclass="ConcernRole"
+											ruleset="ParticipantEntitiesRuleSet">
+											<match retrievedattribute="concernRoleID">
+												<reference attribute="participantRoleID">
+													<reference
+														attribute="related_relatedCaseParticipantRoleID">
+														<reference attribute="evidence" />
+													</reference>
+												</reference>
+											</match>
+										</readall>
+									</singleitem>
+								</reference>
+								<reference attribute="relationshipChangeType">
+									<reference attribute="evidence" />
+								</reference>
+							</ResourceMessage>
+						</value>
+					</when>
+					<when>
+						<condition>
+							<all>
+								<fixedlist>
+									<listof>
+										<javaclass name="java.lang.Boolean" />
+									</listof>
+									<members>
+										<not>
+											<equals>
+												<reference
+													attribute="relatedCaseParticipantRoleID">
+													<reference attribute="evidence" />
+												</reference>
+												<Number value="0" />
+											</equals>
+										</not>
+										<not>
+											<equals>
+												<reference attribute="relationshipChangeType">
+													<reference attribute="evidence" />
+												</reference>
+												<null />
+											</equals>
+										</not>
+										<equals>
+											<reference attribute="relationshipStatus">
+												<reference attribute="evidence" />
+											</reference>
+											<!-- 'MR2' description 'Common-Law' -->
+											<Code table="BDMOASMaritalRelation">
+												<String value="MR2" />
+											</Code>
+										</equals>
+									</members>
+								</fixedlist>
+							</all>
+						</condition>
+						<value>
+							<ResourceMessage
+								key="CommonLawParternOfRelatedParticipantButRelationshipEnded.SummaryMessage"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASMaritalRelationshipSummaryRuleSet">
+								<reference attribute="concernRoleName">
+									<singleitem onEmpty="error" onMultiple="error">
+										<readall ruleclass="ConcernRole"
+											ruleset="ParticipantEntitiesRuleSet">
+											<match retrievedattribute="concernRoleID">
+												<reference attribute="participantRoleID">
+													<reference
+														attribute="related_relatedCaseParticipantRoleID">
+														<reference attribute="evidence" />
+													</reference>
+												</reference>
+											</match>
+										</readall>
+									</singleitem>
+								</reference>
+								<reference attribute="relationshipChangeType">
+									<reference attribute="evidence" />
+								</reference>
+							</ResourceMessage>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<null />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

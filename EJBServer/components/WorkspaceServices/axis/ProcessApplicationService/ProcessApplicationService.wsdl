@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://remote.externalservices.workspaceservices.curam"
+   xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+   xmlns:ns="http://remote.externalservices.workspaceservices.curam" 
+   xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" 
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+   xmlns:ns1="http://org.apache.axis2/xsd" 
+   xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" 
+   xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" 
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+   xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+   xmlns:ia="http://www.curamsoftware.com/WorkspaceServices/IntakeApplication">
+
+   <wsdl:types>
+      <xsd:schema>
+         <xsd:import schemaLocation="IntakeApplication.xsd"
+            namespace="http://www.curamsoftware.com/WorkspaceServices/IntakeApplication"/>
+      </xsd:schema>
+   </wsdl:types>
+
+   <wsdl:message name="receiveApplicationRequest">
+      <wsdl:part name="parameters"
+         element="ia:receiveApplication"/>
+   </wsdl:message>
+
+   <wsdl:message name="receiveApplicationResponse">
+      <wsdl:part name="parameters" 
+         element="ia:receiveApplicationResponse" />
+   </wsdl:message>   
+
+   <wsdl:message name="receiveApplicationFault">
+      <wsdl:part name="parameters"
+         element="ia:receiveApplicationFault"/>
+   </wsdl:message>
+   
+   <wsdl:message name="receiveWithdrawalRequestRequest">
+      <wsdl:part name="parameters"
+         element="ia:receiveWithdrawalRequest"/>
+   </wsdl:message>
+
+   <wsdl:message name="receiveWithdrawalRequestResponse">
+      <wsdl:part name="parameters"
+         element="ia:receiveWithdrawalRequestResponse"/>
+   </wsdl:message>
+
+   <wsdl:message name="receiveWithdrawalRequestFault">
+      <wsdl:part name="parameters"
+         element="ia:receiveWithdrawalRequestFault"/>
+   </wsdl:message>
+
+   <wsdl:portType name="ProcessApplicationServicePortType">
+
+      <wsdl:operation name="receiveApplication">
+         <wsdl:input message="ns:receiveApplicationRequest" wsaw:Action="urn:receiveApplication"/>
+         <wsdl:output message="ns:receiveApplicationResponse" wsaw:Action="urn:receiveApplicationResponse"/>
+         <wsdl:fault message="ns:receiveApplicationFault" name="receiveApplicationFault" wsaw:Action="urn:receiveApplicationFault"/>
+      </wsdl:operation>
+
+      <wsdl:operation name="receiveWithdrawalRequest">
+         <wsdl:input message="ns:receiveWithdrawalRequestRequest" wsaw:Action="urn:receiveWithdrawalRequest"/>
+         <wsdl:output message="ns:receiveWithdrawalRequestResponse" wsaw:Action="urn:receiveWithdrawalRequestResponse"/>
+         <wsdl:fault message="ns:receiveWithdrawalRequestFault" name="receiveWithdrawalRequestFault" wsaw:Action="urn:receiveWithdrawalRequestFault"/>
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="ProcessApplicationServiceSoap11Binding" type="ns:ProcessApplicationServicePortType">
+      <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+      
+      <wsdl:operation name="receiveApplication">
+         <soap:operation soapAction="urn:receiveApplication" style="document"/>
+         <wsdl:input>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal"/>
+         </wsdl:output>
+         <wsdl:fault name="receiveApplicationFault">
+            <soap:fault use="literal" name="receiveApplicationFault"/>
+         </wsdl:fault>
+      </wsdl:operation>  
+
+      <wsdl:operation name="receiveWithdrawalRequest">
+         <soap:operation soapAction="urn:receiveWithdrawalRequest" style="document"/>
+         <wsdl:input>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal"/>
+         </wsdl:output>
+         <wsdl:fault name="receiveWithdrawalRequestFault">
+            <soap:fault use="literal" name="receiveWithdrawalRequestFault"/>
+         </wsdl:fault>
+      </wsdl:operation>        
+                              
+   </wsdl:binding> 
+
+   <wsdl:binding name="ProcessApplicationServiceSoap12Binding" type="ns:ProcessApplicationServicePortType">
+      <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+
+      <wsdl:operation name="receiveApplication">
+         <soap12:operation soapAction="urn:receiveApplication" style="document"/>
+         <wsdl:input>
+            <soap12:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap12:body use="literal"/>
+         </wsdl:output>
+         <wsdl:fault name="receiveApplicationFault">
+            <soap12:fault use="literal" name="receiveApplicationFault"/>
+         </wsdl:fault>
+      </wsdl:operation>
+
+      <wsdl:operation name="receiveWithdrawalRequest">
+         <soap12:operation soapAction="urn:receiveWithdrawalRequest" style="document"/>
+         <wsdl:input>
+            <soap12:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap12:body use="literal"/>
+         </wsdl:output>
+         <wsdl:fault name="receiveWithdrawalRequestFault">
+            <soap12:fault use="literal" name="receiveWithdrawalRequestFault"/>
+         </wsdl:fault>
+      </wsdl:operation>            
+                  
+   </wsdl:binding>
+
+   <wsdl:binding name="ProcessApplicationServiceHttpBinding" type="ns:ProcessApplicationServicePortType">
+      <http:binding verb="POST"/>
+      
+      <wsdl:operation name="receiveApplication">
+         <http:operation location="ProcessApplicationService/receiveApplication"/>
+         <wsdl:input>
+            <mime:content type="text/xml" part="receiveApplication"/>
+         </wsdl:input>
+         <wsdl:output>
+            <mime:content type="text/xml" part="receiveApplication"/>
+         </wsdl:output>
+      </wsdl:operation>
+      
+      <wsdl:operation name="receiveWithdrawalRequest">
+         <http:operation location="ProcessApplicationService/receiveWithdrawalRequest"/>
+         <wsdl:input>
+            <mime:content type="text/xml" part="receiveWithdrawalRequest"/>
+         </wsdl:input>
+         <wsdl:output>
+            <mime:content type="text/xml" part="receiveWithdrawalRequest"/>
+         </wsdl:output>
+      </wsdl:operation>      
+      
+   </wsdl:binding>
+
+   <!-- the location of the web service is read from the TargetSystem configuration 
+        entity, not from the WSDL  -->
+   <wsdl:service name="ProcessApplicationService">
+      
+      <wsdl:port name="ProcessApplicationServiceHttpSoap11Endpoint" 
+         binding="ns:ProcessApplicationServiceSoap11Binding">
+         <soap:address location="http://www.ValueSpecifiedInConfiguration.com"/>
+      </wsdl:port>
+ 
+      <wsdl:port name="ProcessApplicationServiceHttpSoap12Endpoint" 
+         binding="ns:ProcessApplicationServiceSoap12Binding">
+         <soap12:address location="http://www.ValueSpecifiedInConfiguration.com"/>
+      </wsdl:port>      
+
+      <wsdl:port name="ProcessApplicationServiceHttpEndpoint" binding="ns:ProcessApplicationServiceHttpBinding">
+         <http:address location="http://www.ValueSpecifiedInConfiguration.com"/>
+      </wsdl:port>                
+                                                
+   </wsdl:service>
+</wsdl:definitions>

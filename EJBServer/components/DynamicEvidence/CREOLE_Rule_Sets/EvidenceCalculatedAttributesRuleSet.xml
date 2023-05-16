@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- 
+    Copyright 2009-2010 Curam Software Ltd.
+    All rights reserved.
+    
+    This software is the confidential and proprietary information of Curam
+    Software, Ltd. ("Confidential Information").  You shall not disclose such
+    Confidential Information and shall use it only in accordance with the
+    terms of the license agreement you entered into with Curam Software.
+-->
+<!--
+  This is the interface ruleset for Calculated Attributes of an Evidence 
+  Type. If an Evidence Type Version metadata specifies that CER is to
+  be used for calculated attributes, the specified Rule Set should have a
+  class that extends from this Rule Class. Also, the class should have an
+  attribute corresponding to each calculated attribute declared in the
+  Evidence Type Version.            
+-->
+<RuleSet
+  name="EvidenceCalculatedAttributesRuleSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../CREOLEInfrastructure/xsd/curam/creole/xsd/RuleSetLax.xsd"
+>
+
+
+  <!-- The Abstract Base Rule Class for all concrete implementations for -->
+  <!-- Calculated Attributes. -->
+  <Class
+    abstract="true"
+    name="AbstractEvidenceCalculatedAttributes"
+  >
+
+
+    <!--
+      This is the evidence instance for which the calculated attributes 
+      are to be calculated. All custom Calculated Attributes Rule Classes
+      should override this to specify the type to be the actual evidence
+      Rule Class
+    -->
+    <Attribute name="evidence">
+      <type>
+        <ruleclass
+          name="DynamicEvidence"
+          ruleset="DynamicEvidenceRuleSet"
+        />
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <!--
+      Default "implementation" Rule Class for Calculated Attributes. All
+      custom Calculated Attributes Rule Sets should extend from this Rule Class.
+      For now, this Rule Class does not provide any defaults. Nevertheless, this
+      Rule Class is required for accomodating additions in subsequent releases.
+    -->
+  <Class
+    abstract="true"
+    extends="AbstractEvidenceCalculatedAttributes"
+    name="DefaultCalculatedAttributes"
+  />
+
+
+  <!-- The Abstract Base Rule Class for all concrete implementations for -->
+  <!-- Data attributes with onCreateCalculator property -->
+  <Class
+    abstract="true"
+    name="AbstractCalculateOnCreateAttributes"
+  >
+
+
+    <!--
+      This is an evidence instance to which values have to be calculated for data attributes 
+	  which are configured with property onCreateCalculator. Values are calculated only if user fails to capture.
+	  
+	  All custom data attributes with onCreateCalculator property  Rule Classes  should override this 
+	  to specify the type to be the actual evidence  Rule Class
+    -->
+    <Attribute name="evidence">
+      <type>
+        <ruleclass
+          name="DynamicEvidence"
+          ruleset="DynamicEvidenceRuleSet"
+        />
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <!--
+      Default "implementation" Rule Class for Calculate On Create Attributes. All
+      custom Calculated Attributes Rule Sets should extend from this Rule Class.
+      For now, this Rule Class does not provide any defaults. Nevertheless, this
+      Rule Class is required for accomodating additions in subsequent releases.
+    -->
+  <Class
+    abstract="true"
+    extends="AbstractCalculateOnCreateAttributes"
+    name="DefaultCalculateOnCreateAttributes"
+  >
+  </Class>
+</RuleSet>

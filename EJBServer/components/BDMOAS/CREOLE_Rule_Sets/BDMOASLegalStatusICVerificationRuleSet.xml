@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMOASLegalStatusICVerificationRuleSet"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+    <Class extends="VerificationDeterminator"
+        extendsRuleSet="VerificationRuleSet"
+        name="BDMOASLegalStatusVerificationDeterminator">
+
+        <Attribute name="displayName">
+            <type>
+                <javaclass name="curam.creole.value.Message" />
+            </type>
+            <derivation>
+                <XmlMessage>BDMOASLegalStatusICVerification</XmlMessage>
+            </derivation>
+        </Attribute>
+
+        <Attribute name="determine">
+            <type>
+                <ruleclass
+                    name="VerificationDeterminatorResult"
+                    ruleset="VerificationRuleSet" />
+            </type>
+            <derivation>
+                <create
+                    ruleclass="VerificationDeterminatorResult"
+                    ruleset="VerificationRuleSet">
+                    <specify attribute="result">
+                        <reference attribute="isLegalStatusVerificationRequired" />
+                    </specify>
+                    <specify attribute="reason">
+                        <reference attribute="reasonSkipped" />
+                    </specify>
+                </create>
+            </derivation>
+        </Attribute>
+
+        <Attribute name="reasonSkipped">
+            <type>
+                <codetableentry table="VerificationSkippedReason" />
+            </type>
+            <derivation>
+                <Code table="VerificationSkippedReason">
+                    <String value="BDMVSR2001" />
+                </Code>
+            </derivation>
+        </Attribute>
+
+        <Attribute name="legalStatusEvidenceRecord">
+            <type>
+                <ruleclass name="BDMOASLegalStatus"
+                    ruleset="BDMOASLegalStatusVerDataRuleSet" />
+            </type>
+            <derivation>
+                <singleitem onMultiple="returnFirst"
+                    onEmpty="returnNull">
+                    <readall ruleclass="BDMOASLegalStatus"
+                        ruleset="BDMOASLegalStatusVerDataRuleSet">
+                        <match
+                            retrievedattribute="evidenceDescriptorID">
+                            <reference
+                                attribute="evidenceDescriptorID">
+                                <reference
+                                    attribute="verificationDeterminatorParams" />
+                            </reference>
+                        </match>
+                    </readall>
+                </singleitem>
+            </derivation>
+        </Attribute>
+        
+        <!-- Check if evidence exists with same sharedInstanceID and same info in source case, if so then no verification is needed on IC -->
+        <Attribute name="isLegalStatusVerificationRequired">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <call class="curam.ca.gc.bdmoas.creole.impl.Statics"
+                    method="isICLegalStatusVerificationRequired">
+                    <type>
+                        <javaclass name="Boolean" />
+                    </type>
+                    <arguments>
+                        <reference
+                            attribute="evidenceDescriptorID">
+                            <reference
+                                attribute="verificationDeterminatorParams" />
+                        </reference>
+                    </arguments>
+                </call>
+            </derivation>
+        </Attribute>
+        
+    </Class>
+</RuleSet>

@@ -1,0 +1,1312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012 - 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- 
+  Copyright 2011 Curam Software Ltd.
+  All rights reserved.
+  
+  This software is the confidential and proprietary information of Curam
+  Software, Ltd. ("Confidential Information").  You shall not disclose such
+  Confidential Information and shall use it only in accordance with the
+  terms of the license agreement you entered into with Curam Software.
+-->
+<!-- 
+    Eligibility/Entitlement calculations for the product created by the wizard. 
+    Rule Set names and values will be updated prior to rule set insertion, using values entered by the user when 
+    creating the product via the wizard.
+    E.g. Names will incorporate the product name entered by the user on the product wizard.
+    Values such as frequency pattern will be obtained from those entered for the product.
+-->
+<RuleSet
+  name="ProductWizardDefaultEligibilityEntitlementRuleSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+>
+  <Annotations>
+    <Label
+      label-id="ProductWizardDefaultEligibilityEntitlementRuleSet.label.1"
+      name="This product supports a sample objective type."
+    />
+  </Annotations>
+
+
+  <!-- ************************************** -->
+  <!-- ***             Default Product            *** -->
+  <!-- ************************************** -->
+  <Class
+    extends="DefaultProduct"
+    extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet"
+    name="ProductWizardDefaultProductProduct"
+  >
+
+
+    <Annotations>
+      <Label
+        label-id="ProductWizardDefaultEligibilityEntitlementRuleSet.label.2"
+        name="ProductWizardDefaultDisplayName Product"
+      />
+    </Annotations>
+
+
+    <!-- This product supports a max personal and child benefit objective type. -->
+    <Attribute name="objectiveTypes">
+      <Annotations>
+        <Legislation link="http://www.curamsoftware.com/Dummy/AttributeLegislationWithProtocol.html"/>
+      </Annotations>
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="AbstractObjectiveType"
+            ruleset="ProductEligibilityEntitlementRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <fixedlist>
+          <listof>
+            <ruleclass
+              name="AbstractObjectiveType"
+              ruleset="ProductEligibilityEntitlementRuleSet"
+            />
+          </listof>
+          <members>
+            <reference attribute="personalBenefitAllowanceObjectiveType"/>
+            <reference attribute="childBenefitAllowanceObjectiveType"/>
+          </members>
+        </fixedlist>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="personalBenefitAllowanceObjectiveType">
+      <type>
+        <ruleclass name="PersonalBenefitAllowanceObjectiveType"/>
+      </type>
+      <derivation>
+        <create ruleclass="PersonalBenefitAllowanceObjectiveType"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="childBenefitAllowanceObjectiveType">
+      <type>
+        <ruleclass name="ChildBenefitAllowanceObjectiveType"/>
+      </type>
+      <derivation>
+        <create ruleclass="ChildBenefitAllowanceObjectiveType"/>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <Class
+    extends="DefaultObjectiveType"
+    extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet"
+    name="PersonalBenefitAllowanceObjectiveType"
+  >
+
+
+    <Annotations>
+      <Label
+        label-id="ProductWizardDefaultEligibilityEntitlementRuleSet.label.3"
+        name="Personal Benefit Allowance Objective Type"
+      />
+    </Annotations>
+
+
+    <Attribute name="objectiveTypeID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="MaxPersObjTypeID"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="tagTypes">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="AbstractTagType"
+            ruleset="ProductEligibilityEntitlementRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <fixedlist>
+          <listof>
+            <ruleclass
+              name="AbstractTagType"
+              ruleset="ProductEligibilityEntitlementRuleSet"
+            />
+          </listof>
+          <members>
+            <reference attribute="dailyDelivery"/>
+            <reference attribute="weeklyDelivery"/>
+            <reference attribute="monthlyDelivery"/>
+          </members>
+        </fixedlist>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Daily Delivery references the daily delivery frequency pattern -->
+    <Attribute name="dailyDelivery">
+      <type>
+        <ruleclass name="DailyTagType"/>
+      </type>
+      <derivation>
+        <create ruleclass="DailyTagType"/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Weekly Delivery references the weekly delivery frequency pattern -->
+    <Attribute name="weeklyDelivery">
+      <type>
+        <ruleclass name="WeeklyTagType"/>
+      </type>
+      <derivation>
+        <create ruleclass="WeeklyTagType"/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Monthly Delivery references the monthly delivery frequency pattern -->
+    <Attribute name="monthlyDelivery">
+      <type>
+        <ruleclass name="MonthlyTagType"/>
+      </type>
+      <derivation>
+        <create ruleclass="MonthlyTagType"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="financialComponentType">
+      <type>
+        <codetableentry table="RulesComponentFCType"/>
+      </type>
+      <derivation>
+        <Code table="RulesComponentFCType">
+          <!-- The product is always "Benefit" for automatic rule set generation -->
+          <String value="CT1"/>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="name">
+      <type>
+        <codetableentry table="RulesComponentType"/>
+      </type>
+      <derivation>
+        <Code table="RulesComponentType">
+          <!-- Default this to "Max Personal Component". The user can update this manually -->
+          <String value="PC4"/>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="rateTarget">
+      <type>
+        <codetableentry table="RulesComponentTarget"/>
+      </type>
+      <derivation>
+        <Code table="RulesComponentTarget">
+          <!-- "Client" -->
+          <String value="RC1"/>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="isDeductionAllowable">
+      <Annotations>
+        <Label
+          label-id="ProductWizardDefaultEligibilityEntitlementRuleSet.label.4"
+          name="Allow deductions against this objective type."
+        />
+      </Annotations>
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <true/>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <Class
+    extends="DefaultObjectiveType"
+    extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet"
+    name="ChildBenefitAllowanceObjectiveType"
+  >
+
+
+    <Annotations>
+      <Label
+        label-id="ProductWizardDefaultEligibilityEntitlementRuleSet.label.5"
+        name="Child Benefit Allowance Objective Type"
+      />
+    </Annotations>
+
+
+    <Attribute name="objectiveTypeID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="ChBenObjTypeID"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="tagTypes">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="AbstractTagType"
+            ruleset="ProductEligibilityEntitlementRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <fixedlist>
+          <listof>
+            <ruleclass
+              name="AbstractTagType"
+              ruleset="ProductEligibilityEntitlementRuleSet"
+            />
+          </listof>
+          <members>
+            <reference attribute="dailyDelivery"/>
+            <reference attribute="weeklyDelivery"/>
+            <reference attribute="monthlyDelivery"/>
+          </members>
+        </fixedlist>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Daily Delivery references the daily delivery frequency pattern -->
+    <Attribute name="dailyDelivery">
+      <type>
+        <ruleclass name="DailyTagType"/>
+      </type>
+      <derivation>
+        <create ruleclass="DailyTagType"/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Weekly Delivery references the weekly delivery frequency pattern -->
+    <Attribute name="weeklyDelivery">
+      <type>
+        <ruleclass name="WeeklyTagType"/>
+      </type>
+      <derivation>
+        <create ruleclass="WeeklyTagType"/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Monthly Delivery references the monthly delivery frequency pattern -->
+    <Attribute name="monthlyDelivery">
+      <type>
+        <ruleclass name="MonthlyTagType"/>
+      </type>
+      <derivation>
+        <create ruleclass="MonthlyTagType"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="financialComponentType">
+      <type>
+        <codetableentry table="RulesComponentFCType"/>
+      </type>
+      <derivation>
+        <Code table="RulesComponentFCType">
+          <!-- The product is always "Benefit" for automatic rule set generation -->
+          <String value="CT1"/>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="name">
+      <type>
+        <codetableentry table="RulesComponentType"/>
+      </type>
+      <derivation>
+        <Code table="RulesComponentType">
+          <!-- Default this to "Max Dependent Child". The user can update this manually -->
+          <String value="PC8"/>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="rateTarget">
+      <type>
+        <codetableentry table="RulesComponentTarget"/>
+      </type>
+      <derivation>
+        <Code table="RulesComponentTarget">
+          <!-- "Client" -->
+          <String value="RC1"/>
+        </Code>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="isDeductionAllowable">
+      <Annotations>
+        <Label
+          label-id="ProductWizardDefaultEligibilityEntitlementRuleSet.label.6"
+          name="Allow deductions against this objective type."
+        />
+      </Annotations>
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <true/>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <!--The irrelevant delivery patterns are deleted manually by the user in the Rules Editor -->
+  <Class
+    extends="DefaultTagType"
+    extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet"
+    name="DailyTagType"
+  >
+
+
+    <Annotations>
+      <Label
+        label-id="ProductWizardDefaultEligibilityEntitlementRuleSet.label.7"
+        name="Daily Tag Type"
+      />
+    </Annotations>
+
+
+    <Attribute name="tagTypeID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <Number value="1"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="name">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <XmlMessage>Simple Objective Delivery set to Daily Product Delivery</XmlMessage>
+      </derivation>
+    </Attribute>
+
+
+    <!-- daily frequency pattern -->
+    <Attribute name="pattern">
+      <type>
+        <javaclass name="curam.util.type.FrequencyPattern"/>
+      </type>
+      <derivation>
+        <FrequencyPattern value="000100000"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="valueType">
+      <type>
+        <codetableentry table="RulesTagType"/>
+      </type>
+      <derivation>
+        <!-- "Money" type -->
+        <Code table="RulesTagType">
+          <String value="RTT3"/>
+        </Code>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <Class
+    extends="DefaultTagType"
+    extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet"
+    name="WeeklyTagType"
+  >
+
+
+    <Annotations>
+      <Label
+        label-id="ProductWizardDefaultEligibilityEntitlementRuleSet.label.8"
+        name="Weekly Tag Type"
+      />
+    </Annotations>
+
+
+    <Attribute name="tagTypeID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <Number value="2"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="name">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <XmlMessage>Simple Objective Delivery set to Weekly Product Delivery</XmlMessage>
+      </derivation>
+    </Attribute>
+
+
+    <!-- weekly frequency pattern -->
+    <Attribute name="pattern">
+      <type>
+        <javaclass name="curam.util.type.FrequencyPattern"/>
+      </type>
+      <derivation>
+        <FrequencyPattern value="100100000"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="valueType">
+      <type>
+        <codetableentry table="RulesTagType"/>
+      </type>
+      <derivation>
+        <!-- "Money" type -->
+        <Code table="RulesTagType">
+          <String value="RTT3"/>
+        </Code>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <Class
+    extends="DefaultTagType"
+    extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet"
+    name="MonthlyTagType"
+  >
+
+
+    <Annotations>
+      <Label
+        label-id="ProductWizardDefaultEligibilityEntitlementRuleSet.label.9"
+        name="Monthly Tag Type"
+      />
+    </Annotations>
+
+
+    <Attribute name="tagTypeID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <Number value="3"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="name">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <XmlMessage>Simple Objective Delivery set to Monthly Product Delivery</XmlMessage>
+      </derivation>
+    </Attribute>
+
+
+    <!-- monthly frequency pattern -->
+    <Attribute name="pattern">
+      <type>
+        <javaclass name="curam.util.type.FrequencyPattern"/>
+      </type>
+      <derivation>
+        <FrequencyPattern value="200100000"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="valueType">
+      <type>
+        <codetableentry table="RulesTagType"/>
+      </type>
+      <derivation>
+        <!-- "Money" type -->
+        <Code table="RulesTagType">
+          <String value="RTT3"/>
+        </Code>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <Class
+    extends="DefaultCase"
+    extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet"
+    name="ProductWizardDefaultProductCase"
+  >
+
+
+    <Annotations>
+      <Label
+        label-id="ProductWizardDefaultEligibilityEntitlementRuleSet.label.10"
+        name="ProductWizardDefaultDisplayName Case"
+      />
+    </Annotations>
+
+
+    <Attribute name="concernRoleID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <reference attribute="concernRoleID">
+          <reference attribute="productDeliveryCase"/>
+        </reference>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="product">
+      <type>
+        <ruleclass name="ProductWizardDefaultProductProduct"/>
+      </type>
+      <derivation>
+        <create ruleclass="ProductWizardDefaultProductProduct"/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="isEligibleTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Boolean"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <Timeline>
+          <intervaltype>
+            <javaclass name="Boolean"/>
+          </intervaltype>
+          <initialvalue>
+            <true/>
+          </initialvalue>
+        </Timeline>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="objectiveTimelines">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="AbstractObjectiveTimeline"
+            ruleset="ProductEligibilityEntitlementRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <joinlists>
+          <fixedlist>
+            <listof>
+              <javaclass name="List">
+                <ruleclass
+                  name="AbstractObjectiveTimeline"
+                  ruleset="ProductEligibilityEntitlementRuleSet"
+                />
+              </javaclass>
+            </listof>
+            <members>
+              <!-- The single objective for overall income assistance (converted to a list) -->
+              <fixedlist>
+                <listof>
+                  <ruleclass
+                    name="AbstractObjectiveTimeline"
+                    ruleset="ProductEligibilityEntitlementRuleSet"
+                  />
+                </listof>
+                <members>
+                  <reference attribute="personalBenefitAllowanceObjectiveTimeline"/>
+                </members>
+              </fixedlist>
+            </members>
+          </fixedlist>
+        </joinlists>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="personalBenefitAllowanceObjectiveTimeline">
+      <type>
+        <ruleclass name="PersonalBenefitAllowanceObjectiveTimeline"/>
+      </type>
+      <derivation>
+        <create ruleclass="PersonalBenefitAllowanceObjectiveTimeline">
+          <specify attribute="owningCase">
+            <this/>
+          </specify>
+        </create>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <!-- Child Benefit objective timeline, which defaults to entitled whenever the evidence exists and is eligible. -->
+  <Class
+    extends="DefaultObjectiveTimeline"
+    extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet"
+    name="ChildBenefitAllowanceObjectiveTimeline"
+  >
+
+
+    <Annotations>
+      <Label
+        label-id="ProductWizardDefaultEligibilityEntitlementRuleSet.label.11"
+        name="Child Benefit Allowance Objective Timeline"
+      />
+    </Annotations>
+
+
+    <!-- narrow the type of the owning case -->
+    <Attribute name="owningCase">
+      <type>
+        <ruleclass name="ProductWizardDefaultProductCase"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="creoleSimpleSuccessionSet">
+      <type>
+        <ruleclass name="CREOLESimpleSuccessionSet"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="objectiveType">
+      <type>
+        <ruleclass
+          name="AbstractObjectiveType"
+          ruleset="ProductEligibilityEntitlementRuleSet"
+        />
+      </type>
+      <derivation>
+        <reference attribute="childBenefitAllowanceObjectiveType">
+          <reference attribute="product">
+            <reference attribute="owningCase"/>
+          </reference>
+        </reference>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="targetIDTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Number"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <timelineoperation>
+          <!-- targeted at the claimant -->
+          <reference attribute="concernRoleID">
+            <reference attribute="owningCase"/>
+          </reference>
+        </timelineoperation>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Entitled whenever the evidence exists and is eligible. -->
+    <Attribute name="isEntitledTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Boolean"/>
+        </javaclass>
+      </type>
+      <derivation>
+
+
+        <timelineoperation>
+          <all>
+            <fixedlist>
+              <listof>
+                <javaclass name="Boolean"/>
+              </listof>
+              <members>
+                <intervalvalue>
+                  <reference attribute="eligible">
+                    <reference attribute="creoleSimpleSuccessionSet"/>
+                  </reference>
+                </intervalvalue>
+                <intervalvalue>
+                  <reference attribute="exists">
+                    <reference attribute="creoleSimpleSuccessionSet"/>
+                  </reference>
+                </intervalvalue>
+              </members>
+            </fixedlist>
+
+
+          </all>
+
+
+        </timelineoperation>
+
+
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="tagTimelines">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="AbstractTagTimeline"
+            ruleset="ProductEligibilityEntitlementRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <fixedlist>
+          <listof>
+            <ruleclass
+              name="AbstractTagTimeline"
+              ruleset="ProductEligibilityEntitlementRuleSet"
+            />
+          </listof>
+          <members>
+            <reference attribute="dailyDelivery"/>
+          </members>
+        </fixedlist>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="dailyDelivery">
+      <type>
+        <ruleclass name="ChildBenefitAllowanceDailyDeliveryTagTimeline"/>
+      </type>
+      <derivation>
+        <create ruleclass="ChildBenefitAllowanceDailyDeliveryTagTimeline">
+          <specify attribute="owningObjectiveTimeline">
+            <this/>
+          </specify>
+        </create>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <!-- Personal Benefit objective timeline, which defaults to entitled forever. -->
+  <Class
+    extends="DefaultObjectiveTimeline"
+    extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet"
+    name="PersonalBenefitAllowanceObjectiveTimeline"
+  >
+
+
+    <Annotations>
+      <Label
+        label-id="ProductWizardDefaultEligibilityEntitlementRuleSet.label.12"
+        name="Personal Benefit Allowance Objective Timeline"
+      />
+    </Annotations>
+
+
+    <!-- Narrow the type of the owning case -->
+    <Attribute name="owningCase">
+      <type>
+        <ruleclass name="ProductWizardDefaultProductCase"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="objectiveType">
+      <type>
+        <ruleclass
+          name="AbstractObjectiveType"
+          ruleset="ProductEligibilityEntitlementRuleSet"
+        />
+      </type>
+      <derivation>
+        <reference attribute="personalBenefitAllowanceObjectiveType">
+          <reference attribute="product">
+            <reference attribute="owningCase"/>
+          </reference>
+        </reference>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="targetIDTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Number"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <timelineoperation>
+          <!-- targeted at the claimant -->
+          <reference attribute="concernRoleID">
+            <reference attribute="owningCase"/>
+          </reference>
+        </timelineoperation>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Default to Entitled forever. -->
+    <Attribute name="isEntitledTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Boolean"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <Timeline>
+          <intervaltype>
+            <javaclass name="Boolean"/>
+          </intervaltype>
+          <initialvalue>
+            <true/>
+          </initialvalue>
+        </Timeline>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="tagTimelines">
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="AbstractTagTimeline"
+            ruleset="ProductEligibilityEntitlementRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <fixedlist>
+          <listof>
+            <ruleclass
+              name="AbstractTagTimeline"
+              ruleset="ProductEligibilityEntitlementRuleSet"
+            />
+          </listof>
+          <members>
+            <reference attribute="dailyDelivery"/>
+            <reference attribute="weeklyDelivery"/>
+            <reference attribute="monthlyDelivery"/>
+          </members>
+        </fixedlist>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="dailyDelivery">
+      <type>
+        <ruleclass name="PersonalBenefitAllowanceDailyDeliveryTagTimeline"/>
+      </type>
+      <derivation>
+        <create ruleclass="PersonalBenefitAllowanceDailyDeliveryTagTimeline">
+          <specify attribute="owningObjectiveTimeline">
+            <this/>
+          </specify>
+        </create>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="weeklyDelivery">
+      <type>
+        <ruleclass name="PersonalBenefitAllowanceWeeklyDeliveryTagTimeline"/>
+      </type>
+      <derivation>
+        <create ruleclass="PersonalBenefitAllowanceWeeklyDeliveryTagTimeline">
+          <specify attribute="owningObjectiveTimeline">
+            <this/>
+          </specify>
+        </create>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="monthlyDelivery">
+      <type>
+        <ruleclass name="PersonalBenefitAllowanceMonthlyDeliveryTagTimeline"/>
+      </type>
+      <derivation>
+        <create ruleclass="PersonalBenefitAllowanceMonthlyDeliveryTagTimeline">
+          <specify attribute="owningObjectiveTimeline">
+            <this/>
+          </specify>
+        </create>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <Class
+    extends="DefaultTagTimeline"
+    extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet"
+    name="PersonalBenefitAllowanceDailyDeliveryTagTimeline"
+  >
+
+
+    <Annotations>
+      <Label
+        label-id="ProductWizardDefaultEligibilityEntitlementRuleSet.label.13"
+        name="Personal Benefit Allowance Daily Delivery Tag Timeline"
+      />
+    </Annotations>
+
+
+    <Attribute name="owningObjectiveTimeline">
+      <type>
+        <ruleclass name="PersonalBenefitAllowanceObjectiveTimeline"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="tagType">
+      <type>
+        <ruleclass
+          name="AbstractTagType"
+          ruleset="ProductEligibilityEntitlementRuleSet"
+        />
+      </type>
+      <derivation>
+        <reference attribute="dailyDelivery">
+          <reference attribute="personalBenefitAllowanceObjectiveType">
+            <reference attribute="product">
+              <reference attribute="owningCase">
+                <reference attribute="owningObjectiveTimeline"/>
+              </reference>
+            </reference>
+          </reference>
+        </reference>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="valueTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Number"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <Timeline>
+          <intervaltype>
+            <javaclass name="Number"/>
+          </intervaltype>
+          <initialvalue>
+            <Number value="1"/>
+          </initialvalue>
+        </Timeline>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <Class
+    extends="DefaultTagTimeline"
+    extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet"
+    name="PersonalBenefitAllowanceWeeklyDeliveryTagTimeline"
+  >
+
+
+    <Annotations>
+      <Label
+        label-id="ProductWizardDefaultEligibilityEntitlementRuleSet.label.14"
+        name="Personal Benefit Allowance Weekly Delivery Tag Timeline"
+      />
+    </Annotations>
+
+
+    <Attribute name="owningObjectiveTimeline">
+      <type>
+        <ruleclass name="PersonalBenefitAllowanceObjectiveTimeline"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="tagType">
+      <type>
+        <ruleclass
+          name="AbstractTagType"
+          ruleset="ProductEligibilityEntitlementRuleSet"
+        />
+      </type>
+      <derivation>
+        <reference attribute="weeklyDelivery">
+          <reference attribute="personalBenefitAllowanceObjectiveType">
+            <reference attribute="product">
+              <reference attribute="owningCase">
+                <reference attribute="owningObjectiveTimeline"/>
+              </reference>
+            </reference>
+          </reference>
+        </reference>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="valueTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Number"/>
+        </javaclass>
+
+
+      </type>
+      <derivation>
+        <Timeline>
+          <intervaltype>
+            <javaclass name="Number"/>
+          </intervaltype>
+          <initialvalue>
+            <Number value="7"/>
+          </initialvalue>
+        </Timeline>
+
+
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <Class
+    extends="DefaultTagTimeline"
+    extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet"
+    name="PersonalBenefitAllowanceMonthlyDeliveryTagTimeline"
+  >
+
+
+    <Annotations>
+      <Label
+        label-id="ProductWizardDefaultEligibilityEntitlementRuleSet.label.15"
+        name="Personal Benefit Allowance Monthly Delivery Tag Timeline"
+      />
+    </Annotations>
+
+
+    <Attribute name="owningObjectiveTimeline">
+      <type>
+        <ruleclass name="PersonalBenefitAllowanceObjectiveTimeline"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="tagType">
+      <type>
+        <ruleclass
+          name="AbstractTagType"
+          ruleset="ProductEligibilityEntitlementRuleSet"
+        />
+      </type>
+      <derivation>
+        <reference attribute="monthlyDelivery">
+          <reference attribute="personalBenefitAllowanceObjectiveType">
+            <reference attribute="product">
+              <reference attribute="owningCase">
+                <reference attribute="owningObjectiveTimeline"/>
+              </reference>
+            </reference>
+          </reference>
+        </reference>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="valueTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Number"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <Timeline>
+          <intervaltype>
+            <javaclass name="Number"/>
+          </intervaltype>
+          <initialvalue>
+            <Number value="28"/>
+          </initialvalue>
+        </Timeline>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <Class
+    extends="DefaultTagTimeline"
+    extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet"
+    name="ChildBenefitAllowanceDailyDeliveryTagTimeline"
+  >
+
+
+    <Annotations>
+      <Label
+        label-id="ProductWizardDefaultEligibilityEntitlementRuleSet.label.16"
+        name="Child Benefit Allowance Daily Delivery Tag Timeline"
+      />
+    </Annotations>
+
+
+    <Attribute name="owningObjectiveTimeline">
+      <type>
+        <ruleclass name="ChildBenefitAllowanceObjectiveTimeline"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="tagType">
+      <type>
+        <ruleclass
+          name="AbstractTagType"
+          ruleset="ProductEligibilityEntitlementRuleSet"
+        />
+      </type>
+      <derivation>
+        <reference attribute="dailyDelivery">
+          <reference attribute="childBenefitAllowanceObjectiveType">
+            <reference attribute="product">
+              <reference attribute="owningCase">
+                <reference attribute="owningObjectiveTimeline"/>
+              </reference>
+            </reference>
+          </reference>
+        </reference>
+      </derivation>
+    </Attribute>
+
+
+    <!-- eligible for the amount on the evidence-->
+    <Attribute name="valueTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Number"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <reference attribute="amount">
+          <reference attribute="creoleSimpleSuccessionSet">
+            <reference attribute="owningObjectiveTimeline"/>
+          </reference>
+        </reference>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <!-- CREOLESimpleSuccessionSet is populated by the active succession set rule object propagator -->
+  <Class
+    extends="ActiveSuccessionSet"
+    extendsRuleSet="PropagatorRuleSet"
+    name="CREOLESimpleSuccessionSet"
+  >
+
+
+    <Annotations>
+      <SuccessionSetPopulation
+        endDateAttribute="endDate"
+        startDateAttribute="startDate"
+      />
+    </Annotations>
+
+
+    <Attribute name="startDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="endDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="eligible">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Boolean"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="amount">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Number"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+</RuleSet>

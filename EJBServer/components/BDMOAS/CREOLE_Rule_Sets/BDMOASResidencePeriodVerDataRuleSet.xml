@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMOASResidencePeriodVerDataRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class extends="ActiveInEditEvidenceRow" 
+		extendsRuleSet="PropagatorRuleSet" name="OASResidencePeriod">
+		
+		<Attribute name="caseParticipantRole">
+			<type>
+				<javaclass name="java.lang.Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+        <Attribute name="residenceType">
+            <type>
+                <codetableentry table="OASResidenceType" />
+            </type>
+            <derivation>
+                <specified />
+            </derivation>
+        </Attribute>
+		<Attribute name="absenceReason">
+			
+			<type>
+				<codetableentry table="OASAbsenceReason" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="country">
+			<Annotations />
+			<type>
+				<javaclass name="String" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="startDate">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="endDate">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+        
+        <Attribute name="resolution">
+            <type>
+                <codetableentry table="BDMIssueResolution" />
+            </type>
+            <derivation>
+                <specified />
+            </derivation>
+        </Attribute>
+        
+        <Attribute name="evidenceID">
+            <type>
+                <javaclass name="Number" />
+            </type>
+            <derivation>
+                <specified />
+            </derivation>
+        </Attribute>
+        <Attribute name="description">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage
+					key="DynamicEvidenceSuccessionSet.description"
+					resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules">
+					<reference attribute="successionID" />
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="related_caseParticipantRole">
+			<type>
+				<ruleclass name="CaseParticipantRole"
+					ruleset="CaseEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<reference attribute="caseParticipantRoleRecord">
+					<create ruleclass="CaseParticipantRoleCalculator"
+						ruleset="DynamicEvidenceRuleSet">
+						<reference attribute="caseParticipantRole" />
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+				
+	</Class>
+</RuleSet>
