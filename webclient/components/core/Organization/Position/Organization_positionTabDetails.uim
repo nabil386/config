@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Reads Position tab details.                                            -->
+<PAGE
+  PAGE_ID="Organization_positionTabDetails"
+  TYPE="DETAILS"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="positionName"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <TAB_NAME>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="positionName"
+      />
+    </CONNECT>
+  </TAB_NAME>
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAY"
+    OPERATION="viewPosition"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="positionID"/>
+  <PAGE_PARAMETER NAME="organisationStructureID"/>
+  <PAGE_PARAMETER NAME="organisationUnitID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="positionID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="orgStructureAndPositionKey$positionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="organisationStructureID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="orgStructureAndPositionKey$organisationStructureID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="organisationUnitID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="orgStructureAndPositionKey$organisationUnitID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+  >
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="positionName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.LeadPosition">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="leadPositionInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ReportsTo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reportsToName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Job">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="jobName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.OrgUnit">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="organisationUnitName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Organization_orgUnitHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="viewPositionDetails$organisationUnitID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationUnitID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="organisationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationStructureID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="toDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+ 
+  Copyright IBM Corporation 2012, 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Evidence infrastructure view page to be included in the client page    -->
+<!-- for applying evidence changes                                          -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="Incident_viewIncident1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Incidents"
+    NAME="DISPLAY"
+    OPERATION="viewIncidentDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="incidentID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$incidentID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.CloseIncident">
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="incidentClosedInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="TRUE"
+        PAGE_ID="Incident_closeIncident1"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.DeleteIncident">
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="incidentClosedInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="TRUE"
+        PAGE_ID="Incident_deleteIncident1"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00127598, POB -->
+  <!-- Changed to use two conditional clusters to handle
+    anonymous reporting -->
+  <CLUSTER>
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="anonymousReportInd"
+      />
+    </CONDITION>
+    <CLUSTER
+      LABEL_WIDTH="26"
+      NUM_COLS="2"
+    >
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="reporterUserInd"
+        />
+      </CONDITION>
+      <FIELD LABEL="Field.Label.Location">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="location"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.Sensitivity"
+        USE_DEFAULT="TRUE"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="sensitivityCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.ReportedBy"
+        USE_DEFAULT="true"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="reporterFullName"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="Participant_resolve">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="reporterConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <CONTAINER LABEL="Container.Label.Status">
+        <FIELD USE_DEFAULT="TRUE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="status"
+            />
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <CLUSTER
+      LABEL_WIDTH="26"
+      NUM_COLS="2"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="reporterUserInd"
+        />
+      </CONDITION>
+      <FIELD LABEL="Field.Label.Location">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="location"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.Sensitivity"
+        USE_DEFAULT="TRUE"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="sensitivityCode"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <!-- BEGIN, CR00386722, MP -->
+      <FIELD
+        LABEL="Field.Label.Category"
+        USE_DEFAULT="TRUE"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="incidentCategoryOpt"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- END, CR00386722 -->
+
+
+      <FIELD
+        LABEL="Field.Label.ReportedBy"
+        USE_DEFAULT="true"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="reporterFullName"
+          />
+        </CONNECT>
+        <LINK
+          OPEN_MODAL="TRUE"
+          PAGE_ID="Organization_viewUserDetails"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="reporterUserName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <CONTAINER LABEL="Container.Label.Status">
+        <FIELD USE_DEFAULT="TRUE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="status"
+            />
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="26"
+    NUM_COLS="2"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="anonymousReportInd"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Location">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="location"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Sensitivity"
+      USE_DEFAULT="TRUE"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sensitivityCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!--BEGIN,  CR00386722, MP -->
+    <FIELD
+      LABEL="Field.Label.Category"
+      USE_DEFAULT="TRUE"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="incidentCategoryOpt"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END,  CR00386722 -->
+
+
+    <FIELD
+      LABEL="Field.Label.ReportedBy"
+      USE_DEFAULT="true"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reporterFullName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00140593, ZV -->
+    <CONTAINER LABEL="Container.Label.Status">
+      <FIELD USE_DEFAULT="TRUE">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="status"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <!-- END, CR00140593 -->
+  </CLUSTER>
+  <!-- END, CR00127598 -->
+
+
+  <CLUSTER
+    SHOW_LABELS="FALSE"
+    STYLE="RemoveFieldPadding"
+    TITLE="Cluster.Description.Title"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    TITLE="Cluster.ClosureDetails.Title"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="incidentClosedInd"
+      />
+    </CONDITION>
+    <CLUSTER
+      LABEL_WIDTH="26"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD LABEL="Field.Label.ClosureDate">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="closureDate"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.ClosureReason">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="closureReason"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <CLUSTER
+      LABEL_WIDTH="13"
+      NUM_COLS="1"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD LABEL="Field.Label.ClosureComment">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="closureComment"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+</PAGE>

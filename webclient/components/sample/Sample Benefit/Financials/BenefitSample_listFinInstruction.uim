@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2006,2010-2011 Curam Software Ltd.                       -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page is used to display a list of financial instructions for      -->
+<!-- the benefit sample.                                                    -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="BenefitSample_listFinInstruction"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProductDelivery"
+    NAME="DISPLAY"
+    OPERATION="listCaseFinancialInstruction"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseID"
+    />
+  </CONNECT>
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="result$warnings$informationalMsgDtlsList$dtls$informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <!-- BEGIN, CR00184236, MC -->
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MenuTransactions"
+      STYLE="in-page-current-link"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="unprocessedILIsInd"
+        />
+      </CONDITION>
+      <LINK
+        PAGE_ID="BenefitSample_listFinInstruction"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MenuUnprocessed"
+      STYLE="in-page-link"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="unprocessedILIsInd"
+        />
+      </CONDITION>
+      <LINK
+        PAGE_ID="BenefitSample_listUnprocessedILIs"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    
+    <!-- BEGIN, CR00289420, PMD -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MenuPaymentsReceived"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="PaymentCorrection_listPaymentsReceived"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00289420 -->    
+  </MENU>
+  <!-- END, CR00184236 -->
+
+
+  <ACTION_SET BOTTOM="false">
+
+
+    <ACTION_CONTROL
+      IMAGE="GeneratePayment"
+      LABEL="ActionControl.Label.GeneratePayment"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProductDelivery_generatePayment"
+        WINDOW_OPTIONS="width=500,height=150"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="SimulatePayment"
+      LABEL="ActionControl.Label.SimulatePayment"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Financial_simulatePayment1"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00219579, MC -->
+  <INCLUDE FILE_NAME="Financial_listFinInstructionView1.vim"/>
+  <!-- END, CR00219579 -->
+
+
+</PAGE>

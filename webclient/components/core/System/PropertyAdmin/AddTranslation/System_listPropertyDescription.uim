@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="System_listPropertyDescription"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="PropertyAdmin"
+    NAME="DISPLAY"
+    OPERATION="readAllDescriptionsForProperty"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="propertyID"/>
+  <PAGE_PARAMETER NAME="currentLanguageCode"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="propertyID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$propertyID"
+    />
+  </CONNECT>
+
+
+  <LIST TITLE="List.Title.Translations">
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_editPropertyDescriptionTranslation"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="propertyID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="propertyID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$languageCode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="languageCode"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="currentLanguageCode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="currentLanguageCode"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_deletePropertyDescriptionTranslation"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="propertyID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="propertyID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$languageCode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="languageCode"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="currentLanguageCode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="currentLanguageCode"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Title.Language"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$languageCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.Description">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$description"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddTranslation">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="System_addPropertyDescriptionTranslation"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="propertyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="propertyID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="currentLanguageCode"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="currentLanguageCode"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close">
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="System_translateProperty"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="propertyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="propertyID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="currentLanguageCode"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="languageCode"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

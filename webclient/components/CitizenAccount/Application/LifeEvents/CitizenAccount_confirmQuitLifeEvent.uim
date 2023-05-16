@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="CitizenAccount_confirmQuitLifeEvent" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+    
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+        </CONNECT>
+    </PAGE_TITLE>  	
+    
+    <SERVER_INTERFACE CLASS="CitizenLifeEvents" NAME="ACTION"  OPERATION="confirmQuit" PHASE="ACTION"/>
+    
+    <PAGE_PARAMETER NAME="executionID"/>
+    <PAGE_PARAMETER NAME="id"/>
+    <PAGE_PARAMETER NAME="lifeEventContextID"/>
+    <PAGE_PARAMETER NAME="lifeEventID"/>
+    
+    <CLUSTER SHOW_LABELS="false">
+        <FIELD ALIGNMENT="CENTER">
+            <CONNECT>
+                <SOURCE NAME="TEXT" PROPERTY="Field.ConfirmQuit.Text"/>
+            </CONNECT>
+        </FIELD>
+        <ACTION_SET TOP="false" ALIGNMENT="CENTER">
+            <ACTION_CONTROL DEFAULT="true" LABEL="ActionControl.Label.Yes" TYPE="SUBMIT">
+                <LINK PAGE_ID="CitizenAccount_viewLifeEventLaunch">
+                    <CONNECT>
+                        <SOURCE NAME="PAGE" PROPERTY="lifeEventContextID"/>
+                        <TARGET NAME="PAGE" PROPERTY="lifeEventContextID"/>
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+            <ACTION_CONTROL LABEL="ActionControl.Label.No" TYPE="SUBMIT">
+                <LINK PAGE_ID="CitizenAccount_resolveResumeLifeEvent">
+                    <CONNECT>
+                        <SOURCE NAME="PAGE" PROPERTY="executionID"/>
+                        <TARGET NAME="PAGE" PROPERTY="executionID"/>
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="PAGE" PROPERTY="id"/>
+                        <TARGET NAME="PAGE" PROPERTY="id"/>
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>            
+        </ACTION_SET>
+    </CLUSTER>
+    
+    
+</PAGE>

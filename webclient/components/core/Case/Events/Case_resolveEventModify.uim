@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2005, 2008-2010 Curam Software Ltd.                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp redirects the user to the appropriate page to                 -->
+<!-- modify details of a case event.                                        -->
+<PAGE
+  PAGE_ID="Case_resolveEventModify"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String eventType = request.getParameter("eventType");
+      String eventID = request.getParameter("eventID");
+      String caseID = request.getParameter("caseID");
+      String recurringInd = request.getParameter("recurringInd");
+      //BEGIN CR00091497, PN
+      String attendeeInd = request.getParameter("attendeeInd");
+      String acceptableInd = request.getParameter("acceptableInd");
+      //END CR00091497
+      String description = request.getParameter("description");
+      String url = "";
+
+      if (eventType == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "eventType");
+       System.out.println(e);
+       throw e;
+       // END, CR00110216
+      }
+      if (eventID == null) { 
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "eventID");
+       System.out.println(e);
+       throw e;
+       // END, CR00110216
+      }      
+      if (caseID == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "caseID");
+       System.out.println(e);
+       throw e;
+       // END, CR00110216
+      }
+      if (recurringInd == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "recurringInd");
+       System.out.println(e);
+       throw e;
+       // END, CR00110216
+      }
+      //BEGIN CR00091497, PN
+      if (attendeeInd == null) {
+      // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "attendeeInd");
+       System.out.println(e);
+       throw e;
+       // END, CR00110216
+      }
+      if (acceptableInd == null) {
+      // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "acceptableInd");
+       System.out.println(e);
+       throw e;
+       
+      }
+      
+      if (eventType.equals("ET1")) {
+        url = context + "Case_noModifyEventPage.do?eventID=" 
+              + curam.omega3.request.RequestUtils.escapeURL(eventID) + "&amp;caseID=" 
+              +  curam.omega3.request.RequestUtils.escapeURL(caseID) + "&amp;eventType=" 
+              +  curam.omega3.request.RequestUtils.escapeURL(eventType)
+              + "&amp;recurringInd=" +  curam.omega3.request.RequestUtils.escapeURL(recurringInd)
+              + "&amp;attendeeInd=" +  curam.omega3.request.RequestUtils.escapeURL(attendeeInd)
+              + "&amp;acceptableInd=" +  curam.omega3.request.RequestUtils.escapeURL(acceptableInd);
+
+      } else if (eventType.equals("ET2")) {
+        url = context + "Case_modifyAppealFromListPage.do?appealID="  
+              + curam.omega3.request.RequestUtils.escapeURL(eventID);
+
+      // BEGIN, CR00162977, SPD
+      } else if (eventType.equals("ET3")) {
+        url = context + "Case_modifyReviewFromList1Page.do?reviewID=" 
+              + curam.omega3.request.RequestUtils.escapeURL(eventID)
+              + "&amp;caseID=" +  curam.omega3.request.RequestUtils.escapeURL(caseID); 
+      // END, CR00162977 
+      
+      } else if (eventType.equals("ET4")) {
+        url = context + "Case_modifyReferralFromListPage.do?referralID=" 
+              + curam.omega3.request.RequestUtils.escapeURL(eventID);
+
+      } else if (eventType.equals("ET5")) {
+        url = context + "Case_noModifyEventPage.do?eventID=" + curam.omega3.request.RequestUtils.escapeURL(eventID)
+              + "&amp;caseID=" +  curam.omega3.request.RequestUtils.escapeURL(caseID) 
+              +"&amp;eventType=" +  curam.omega3.request.RequestUtils.escapeURL(eventType)
+              + "&amp;recurringInd=" +  curam.omega3.request.RequestUtils.escapeURL(recurringInd)
+              + "&amp;attendeeInd=" +  curam.omega3.request.RequestUtils.escapeURL(attendeeInd)
+              + "&amp;acceptableInd=" +  curam.omega3.request.RequestUtils.escapeURL(acceptableInd);
+              
+      } else if (eventType.equals("ET10")) {
+        url = context + "Case_noModifyEventPage.do?eventID=" 
+              + curam.omega3.request.RequestUtils.escapeURL(eventID) + "&amp;caseID=" 
+              +  curam.omega3.request.RequestUtils.escapeURL(caseID) + "&amp;eventType=" 
+              +  curam.omega3.request.RequestUtils.escapeURL(eventType)
+              + "&amp;recurringInd=" +  curam.omega3.request.RequestUtils.escapeURL(recurringInd)
+              + "&amp;attendeeInd=" +  curam.omega3.request.RequestUtils.escapeURL(attendeeInd)
+              + "&amp;acceptableInd=" +  curam.omega3.request.RequestUtils.escapeURL(acceptableInd);
+              
+      } else if (eventType.equals("ET11")) {
+        url = context + "Case_noModifyEventPage.do?caseID=" 
+        + curam.omega3.request.RequestUtils.escapeURL(caseID) + "&amp;recurringInd=" 
+        +  curam.omega3.request.RequestUtils.escapeURL(recurringInd)
+        + "&amp;attendeeInd=" +  curam.omega3.request.RequestUtils.escapeURL(attendeeInd)
+        + "&amp;acceptableInd=" +  curam.omega3.request.RequestUtils.escapeURL(acceptableInd);
+              
+      } else if (eventType.equals("ET12")) {
+        url = context + "Case_noModifyEventPage.do?eventID=" 
+              + curam.omega3.request.RequestUtils.escapeURL(eventID) + "&amp;caseID=" 
+              + curam.omega3.request.RequestUtils.escapeURL(caseID)
+              + "&amp;eventType=" +  curam.omega3.request.RequestUtils.escapeURL(eventType)
+              + "&amp;recurringInd=" +  curam.omega3.request.RequestUtils.escapeURL(recurringInd)
+              + "&amp;attendeeInd=" +  curam.omega3.request.RequestUtils.escapeURL(attendeeInd)
+              + "&amp;acceptableInd=" +  curam.omega3.request.RequestUtils.escapeURL(acceptableInd);
+              
+      } else if (eventType.equals("ET13")) {
+        // BEGIN, CR00192053, ELG
+        String activityType = "";
+        
+        // Read the activity type      
+        curam.interfaces.ActivityPkg.Activity_readStandardOrganizationActivity_TH
+        th = new curam.interfaces.ActivityPkg.Activity_readStandardOrganizationActivity_TH();
+        
+        th.setFieldValue(th.key$maintainActivityKey$activityID_idx,eventID);
+        th.callServer();
+        
+        activityType = th.getFieldValue(th.result$organizationStandardActivityDetails$activityTypeCode_idx);
+        
+        // Activity of type Meeting
+        if (activityType.equals("AT2")) {
+        
+          url = context + "CalendarMeeting_modifyMeetingFromListPage.do?activityID=" + curam.omega3.request.RequestUtils.escapeURL(eventID)
+                + "&amp;description=" + curam.omega3.request.RequestUtils.escapeURL(description);
+                
+        // Standard Activity 
+        } else {
+      
+          url = context + "Activity_resolveModifyStandardUserActivity1Page.do?ID=" + curam.omega3.request.RequestUtils.escapeURL(eventID)
+                + "&amp;RE=" + curam.omega3.request.RequestUtils.escapeURL(recurringInd) + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+        }
+        // END, CR00192053
+              
+      } else if (eventType.equals("ET134")) {
+        url = context + "ProductDelivery_modifyMilestoneFromListPage.do?milestoneDeliveryID=" + curam.omega3.request.RequestUtils.escapeURL(eventID)
+          + "&amp;description=" + curam.omega3.request.RequestUtils.escapeURL(description);
+                                                
+      } else {     
+        url = context + "Case_noModifyEventPage.do?eventID=" + curam.omega3.request.RequestUtils.escapeURL(eventID)
+              + "&amp;caseID=" +  curam.omega3.request.RequestUtils.escapeURL(caseID)
+              + "&amp;eventType=" +  curam.omega3.request.RequestUtils.escapeURL(eventType)
+              + "&amp;RE=" + curam.omega3.request.RequestUtils.escapeURL(recurringInd) + "&amp;recurringInd=" +  curam.omega3.request.RequestUtils.escapeURL(recurringInd)
+              + "&amp;attendeeInd=" +  curam.omega3.request.RequestUtils.escapeURL(attendeeInd)
+              + "&amp;acceptableInd=" +  curam.omega3.request.RequestUtils.escapeURL(acceptableInd);     
+                      
+             }
+       // END, CR00110216
+      //END CR00091497
+      url += "&amp;" + rh.getSystemParameters();
+      response.sendRedirect(response.encodeRedirectURL(url));
+
+    
+  </JSP_SCRIPTLET>
+</PAGE>

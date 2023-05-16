@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010, 2012 Curam Software Ltd.                         -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows users to view an external party office phone number   -->
+<PAGE
+  PAGE_ID="ExternalParty_listOfficePhoneNumber"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ExternalParty"
+    NAME="DISPLAY"
+    OPERATION="listOfficePhoneNumber"
+  />
+
+
+  <PAGE_PARAMETER NAME="externalPartyOfficeID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="externalPartyOfficeID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="officeKey$externalPartyOfficeID"
+    />
+  </CONNECT>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.OfficeHome"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ExternalParty_viewExternalPartyOffice"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="externalPartyOfficeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="externalPartyOfficeID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Addresses"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ExternalParty_listOfficeAddress"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="externalPartyOfficeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="externalPartyOfficeID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.OfficeMembers"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ExternalParty_listOfficeMember"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="externalPartyOfficeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="externalPartyOfficeID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.PhoneNumbers"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="ExternalParty_listOfficePhoneNumber"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="externalPartyOfficeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="externalPartyOfficeID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <LIST>
+
+
+    <DETAILS_ROW>
+
+
+      <INLINE_PAGE PAGE_ID="ExternalParty_viewOfficePhoneNumber">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="officePhoneNumberID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="officePhoneNumberID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="officeName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="officeName"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+
+
+    </DETAILS_ROW>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00306326, SG -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="activeIndOpt"
+          />
+        </CONDITION>
+        <!-- END, CR00306326 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ExternalParty_modifyOfficePhoneNumberFromList"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="officePhoneNumberID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="officePhoneNumberID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="officeName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="officeName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="DeleteButton"
+        LABEL="ActionControl.Label.Delete"
+      >
+        <!-- BEGIN, CR00306326, SG -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="activeIndOpt"
+          />
+        </CONDITION>
+        <!-- END, CR00306326 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ExternalParty_cancelOfficePhoneNumber"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="officePhoneNumberID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="officePhoneNumberID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="officeName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="officeName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.Primary"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="primaryPhoneInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.PhoneType"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="phoneType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AreaCode"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="phoneAreaCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.PhoneNumber"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="phoneNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Extension"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="phoneExtension"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+</PAGE>

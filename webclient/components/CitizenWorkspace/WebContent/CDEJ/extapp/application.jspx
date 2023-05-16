@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:curam="http://www.curamsoftware.com/curam" xmlns:cing="http://www.curamsoftware.com/curam/jde/client/curam-ng" version="2.0">
+  <jsp:directive.page isErrorPage="false" pageEncoding="UTF-8" contentType="text/html;charset=UTF-8" isELIgnored="false" language="java" buffer="32kb"/>
+  <jsp:directive.page import="curam.util.common.useragent.UserAgent"/>
+  <jsp:directive.page import="curam.omega3.user.InfrastructureUserPreferences"/>
+  <jsp:directive.page import="curam.omega3.user.UserPreferencesFactory"/>
+  <jsp:directive.page import="curam.omega3.user.UserPreferences"/>
+  <jsp:directive.page import="curam.util.client.jsp.JspUtil"/>
+  <jsp:directive.page import="curam.omega3.config.appconfig.CuramConfig"/>
+  <jsp:directive.page import="curam.omega3.util.CDEJResources"/>
+
+  <jsp:output omit-xml-declaration="yes"/>
+  
+  <jsp:text><![CDATA[<!DOCTYPE html>]]></jsp:text>
+    <jsp:scriptlet>
+    <![CDATA[
+    // TODO: move this code out of the JSP
+ 
+    //Preservation of contrast mode selection across session invalidations
+    String highContrastCookieVal = null;
+    javax.servlet.http.Cookie[] cookies = request.getCookies();
+    if(cookies != null) {
+        for(int i=0; i<cookies.length;i++) {
+            if("citizenportal.highContrastMode".equals(cookies[i].getName())) {
+                highContrastCookieVal = cookies[i].getValue();
+                //clear 
+                cookies[i].setMaxAge(0);
+                cookies[i].setValue("");
+                response.addCookie(cookies[i]);
+                break;
+            }
+        }
+    }
+ 
+    UserAgent ua = new UserAgent(request.getHeader("User-Agent"));
+    request.getSession().setAttribute(
+        curam.util.client.domain.render.RendererUtils.UA_SESSION_KEY, ua);
+    pageContext.setAttribute("mobileUserAgent", 
+        String.valueOf(ua.isMobileBrowser()));
+    curam.omega3.util.UserUtils.setUserPreferences(session);
+    UserPreferences prefs = UserPreferencesFactory.getUserPreferences(session);
+    pageContext.setAttribute("homePage", prefs.getHomePage());
+    pageContext.setAttribute("appId", prefs.getApplicationID());
+    String locale = prefs.getLocale().toString();
+    pageContext.setAttribute("pageLocale", locale);
+    pageContext.setAttribute("dojoConfig", JspUtil.getDojoConfig(prefs.getLocale()));
+    pageContext.setAttribute("dojoLocale", JspUtil.getDojoLocale(prefs.getLocale()));
+
+    if (request.getParameter("directLink") != null) {
+      curam.util.client.jsp.JspUtil.handleExternalAppDirectLink(pageContext);
+    } else {
+      pageContext.setAttribute("directLinkData", "null");
+    }
+
+    pageContext.setAttribute("optimalBrowserMsgDesc", 
+      CDEJResources.getProperty("optimal.browser.msg.description"));
+    pageContext.setAttribute("optimalBrowserMsgInfo", 
+      CDEJResources.getProperty("optimal.browser.msg.info"));
+    pageContext.setAttribute("loadingAppMsgInfo",    
+      CDEJResources.getProperty("external.application.loading.msg.info"));
+ try { 
+      if(highContrastCookieVal != null) {
+        prefs.setUserPreference(InfrastructureUserPreferences.HIGH_CONTRAST_MODE, highContrastCookieVal);
+      }  
+      pageContext.setAttribute("highContrastMode",
+          prefs.getUserPreference(InfrastructureUserPreferences.HIGH_CONTRAST_MODE));		  
+    } catch (final curam.util.common.JDEException e) {
+      pageContext.setAttribute("highContrastMode", "false");
+    }
+    curam.omega3.taglib.ScreenContext ctx = new curam.omega3.taglib.ScreenContext();
+    ctx.addContextBits(curam.omega3.taglib.ScreenContext.EXTAPP);
+    //ctx.addContextBits(curam.omega3.taglib.ScreenContext.TAB);
+    ctx.clear(curam.omega3.taglib.ScreenContext.HEADER
+              | curam.omega3.taglib.ScreenContext.FOOTER
+              | curam.omega3.taglib.ScreenContext.NAVIGATOR);
+    pageContext.setAttribute("ctx", ctx);
+    String staticURL =
+        CuramConfig.getInstance().getStaticContentServer().getUrl();
+    if ("..".equals(staticURL) ) {
+      staticURL = "";
+    } else {
+      staticURL += "/";
+    }
+    pageContext.setAttribute("o3__serverURL", staticURL);
+    ]]>
+  </jsp:scriptlet>
+  <!--
+    This sets dojoHtmlLanguage, htmlLanguage and htmlDirection 
+  -->
+  <curam:userPreferences localeCode="${pageScope.pageLocale}"/>
+  <!-- NB: getLandingPage() relies on path resolvers and therefore must be
+    invoked after curam:userPreferences, which ensures they are intitialized.
+  -->
+  <jsp:scriptlet>
+    <![CDATA[
+      pageContext.setAttribute("landingPage",
+         curam.util.client.tab.ApplicationConfigUtils.getLandingPage());      
+    ]]>
+    <![CDATA[
+      pageContext.setAttribute("isGuardEnabledAgainstLeaving",
+         curam.util.client.tab.ApplicationConfigUtils.isGuardAgainstLeavingSet(true));
+    ]]>
+    <![CDATA[
+      pageContext.setAttribute("pageTitle",
+        curam.util.client.tab.ApplicationConfigUtils.getApplicationTitle().replaceFirst("\\\\n", " "));
+    ]]>
+  </jsp:scriptlet>
+  
+  <html lang="${htmlLanguage}" xml:lang="${htmlLanguage}" dir="${htmlDirection}" role="region" aria-label="${pageTitle}">
+    <head>
+      <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+      <meta http-equiv="Pragma" content="no-cache"/>
+      <meta http-equiv="Expires" content="-1"/>
+      <title><jsp:scriptlet>out.print(curam.util.client.tab.ApplicationConfigUtils.getApplicationTitle().replaceFirst("\\\\n", " "));</jsp:scriptlet></title>
+      
+    <link type="text/css" rel="stylesheet" href="${pageScope.o3__serverURL}CDEJ/jscript/dojotk/dojo/resources/dojo.css" media="all"/>
+    <link type="text/css" rel="stylesheet" href="${pageScope.o3__serverURL}CDEJ/jscript/dojotk/dijit/themes/dijit.css" media="all"/>
+    <link type="text/css" rel="stylesheet" href="${pageScope.o3__serverURL}CDEJ/jscript/ibmidxtk/idx/themes/oneui/oneui-curam-custom.css" media="all"/>
+    <link type="text/css" rel="stylesheet" href="${pageScope.o3__serverURL}CDEJ/extapp/themes/curam-extapp/curam-extapp.css" media="all"/>
+      
+    <link type="text/css" rel="stylesheet" href="${pageScope.o3__serverURL}CDEJ/extapp/high-contrast.css"/>
+    
+      <jsp:scriptlet>
+        if ("true".equals(pageContext.getAttribute("highContrastMode"))){
+          pageContext.setAttribute("highContrastClassName", "high-contrast");
+        }
+      </jsp:scriptlet>
+      
+      <link type="text/css" rel="stylesheet" href="${pageScope.o3__serverURL}CDEJ/css/custom.css" media="all"/>
+      <jsp:text>&lt;!--[if IE]&gt;</jsp:text> 
+      <link rel="stylesheet" type="text/css" media="screen" href="${pageScope.o3__serverURL}CDEJ/css/custom_cc_ie.css"/>
+      <jsp:text>&lt;![endif]--&gt;</jsp:text>
+      <jsp:text>&lt;!--[if IE 7]&gt;</jsp:text> 
+      <link rel="stylesheet" type="text/css" media="screen" href="${pageScope.o3__serverURL}CDEJ/css/custom_cc_ie7.css"/>
+      <jsp:text>&lt;![endif]--&gt;</jsp:text>
+      <jsp:text>&lt;!--[if IE 8]&gt;</jsp:text> 
+      <link rel="stylesheet" type="text/css" media="screen" href="${pageScope.o3__serverURL}CDEJ/css/custom_cc_ie8.css"/>
+      <jsp:text>&lt;![endif]--&gt;</jsp:text>
+      <jsp:text>&lt;!--[if IE 9]&gt;</jsp:text> 
+      <link rel="stylesheet" type="text/css" media="screen" href="${pageScope.o3__serverURL}CDEJ/css/custom_cc_ie9.css"/>
+      <jsp:text>&lt;![endif]--&gt;</jsp:text>
+      
+      <script type="text/javascript">
+        dojoConfig = {
+        async: false,
+        parseOnLoad: true,
+        isDebug: false,
+        locale:"${dojoHtmlLanguage}",
+        packages: [
+        {name: "idx", location: "../../ibmidxtk/idx"},
+        {name: "curam", location: "../../curam"},
+        {name: "cm", location: "../../cm"},
+        /* This is the UA team "citizen workspace" module   */
+        {name: "cwtk", location: "../../cwtk"}
+        ]
+        };
+      </script>
+      <jsp:scriptlet>
+        if(pageContext.getAttribute("htmlDirection").equals("rtl")) {
+          </jsp:scriptlet><link type="text/css" rel="stylesheet" href="${pageScope.o3__serverURL}CDEJ/jscript/dojotk/dijit/themes/dijit_rtl.css" media="all"/><jsp:scriptlet>
+        }
+      </jsp:scriptlet>
+      <jsp:scriptlet>
+        if(pageContext.getAttribute("htmlDirection").equals("rtl")) {
+          </jsp:scriptlet><link type="text/css" rel="stylesheet" href="${pageScope.o3__serverURL}CDEJ/extapp/themes/curam-extapp/curam-extapp_rtl.css" media="all"/><jsp:scriptlet>
+        }
+      </jsp:scriptlet>
+       <jsp:scriptlet>
+       if ("true".equals(pageContext.getAttribute("mobileUserAgent"))){
+           pageContext.setAttribute("mobileClassName", "mobile");
+           </jsp:scriptlet><link type="text/css" rel="stylesheet" href="${pageScope.o3__serverURL}CDEJ/extapp/themes/curam-extapp/mobile-extapp.css" /><jsp:scriptlet>
+       }
+      </jsp:scriptlet>      
+      
+      <script type="text/javascript" src="${pageScope.o3__serverURL}CDEJ/jscript/dojotk/dojo/dojo.js">// dummy script content</script>
+      <script type="text/javascript">
+        <jsp:scriptlet>JspUtil.outputJavaScriptDebugSetup(pageContext);</jsp:scriptlet>
+      </script>     
+      <jsp:scriptlet>
+      <![CDATA[
+        curam.util.configuration.CuramConfiguration curamConfig = curam.util.configuration.CuramConfigurationUtil.getConfiguration();
+        boolean useLayerFile = curamConfig.getBoolean("curam.citizenworkspace.use.layer.file");
+        if(useLayerFile) {
+          // Load layer file
+          out.println("<script type=\"text/javascript\" src=\"CDEJ/jscript/dojo.layer.js\">// dummy script content</script>");
+          out.println("<script type=\"text/javascript\" src=\"CDEJ/jscript/cwtk-layer.js\">// dummy script content</script>");
+        }
+        // else load nothing. The application will make requests when they are needed.
+      ]]>
+      </jsp:scriptlet>
+      
+      <jsp:scriptlet>
+        curam.util.client.jsp.JspUtil.outputJSLocalisedValues(pageContext);
+      </jsp:scriptlet>
+      <curam:jsUserPreferences/>
+      <script type="text/javascript">
+        if(typeof(curam)=="undefined"){curam={};}curam.config={locale:"${dojoHtmlLanguage}",modalsEnabled:"true",mobileUserAgent:${pageScope.mobileUserAgent},landingPage:"${pageScope.landingPage}",appID:"${appId}"};
+      </script>
+      <script type="text/javascript">
+        <jsp:scriptlet>
+          out.print("var sid='" + request.getSession().getId() + "';");
+        </jsp:scriptlet>
+      </script>
+      <script type="text/javascript" src="${pageScope.o3__serverURL}CDEJ/extapp/bootstrap.js">// dummy script content</script>
+      <jsp:include page="application-custom-script-includes.jspx">
+        <jsp:param name="htmlDirection" value="${htmlDirection}"/>
+      </jsp:include>
+    </head>
+    <!-- htmlDirection will have a space in it if it is specified. -->
+    <body class="oneui curam-extapp ${mobileClassName} ${highContrastClassName} ${appId} ${htmlLanguage}${htmlDirection}" role="document" aria-label="${pageTitle}">
+      <div class="access hidden">
+        <a id="skipLink" accesskey="1" href="#" tabindex="1" onfocus="CuramExternalApp._showHideSkipLink(event);" onblur="CuramExternalApp._showHideSkipLink(event);" onclick="CuramExternalApp._skipLinkFocus();">
+          <jsp:scriptlet>
+          out.print(CDEJResources.getProperty("landmark.skip.link"));
+          </jsp:scriptlet>
+        </a>
+      </div>      
+      <div id="curam-optimal-brower" role="region" aria-label="optimal browser message banner" data-dojo-type="curam/widget/OptimalBrowserMessage" data-dojo-id="CuramOptimalBrowserMessage" data-dojo-props="isExternalApp: true">
+        ${pageScope.optimalBrowserMsgInfo}
+      </div>
+      <div id="curam-app" data-dojo-type="curam/app/ExternalApplication" data-dojo-id="CuramExternalApp"
+        data-dojo-props="guardAgainstLeaving: ${pageScope.isGuardEnabledAgainstLeaving}, directLinkData: ${pageScope.directLinkData}">
+        ${pageScope.loadingAppMsgInfo}
+      </div>
+    </body>
+  </html>
+  
+</jsp:root>

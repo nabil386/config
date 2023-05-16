@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<PAGE
+  PAGE_ID="ParticipantRegistration_resolveCancelWizard"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <JSP_SCRIPTLET>
+  
+      
+    
+      curam.omega3.request.RequestHandler rh = 
+      curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String wizardStateID = request.getParameter("wizardStateID");
+      String returnPage = request.getParameter("__o3rpu");
+
+      returnPage = returnPage.substring(0, (returnPage.indexOf('?')));
+      
+      curam.interfaces.ParticipantRegistrationPkg.ParticipantRegistration_cancelWizardState_TH 
+         th = new curam.interfaces.ParticipantRegistrationPkg.ParticipantRegistration_cancelWizardState_TH();
+
+      th.setFieldValue(th.wizardStateID$wizardStateID_idx,wizardStateID);
+      
+
+      th.callServer();
+            
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+      pageContext.getSession()).getLocale() + "/"; 
+      
+
+      String url = context + curam.omega3.request.RequestUtils.escapeURL(returnPage) +"?"+ rh.getSystemParameters();
+
+      response.sendRedirect(url); 
+
+  
+  </JSP_SCRIPTLET>
+
+
+</PAGE>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Lists the reopening details associated with a program.            -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="CommonIntake_listApplicationRopenings"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+ <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+<CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$applicationCaseID"/>
+  </CONNECT>
+  
+<SERVER_INTERFACE
+    CLASS="ApplicationAuthorisation"
+    NAME="DISPLAY"
+    OPERATION="listApplicationReopenings"
+  />
+  
+  <ACTION_SET>
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="applicationReopenInd"/>
+    </CONDITION>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Reopen">
+      <LINK PAGE_ID="CommonIntake_createProgramReopening" OPEN_MODAL="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$intakeProgramApplicationID" />
+          <TARGET NAME="PAGE" PROPERTY="intakeProgramApplicationID" />
+        </CONNECT>    
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  
+  <LIST>
+    <FIELD LABEL="Field.Label.ReopenReason">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reopenReason"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ReopenDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reopenDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ReopenedBy">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="createdByUserName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+        WINDOW_OPTIONS="width=925"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="user"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    
+   <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="CommonIntake_viewProgramReopenComments">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="programReopenInfoID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="programReopenInfoID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL
+        IMAGE="DeleteButton"
+        LABEL="ActionControl.Label.Edit"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CommonIntake_modifyProgramReopenDetails"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="list$programReopenInfoID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="programReopenInfoID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="list$intakeProgramApplicationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="programID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </LIST>
+</PAGE>
+
+

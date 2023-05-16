@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                      -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- ===========                                                             -->
+<!-- This page allows a user to modify a target system.                      -->
+<PAGE PAGE_ID="TargetSystem_modifyTargetSystem"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="MaintainTargetSystem" NAME="DISPLAY" OPERATION="viewTargetSystem"/>
+
+
+  <SERVER_INTERFACE CLASS="MaintainTargetSystem" NAME="ACTION" OPERATION="modifyTargetSystem"
+    PHASE="ACTION"/>
+
+
+  <PAGE_PARAMETER NAME="systemID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="systemID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$systemID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="systemID"/>
+    <TARGET NAME="ACTION" PROPERTY="systemID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="dtls$versionNo"/>
+    <TARGET NAME="ACTION" PROPERTY="versionNo"/>
+  </CONNECT>
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+  <CLUSTER LABEL_WIDTH="30" TITLE="Cluster.Title.Details">
+    <FIELD WIDTH="50" LABEL="Field.Label.SystemName">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="systemName"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="systemName"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD WIDTH="70" LABEL="Field.Label.SystemURL">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="rootURL"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="rootURL"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

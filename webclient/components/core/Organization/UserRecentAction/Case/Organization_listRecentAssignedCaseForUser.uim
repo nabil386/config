@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the current user to list all recent cases that they   -->
+<!-- have been assigned.                                                    -->
+<!-- BEGIN, CR00238748, GD -->
+<?curam-deprecated Since Curam 6.0, replaced by Organization_listRecentAssignedCaseForUser1.uim?>
+<!-- END, CR00238748 -->
+<PAGE
+  PAGE_ID="Organization_listRecentAssignedCaseForUser"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewMyCases"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="Organization_userCaseHome"
+        SAVE_LINK="false"
+      />
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MyBookmarks"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="Organization_listBookmarkedCases"
+        SAVE_LINK="false"
+      />
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.RecentlyAssignedOwnership"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="Organization_listRecentAssignedCaseForUser"
+        SAVE_LINK="false"
+      />
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.RecentlyApproved"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="Organization_listRecentApprovedCaseForUser"
+        SAVE_LINK="false"
+      />
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- BEGIN, CR00073523, GBA -->
+  <!-- END, CR00073523 -->
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAY"
+    OPERATION="listRecentAssignedCasesForUser"
+  />
+  <LIST>
+    <FIELD
+      LABEL="Field.Label.CaseReference"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseReference"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="productTypeDesc"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.PrimaryClient"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="concernRoleName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveClientHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleType"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.OwnerType"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="ownerTypeDesc"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Owner"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="ownerName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00100433, BD -->
+    <FIELD
+      LABEL="Field.Label.AssignedDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="actionDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00100433 -->
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

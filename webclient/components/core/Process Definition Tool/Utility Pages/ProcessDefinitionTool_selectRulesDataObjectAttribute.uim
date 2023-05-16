@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="ProcessDefinitionTool_selectRulesDataObjectAttribute"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="AllocationStrategyAdmin"
+    NAME="DISPLAY"
+    OPERATION="listRuleSetRDONames"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="AllocationStrategyAdmin"
+    NAME="ACTION"
+    OPERATION="listRDOAttributes"
+    PHASE="ACTION"
+  />
+  <PAGE_PARAMETER NAME="ruleSetID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="ruleSetID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="ruleSetID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="ruleSetID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="ruleSetID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL
+      DEFAULT="true"
+      LABEL="ActionControl.Label.Search"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="THIS"/>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="control.ResetButton.label">
+      <LINK PAGE_ID="ProcessDefinitionTool_selectRulesDataObjectAttribute">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="ruleSetID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="ruleSetID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="control.CloseButton.label"
+      TYPE="DISMISS"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+
+
+    <FIELD LABEL="Field.Label.RulesDataObjectName">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$dtls$id"
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="rdoID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST TITLE="List.Title.SearchResults">
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$dtls$id"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$dtls$id"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Type">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$type"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

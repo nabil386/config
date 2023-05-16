@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012,2013. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright (c) 2008-2012 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="CitizenWorkspaceAdmin_viewIntakeApplicationType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$name" />
+    </CONNECT>
+  </PAGE_TITLE>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL LABEL="ActionControl.Label.IntakeDetails" STYLE="in-page-current-link">
+      <LINK PAGE_ID="CitizenWorkspaceAdmin_viewIntakeApplicationType" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+          <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Programs" STYLE="in-page-link">
+      <LINK PAGE_ID="CitizenWorkspaceAdmin_listProgramTypesForIntake" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+          <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$name" />
+          <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeName" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.WithdrawalRequests" STYLE="in-page-link">
+      <LINK PAGE_ID="CitizenWorkspaceAdmin_listWithdrawalRequestsForIntake" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+          <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$name" />
+          <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeName" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  
+  <SERVER_INTERFACE CLASS="CitizenWorkspaceAdmin" NAME="DISPLAY" OPERATION="viewIntakeApplicationType" />
+  <PAGE_PARAMETER NAME="intakeApplicationTypeID" />
+  
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+    <TARGET NAME="DISPLAY" PROPERTY="key$intakeApplicationTypeID" />
+  </CONNECT>
+  
+  <CLUSTER LABEL_WIDTH="60" NUM_COLS="2">
+<!--
+    <CONTAINER LABEL="Field.Title.Name">
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$name" />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL IMAGE="CALocalizableTextTranslation" LABEL="ActionControl.Label.Translations">
+        <LINK PAGE_ID="LocalizableText_viewLocalizableText" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="details$nameTextID" />
+            <TARGET NAME="PAGE" PROPERTY="localizableTextID" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+-->
+    <FIELD LABEL="Field.Title.Schema">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="intakeSchemaName" />
+          </CONNECT>
+          <LINK PAGE_ID="System_editSchema">
+            <CONNECT>
+             <SOURCE NAME="DISPLAY" PROPERTY="intakeSchemaName" />
+             <TARGET NAME="PAGE" PROPERTY="schemaName" />
+            </CONNECT>
+         </LINK>
+    </FIELD>
+     <FIELD LABEL="Field.Title.URL" ALIGNMENT="LEFT">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="url"/>
+			</CONNECT>
+			<LINK OPEN_NEW="true" URI_SOURCE_NAME="DISPLAY" URI_SOURCE_PROPERTY="url"/>
+		</FIELD>
+				    
+    <FIELD LABEL="Field.Title.ClientRegistration">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$clientRegistration" />
+      </CONNECT>
+    </FIELD>    
+    
+    <FIELD LABEL="Field.Title.ProgramSelection">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="programSelectionInd" />
+      </CONNECT>
+    </FIELD>
+    
+     <FIELD LABEL="Field.Title.ApplicationScript">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="intakeScriptName" />
+          </CONNECT>
+          <LINK PAGE_ID="System_scriptEditor">
+             <CONNECT>
+               <SOURCE NAME="DISPLAY" PROPERTY="intakeScriptID" />
+               <TARGET NAME="PAGE" PROPERTY="scriptID" />
+             </CONNECT>
+             <CONNECT>
+               <SOURCE NAME="DISPLAY" PROPERTY="dtls$intakeScriptType" />
+               <TARGET NAME="PAGE" PROPERTY="scriptType" />
+             </CONNECT>
+             <CONNECT>
+               <SOURCE NAME="DISPLAY" PROPERTY="dtls$intakeScriptVersion" />
+               <TARGET NAME="PAGE" PROPERTY="scriptVersion" />
+             </CONNECT>
+             <CONNECT>
+               <SOURCE NAME="DISPLAY" PROPERTY="dtls$details$intakeSchemaName" />
+               <TARGET NAME="PAGE" PROPERTY="schemaName" />
+             </CONNECT>
+             <CONNECT>
+               <SOURCE NAME="DISPLAY" PROPERTY="intakeScriptName" />
+               <TARGET NAME="PAGE" PROPERTY="name" />
+             </CONNECT>
+           </LINK>
+    </FIELD>
+    
+     <FIELD USE_BLANK="true" LABEL="Field.Title.SubmissionScript">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="submissionScriptName" />
+      </CONNECT>
+      <LINK PAGE_ID="System_scriptEditor">
+         <CONNECT>
+           <SOURCE NAME="DISPLAY" PROPERTY="submissionScriptID" />
+           <TARGET NAME="PAGE" PROPERTY="scriptID" />
+         </CONNECT>
+         <CONNECT>
+           <SOURCE NAME="DISPLAY" PROPERTY="dtls$submissionScriptType" />
+           <TARGET NAME="PAGE" PROPERTY="scriptType" />
+         </CONNECT>
+         <CONNECT>
+           <SOURCE NAME="DISPLAY" PROPERTY="dtls$submissionScriptVersion" />
+           <TARGET NAME="PAGE" PROPERTY="scriptVersion" />
+         </CONNECT>
+         <CONNECT>
+           <SOURCE NAME="DISPLAY" PROPERTY="dtls$details$intakeSchemaName" />
+           <TARGET NAME="PAGE" PROPERTY="schemaName" />
+         </CONNECT>
+         <CONNECT>
+           <SOURCE NAME="DISPLAY" PROPERTY="submissionScriptName" />
+           <TARGET NAME="PAGE" PROPERTY="name" />
+         </CONNECT>
+       </LINK>
+    </FIELD>  
+    <FIELD USE_BLANK="true" LABEL="Field.Title.Text.PDFForm">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="pdfFormName" />
+      </CONNECT>
+    </FIELD>   
+    <FIELD LABEL="Field.Title.SubmitOnCompletion">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="submitOnCompletionInd" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.Icon">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$details$icon" />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  
+<!--
+  <CLUSTER TITLE="Cluster.Title.Summary" SHOW_LABELS="false">
+    <CONTAINER>
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="summary" />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL IMAGE="CALocalizableTextTranslation" LABEL="ActionControl.Label.Translations">
+        <LINK PAGE_ID="LocalizableText_viewLocalizableText" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="summaryTextID" />
+            <TARGET NAME="PAGE" PROPERTY="localizableTextID" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>
+-->
+
+  <CLUSTER TITLE="Cluster.Title.Description" SHOW_LABELS="false">
+    <CONTAINER>
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$description" />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL IMAGE="CALocalizableTextTranslation" LABEL="ActionControl.Label.Translations">
+        <LINK PAGE_ID="LocalizableText_viewLocalizableText" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="details$descriptionTextID" />
+            <TARGET NAME="PAGE" PROPERTY="localizableTextID" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>
+  
+  <CLUSTER LABEL_WIDTH="10" TITLE="Cluster.Title.SubmissionConfirmationDetails">
+    <CONTAINER LABEL="Field.Title.ClusterTitle">
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="submissionConfirmPageTitle" />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL IMAGE="CALocalizableTextTranslation" LABEL="ActionControl.Label.Translations">
+        <LINK PAGE_ID="LocalizableText_viewLocalizableText" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="submissionConfirmPageTitleID" />
+            <TARGET NAME="PAGE" PROPERTY="localizableTextID" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <CONTAINER LABEL="Field.Title.Text">
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="submissionConfirmPageText" />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL IMAGE="CALocalizableTextTranslation" LABEL="ActionControl.Label.Translations">
+        <LINK PAGE_ID="LocalizableText_viewLocalizableText" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="submissionConfirmPageTextID" />
+            <TARGET NAME="PAGE" PROPERTY="localizableTextID" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>
+</PAGE>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- ====================================================================== -->
+<!-- Copyright 2010 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ====================================================================== -->
+<!-- This page allows user to list applications for the participant.        -->
+<?curam-deprecated Since Curam 6.0 SP1 EP1, replaced with 
+  Intake_listApplicationsForPerson. See release note: CI-3392?>
+<PAGE HIDE_CONDITIONAL_LINKS="false" PAGE_ID="Intake_listApplications" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="Application" NAME="DISPLAY" OPERATION="listApplications" PHASE="DISPLAY"/>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="concernRoleID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="concernRoleID$concernRoleID"/>
+  </CONNECT>
+
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL IMAGE="NewButton" LABEL="ActionControl.Label.New">
+      <LINK OPEN_MODAL="true" PAGE_ID="Intake_resolveStartApplication" WINDOW_OPTIONS="width=1200,height=600">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="concernRoleID"/>
+          <TARGET NAME="PAGE" PROPERTY="concernRoleID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <!-- BEGIN ,CR00279147 MK -->
+  <LIST PAGINATED="true">
+    <!-- END,CR00279147 MK -->
+    <FIELD LABEL="Container.Label.Reference" WIDTH="16">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$list$displayDtls$entityDtls$reference"/>
+      </CONNECT>
+
+
+      <LINK URI_SOURCE_NAME="DISPLAY" URI_SOURCE_PROPERTY="pageURL">
+        <CONDITION>
+          <IS_FALSE NAME="DISPLAY" PROPERTY="result$list$displayMenuPrimary"/>
+        </CONDITION>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Type" WIDTH="13">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$list$displayDtls$entityDtls$applicationType"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Programs" WIDTH="28">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$list$programName"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Worker" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="worker"/>
+      </CONNECT>
+
+
+      <LINK OPEN_MODAL="true" PAGE_ID="Organization_viewUserDetails" WINDOW_OPTIONS="width=925,height=300">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status" WIDTH="13">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$list$applicationStatus"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DueDate" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$list$displayDtls$entityDtls$filingDate"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL IMAGE="DeleteButton" LABEL="ActionControl.Label.Resume">
+        <CONDITION>
+          <IS_TRUE NAME="DISPLAY" PROPERTY="displayMenuPrimary"/>
+        </CONDITION>
+        <LINK OPEN_MODAL="true" PAGE_ID="Intake_resumeApplication" WINDOW_OPTIONS="width=1200,height=600">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="iegExecutionID"/>
+            <TARGET NAME="PAGE" PROPERTY="executionID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.ViewAnswersPDF" TYPE="FILE_DOWNLOAD">
+        <CONDITION>
+          <IS_FALSE NAME="DISPLAY" PROPERTY="displayMenuPrimary"/>
+        </CONDITION>
+        <LINK>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$list$displayDtls$entityDtls$pdfID"/>
+            <TARGET NAME="PAGE" PROPERTY="attachmentID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL IMAGE="DeleteButton" LABEL="ActionControl.Label.Delete">
+        <CONDITION>
+          <IS_TRUE NAME="DISPLAY" PROPERTY="displayMenuPrimary"/>
+        </CONDITION>
+        <LINK OPEN_MODAL="true" PAGE_ID="Intake_deleteApplication">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="applicationID"/>
+            <TARGET NAME="PAGE" PROPERTY="applicationID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$list$versionNo"/>
+            <TARGET NAME="PAGE" PROPERTY="versionNo"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <DETAILS_ROW>
+
+
+      <CONDITION>
+        <IS_TRUE NAME="DISPLAY" PROPERTY="showPreviewPanel"/>
+      </CONDITION>
+
+
+      <INLINE_PAGE URI_SOURCE_NAME="DISPLAY" URI_SOURCE_PROPERTY="previewPanelURL">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="applicationID"/>
+          <TARGET NAME="PAGE" PROPERTY="applicationID"/>
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+  </LIST>
+</PAGE>

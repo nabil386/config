@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- List the programs to appeal. -->
+<PAGE
+  PAGE_ID="CommonIntake_listProgramsToAppeal"
+  WINDOW_OPTIONS="width=900,height=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationCaseAppeal"
+    NAME="DISPLAYWIZARD"
+    OPERATION="getAppealWizardProperties"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="ApplicationCaseAppeal"
+    NAME="DISPLAY"
+    OPERATION="listProgramsToAppeal"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="ApplicationCaseAppeal"
+    NAME="ACTION"
+    OPERATION="getAppealObjectList"
+    PHASE="ACTION"
+  />
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+    <TARGET NAME="DISPLAY"  PROPERTY="applicationCaseID" />
+  </CONNECT>
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+  <ACTION_SET
+    BOTTOM="true"
+    TOP="true"
+  >
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="AppealWizard_selectParticipants"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="appealObjectList"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="appealObjectsDelimitedList"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT> 
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT> 
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+  <CLUSTER TITLE="Cluster.Title.Programs">
+    <CONDITION>
+      <IS_FALSE NAME="DISPLAY" PROPERTY="allProgramsAreAppealableInd"/>
+    </CONDITION>   
+    <LIST>
+      <CONTAINER>
+        <WIDGET TYPE="MULTISELECT">
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$dtls$programID"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="selectedPrograms"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+      <FIELD
+        LABEL="Field.Label.Program"
+        WIDTH="40"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$name"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.RequestDate"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$submittedDate"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.ProgramStatus"
+        WIDTH="15"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$status"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.DisposedOn"
+        WIDTH="40"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$disposedDate"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>  
+  </CLUSTER>
+  
+   <CLUSTER TITLE="Cluster.Title.Programs">
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="allProgramsAreAppealableInd"/>
+    </CONDITION>  
+    <LIST>
+      <CONTAINER>
+        <WIDGET TYPE="MULTISELECT">
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$dtls$programID"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="selectedPrograms"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+      <FIELD
+        LABEL="Field.Label.Program"
+        WIDTH="40"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$name"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.RequestDate"
+        WIDTH="15"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$submittedDate"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.ProgramStatus"
+        WIDTH="15"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$status"
+          />
+        </CONNECT>
+      </FIELD>        
+      <FIELD
+        LABEL="Field.Label.DisposedOn"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$disposedDate"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>  
+  </CLUSTER>
+  
+</PAGE>

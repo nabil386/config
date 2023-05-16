@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2006-2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page is used to simulate the payment generation process.          -->
+<?curam-deprecated Since Curam 6.0, replaced by Financial_simulatePayment1.uim?>
+<PAGE
+  PAGE_ID="ProductDelivery_simulatePayment"
+  WINDOW_OPTIONS="width=825"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="ProductDelivery"
+    NAME="ACTION"
+    OPERATION="simulatePayment"
+    PHASE="ACTION"
+  />
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SimulatePayment"
+      LABEL="ActionControl.Label.SimulatePayment"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        PAGE_ID="THIS"
+        SAVE_LINK="false"
+      />
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="SaveSimulationButton"
+      LABEL="ActionControl.SaveSimulationButton.label"
+      TYPE="SUBMIT"
+    >
+      <!-- BEGIN, CR00086730, MM -->
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProductDelivery_saveSimulation"
+        SAVE_LINK="false"
+      >
+        <!-- END, CR00086730 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="enteredDate"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="enteredDate"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.CloseButton.label"
+    />
+  </ACTION_SET>
+  <CLUSTER
+    DESCRIPTION="Cluster.Description"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SimulatePayment"
+  >
+    <FIELD LABEL="Field.Label.SimulationDate">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="date"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!--BEGIN CR00109753, SK-->
+  <LIST TITLE="List.Title.PaymentsAndDeductions">
+    <FIELD
+      LABEL="Field.Label.Component"
+      WIDTH="24"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="paymentILIList$dtls$iliDescription"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Nominee"
+      WIDTH="22"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="paymentILIList$dtls$caseNomineeConcernRoleName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00032052, ELG -->
+    <FIELD
+      LABEL="Field.Label.PaymentPeriodFrom"
+      WIDTH="22"
+    >
+      <!-- END, CR00032052 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="paymentILIList$dtls$coverPeriodFrom"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00032052, ELG -->
+    <FIELD
+      LABEL="Field.Label.PaymentPeriodTo"
+      WIDTH="22"
+    >
+      <!-- END, CR00032052 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="paymentILIList$dtls$coverPeriodTo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Amount"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="paymentILIList$dtls$amount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FOOTER_ROW>
+      <FIELD CONTROL="SKIP"/>
+      <FIELD CONTROL="SKIP"/>
+      <FIELD CONTROL="SKIP"/>
+      <FIELD LABEL="Field.Label.TotalEntitlement">
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Field.Label.TotalEntitlement"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.TotalEntitlement"
+        WIDTH="10"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="totalEntitlement"
+          />
+        </CONNECT>
+      </FIELD>
+    </FOOTER_ROW>
+  </LIST>
+  <LIST>
+    <FIELD WIDTH="24">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="deductionILIList$dtls$iliDescription"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD WIDTH="22">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="deductionILIList$dtls$caseNomineeConcernRoleName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD WIDTH="22">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="deductionILIList$dtls$coverPeriodFrom"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD WIDTH="22">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="deductionILIList$dtls$coverPeriodTo"
+        />
+      </CONNECT>
+    </FIELD>
+    <!--END CR00109753, SK-->
+    <FIELD WIDTH="10">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="deductionILIList$dtls$amount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FOOTER_ROW>
+      <FIELD CONTROL="SKIP"/>
+      <FIELD CONTROL="SKIP"/>
+      <FIELD CONTROL="SKIP"/>
+      <FIELD LABEL="Field.Label.TotalDeduction">
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Field.Label.TotalDeduction"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.TotalDeduction"
+        WIDTH="10"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="totalDeduction"
+          />
+        </CONNECT>
+      </FIELD>
+    </FOOTER_ROW>
+    <FOOTER_ROW>
+      <FIELD CONTROL="SKIP"/>
+      <FIELD CONTROL="SKIP"/>
+      <FIELD CONTROL="SKIP"/>
+      <FIELD LABEL="Field.Label.TotalPayment">
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Field.Label.TotalPayment"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.TotalPayment"
+        WIDTH="10"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="totalPayment"
+          />
+        </CONNECT>
+      </FIELD>
+    </FOOTER_ROW>
+  </LIST>
+</PAGE>

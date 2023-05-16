@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description -->
+<!-- =========== -->
+<!--   -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="Section_shortcuts"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="sectionID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="Section"
+    NAME="DISPLAY"
+    OPERATION="readShortcutsPanelDetails"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="sectionID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$sectionID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="Control.Label.Edit">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="shortcutPanelExists"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Section_modifyShortcutPanelRef"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="key$sectionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="sectionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="Control.Label.AddGroup">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Section_addShortcutPanelGroup"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="key$sectionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="sectionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="Control.Label.Delete">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="shortcutPanelExists"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Section_deleteShortcutPanelRef"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="key$sectionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="sectionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <CLUSTER LABEL_WIDTH="10">
+    <FIELD LABEL="Field.Label.ShortcutsPanelTitle">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="shortcutsPanelTitle"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST TITLE="List.Title.ShortcutGroups">
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ShortcutsGroup_viewLinks">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="id"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="shortcutsGroupID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="shortcutsPanelID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="shortcutsPanelID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <FIELD LABEL="Field.Label.ID">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="id"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Title">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="title"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="Control.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ShortcutPanel_modifyGroupDetails"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="shortcutsPanelID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="parentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="id"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="shortcutPanelID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="Control.Label.AddLink">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ShortcutPanel_addLeaf"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="shortcutsPanelID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="parentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="id"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="groupID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="Control.Label.Reorder">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ShortcutPanel_reorderGroup"
+        >]
+         <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="shortcutsPanelID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="shortcutPanelID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="id"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="nodeID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="title"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="nodeTitle"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="Control.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ShortcutPanel_deleteGroupNode"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="shortcutsPanelID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="parentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="id"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="shortcutPanelID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </LIST>
+</PAGE>

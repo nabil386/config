@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed Materials - Property of IBM
+    
+    Copyright IBM Corporation 2012. All Rights Reserved.
+    
+    US Government Users Restricted Rights - Use, duplication or disclosure 
+    restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE PAGE_ID="CitizenWorkspaceAdmin_listLifeEventMapping"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+    <SERVER_INTERFACE CLASS="MappingConfiguration" NAME="DISPLAY"
+        OPERATION="listLifeEventMapping"/>
+
+    <PAGE_PARAMETER NAME="lifeEventTypeID"/>
+    <PAGE_PARAMETER NAME="channel"/>
+
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+        <TARGET NAME="DISPLAY" PROPERTY="key$lifeEventTypeID"/>
+    </CONNECT>
+
+    <MENU MODE="IN_PAGE_NAVIGATION">
+        <ACTION_CONTROL LABEL="ActionControl.Label.IntakeDetails" STYLE="in-page-link">
+            <LINK PAGE_ID="CitizenWorkspaceAdmin_viewLifeEventType" SAVE_LINK="false">
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+                    <TARGET NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+                </CONNECT>
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="channel"/>
+                    <TARGET NAME="PAGE" PROPERTY="channel"/>
+                </CONNECT>
+            </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL LABEL="ActionControl.Label.TargetSystem" STYLE="in-page-link">
+            <LINK PAGE_ID="CitizenWorkspaceAdmin_listRemoteSystemForLifeEvent" SAVE_LINK="false">
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+                    <TARGET NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+                </CONNECT>
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="channel"/>
+                    <TARGET NAME="PAGE" PROPERTY="channel"/>
+                </CONNECT>
+            </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Mappings" STYLE="in-page-current-link">
+            <LINK PAGE_ID="CitizenWorkspaceAdmin_listLifeEventMapping" SAVE_LINK="false" >
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+                    <TARGET NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+                </CONNECT>
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="channel"/>
+                    <TARGET NAME="PAGE" PROPERTY="channel"/>
+                </CONNECT>
+            </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Cases" STYLE="in-page-link">
+            <LINK PAGE_ID="CitizenWorkspaceAdmin_listLifeEventCases" SAVE_LINK="false">
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+                    <TARGET NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+                </CONNECT>
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="channel"/>
+                    <TARGET NAME="PAGE" PROPERTY="channel"/>
+                </CONNECT>
+            </LINK>
+        </ACTION_CONTROL>        
+    </MENU>
+
+    <LIST>
+        <ACTION_SET TYPE="LIST_ROW_MENU">
+            <ACTION_CONTROL LABEL="ActionControl.Label.Edit" APPEND_ELLIPSIS="true">
+                <CONDITION>
+                    <IS_TRUE NAME="DISPLAY" PROPERTY="displayEditOption"/>
+                </CONDITION>
+                <!--<LINK PAGE_ID="CitizenWorkspaceAdmin_editMappingConfiguration">-->
+                <LINK PAGE_ID="CitizenWorkspaceAdmin_editLifeEventMapping">
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="configurationID"/>
+                        <TARGET NAME="PAGE" PROPERTY="configurationID"/>
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="relatedCaseTypeCode"/>
+                        <TARGET NAME="PAGE" PROPERTY="relatedCaseTypeCode"/>
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="schemaName"/>
+                        <TARGET NAME="PAGE" PROPERTY="schemaName"/>
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="caseConfigurationID" />
+                        <TARGET NAME="PAGE" PROPERTY="caseConfigurationID" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="lifeEventName"/>
+                        <TARGET NAME="PAGE" PROPERTY="lifeEventName"/>
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+            <ACTION_CONTROL LABEL="ActionControl.Label.Release">
+                <CONDITION>
+                    <IS_TRUE NAME="DISPLAY" PROPERTY="displayReleaseOption"/>
+                </CONDITION>
+                <LINK PAGE_ID="CitizenWorkspaceAdmin_releaseLifeEventMapping" OPEN_MODAL="true"
+                    WINDOW_OPTIONS="width=900,height=768">
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="configurationID"/>
+                        <TARGET NAME="PAGE" PROPERTY="configurationID"/>
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="versionNo"/>
+                        <TARGET NAME="PAGE" PROPERTY="versionNo"/>
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+            <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+                <CONDITION>
+                    <IS_TRUE NAME="DISPLAY" PROPERTY="displayCancelOption"/>
+                </CONDITION>
+                <LINK PAGE_ID="CitizenWorkspaceAdmin_removeLifeEventMapping" OPEN_MODAL="true"
+                    WINDOW_OPTIONS="width=900,height=768">
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="configurationID"/>
+                        <TARGET NAME="PAGE" PROPERTY="configurationID"/>
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="versionNo"/>
+                        <TARGET NAME="PAGE" PROPERTY="versionNo"/>
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+                        <TARGET NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+        </ACTION_SET>
+
+        <FIELD LABEL="Field.Title.EffectiveDate" WIDTH="20">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="effectiveDate"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Title.ReleaseDate" WIDTH="20">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="releaseDate"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Title.CreatedBy" WIDTH="30">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="createdByUserFullName"/>
+            </CONNECT>
+            <LINK OPEN_MODAL="true" PAGE_ID="Organization_viewUserDetails">
+                <CONNECT>
+                    <SOURCE NAME="DISPLAY" PROPERTY="createdBy"/>
+                    <TARGET NAME="PAGE" PROPERTY="userName"/>
+                </CONNECT>
+            </LINK>
+        </FIELD>
+        <FIELD LABEL="Field.Title.Status" WIDTH="30">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="status"/>
+            </CONNECT>
+        </FIELD>
+    </LIST>
+</PAGE>

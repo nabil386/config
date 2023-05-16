@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012-2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information").  You shall not      -->
+<!-- disclose such Confidential Information and shall use it only in        -->
+<!-- accordance with the terms of the license agreement you entered into    -->
+<!-- with Curam Software.                                                   -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp redirects the sub-goal to the appropiate page depending if    -->
+<!-- the selected sub-goal type has one or more sub-goals attached. If the  -->
+<!-- sub-goal type selected has only one sub-goal attached, therefore the   -->
+<!-- unneccessary screen to select a sub-goal is not needed and it is       -->
+<!-- redirected to the create sub goal page. Otherwise you can select a     -->
+<!-- sub goal.                                                              -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_resolvePlannedSubGoal"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+      curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String caseID = request.getParameter("caseID");
+      String parentGroupID = request.getParameter("parentGroupID");
+      String typeCode = request.getParameter("typeCode");
+      String description = request.getParameter("description");
+      
+      String url = "";
+      String pageIdentifier = "";
+                      
+      curam.interfaces.ServicePlanDeliveryPkg.ServicePlanDelivery_resolvePlannedSubGoal_TH 
+      th = new curam.interfaces.ServicePlanDeliveryPkg.ServicePlanDelivery_resolvePlannedSubGoal_TH();
+
+      th.setFieldValue(th.key$plannedSubGoalCaseIDKey$key$caseID_idx,caseID);
+      th.setFieldValue(th.key$plannedSubGoalTypeCodeKey$typeCode_idx,typeCode);
+      th.setFieldValue(th.parentGroupIDKey$parentGroupID_idx,parentGroupID);
+
+      th.callServer();
+
+      pageIdentifier =th.getFieldValue(th.result$pageIdentifier_idx);
+
+
+     url = context + pageIdentifier + "&amp;description=" + curam.omega3.request.RequestUtils.escapeURL(description);
+        
+      url += "&amp;" + rh.getSystemParameters(); 
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+    
+  </JSP_SCRIPTLET>
+</PAGE>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- =========== -->
+<!-- This page allows the user to change the task category and task type -->
+<PAGE PAGE_ID="BDMTaskManagement_editTaskCategoryType" WINDOW_OPTIONS="width=600" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <SERVER_INTERFACE CLASS="BDMWorkAllocation" NAME="DISPLAY" 
+    OPERATION="readTaskType" PHASE="DISPLAY"/>
+    
+  <SERVER_INTERFACE CLASS="BDMWorkAllocation" NAME="ACTION" 
+    OPERATION="modifyTaskType" PHASE="ACTION"/>
+
+  <PAGE_PARAMETER NAME="taskID"/>
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="taskID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="taskKey$taskID"/>
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="taskID"/>
+    <TARGET NAME="ACTION" PROPERTY="details$taskID"/>
+  </CONNECT>
+  
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+  
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+    
+  </ACTION_SET>
+  
+  <CLUSTER>
+   
+     <FIELD LABEL="Field.Label.TaskType" USE_BLANK="true" USE_DEFAULT="false" WIDTH="90">
+       <CONNECT>
+         <SOURCE NAME="DISPLAY" PROPERTY="taskType" />
+       </CONNECT>
+       <CONNECT>
+         <TARGET NAME="ACTION" PROPERTY="taskType" />
+       </CONNECT>
+     </FIELD>
+     
+  </CLUSTER>
+  
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <FIELD
+      HEIGHT="4"
+      LABEL="Cluster.Title.Comments"
+    >
+      <CONNECT>
+         <SOURCE NAME="DISPLAY" PROPERTY="comments" />
+       </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="comments" />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  
+</PAGE>

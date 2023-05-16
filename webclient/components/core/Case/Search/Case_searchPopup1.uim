@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2010, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This is a Popup Page which allows users to search for a Case           -->
+<!-- BEGIN, CR00351676, PS -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="Case_searchPopup1"
+  POPUP_PAGE="true"
+  WINDOW_OPTIONS="width=1300"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00351676 -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <INCLUDE FILE_NAME="Case_searchCriteriaView.vim"/>
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      BOTTOM="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="Case_searchPopup1"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST>
+
+
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <CONDITION>
+          <IS_FALSE
+            NAME="ACTION"
+            PROPERTY="result$listDtls$searchDtls$restricted"
+          />
+        </CONDITION>
+        <LINK>
+
+
+          <CONNECT>
+
+
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$listDtls$searchDtls$caseID"
+            />
+
+
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$listDtls$searchDtls$caseReference"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+
+
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.CaseReference"
+      WIDTH="13"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$listDtls$searchDtls$caseReference"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="23"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$listDtls$searchDtls$caseCatTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.PrimaryClient"
+      WIDTH="19"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$listDtls$searchDtls$concernRoleName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Participants"
+      WIDTH="12"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$listDtls$searchDtls$participantCount"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Case_listParticipantRole"
+        SAVE_LINK="true"
+      >
+        <CONDITION>
+          <IS_FALSE
+            NAME="ACTION"
+            PROPERTY="result$listDtls$searchDtls$restricted"
+          />
+        </CONDITION>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$listDtls$searchDtls$caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="13"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$listDtls$searchDtls$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$listDtls$searchDtls$statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="DISMISS"
+    />
+  </ACTION_SET>
+
+
+</PAGE>

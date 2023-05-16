@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- Copyright (c) 2002-2005,2008, 2010 Curam Software Ltd.                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This is the home page for the web application.                         -->
+<PAGE
+  PAGE_ID="Supervisor_caseViewHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!--
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.Home" />
+    </CONNECT>
+  </PAGE_TITLE> 
+  
+  <SERVER_INTERFACE CLASS="MaintainSupervisorCase" NAME="DISPLAY" OPERATION="listCasesByProductStatusCaseTypeAndOrgObject" PHASE="DISPLAY" />
+  <SERVER_INTERFACE CLASS="MaintainSupervisorCase" NAME="DISPLAY1" OPERATION="getAllProductTypes" PHASE="DISPLAY" />
+  <SERVER_INTERFACE CLASS="MaintainSupervisorCase" NAME="DISPLAY4" OPERATION="listAllCasesForSupervisor" PHASE="DISPLAY" />
+  <SERVER_INTERFACE CLASS="MaintainSupervisorCase" NAME="DISPLAY5" OPERATION="getAllCaseTypes" PHASE="DISPLAY" />
+  <SERVER_INTERFACE CLASS="MaintainSupervisorCase" NAME="DISPLAY6" OPERATION="getAllSupervisorUsers" PHASE="DISPLAY" />
+  <SERVER_INTERFACE CLASS="MaintainSupervisorCase" NAME="ACTION" OPERATION="filter" PHASE="ACTION" />
+
+  <PAGE_PARAMETER NAME="productType" />
+  <PAGE_PARAMETER NAME="caseType" />
+  <PAGE_PARAMETER NAME="statusCode" />
+  <PAGE_PARAMETER NAME="organisationObject" />
+  <PAGE_PARAMETER NAME="assignedTo" />
+  
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="productType" />
+    <TARGET NAME="DISPLAY" PROPERTY="key$dtls$productType" />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseType" />
+    <TARGET NAME="DISPLAY" PROPERTY="caseType" />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="statusCode" />
+    <TARGET NAME="DISPLAY" PROPERTY="statusCode" />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="organisationObject" />
+    <TARGET NAME="DISPLAY" PROPERTY="organisationObject" />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="assignedTo" />
+    <TARGET NAME="DISPLAY" PROPERTY="assignedTo" />
+  </CONNECT>  
+
+  <CLUSTER SHOW_LABELS="FALSE" TITLE="Cluster.Title.Filter">
+    <CONTAINER STYLE="supervisor-case-filterdescription">
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="TEXT" PROPERTY="Field.StaticText.FilterDescription" />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  
+
+      <CLUSTER>
+        <CONTAINER LABEL="Container.Label.Owner">
+          <FIELD>
+            <CONNECT>
+              <SOURCE NAME="DISPLAY" PROPERTY="organisationObject" />
+            </CONNECT>        
+            <CONNECT>
+              <TARGET NAME="ACTION" PROPERTY="key$dtls$organisationObject" />
+            </CONNECT>
+          </FIELD>
+          <FIELD>
+            <CONNECT>
+              <SOURCE NAME="DISPLAY" PROPERTY="orgObjectOwnerName" />
+            </CONNECT>
+          </FIELD>
+          <FIELD>
+            <CONNECT>
+              <TARGET NAME="ACTION" PROPERTY="key$dtls$assignedTo" />
+            </CONNECT>
+          </FIELD>  
+        </CONTAINER>   
+      </CLUSTER>
+
+    
+    <CLUSTER NUM_COLS="3" LABEL_WIDTH="35">
+      <FIELD LABEL="Field.Title.Product" WIDTH="15" WIDTH_UNITS="CHARS">
+        <CONNECT>
+          <INITIAL HIDDEN_PROPERTY="result$dtls$code" NAME="DISPLAY1" PROPERTY="result$dtls$description" />
+        </CONNECT>
+        <CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="key$dtls$productType" />
+				</CONNECT>
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="key$dtls$productType" />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Title.CaseType" WIDTH="10" WIDTH_UNITS="CHARS">
+        <CONNECT>
+          <INITIAL HIDDEN_PROPERTY="result$dtls$code" NAME="DISPLAY5" PROPERTY="result$dtls$description" />
+        </CONNECT>
+        <CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="key$dtls$caseType" />
+				</CONNECT>
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="key$dtls$caseType" />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Title.Status" WIDTH="12" WIDTH_UNITS="CHARS">
+        <CONNECT>
+	  <SOURCE NAME="DISPLAY" PROPERTY="key$dtls$statusCode" />
+	</CONNECT>
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="key$dtls$statusCode" />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    
+    <ACTION_SET ALIGNMENT="CENTER" BOTTOM="true" TOP="false">
+      <ACTION_CONTROL DEFAULT="true" IMAGE="SearchButton" TYPE="SUBMIT">
+        <LINK PAGE_ID="Supervisor_caseViewHome">
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="key$dtls$productType" />
+            <TARGET NAME="PAGE" PROPERTY="productType" />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="key$dtls$caseType" />
+            <TARGET NAME="PAGE" PROPERTY="caseType" />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="key$dtls$statusCode" />
+            <TARGET NAME="PAGE" PROPERTY="statusCode" />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="key$dtls$organisationObject" />
+            <TARGET NAME="PAGE" PROPERTY="organisationObject" />
+          </CONNECT> 
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="key$dtls$assignedTo" />
+            <TARGET NAME="PAGE" PROPERTY="assignedTo" />
+          </CONNECT>            
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL IMAGE="ResetButton" LABEL="ActionControl.ResetButton.label" >
+        <LINK PAGE_ID="Supervisor_casesHome"/>
+      </ACTION_CONTROL>      
+    </ACTION_SET>
+  </CLUSTER>
+
+  <LIST TITLE="List.Title.CaseDetails">
+    <CONTAINER LABEL="Container.Label.Action" WIDTH="15">
+      <ACTION_CONTROL LABEL="ActionControl.Label.View">
+        <LINK PAGE_ID="Supervisor_caseWorkspace">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$caseDtls$dtls$caseID" />
+            <TARGET NAME="PAGE" PROPERTY="caseID" />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="CONSTANT" PROPERTY="supervisor.viewTaskOption" />
+            <TARGET NAME="PAGE" PROPERTY="taskOptionCode" />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="organisationObject" />
+            <TARGET NAME="PAGE" PROPERTY="organisationObject" />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="assignedTo" />
+            <TARGET NAME="PAGE" PROPERTY="assignedTo" />
+          </CONNECT>          
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD LABEL="Field.Title.ReferenceNumber" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$caseDtls$dtls$caseReference" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.ProductName" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$caseDtls$dtls$productType" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.PrimaryClient" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$caseDtls$dtls$primaryClient" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.StartDate" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$caseDtls$dtls$startDate" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.StatusType" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$caseDtls$dtls$status" />
+      </CONNECT>
+    </FIELD>    
+  </LIST>
+  -->
+</PAGE>

@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2003, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2008, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify a recurring activity.              -->
+<PAGE PAGE_ID="Activity_modifyRecurringUserActivity" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="Activity" NAME="DISPLAY" OPERATION="viewRecurringUserActivity" PHASE="DISPLAY"/>
+
+
+  <SERVER_INTERFACE CLASS="Activity" NAME="ACTION" OPERATION="modifyRecurringUserActivity" PHASE="ACTION"/>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <!-- BEGIN, CR00100492, MR -->
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+    <!-- END, CR00100492 -->
+
+
+    <ACTION_CONTROL IMAGE="SaveAndInviteAttendeesButton" LABEL="ActionControl.Label.SaveAndInvite" TYPE="SUBMIT">
+      <LINK DISMISS_MODAL="false" OPEN_MODAL="true" PAGE_ID="Activity_inviteAttendeeToRecurringActivityFromView">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="activityID"/>
+          <TARGET NAME="PAGE" PROPERTY="activityID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="description"/>
+          <TARGET NAME="PAGE" PROPERTY="description"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel">
+      
+     
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="activityID"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="activityID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="maintainActivityKey$activityID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="maintainRecurringUserActivityDetails$activityID"/>
+    <TARGET NAME="ACTION" PROPERTY="activityID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="versionNo"/>
+    <TARGET NAME="ACTION" PROPERTY="versionNo"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="recordStatusCode"/>
+    <TARGET NAME="ACTION" PROPERTY="recordStatusCode"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="activityTypeCode"/>
+    <TARGET NAME="ACTION" PROPERTY="activityTypeCode"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="recurrenceID"/>
+    <TARGET NAME="ACTION" PROPERTY="recurrenceID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="attendeeNameDetails"/>
+    <TARGET NAME="ACTION" PROPERTY="attendeeNameDetails"/>
+  </CONNECT>
+
+
+  <CLUSTER LABEL_WIDTH="43" NUM_COLS="2">
+
+
+    <FIELD LABEL="Field.Label.Subject">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="subject"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="subject"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Location">
+      <CONNECT>
+        <INITIAL NAME="DISPLAY" PROPERTY="locationName"/>
+      </CONNECT>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="locationID"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="locationID"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Priority" WIDTH="55">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="priorityCode"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="priorityCode"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER LABEL_WIDTH="43" NUM_COLS="2">
+
+
+    <FIELD LABEL="Field.Label.Start">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="startDateTime"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="startDateTime"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ShowAs" WIDTH="55">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="timeStatusCode"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="timeStatusCode"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.AllDay">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="allDayInd"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="allDayInd"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.End">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="endDateTime"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="endDateTime"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.IgnoreConflicts">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="ignoreConflictInd"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ModifyAll">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="changeAllIndicator"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER LABEL_WIDTH="21.5">
+    <CONTAINER LABEL="Container.Label.Client">
+      <FIELD WIDTH="30">
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="concernRoleType"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="concernRoleType"/>
+        </CONNECT>
+      </FIELD>
+      <FIELD WIDTH="66">
+        <CONNECT>
+          <INITIAL NAME="DISPLAY" PROPERTY="concernRoleName"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="concernRoleID"/>
+        </CONNECT>
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="concernRoleID"/>
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.CaseReference">
+      <CONNECT>
+        <INITIAL NAME="DISPLAY" PROPERTY="caseReference"/>
+      </CONNECT>
+
+
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="caseID"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="caseID"/>
+      </CONNECT>
+
+
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER LABEL_WIDTH="21.5">
+
+
+    <FIELD LABEL="Field.Label.Frequency">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="frequencyPattern"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="frequencyPattern"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER NUM_COLS="2">
+    <CLUSTER LABEL_WIDTH="50">
+      <FIELD LABEL="Field.Label.NumOccurences" WIDTH="4" WIDTH_UNITS="CHARS">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="occurrencesStr"/>
+        </CONNECT>
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="numberOfOccurrences"/>
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <CLUSTER LABEL_WIDTH="32.5">
+      <FIELD LABEL="Field.Label.To">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="recurrenceEndDate"/>
+        </CONNECT>
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="recurrenceEndDate"/>
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Title.Comments">
+
+
+    <!-- BEGIN, CR00406866, VT -->
+    <FIELD HEIGHT="4" LABEL="Field.Label.Comments">
+      <!-- END, CR00406866 -->
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="notes"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="notes"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

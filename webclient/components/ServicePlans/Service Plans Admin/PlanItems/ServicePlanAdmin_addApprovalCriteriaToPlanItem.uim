@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012, 2018. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2011 Curam Software Ltd.                             -->
+<!-- All rights reserved.                                                    -->
+<!--                                                                         -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information").  You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam Software.-->
+<!-- Description                                                             -->
+<!-- ===========                                                             -->
+<!-- Page to add existing approval criteria to an plan item.                 -->
+
+<!-- BEGIN, CR00236022, MR -->
+<PAGE PAGE_ID="ServicePlanAdmin_addApprovalCriteriaToPlanItem" WINDOW_OPTIONS="width=700,height=265" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+<!-- END, CR00236022 -->
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.Title"/>
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="ServicePlan" NAME="DISPLAY" OPERATION="listApprovalCriteriaNotAssociatedWithPlanItem" PHASE="DISPLAY"/>
+
+
+  <SERVER_INTERFACE CLASS="ServicePlan" NAME="ACTION" OPERATION="addExistingApprovalCriteriaToPlanItem" PHASE="ACTION"/>
+
+
+  <PAGE_PARAMETER NAME="planItemID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="planItemID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="planItemID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="planItemID"/>
+    <TARGET NAME="ACTION" PROPERTY="planItemID"/>
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+
+
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00235963, SS -->
+  <LIST>
+    <!-- END, CR00235963 -->
+    <CONTAINER ALIGNMENT="CENTER" WIDTH="10">
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="approvalCriteriaID"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+
+
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="approvalCriteriaIDTabList"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Title.Name" WIDTH="35">
+      <LINK OPEN_MODAL="true" PAGE_ID="ServicePlanAdmin_viewApprovalCriteriaModal">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="approvalCriteriaID"/>
+          <TARGET NAME="PAGE" PROPERTY="approvalCriteriaID"/>
+        </CONNECT>
+      </LINK>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="criteriaName"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.OccursWhen" WIDTH="35">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="occursWhen"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.Priority" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="priority"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

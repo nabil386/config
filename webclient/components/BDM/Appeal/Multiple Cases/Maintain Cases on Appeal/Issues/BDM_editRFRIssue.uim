@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2004 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<PAGE
+  PAGE_ID="BDM_editRFRIssue"
+  WINDOW_OPTIONS="width=775"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+	
+	
+  <PAGE_PARAMETER NAME="bdmRFRIssueID"/>
+  <PAGE_PARAMETER NAME="appealRelationshipID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+  
+  <SERVER_INTERFACE
+    CLASS="BDMMaintainRFRIssue"
+    NAME="ACTION"
+    OPERATION="modifyBDMRFRIssue"
+    PHASE="ACTION"
+  />
+  
+  <SERVER_INTERFACE
+    CLASS="BDMMaintainRFRIssue"
+    NAME="DISPLAY"
+    OPERATION="readBDMRFRIssueDetails"
+    PHASE="DISPLAY"
+  />
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="bdmRFRIssueID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$bdmRFRIssueID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="bdmRFRIssueID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="bdmRFRIssueID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="appealRelationshipID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="appealRelationshipID"
+    />
+  </CONNECT>
+  
+  <CLUSTER    SHOW_LABELS="false">
+    <FIELD
+      CONTROL="CT_HIERARCHY_HORIZONTAL"
+      CONFIG="CT_DISPLAY_LABELS"
+      LABEL="Field.Label.IssueType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="issueType"
+        />
+      </CONNECT>
+	  <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="issueType"
+        />
+      </CONNECT>
+    </FIELD>
+    </CLUSTER>
+    
+    <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Title.Comments">
+	    <FIELD HEIGHT="100" LABEL="Field.Label.Comments">
+		<CONNECT>
+	        <SOURCE
+	          NAME="DISPLAY"
+	          PROPERTY="comments"
+	        />
+	      </CONNECT>
+	      <CONNECT>
+	        <TARGET
+	          NAME="ACTION"
+	          PROPERTY="comments"
+	        />
+	      </CONNECT>
+	    </FIELD>
+  	</CLUSTER>
+
+  <ACTION_SET ALIGNMENT="CENTER">
+  	<ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    />
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+  </ACTION_SET>
+
+</PAGE>

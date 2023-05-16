@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view determination details for an         -->
+<!-- assessment which supports multi source and manual consolidation.       -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="CDAApplication_viewDeterminationMultiSourceMC"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MenuQuestionnaires"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="CDAApplication_viewDeterminationMultiSourceMC"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationDeliveryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationDeliveryID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MenuThirdPartyRequests"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="CDAApplication_viewDeterminationMultiSourceMCThirdPartyRequestList"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationDeliveryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationDeliveryID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MenuDecisions"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="CDAApplication_viewDeterminationMultiSourceMCDecisionList"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationDeliveryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationDeliveryID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <SERVER_INTERFACE
+    CLASS="DeterminationDelivery"
+    NAME="ASSESSMENTCONTEXT"
+    OPERATION="viewAssessmentContextDescription"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="ASSESSMENTCONTEXT"
+      PROPERTY="key$dtls$dtls$determinationDeliveryID"
+    />
+  </CONNECT>
+
+
+  <PAGE_PARAMETER NAME="determinationDeliveryID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="DeterminationDelivery"
+    NAME="COMMON_VIEW"
+    OPERATION="viewDeterminationDelivery"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="COMMON_VIEW"
+      PROPERTY="key$dtls$dtls$determinationDeliveryID"
+    />
+  </CONNECT>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="COMMON_VIEW"
+        PROPERTY="result$assessmentDtls$assessmentName"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText2"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="COMMON_VIEW"
+        PROPERTY="result$assessmentDtls$caseReference"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText2"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="COMMON_VIEW"
+        PROPERTY="result$assessmentDtls$concernRoleName"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText2"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="COMMON_VIEW"
+        PROPERTY="result$assessmentDtls$primaryAlternateID"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <LIST>
+    <CONDITION>
+      <IS_TRUE
+        NAME="COMMON_VIEW"
+        PROPERTY="result$statusDtls$statusInd"
+      />
+    </CONDITION>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Answer"
+        TYPE="ACTION"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DecisionAssistApplication_resolveAnswerQuestionnaire"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="COMMON_VIEW"
+              PROPERTY="result$ddID$dtls$dtls$determinationDeliveryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="determinationDeliveryID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="COMMON_VIEW"
+              PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$questionnaireVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionnaireVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Consolidate"
+        TYPE="ACTION"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DecisionAssistApplication_consolidatedAnswers"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="COMMON_VIEW"
+              PROPERTY="result$ddID$dtls$dtls$determinationDeliveryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="determinationDeliveryID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="COMMON_VIEW"
+              PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$questionnaireVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionnaireVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$name"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="DecisionAssistApplication_viewAnswersForQuestionnaireMultiSource">
+        <CONNECT>
+          <SOURCE
+            NAME="COMMON_VIEW"
+            PROPERTY="result$ddID$dtls$dtls$determinationDeliveryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationDeliveryID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="COMMON_VIEW"
+            PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$questionnaireVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="questionnaireVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Type">
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$type"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Completion">
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$questionnairePresentationCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Consolidated">
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$consolidationStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <LIST>
+    <CONDITION>
+      <IS_FALSE
+        NAME="COMMON_VIEW"
+        PROPERTY="result$statusDtls$statusInd"
+      />
+    </CONDITION>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Consolidate"
+        TYPE="ACTION"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DecisionAssistApplication_consolidatedAnswers"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="COMMON_VIEW"
+              PROPERTY="result$ddID$dtls$dtls$determinationDeliveryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="determinationDeliveryID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="COMMON_VIEW"
+              PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$questionnaireVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionnaireVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$name"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="DecisionAssistApplication_viewAnswersForQuestionnaireMultiSource">
+        <CONNECT>
+          <SOURCE
+            NAME="COMMON_VIEW"
+            PROPERTY="result$ddID$dtls$dtls$determinationDeliveryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationDeliveryID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="COMMON_VIEW"
+            PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$questionnaireVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="questionnaireVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Type">
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$type"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Completion">
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$questionnairePresentationCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Consolidated">
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$consolidationStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

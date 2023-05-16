@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description                                                            -->
+<!-- ===============                                                        -->
+<!-- This jsp redirects the user the appropriate communication modify page  -->
+<!-- within the participant manager                                         -->
+<!-- Each assignee type value is matched to a Home Page name.               -->
+<PAGE
+  PAGE_ID="Participant_resolveModifyCommunicationForConcernOnly1"
+  WINDOW_OPTIONS="width=600"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String communicationID = request.getParameter("communicationID");
+      String pageDescription = request.getParameter("pageDescription");
+      String status = request.getParameter("status");
+      String communicationFormat = request.getParameter("communicationFormat");
+      String correspondentConcernRoleID = request.getParameter("correspondentConcernRoleID");      
+      String concernRoleID = request.getParameter("concernRoleID");
+      String url = "";
+        
+      if (communicationID == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "communicationID");
+       System.out.println(e);
+       throw e;
+       // END, CR00110216
+      }
+                  
+      if (pageDescription == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "pageDescription");
+       System.out.println(e);
+       throw e;
+       // END, CR00110216
+      }
+
+      if (status == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "status");
+       System.out.println(e);
+       throw e;
+       // END, CR00110216
+      }
+      
+      if (communicationFormat == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "communicationFormat");
+       System.out.println(e);
+       throw e;
+       // END, CR00110216
+      }      
+      
+      if (correspondentConcernRoleID == null) {
+
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "correspondentConcernRoleID");
+       System.out.println(e);
+       throw e;
+
+      }       
+      
+      // email communication
+      if (communicationFormat.equals("CF2")) {
+      // BEGIN, CR00110216, SK
+        // Email
+        if (status.equals("CS1")) {
+        // Draft email
+        // BEGIN, CR00245880, AK
+        url = context + "Participant_modifyDraftEmailCommunicationForConcernOnlyFromList1Page.do" + "?communicationID="
+        // END, CR00245880 
+                      + curam.omega3.request.RequestUtils.escapeURL(communicationID) + "&amp;correspondentConcernRoleID="                                            
+                      + curam.omega3.request.RequestUtils.escapeURL(correspondentConcernRoleID)                      
+                      + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(pageDescription); 
+        } else {
+        // Sent or Received Email
+        url = context + "Participant_modifyNonDraftCommunicationPage.do" + "?communicationID=" 
+                      + curam.omega3.request.RequestUtils.escapeURL(communicationID) + "&amp;correspondentConcernRoleID="                                            
+                      + curam.omega3.request.RequestUtils.escapeURL(correspondentConcernRoleID)                      
+                      + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(pageDescription); 
+        }
+      }
+      
+      // Recorded communication
+      else if (communicationFormat.equals("CF4")) {
+      
+        String applicationID = request.getParameter("applicationID");          
+        if (applicationID == null) {            
+          url = context + "Participant_modifyRecordedCommunicationFromList1Page.do?";
+        } else {
+          url = context + "ApplicationParticipant_modifyRecordedCommunicationFromListPage.do?" 
+              + "applicationID=" + curam.omega3.request.RequestUtils.escapeURL(applicationID) + "&amp;";
+        }
+               
+        url += "communicationID=" + curam.omega3.request.RequestUtils.escapeURL(communicationID) 
+             + "&amp;concernRoleID="  + curam.omega3.request.RequestUtils.escapeURL(concernRoleID) 
+             + "&amp;correspondentConcernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(correspondentConcernRoleID)
+             + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(pageDescription); 
+      }
+      
+      // Pro Forma communication
+      else if (communicationFormat.equals("CF3")) {
+        
+        if (status.equals("CS1")) {
+        // Draft 
+        // BEGIN, CR00245880, AK        
+        url = context + "Participant_modifyProFormaCommunicationFromList1Page.do" + "?communicationID=" 
+        // END, CR00245880 
+                      + curam.omega3.request.RequestUtils.escapeURL(communicationID) + "&amp;correspondentConcernRoleID="                                            
+                      + curam.omega3.request.RequestUtils.escapeURL(correspondentConcernRoleID)
+                      + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(pageDescription); 
+        } else {
+        // Sent 
+          url = context + "Participant_modifySentProFormaCommunicationFromListPage.do" + "?communicationID=" 
+	                + curam.omega3.request.RequestUtils.escapeURL(communicationID) + "&amp;correspondentConcernRoleID="                                            
+	                + curam.omega3.request.RequestUtils.escapeURL(correspondentConcernRoleID)
+                        + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(pageDescription); 
+        }           
+        
+      
+      }
+      
+      
+      else if (communicationFormat.equals("CF1")) {
+          
+        String applicationID = request.getParameter("applicationID");    
+        String applicationPrefix = "";        
+        if (applicationID != null) {            
+          applicationPrefix = "Application";
+        }        
+        
+        if (status.equals("CS1")) {
+        // Draft 
+        url = context + applicationPrefix + "Participant_modifyDraftMSWordCommunicationPage.do" + "?communicationID=" 
+	              + curam.omega3.request.RequestUtils.escapeURL(communicationID) 
+	              + "&amp;pageDescription=" + pageDescription  + "&amp;concernRoleID=" 
+	              + curam.omega3.request.RequestUtils.escapeURL(concernRoleID) + "&amp;correspondentConcernRoleID="                                            
+                      + curam.omega3.request.RequestUtils.escapeURL(correspondentConcernRoleID); 
+        } else {
+        // Sent 
+        url = context + applicationPrefix + "Participant_modifySentMSWordCommunicationPage.do" + "?communicationID=" 
+	              + curam.omega3.request.RequestUtils.escapeURL(communicationID) 
+	              + "&amp;pageDescription=" + pageDescription  + "&amp;concernRoleID=" 
+	              + curam.omega3.request.RequestUtils.escapeURL(concernRoleID) + "&amp;correspondentConcernRoleID="                                            
+                      + curam.omega3.request.RequestUtils.escapeURL(correspondentConcernRoleID); 
+        }          
+          
+        if (applicationID != null) {
+          url += "&amp;applicationID=" + curam.omega3.request.RequestUtils.escapeURL(applicationID); 
+        }
+              
+      }
+      // END, CR00110216        
+      url += "&amp;" + rh.getSystemParameters();  
+      response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+</PAGE>

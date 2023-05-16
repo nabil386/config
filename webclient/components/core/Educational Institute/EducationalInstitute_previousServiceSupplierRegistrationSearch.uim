@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 																														-->
+<!-- =========== 																														-->
+<!-- Check to determine if the person was a previous service supplier.      -->
+<!-- BEGIN, CR00238748, GD -->
+<?curam-deprecated Since Curam 6.0, replaced by EducationalInstitute_previousServiceSupplierRegistrationSearch1.uim?>
+<!-- END, CR00238748 -->
+<PAGE
+  PAGE_ID="EducationalInstitute_previousServiceSupplierRegistrationSearch"
+  WINDOW_OPTIONS="width=800"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE DESCRIPTION="PageTitle.Description">
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceSupplier"
+    NAME="ACTION"
+    OPERATION="search"
+    PHASE="ACTION"
+  />
+
+
+  <CLUSTER
+    LABEL_WIDTH="28"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD
+      LABEL="Field.Label.ReferenceNumber"
+      WIDTH="96"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceSupplierSearchKey$referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      DEFAULT="true"
+      IMAGE="SearchButton"
+      LABEL="ActionControl.Label.Search"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="THIS"/>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="ResetButton"
+      LABEL="ActionControl.Label.Reset"
+    >
+      <LINK PAGE_ID="ProductProvider_previousServiceSupplierRegistrationSearch"/>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+      <LINK PAGE_ID="ProductProvider_previousRegistrationCheck"/>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="28"
+    NUM_COLS="2"
+  >
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceSupplierSearchKey$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.City"
+      WIDTH="96"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceSupplierSearchKey$city"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AddressLineOne">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceSupplierSearchKey$address"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="15"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.Select">
+        <LINK
+          PAGE_ID="EducationalInstitute_duplicateRegistrationCheck"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="relatedConcernID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Title.ReferenceNumber"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$referenceNumber"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="ServiceSupplier_homePage">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.AddressLineOne"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$address"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.City"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$city"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

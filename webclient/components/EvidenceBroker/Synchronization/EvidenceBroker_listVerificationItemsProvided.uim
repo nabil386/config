@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page is used to display a list of Verification items provided for  a      -->
+<!-- incoming evidence.                                                    -->
+<PAGE
+  PAGE_ID="EvidenceBroker_listVerificationItemsProvided"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="evidenceDescriptorID"/>
+  <PAGE_PARAMETER NAME="vDIEDLinkID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="EvidenceBroker"
+    NAME="DISPLAY"
+    OPERATION="listVerificationItemProvidedForIncomingEvidence"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="evidenceDescriptorID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="evidenceDescriptorID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="vDIEDLinkID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="vDIEDLinkID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+
+
+    <FIELD
+      LABEL="List.Title.VerificationItem"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="verificationItemName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="List.Title.ProvidedBy"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="addedByUser"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="List.Title.ReceivedDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="receivedDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="List.Title.ExpiryDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expiryDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="List.Title.Level"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="levelDescription"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00351464, SSK -->
+    <CONTAINER LABEL="List.Title.Attachment">
+      <WIDGET TYPE="FILE_DOWNLOAD">
+        <WIDGET_PARAMETER NAME="LINK_TEXT">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="verificationAttachementName"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="PARAMS">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="attachementID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="attachmentID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="PARAMS">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="verificationAttachmentLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="verificationAttachmentLinkID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <!-- END, CR00351464 -->
+  </LIST>
+
+
+</PAGE>

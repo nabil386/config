@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2008, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view the fund link association details.   -->
+<PAGE
+  PAGE_ID="FundPM_viewFundLinkPopUp"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+    <!-- BEGIN, CR00200427, RD -->
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.Text1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="name"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.Text1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="readFundLink"
+        PROPERTY="relatedTypeName"
+      />
+    </CONNECT>
+    <!-- END, CR00200427 -->
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="fundLinkIDParam"/>
+  <PAGE_PARAMETER NAME="fundIDParam"/>
+  <PAGE_PARAMETER NAME="relatedID"/>
+  <SERVER_INTERFACE
+    CLASS="MaintainProgramFund"
+    NAME="DISPLAY"
+    OPERATION="readProgramFund"
+    PHASE="DISPLAY"
+  />
+  <!-- BEGIN, CR00198153, AS  -->
+  <SERVER_INTERFACE
+    CLASS="MaintainFundLink"
+    NAME="readFundLink"
+    OPERATION="viewFundAssociationDetails"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainFundLink"
+    NAME="readAssociations"
+    OPERATION="searchByFundAssociationRelatedID"
+    PHASE="DISPLAY"
+  >
+	</SERVER_INTERFACE>
+  <!-- END, CR00198153  -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="fundLinkIDParam"
+    />
+    <TARGET
+      NAME="readFundLink"
+      PROPERTY="key$fundLinkID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="fundIDParam"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$programFundID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="relatedID"
+    />
+    <TARGET
+      NAME="readAssociations"
+      PROPERTY="key$relatedID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="fundLinkIDParam"
+    />
+    <TARGET
+      NAME="readAssociations"
+      PROPERTY="key$fundLinkID"
+    />
+  </CONNECT>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.FundDetails"
+  >
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00198153, AS  -->
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00198153  -->
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00198153, AS  -->
+
+
+    <!-- BEGIN, CR00426143, GK -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+      WIDTH="100"
+      WIDTH_UNITS="PERCENT"
+    >
+      <!-- END, CR00426143 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00198153  -->
+  </CLUSTER>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.FundAssociation"
+  >
+    <FIELD LABEL="Field.Label.Type">
+      <CONNECT>
+        <SOURCE
+          NAME="readFundLink"
+          PROPERTY="relatedType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AssociationType">
+      <CONNECT>
+        <SOURCE
+          NAME="readFundLink"
+          PROPERTY="relatedTypeName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+
+
+    <!-- BEGIN, CR00426143, GK -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+      WIDTH="100"
+      WIDTH_UNITS="PERCENT"
+    >
+      <!-- END, CR00426143 -->
+      <CONNECT>
+        <SOURCE
+          NAME="readFundLink"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST TITLE="List.Title.Funds">
+    <!-- BEGIN, CR00198153, AS  -->
+    <FIELD LABEL="Field.Label.Fund">
+      <CONNECT>
+        <SOURCE
+          NAME="readAssociations"
+          PROPERTY="result$fundAssociationDtlsList$fundName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Priority">
+      <CONNECT>
+        <SOURCE
+          NAME="readAssociations"
+          PROPERTY="result$fundAssociationDtlsList$fundAssociationDtls$priority"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="readAssociations"
+          PROPERTY="result$fundAssociationDtlsList$fundAssociationDtls$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="readAssociations"
+          PROPERTY="result$fundAssociationDtlsList$fundAssociationDtls$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00198153  -->
+  </LIST>
+</PAGE>

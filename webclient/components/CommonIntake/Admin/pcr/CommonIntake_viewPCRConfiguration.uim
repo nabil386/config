@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Dispalys the details of a PCR Configuration and a tab to view all      -->
+<!-- range mappings for the configuration.                                  -->
+<PAGE
+  PAGE_ID="CommonIntake_viewPCRConfiguration"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="pcrConfigurationID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="PCRAdmin"
+    NAME="DISPLAY"
+    OPERATION="viewPCRConfigurationWithListOfRunPoints"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="pcrConfigurationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$pcrConfigurationID"
+    />
+  </CONNECT>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Details"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="CommonIntake_viewPCRConfiguration"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pcrConfigurationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pcrConfigurationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.RangeMapping"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="CommonIntake_viewPCRConfigurationRangeMappings"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pcrConfigurationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pcrConfigurationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    STYLE="outer-cluster-borderless"
+  >
+
+    <FIELD LABEL="Field.Title.RuleSet">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="ruleSetName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.RunManually">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="runManually"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Title.Workflow">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="workflow"
+        />
+      </CONNECT>
+    </FIELD>
+   </CLUSTER> 
+
+   <CLUSTER TITLE="Cluster.Title.Ruleset.Execution.Events" NUM_COLS="1" LABEL_WIDTH="50">
+    <LIST>
+      <FIELD>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$list$dtls$runPoint" />
+      </CONNECT>
+      </FIELD>
+    </LIST>
+   </CLUSTER> 
+
+  
+</PAGE>

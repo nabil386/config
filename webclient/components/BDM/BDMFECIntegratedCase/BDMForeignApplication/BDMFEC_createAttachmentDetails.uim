@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This page allows a user to create a new FE case attachment. -->
+
+<PAGE PAGE_ID="BDMFEC_createAttachmentDetails"
+  WINDOW_OPTIONS="width=765"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE NAME="CONSTANT"
+        PROPERTY="FECaseCreateAttachmentWizard" />
+    </CONNECT>
+  </MENU>
+  
+  <PAGE_PARAMETER NAME="wizardStateID" />
+  <PAGE_PARAMETER NAME="caseID" />
+ 
+  
+  <SERVER_INTERFACE CLASS="BDMForeignEngagementCase"
+    NAME="ACTION" OPERATION="createFECaseAttachment" PHASE="ACTION"
+    ACTION_ID_PROPERTY="details$actionIDProperty" />
+
+  <SERVER_INTERFACE CLASS="IntegratedCase"
+    NAME="DISPLAY" OPERATION="listMemberDetails" />
+
+
+  <SERVER_INTERFACE CLASS="BDMForeignEngagementCase"
+    NAME="READWIZARDDETAILS"
+    OPERATION="readFECaseAttachmentWizardDetails" PHASE="DISPLAY" />
+    
+     <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID" />
+    <TARGET NAME="ACTION"
+      PROPERTY="details$bdmCreateAttachmentDetails$dtls$createCaseAttachmentDetails$caseID" />
+  </CONNECT>
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID" />
+    <TARGET NAME="DISPLAY" PROPERTY="caseID" />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="wizardStateID" />
+    <TARGET NAME="READWIZARDDETAILS" PROPERTY="key$wizardStateID" />
+  </CONNECT>
+
+<CONNECT>
+		<SOURCE NAME="READWIZARDDETAILS" PROPERTY="result$wizardStateID" />
+		<TARGET NAME="ACTION" PROPERTY="details$wizardStateID" />
+	</CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER" >
+  
+    <ACTION_CONTROL IMAGE="SaveButton"
+      LABEL="ActionControl.Label.SaveAndClose" TYPE="SUBMIT"
+      ALIGNMENT="RIGHT" ACTION_ID="saveandclose">
+      <LINK PAGE_ID="BDMFEC_listAttachment" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE PROPERTY="caseID" NAME="PAGE" />
+          <TARGET PROPERTY="caseID" NAME="PAGE" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+    <ACTION_CONTROL IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Next" TYPE="SUBMIT" ALIGNMENT="RIGHT"
+      ACTION_ID="next">
+      <LINK PAGE_ID="BDMFEC_createAttachmentLinkingFA"
+        DISMISS_MODAL="false" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE PROPERTY="caseID" NAME="PAGE" />
+          <TARGET PROPERTY="caseID" NAME="PAGE" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE PROPERTY="details$wizardStateID" NAME="ACTION" />
+          <TARGET PROPERTY="wizardStateID" NAME="PAGE" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+    <ACTION_CONTROL IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel" ALIGNMENT="LEFT">
+      <LINK PAGE_ID="BDMFEC_listAttachment" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE PROPERTY="caseID" NAME="PAGE" />
+          <TARGET PROPERTY="caseID" NAME="PAGE" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+  </ACTION_SET>
+
+
+
+ 
+
+  <CLUSTER LABEL_WIDTH="43" NUM_COLS="2">
+
+	<!-- <WIDGET LABEL="Field.Label.File" TYPE="FILE_UPLOAD"> <WIDGET_PARAMETER 
+		NAME="CONTENT"> <CONNECT> <TARGET NAME="ACTION" PROPERTY="details$bdmCreateAttachmentDetails$dtls$createCaseAttachmentDetails$newCaseAttachmentContents" 
+		/> </CONNECT> </WIDGET_PARAMETER> <WIDGET_PARAMETER NAME="FILE_NAME"> <CONNECT> 
+		<SOURCE PROPERTY="result$bdmCreateAttachmentDetails$dtls$createCaseAttachmentDetails$newCaseAttachmentName" 
+		NAME="READWIZARDDETAILS" /> </CONNECT> <CONNECT> <TARGET NAME="ACTION" PROPERTY="details$bdmCreateAttachmentDetails$dtls$createCaseAttachmentDetails$newCaseAttachmentName" 
+		/> </CONNECT> </WIDGET_PARAMETER> </WIDGET> -->
+    <FIELD LABEL="Field.Label.FileLocation">
+      <CONNECT>
+        <SOURCE
+          PROPERTY="result$bdmCreateAttachmentDetails$dtls$createCaseAttachmentDetails$filelocation"
+          NAME="READWIZARDDETAILS" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmCreateAttachmentDetails$dtls$createCaseAttachmentDetails$filelocation" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.DocumentType" USE_BLANK="true">
+      <CONNECT>
+        <SOURCE
+          PROPERTY="result$bdmCreateAttachmentDetails$dtls$createCaseAttachmentDetails$documentType"
+          NAME="READWIZARDDETAILS" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmCreateAttachmentDetails$dtls$createCaseAttachmentDetails$documentType" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.ReceiptDate">
+      <CONNECT>
+        <SOURCE
+          PROPERTY="result$bdmCreateAttachmentDetails$dtls$createCaseAttachmentDetails$receiptDate"
+          NAME="READWIZARDDETAILS" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmCreateAttachmentDetails$dtls$createCaseAttachmentDetails$receiptDate" />
+      </CONNECT>
+    </FIELD>
+    
+     <FIELD LABEL="Field.Label.FileReference">
+      <CONNECT>
+        <SOURCE
+          PROPERTY="result$bdmCreateAttachmentDetails$dtls$createCaseAttachmentDetails$fileReference"
+          NAME="READWIZARDDETAILS" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmCreateAttachmentDetails$dtls$createCaseAttachmentDetails$fileReference" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.ParticipantName" USE_BLANK="true">
+      <CONNECT>
+        <INITIAL HIDDEN_PROPERTY="caseParticipantRoleID"
+          NAME="DISPLAY" PROPERTY="nameAndAgeOpt" />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          PROPERTY="result$bdmCreateAttachmentDetails$dtls$createCaseAttachmentDetails$caseParticipantRoleID"
+          NAME="READWIZARDDETAILS" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmCreateAttachmentDetails$dtls$createCaseAttachmentDetails$caseParticipantRoleID" />
+      </CONNECT>
+    </FIELD>
+
+   
+
+    <FIELD LABEL="Field.Label.FileSource" USE_BLANK="true">
+      <CONNECT>
+        <SOURCE
+          PROPERTY="result$bdmCreateAttachmentDetails$fileSource"
+          NAME="READWIZARDDETAILS" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmCreateAttachmentDetails$fileSource" />
+      </CONNECT>
+    </FIELD>
+
+  </CLUSTER>
+
+  <FIELD CONTROL="SKIP" />
+
+  <CLUSTER LABEL_WIDTH="21.5">
+    <FIELD HEIGHT="4" LABEL="Field.Label.Description">
+      <CONNECT>
+        <SOURCE
+          PROPERTY="result$bdmCreateAttachmentDetails$dtls$createCaseAttachmentDetails$description"
+          NAME="READWIZARDDETAILS" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmCreateAttachmentDetails$dtls$createCaseAttachmentDetails$description" />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

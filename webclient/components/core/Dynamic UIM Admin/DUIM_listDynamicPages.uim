@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE PAGE_ID="DUIM_listDynamicPages">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="DynamicUIMAdmin"
+    NAME="ACTION"
+    OPERATION="listDynamicUIMResourcesByCategory"
+    PHASE="ACTION"
+  />
+
+
+  <CLUSTER TITLE="Cluster.Title.Details">
+    <FIELD LABEL="Field.Label.Category" 
+       USE_BLANK="true" USE_DEFAULT="false"
+       WIDTH_UNITS="CHARS" WIDTH="10">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$category"
+        />
+      </CONNECT>
+    </FIELD>
+    <ACTION_SET
+      BOTTOM="true"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        LABEL="Control.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.DynamicPages">
+    <FIELD LABEL="Field.Label.PageID">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$pageID"
+        />
+      </CONNECT>
+    </FIELD>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="Control.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DUIM_modifyDynamicPage"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="resourceID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="resourceID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="Control.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DUIM_deleteDynamicPage"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="resourceID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="resourceID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="Control.Label.Validate">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DUIM_validateDynamicPage"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="resourceID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="resourceID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </LIST>
+
+
+  <ACTION_SET TOP="false">
+    <ACTION_CONTROL
+      LABEL="Control.Label.New"
+      TYPE="ACTION"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="DUIM_addDynamicPage"
+      />
+    </ACTION_CONTROL>
+    <ACTION_CONTROL 
+      LABEL="ActionControl.Label.Publish"
+    >
+	  <LINK 
+	    OPEN_MODAL="true"
+	    PAGE_ID="System_publishResourceChanges"
+	  />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

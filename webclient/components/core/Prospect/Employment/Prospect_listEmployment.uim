@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2002, 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002-2003, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Reads a list of existing employments for the prospect.                 -->
+<!-- BEGIN, CR00348318, GA -->
+<?curam-deprecated Since Curam 6.0.5.0, replaced with ProspectPerson_listEmployment.uim. This uim is deprecated as the Prospect participant type is no longer used. See release note: CR00348318?>
+<!-- END, CR00348318 -->
+<PAGE
+  PAGE_ID="Prospect_listEmployment"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Prospect"
+    NAME="DISPLAY"
+    OPERATION="listEmployment"
+  />
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="maintainProspectPersonEmploymentKey$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET BOTTOM="false">
+
+
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Prospect_createEmployment"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <LIST>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Prospect_modifyEmploymentFromList"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="employmentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="employmentID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <DETAILS_ROW>
+
+
+      <INLINE_PAGE PAGE_ID="Prospect_viewEmployment">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="employmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="employmentID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+
+
+    </DETAILS_ROW>
+
+
+    <FIELD
+      LABEL="Field.Label.Primary"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="primaryCurrentInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Employer"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="employerName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Employer_home">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="employerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Occupation"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="occupationType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.From"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.To"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="toDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2010, 2020. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 - 2011 Curam Software Ltd.                              -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- BDM Foreign Engagement Integrated Case home page.                   -->
+<PAGE PAGE_ID="BDMFECIntegratedCase_home"
+  HIDE_CONDITIONAL_LINKS="false"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+  <SHORTCUT_TITLE ICON="integratedcase.icon">
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="description" />
+    </CONNECT>
+  </SHORTCUT_TITLE>
+
+  <SERVER_INTERFACE CLASS="BDMForeignEngagementCase"
+    NAME="DISPLAY" OPERATION="readFECDetailsForHome" />
+
+  <PAGE_PARAMETER NAME="caseID" />
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID" />
+    <TARGET NAME="DISPLAY" PROPERTY="key$caseID" />
+  </CONNECT>
+
+
+  <CLUSTER LABEL_WIDTH="35" NUM_COLS="2"
+    TITLE="Cluster.Title.CaseDetails">
+    <FIELD LABEL="Field.Label.CaseReference">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$readFEICDetails$details$caseReference" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.Created">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$readFEICDetails$details$registrationDate" />
+      </CONNECT>
+    </FIELD>
+   
+   <FIELD CONTROL="SKIP"/>
+   
+    <FIELD LABEL="Field.Label.Type">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$readFEICDetails$details$integratedCaseType" />
+      </CONNECT>
+    </FIELD>
+        
+    <!-- Bug 70085: Country not displayed in type field of Foreign Engagement Case -->
+    <FIELD LABEL="Field.Label.Country">
+      <CONNECT>
+			<SOURCE NAME="DISPLAY" PROPERTY="result$countryCode" />
+      </CONNECT>
+		<LINK PAGE_ID="ExternalParty_home">
+			<CONDITION>
+				<IS_TRUE NAME="DISPLAY" PROPERTY="result$displayCountryLinkInd" />
+			</CONDITION>		
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="result$extPartyCRoleID" />
+				<TARGET NAME="PAGE" PROPERTY="concernRoleID" />
+			</CONNECT>
+		</LINK>
+    </FIELD>
+
+  </CLUSTER>
+
+  <CLUSTER LABEL_WIDTH="45" NUM_COLS="1" TITLE="Cluster.Title.CreditablePeriods">
+
+  <FIELD LABEL="Field.Label.ForeignResidence">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$totalForeignResidencePeriod" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.ForeignContribution">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$totalForeignContributionPeriod" />
+      </CONNECT>
+    </FIELD>
+
+  </CLUSTER>
+
+  <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Title.Comments">
+    <FIELD LABEL="Field.Label.Comments">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$readFEICDetails$details$comments" />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+  <LIST TITLE="List.Title.RecentTransactions">
+    <DETAILS_ROW>
+      <INLINE_PAGE
+        PAGE_ID="Case_resolveViewTransactionLogRecord">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY"
+            PROPERTY="result$readFEICDetails$transactionDtls$dtlsList$relatedID" />
+          <TARGET NAME="PAGE" PROPERTY="relatedID" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY"
+            PROPERTY="result$readFEICDetails$transactionDtls$dtlsList$transactionDescription" />
+          <TARGET NAME="PAGE" PROPERTY="transactionDescription" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY"
+            PROPERTY="result$readFEICDetails$transactionDtls$dtlsList$transactionDateTime" />
+          <TARGET NAME="PAGE" PROPERTY="transactionDateTime" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY"
+            PROPERTY="result$readFEICDetails$transactionDtls$dtlsList$userFullName" />
+          <TARGET NAME="PAGE" PROPERTY="userFullName" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$readFEICDetails$transactionDtls$dtlsList$eventTypeDesc" />
+          <TARGET NAME="PAGE" PROPERTY="eventType" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$readFEICDetails$transactionDtls$dtlsList$pageID" />
+          <TARGET NAME="PAGE" PROPERTY="pageID" />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <FIELD LABEL="Field.Label.EventType" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$readFEICDetails$transactionDtls$dtlsList$eventTypeDesc" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Description" WIDTH="50">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$readFEICDetails$transactionDtls$dtlsList$transactionDescription" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.TransactionDateTime" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$readFEICDetails$transactionDtls$dtlsList$transactionDateTime" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UserFullname" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$readFEICDetails$transactionDtls$dtlsList$userFullName" />
+      </CONNECT>
+      <LINK OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+        WINDOW_OPTIONS="width=900">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$readFEICDetails$transactionDtls$dtlsList$username" />
+          <TARGET NAME="PAGE" PROPERTY="userName" />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2003, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright  2003-2004, 2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Lists a Rate Tables History for a specified organization.              -->
+<PAGE
+  PAGE_ID="Organization_listRateTableHistory"
+  HIDE_CONDITIONAL_LINKS="FALSE"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="BDMRateTable"
+    NAME="DISPLAY"
+    OPERATION="listRateTableHistory"
+  />
+
+
+  <PAGE_PARAMETER NAME="rateTableType"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="rateTableType"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="rateTableStatusDateKey$rateTableType"
+    />
+  </CONNECT>
+
+
+  <LIST>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <CONDITION>
+          <IS_FALSE 
+            NAME="DISPLAY" 
+            PROPERTY="shouldBlockEditing"
+          />          
+        </CONDITION>
+
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_modifyRateTableFromList"
+          WINDOW_OPTIONS="width=1200"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="rateHeaderID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rateHeaderID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="rateTableType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rateTableType"
+            />
+          </CONNECT>
+        </LINK>
+
+
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Clone">
+
+
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_cloneRateTable"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="rateHeaderID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rateHeaderID"
+            />
+          </CONNECT>
+        </LINK>
+
+
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="DeleteButton"
+        LABEL="ActionControl.Label.Delete"
+      >
+        <CONDITION>
+          <IS_FALSE 
+            NAME="DISPLAY" 
+            PROPERTY="shouldBlockEditing"
+          />          
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_deleteRateTable"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="rateHeaderID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rateHeaderID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="rateHeaderData$rateTableType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.EffectiveDate"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="rateHeaderData$effectiveDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="rateHeaderData$rateStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+      <!-- BEGIN, CR00417620, AC-->
+      <INLINE_PAGE PAGE_ID="Organization_viewRateTable">
+        <!-- END, CR00417620-->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="rateHeaderID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="rateHeaderID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="rateTableType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="rateTableType"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+  </LIST>
+
+
+</PAGE>

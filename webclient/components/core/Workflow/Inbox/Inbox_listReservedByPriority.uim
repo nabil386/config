@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the included view for a list of reserves tasks by priority     -->
+<PAGE
+  PAGE_ID="Inbox_listReservedByPriority"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Inbox"
+    NAME="DISPLAY"
+    OPERATION="listReservedByPriority"
+  />
+
+
+  <PAGE_PARAMETER NAME="priorityCode"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="priorityCode"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="listReservedByPriorityKey$taskListKey$priorityCode"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00191668, NP-->
+  <CLUSTER
+    LABEL_WIDTH="10"
+    NUM_COLS="1"
+  >
+    <!-- END, CR00191668 -->
+
+
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Title.Priority"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$taskDetailsList$priority"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <LIST>
+
+
+    <FIELD
+      LABEL="Field.Title.TaskID"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="taskID"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="TaskManagement_taskHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Subject"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="subject"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Status"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00191668, NP-->
+    <FIELD
+      LABEL="Field.Title.Reserved"
+      WIDTH="20"
+    >
+      <!-- END, CR00191668 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="assignedDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00191668, NP-->
+    <FIELD
+      LABEL="Field.Title.Deadline"
+      WIDTH="20"
+    >
+      <!-- END, CR00191668 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dueDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="TaskManagement_taskHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+  </LIST>
+
+
+</PAGE>

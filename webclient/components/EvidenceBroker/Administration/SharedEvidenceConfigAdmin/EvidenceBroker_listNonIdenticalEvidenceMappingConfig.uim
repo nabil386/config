@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2014, 2017. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- This page lists evidence types shared for non-identical       -->
+<!-- evidence sharing.                                             -->
+<?curam-deprecated Since Curam 7.0.2.0, this functionality has been replaced with the Advanced Evidence Sharing component.?>
+<PAGE HIDE_CONDITIONAL_LINKS="false" PAGE_ID="EvidenceBroker_listNonIdenticalEvidenceMappingConfig" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="MaintainEBMappingConfig" NAME="DISPLAY" OPERATION="listNonIdenticalEvidenceMappingConfig" PHASE="DISPLAY"/>
+
+
+  <ACTION_SET ALIGNMENT="LEFT" BOTTOM="false" TOP="true">
+
+
+    <ACTION_CONTROL IMAGE="NewButton" LABEL="ActionControl.Label.New">
+      <LINK OPEN_MODAL="true" PAGE_ID="EvidenceBroker_createNonIdenticalAttributeConfig">
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <LIST>
+    <ACTION_SET ALIGNMENT="RIGHT" TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Add" TYPE="ACTION">
+        <CONDITION>
+          <IS_TRUE NAME="DISPLAY" PROPERTY="hasAttributeMapping"/>
+        </CONDITION>
+        <LINK OPEN_MODAL="true" PAGE_ID="EBMappingConfig_addNonIdenticalAttributeMapping" WINDOW_OPTIONS="width=700,height=300">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="sourceEvidenceType"/>
+            <TARGET NAME="PAGE" PROPERTY="sourceEvidenceType"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="targetEvidenceType"/>
+            <TARGET NAME="PAGE" PROPERTY="targetEvidenceType"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="evidenceBrokerAttributeID"/>
+            <TARGET NAME="PAGE" PROPERTY="evidenceBrokerAttributeID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="versionNo"/>
+            <TARGET NAME="PAGE" PROPERTY="versionNo"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete" TYPE="ACTION">
+        <LINK OPEN_MODAL="true" PAGE_ID="EvidenceBroker_cancelNonIdenticalAttributeConfig">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="evidenceBrokerAttributeID"/>
+            <TARGET NAME="PAGE" PROPERTY="evidenceBrokerAttributeID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="versionNo"/>
+            <TARGET NAME="PAGE" PROPERTY="versionNo"/>
+          </CONNECT>
+          <!-- BEGIN, CR00439996, GK -->
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="enableAttributeView"/>
+            <TARGET NAME="PAGE" PROPERTY="enableAttributeView"/>
+          </CONNECT>
+          <!-- END, CR00439996 -->
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <!-- BEGIN, CR00441283, GK -->
+    <FIELD LABEL="Field.Label.EvidenceType1" WIDTH="48">
+      <!-- END, CR00441283 -->
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="sourceEvidenceType"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EvidenceType2" WIDTH="48">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="targetEvidenceType"/>
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+
+
+      <CONDITION>
+        <IS_TRUE NAME="DISPLAY" PROPERTY="enableAttributeView"/>
+      </CONDITION>
+
+
+      <INLINE_PAGE PAGE_ID="EBMappingConfig_viewNonIdenticalAttributeMapping">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="evidenceBrokerAttributeID"/>
+          <TARGET NAME="PAGE" PROPERTY="evidenceBrokerAttributeID"/>
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+
+
+</PAGE>

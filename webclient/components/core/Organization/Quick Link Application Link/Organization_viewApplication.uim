@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012,2014. All Rights Reserved.
+  
+  PID 5725-H26 
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003, 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This process allows the user to view security role details.            -->
+<PAGE
+  PAGE_ID="Organization_viewApplication"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAY"
+    OPERATION="listQuickLinkForApplicationCode"
+    PHASE="DISPLAY"
+  />
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <PAGE_PARAMETER NAME="applicationCode"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationCode"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$applicationCode"
+    />
+  </CONNECT>
+
+
+  <LIST TITLE="List.Title.QuickLinks">
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="quickLinksOrderEnabled"
+      />
+    </CONDITION>
+    
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_removeQuickLinkFromApplication"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="quickLinkApplicationLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="quickLinkApplicationLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$list$list$dtls$applicationCode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="applicationCode"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Update">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_modifyQuickLinkFromApplication"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="quickLinkApplicationLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="quickLinkApplicationLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$list$list$dtls$applicationCode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="applicationCode"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.DateCreated"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateCreated"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD
+      LABEL="Field.Label.SortOrder"
+      WIDTH="20"
+      >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sortOrder"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+  <LIST TITLE="List.Title.QuickLinks">
+    
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="quickLinksOrderEnabled"
+      />
+    </CONDITION>
+    
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_removeQuickLinkFromApplication"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="quickLinkApplicationLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="quickLinkApplicationLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$list$list$dtls$applicationCode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="applicationCode"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      
+    </ACTION_SET>
+    
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="70"
+      >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    
+    <FIELD
+      LABEL="Field.Label.DateCreated"
+      WIDTH="30"
+      >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateCreated"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    
+  </LIST>
+  
+  
+</PAGE>

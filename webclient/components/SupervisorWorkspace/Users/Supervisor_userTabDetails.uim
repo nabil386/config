@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- Copyright 2010,2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify a Dependant Data Item record.      -->
+<PAGE
+  PAGE_ID="Supervisor_userTabDetails"
+  TYPE="DETAILS"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="result$userFullName"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Space"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Static.Workspace"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <TAB_NAME>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="result$userFullName"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Space"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Static.Workspace"
+      />
+    </CONNECT>
+  </TAB_NAME>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorUsers"
+    NAME="DISPLAY"
+    OPERATION="readSupervisorUserTabDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="userName"/>
+  <PAGE_PARAMETER NAME="taskOptionCode"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$userName"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+  >
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="userFullName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PhoneNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="phoneNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.AvailableForTaskRedirection">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="availableForTaskAlocation"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EmailAddress">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="emailAddress"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.TasksRedirectedTo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="toUserFullName"
+        />
+      </CONNECT>
+
+
+      <!-- BEGIN, CR00258000, MC -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="toRedirectStringID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <!-- END, CR00258000 -->
+
+
+  </CLUSTER>
+
+
+</PAGE>

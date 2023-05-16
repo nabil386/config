@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view a incident attachment.               -->
+<?curam-deprecated Since Curam 6.0, replaced by IncidentAttachments_viewAttachment1.uim?>
+<PAGE
+  PAGE_ID="IncidentAttachments_viewAttachment"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Attachment"
+    NAME="DISPLAY"
+    OPERATION="readAttachment"
+  />
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="EditButton"
+      LABEL="ActionControl.Label.Edit"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Attachment_modify"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="attachmentLinkID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="attachmentLinkID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="DeleteButton"
+      LABEL="ActionControl.Label.Delete"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Attachment_cancel"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="attachmentLinkID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="attachmentLinkID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="attachmentLinkDtls$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- BEGIN, CR00133982, SK -->
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    >
+      <LINK PAGE_ID="IncidentAttachments_listByIncident">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="relatedObjectID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00133982 -->
+  </ACTION_SET>
+  <PAGE_PARAMETER NAME="attachmentLinkID"/>
+  <PAGE_PARAMETER NAME="description"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="attachmentLinkID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$attachmentLinkID"
+    />
+  </CONNECT>
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Label.Details"
+  >
+    <CONTAINER LABEL="Field.Label.AttachedFile">
+      <WIDGET TYPE="FILE_DOWNLOAD">
+        <WIDGET_PARAMETER NAME="LINK_TEXT">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="attachmentName"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="PARAMS">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$attachmentLinkDtls$attachmentLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="attachmentLinkID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.FileLocation">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileLocation"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DocumentType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="documentType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.FileReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileReference"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ReceiptDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="receiptDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Label.Description"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

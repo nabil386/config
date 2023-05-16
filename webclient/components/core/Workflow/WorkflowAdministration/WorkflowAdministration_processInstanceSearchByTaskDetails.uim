@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2005 - 2011 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Searches for currently active Process Instances based on task details  -->
+<PAGE
+  PAGE_ID="WorkflowAdministration_processInstanceSearchByTaskDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="WorkflowAdministration"
+    NAME="ACTION"
+    OPERATION="processInstanceSearchByTaskDetails"
+    PHASE="ACTION"
+  />
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="result$infoList$dtls$informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.SearchByTask.Description"
+    LABEL_WIDTH="35"
+    TITLE="Cluster.SearchByTask.Title"
+  >
+    <FIELD
+      LABEL="Field.Label.TaskID"
+      USE_DEFAULT="false"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$taskID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.TasksReservedByUser"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$userName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.TasksAssociatedWithCaseReference"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$caseReference"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER LABEL="Field.Label.TasksAssociatedWithParticipant">
+      <FIELD
+        USE_BLANK="true"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$participantType"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD WIDTH="50">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$participantRoleID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="Button.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="Button.Label.Reset"
+      >
+        <LINK PAGE_ID="WorkflowAdministration_processInstanceSearchByTaskDetails"/>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <INCLUDE FILE_NAME="WorkflowAdministration_listProcessInstances.vim"/>
+
+
+</PAGE>

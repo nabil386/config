@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Prospect Person search page                                            -->
+<PAGE
+  PAGE_ID="AddProspectPerson_duplicateCheckWizard"
+  WINDOW_OPTIONS="width=975,height=750"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00282028, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00282028 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="ParticipantRegistration"
+    NAME="DISPLAY"
+    OPERATION="getAddProspectPersonSearchCriteria"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00282028, IBM -->
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionIDProperty"
+    CLASS="ParticipantRegistration"
+    NAME="ACTION"
+    OPERATION="setAddProspectPersonSearchCriteriaDetails"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00282028 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="ParticipantRegistration"
+    NAME="DISPLAYWIZARD"
+    OPERATION="getAddProspectPersonWizard"
+  />
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="wizardStateID$wizardStateID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="stateID$wizardStateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="stateID$wizardStateID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL
+      ACTION_ID="NEXTPAGE"
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        OPEN_MODAL="false"
+        PAGE_ID="AddProspectPerson_registerWizard"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="wizardStateID$wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+  </ACTION_SET>
+
+
+  <INCLUDE FILE_NAME="AddProspectPerson_duplicateCheckWizardView.vim"/>
+
+
+</PAGE>

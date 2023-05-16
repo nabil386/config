@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This screen is used for modifying FE Case attachment details. -->
+
+<PAGE PAGE_ID="BDMFEC_modifyAttachmentDetails"
+  WINDOW_OPTIONS="width=775"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE NAME="CONSTANT"
+        PROPERTY="FECaseModifyAttachmentWizard" />
+    </CONNECT>
+  </MENU>
+
+  <SERVER_INTERFACE CLASS="BDMForeignEngagementCase"
+    NAME="DISPLAY" OPERATION="readFECAttachmentWizardForModify" />
+
+  <SERVER_INTERFACE CLASS="BDMForeignEngagementCase"
+    NAME="ACTION" OPERATION="modifyFECaseAttachment" PHASE="ACTION"
+    ACTION_ID_PROPERTY="details$actionIDProperty" />
+
+  <PAGE_PARAMETER NAME="caseID" />
+  <PAGE_PARAMETER NAME="attachmentID" />
+  <PAGE_PARAMETER NAME="caseAttachmentLinkID" />
+  <PAGE_PARAMETER NAME="pageDescription" />
+  <PAGE_PARAMETER NAME="wizardStateID" />
+ 
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="wizardStateID" />
+    <TARGET NAME="DISPLAY" PROPERTY="key$wizardStateID" />
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID" />
+    <TARGET NAME="DISPLAY" PROPERTY="key$caseID" />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="attachmentID" />
+    <TARGET NAME="DISPLAY" PROPERTY="key$attachmentID" />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseAttachmentLinkID" />
+    <TARGET NAME="DISPLAY" PROPERTY="key$caseAttachmentLinkID" />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="attachmentID" />
+    <TARGET NAME="ACTION"
+      PROPERTY="details$bdmModifyAttachmentDetails$dtls$modifyAttachmentDetails$attachmentID" />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseAttachmentLinkID" />
+    <TARGET NAME="ACTION"
+      PROPERTY="details$bdmModifyAttachmentDetails$dtls$modifyAttachmentDetails$caseAttachmentLinkID" />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID" />
+    <TARGET NAME="ACTION"
+      PROPERTY="details$bdmModifyAttachmentDetails$dtls$modifyAttachmentDetails$caseID" />
+  </CONNECT>
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY"
+      PROPERTY="result$bdmReadAttachmentDetails$dtls$attachmentDetails$readCaseAttachmentOut$linkVersionNo" />
+    <TARGET NAME="ACTION"
+      PROPERTY="details$bdmModifyAttachmentDetails$dtls$modifyAttachmentDetails$versionNo" />
+  </CONNECT>
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY"
+      PROPERTY="result$bdmReadAttachmentDetails$dtls$attachmentDetails$readCaseAttachmentOut$linkVersionNo" />
+    <TARGET NAME="ACTION"
+      PROPERTY="details$bdmModifyAttachmentDetails$dtls$modifyAttachmentDetails$linkVersionNo" />
+  </CONNECT>
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY"
+      PROPERTY="result$bdmReadAttachmentDetails$dtls$attachmentDetails$readCaseAttachmentOut$attachmentStatus" />
+    <TARGET NAME="ACTION"
+      PROPERTY="details$bdmModifyAttachmentDetails$dtls$modifyAttachmentDetails$attachmentStatus" />
+  </CONNECT>
+
+
+  <CLUSTER LABEL_WIDTH="40" NUM_COLS="2">
+    <CONDITION>
+      <IS_FALSE NAME="DISPLAY"
+        PROPERTY="result$bdmReadAttachmentDetails$dtls$attachmentDetails$cancelledInd" />
+    </CONDITION>
+    
+    <!--  Remove download wiidget  -->
+
+    <FIELD LABEL="Field.Label.AttachedFile" >
+    <LINK URI_SOURCE_NAME="DISPLAY"
+				URI_SOURCE_PROPERTY="result$attachmentURL$fileLocationURL"  OPEN_NEW= "true"/>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$attachmentURL$fileName" />
+      </CONNECT>
+    
+      
+    </FIELD>
+
+ <FIELD LABEL="Field.Label.FileLocation">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmReadAttachmentDetails$dtls$attachmentDetails$readCaseAttachmentOut$fileLocation" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmModifyAttachmentDetails$dtls$modifyAttachmentDetails$fileLocation" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.Participant" USE_BLANK="true">
+      <CONNECT>
+        <INITIAL HIDDEN_PROPERTY="dtls$caseParticipantRoleID"
+          NAME="DISPLAY" PROPERTY="nameAndAgeOpt" />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmReadAttachmentDetails$dtls$attachmentDetails$readCaseAttachmentOut$caseParticipantRoleID" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmModifyAttachmentDetails$dtls$modifyAttachmentDetails$caseParticipantRoleID" />
+      </CONNECT>
+    </FIELD>
+
+   
+
+    <FIELD LABEL="Field.Label.ReceiptDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmReadAttachmentDetails$dtls$attachmentDetails$readCaseAttachmentOut$receiptDate" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmModifyAttachmentDetails$dtls$modifyAttachmentDetails$receiptDate" />
+      </CONNECT>
+    </FIELD>
+
+ 
+    <FIELD CONTROL="SKIP" />
+    
+    <FIELD LABEL="Field.Label.FileReference">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmReadAttachmentDetails$dtls$attachmentDetails$readCaseAttachmentOut$fileReference" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmModifyAttachmentDetails$dtls$modifyAttachmentDetails$fileReference" />
+      </CONNECT>
+    </FIELD>
+    
+    
+    <FIELD LABEL="Field.Label.DocumentType" USE_BLANK="true">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmReadAttachmentDetails$dtls$attachmentDetails$readCaseAttachmentOut$documentType" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmModifyAttachmentDetails$dtls$modifyAttachmentDetails$documentType" />
+      </CONNECT>
+    </FIELD>
+    
+
+    <FIELD LABEL="Field.Label.FileSource" USE_BLANK="true">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmReadAttachmentDetails$fileSource" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmModifyAttachmentDetails$fileSource" />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+  <CLUSTER LABEL_WIDTH="40" NUM_COLS="2">
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY"
+        PROPERTY="result$bdmReadAttachmentDetails$dtls$attachmentDetails$cancelledInd" />
+    </CONDITION>
+
+   <!-- <FIELD LABEL="Field.Label.AttachedFile">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmReadAttachmentDetails$dtls$attachmentDetails$readCaseAttachmentOut$attachmentName" />
+      </CONNECT>
+    </FIELD>-->
+<FIELD LABEL="Field.Label.AttachedFile" >
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$attachmentURL$fileName" />
+      </CONNECT>
+      
+    </FIELD>
+    
+    
+    <FIELD LABEL="Field.Label.FileLocation">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmReadAttachmentDetails$dtls$attachmentDetails$readCaseAttachmentOut$fileLocation" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmModifyAttachmentDetails$dtls$modifyAttachmentDetails$fileLocation" />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.Participant" USE_BLANK="true">
+      <CONNECT>
+        <INITIAL HIDDEN_PROPERTY="dtls$caseParticipantRoleID"
+          NAME="DISPLAY" PROPERTY="nameAndAgeOpt" />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmReadAttachmentDetails$dtls$attachmentDetails$readCaseAttachmentOut$caseParticipantRoleID" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmModifyAttachmentDetails$dtls$modifyAttachmentDetails$caseParticipantRoleID" />
+      </CONNECT>
+    </FIELD>
+
+    
+
+    <FIELD LABEL="Field.Label.ReceiptDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmReadAttachmentDetails$dtls$attachmentDetails$readCaseAttachmentOut$receiptDate" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmModifyAttachmentDetails$dtls$modifyAttachmentDetails$receiptDate" />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP" />
+    
+     <FIELD LABEL="Field.Label.FileReference">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmReadAttachmentDetails$dtls$attachmentDetails$readCaseAttachmentOut$fileReference" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmModifyAttachmentDetails$dtls$modifyAttachmentDetails$fileReference" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.DocumentType" USE_BLANK="true">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmReadAttachmentDetails$dtls$attachmentDetails$readCaseAttachmentOut$documentType" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmModifyAttachmentDetails$dtls$modifyAttachmentDetails$documentType" />
+      </CONNECT>
+    </FIELD>
+
+   
+
+    <FIELD LABEL="Field.Label.FileSource" USE_BLANK="true">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmReadAttachmentDetails$fileSource" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmModifyAttachmentDetails$fileSource" />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+  <CLUSTER LABEL_WIDTH="20">
+    <FIELD HEIGHT="4" LABEL="Field.Label.Description">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmReadAttachmentDetails$dtls$attachmentDetails$readCaseAttachmentOut$description" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION"
+          PROPERTY="details$bdmModifyAttachmentDetails$dtls$modifyAttachmentDetails$description" />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+  <ACTION_SET ALIGNMENT="CENTER" >
+
+    <ACTION_CONTROL IMAGE="SaveButton"
+      LABEL="ActionControl.Label.SaveAndClose" TYPE="SUBMIT"
+      ALIGNMENT="RIGHT" ACTION_ID="saveandclose">
+      <LINK PAGE_ID="BDMFEC_listAttachment" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE PROPERTY="caseID" NAME="PAGE" />
+          <TARGET PROPERTY="caseID" NAME="PAGE" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+    <ACTION_CONTROL IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Next" TYPE="SUBMIT" ALIGNMENT="RIGHT"
+      ACTION_ID="next">
+      <LINK PAGE_ID="BDMFEC_modifyAttachmentLinkingFA"
+        DISMISS_MODAL="false"  SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE PROPERTY="caseID" NAME="PAGE" />
+          <TARGET PROPERTY="caseID" NAME="PAGE" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE PROPERTY="attachmentID" NAME="PAGE" />
+          <TARGET PROPERTY="attachmentID" NAME="PAGE" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE PROPERTY="caseAttachmentLinkID" NAME="PAGE" />
+          <TARGET PROPERTY="caseAttachmentLinkID" NAME="PAGE" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE PROPERTY="result$wizardStateID" NAME="ACTION" />
+          <TARGET PROPERTY="wizardStateID" NAME="PAGE" />
+        </CONNECT>  
+      </LINK>
+    </ACTION_CONTROL>
+
+    <ACTION_CONTROL IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel" ALIGNMENT="LEFT" >
+      <LINK PAGE_ID="BDMFEC_listAttachment" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE PROPERTY="caseID" NAME="PAGE" />
+          <TARGET PROPERTY="caseID" NAME="PAGE" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+  </ACTION_SET>
+
+</PAGE>

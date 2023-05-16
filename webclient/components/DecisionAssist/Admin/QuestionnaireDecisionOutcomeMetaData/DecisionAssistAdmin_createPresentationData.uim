@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2005, 2022. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2005-2008, 2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<PAGE PAGE_ID="DecisionAssistAdmin_createPresentationData" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="dpQuestionnaireLinkID"/>
+  <PAGE_PARAMETER NAME="determinationPackageVersionID"/>
+  <SERVER_INTERFACE CLASS="QuestionnaireDecisionOutcomeMetaData" NAME="CREATEPRESENTATIONDATA" OPERATION="createPresentationData" PHASE="ACTION"/>
+  <SERVER_INTERFACE CLASS="DecisionMatrix" NAME="LISTDECISIONMATRICES" OPERATION="readAllLatestVersionDecisionMatrices" PHASE="DISPLAY"/>
+  <SERVER_INTERFACE CLASS="QuestionnaireDecisionOutcomeMetaData" NAME="QUESTIONHEADER" OPERATION="readPresentationDataHeaderDetails" PHASE="DISPLAY"/>
+  <SERVER_INTERFACE CLASS="QuestionnaireDecisionOutcomeMetaData" NAME="LISTOUTCOMES" OPERATION="readAllActiveOutcomes" PHASE="DISPLAY"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="dpQuestionnaireLinkID"/>
+    <TARGET NAME="CREATEPRESENTATIONDATA" PROPERTY="details$dtls$dpQuestionnaireLinkID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="dpQuestionnaireLinkID"/>
+    <TARGET NAME="QUESTIONHEADER" PROPERTY="key$key$key$dpQuestionnaireLinkID"/>
+  </CONNECT>
+  <CLUSTER LABEL_WIDTH="45" NUM_COLS="2">
+    <FIELD LABEL="Field.Label.DecisionMatrix">
+      <CONNECT>
+        <TARGET NAME="CREATEPRESENTATIONDATA" PROPERTY="decisionMatrixID"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Presentation" WIDTH="70">
+      <CONNECT>
+        <TARGET NAME="CREATEPRESENTATIONDATA" PROPERTY="questionnairePresentationCode"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Outcome" USE_BLANK="true" USE_DEFAULT="false" WIDTH="60">
+      <CONNECT>
+        <INITIAL HIDDEN_PROPERTY="outcomeID" NAME="LISTOUTCOMES" PROPERTY="outcomeName"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="CREATEPRESENTATIONDATA" PROPERTY="outcomeID"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Title.Comments">
+    <!-- BEGIN, CR00407812, RB -->
+    <FIELD HEIGHT="4" LABEL="Field.Label.Comments">
+      <!-- END, CR00407812 -->
+      <CONNECT>
+        <TARGET NAME="CREATEPRESENTATIONDATA" PROPERTY="details$dtls$comments"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+    <ACTION_CONTROL LABEL="ActionControl.Label.SaveNew" TYPE="SUBMIT">
+      <LINK PAGE_ID="DecisionAssistAdmin_createPresentationData">
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel" TYPE="ACTION"> </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

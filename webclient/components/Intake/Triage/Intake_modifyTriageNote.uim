@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012,2022. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                           		  -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Modifies the Triage Note Details.                     									-->
+<PAGE
+  PAGE_ID="Intake_modifyTriageNote"
+  WINDOW_OPTIONS="width=680,height=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <SERVER_INTERFACE
+    CLASS="QuickNotes"
+    NAME="DISPLAY_STATUS"
+    OPERATION="readNoteLockedStatus"
+  />
+
+  <CONNECT>
+    <SOURCE  NAME="PAGE"  PROPERTY="quickNotesID" />
+    <TARGET  NAME="DISPLAY_STATUS" PROPERTY="quickNotesID" />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="FALSE"
+  >
+
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <CONDITION>
+        <IS_FALSE NAME="DISPLAY_STATUS" PROPERTY="noteLockedInd" />
+      </CONDITION>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+  </ACTION_SET>
+
+
+  <INCLUDE FILE_NAME="Intake_modifyNoteView.vim"/>
+
+
+</PAGE>

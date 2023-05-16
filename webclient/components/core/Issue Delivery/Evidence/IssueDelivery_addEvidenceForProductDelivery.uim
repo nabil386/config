@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to select the type of evidence where an      -->
+<!-- issue has been identified and the type of issue.                       -->
+<PAGE PAGE_ID="IssueDelivery_addEvidenceForProductDelivery" WINDOW_OPTIONS="width=1000,height=400" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="IssueDelivery" NAME="DISPLAYEVIDENCE" OPERATION="listEvidence" PHASE="DISPLAY"/>
+
+
+  <SERVER_INTERFACE CLASS="IssueDelivery" NAME="ACTION" OPERATION="addEvidence" PHASE="ACTION"/>
+
+
+  <PAGE_PARAMETER NAME="evidenceType"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="relatedCaseID"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="evidenceType"/>
+    <TARGET NAME="DISPLAYEVIDENCE" PROPERTY="key$key$evidenceType"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+    <TARGET NAME="ACTION" PROPERTY="details$dtls$key$caseID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="relatedCaseID"/>
+    <TARGET NAME="DISPLAYEVIDENCE" PROPERTY="key$key$caseID"/>
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+
+
+    <ACTION_CONTROL IMAGE="PreviousButton" LABEL="ActionControl.Label.Previous">
+      <LINK DISMISS_MODAL="false" OPEN_MODAL="false" PAGE_ID="IssueDelivery_selectEvidenceTypeForProductDelivery" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="relatedCaseID"/>
+          <TARGET NAME="PAGE" PROPERTY="relatedCaseID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="description"/>
+          <TARGET NAME="PAGE" PROPERTY="description"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT">
+    </ACTION_CONTROL>
+
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel">
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <LIST PAGINATED="false">
+
+
+    <CONTAINER ALIGNMENT="CENTER" WIDTH="6">
+
+
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE NAME="DISPLAYEVIDENCE" PROPERTY="result$dtls$activeList$dtls$evidenceDescriptorID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAYEVIDENCE" PROPERTY="result$dtls$activeList$dtls$evidenceID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAYEVIDENCE" PROPERTY="result$dtls$activeList$dtls$evidenceType"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAYEVIDENCE" PROPERTY="result$dtls$activeList$dtls$correctionSetID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAYEVIDENCE" PROPERTY="result$dtls$activeList$dtls$successionID"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$dtls$evidenceList$addEvidenceList"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Evidence_resolveViewEvidencePage">
+        <CONNECT>
+          <SOURCE NAME="DISPLAYEVIDENCE" PROPERTY="result$dtls$activeList$dtls$evidenceType"/>
+          <TARGET NAME="PAGE" PROPERTY="evidenceType"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAYEVIDENCE" PROPERTY="result$dtls$activeList$dtls$evidenceID"/>
+          <TARGET NAME="PAGE" PROPERTY="evidenceID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAYEVIDENCE" PROPERTY="result$dtls$activeList$dtls$evidenceDescriptorID"/>
+          <TARGET NAME="PAGE" PROPERTY="evidenceDescriptorID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="description"/>
+          <TARGET NAME="PAGE" PROPERTY="contextDescription"/>
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+    <FIELD LABEL="List.Title.Name" WIDTH="27">
+      <CONNECT>
+        <SOURCE NAME="DISPLAYEVIDENCE" PROPERTY="result$dtls$activeList$dtls$concernRoleName"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="List.Title.EffectiveDate" WIDTH="18">
+      <CONNECT>
+        <SOURCE NAME="DISPLAYEVIDENCE" PROPERTY="result$dtls$activeList$dtls$effectiveFrom"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="List.Title.Details" WIDTH="30">
+      <CONNECT>
+        <SOURCE NAME="DISPLAYEVIDENCE" PROPERTY="result$dtls$activeList$dtls$summary"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="List.Title.Status" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAYEVIDENCE" PROPERTY="result$dtls$activeList$dtls$statusCode"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

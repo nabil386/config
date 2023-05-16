@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003 - 2008, 2010 Curam Software Ltd.                    -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view a list of Contracts associated with  -->
+<!-- a particular Product Provider -->
+<PAGE
+  PAGE_ID="ProductProvider_listContract"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProductProvider"
+    NAME="DISPLAY"
+    OPERATION="listProductProviderContract"
+  />
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="contractConcernKey$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET BOTTOM="false">
+
+
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+
+
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProductProvider_createContract"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <LIST>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+
+
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProductProvider_modifyContractFromList"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractID"
+            />
+          </CONNECT>
+        </LINK>
+
+
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="AddProductButton"
+        LABEL="ActionControl.Label.AddProduct"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProductProvider_addProduct"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="DeleteButton"
+        LABEL="ActionControl.Label.Delete"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProductProvider_cancelContract"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <DETAILS_ROW>
+
+
+      <INLINE_PAGE PAGE_ID="ProductProvider_viewContract">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="contractID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+
+
+    </DETAILS_ROW>
+
+
+    <FIELD
+      LABEL="Field.Label.TypeCode"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="typeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="effectiveStartDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="effectiveEndDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2017. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE PAGE_ID="AES_sharedInstancesSearch" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <SERVER_INTERFACE CLASS="SearchSharedInstances" NAME="ACTION" OPERATION="listSharedInstances" PHASE="ACTION"/>
+
+ <CLUSTER TITLE="Cluster.Title.SearchParameters" NUM_COLS="2" DESCRIPTION="Cluster.Description.SearchParameters">
+  
+ 	<FIELD LABEL="Field.Label.CaseReference" USE_DEFAULT="false">
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="caseReference"/>
+        </CONNECT>
+  	</FIELD>
+  	
+  	<FIELD LABEL="Field.Label.PersonReference" USE_DEFAULT="false">
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="personReference"/>
+        </CONNECT>
+  	</FIELD>
+  
+  </CLUSTER>
+  
+  <CLUSTER>
+    <ACTION_SET ALIGNMENT="CENTER" BOTTOM="false">
+      <ACTION_CONTROL DEFAULT="true" IMAGE="SearchButton" LABEL="ActionControl.Label.Search" TYPE="SUBMIT">
+      <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      
+      <ACTION_CONTROL IMAGE="ResetButton" LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="AES_sharedInstancesSearch"/>
+      </ACTION_CONTROL>
+      
+    </ACTION_SET>
+  </CLUSTER>
+
+ <CLUSTER TITLE="Cluster.Title.SearchResults">
+	 <LIST>
+		 <FIELD LABEL="Field.Label.SharingDateTime" WIDTH="12">
+		      <CONNECT>
+		        <SOURCE NAME="ACTION" PROPERTY="dateTime"/>
+		      </CONNECT>
+		 </FIELD>
+		 <FIELD LABEL="Field.Label.Status" WIDTH="12">
+		      <CONNECT>
+		        <SOURCE NAME="ACTION" PROPERTY="status"/>
+		      </CONNECT>
+		 </FIELD>
+		 <FIELD LABEL="Field.Label.Source">
+		      <CONNECT>
+		        <SOURCE NAME="ACTION" PROPERTY="sourceCases"/>
+		      </CONNECT>
+		 </FIELD>
+		 <FIELD LABEL="Field.Label.Target">
+		      <CONNECT>
+		        <SOURCE NAME="ACTION" PROPERTY="targetCases"/>
+		      </CONNECT>
+		 </FIELD>
+	
+		 <DETAILS_ROW>
+	      	<INLINE_PAGE PAGE_ID="AES_sharedInstancesGraph">
+		        <CONNECT>
+		          <SOURCE NAME="ACTION" PROPERTY="shareSetID"/>
+		          <TARGET NAME="PAGE" PROPERTY="shareSetID"/>
+		        </CONNECT>
+		      </INLINE_PAGE>
+	     </DETAILS_ROW>
+	  </LIST>
+	</CLUSTER>
+</PAGE>

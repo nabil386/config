@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2005, 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2005, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Reads a Task's home page details. -->
+<PAGE
+  PAGE_ID="Supervisor_casesWithIssuesByDateList"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00294942, AKr -->
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorCasesWithIssues"
+    NAME="DISPLAY"
+    OPERATION="listCasesWithIssuesByDate"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorCasesWithIssues"
+    NAME="ACTION"
+    OPERATION="listCasesWithIssuesByDate"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00294942 -->
+
+
+  <PAGE_PARAMETER NAME="recievedOnDate"/>
+  <PAGE_PARAMETER NAME="week"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="recievedOnDate"
+    />
+    <!-- BEGIN, CR00294942, AKr -->
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="chosenDate"
+    />
+    <!-- END, CR00294942 -->
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="Field.StaticText.ReassignCases">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Supervisor_reassignCasesWithIssuesByDate"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$pageContextDescription$description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="priorityDates$startDate"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="receivedOnDate"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="Field.StaticText.ViewHeatMap">
+      <LINK PAGE_ID="Supervisor_casesWithIssuesByDateHeatMap">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="priorityDates$startDate"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="recievedOnDate"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="week"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="week"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <!-- BEGIN, CR00340529, MR -->
+    <ACTION_CONTROL
+      IMAGE="UpdateButton"
+      LABEL="Action.Control.Update"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="Supervisor_resolvercasesWithIssuesByDateList">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="currentDate"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="recievedOnDate"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="week"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="week"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <!-- END, CR00340529 -->
+  </ACTION_SET>
+
+
+  <CLUSTER
+    NUM_COLS="3"
+    SHOW_LABELS="false"
+  >
+    <CLUSTER LABEL_WIDTH="60">
+      <CONTAINER
+        ALIGNMENT="LEFT"
+        LABEL="Field.Title.CasesRecieved"
+      >
+        <FIELD>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="priorityDates$startDate"
+            />
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <CLUSTER LABEL_WIDTH="30">
+      <CONTAINER
+        ALIGNMENT="LEFT"
+        LABEL="Field.Title.ChooseDay"
+      >
+        <FIELD USE_DEFAULT="false">
+          <CONNECT>
+            <!-- BEGIN, CR00294942, AKr -->
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="currentDate"
+            />
+          </CONNECT>
+          <!-- END, CR00294942 -->
+        </FIELD>
+
+
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <CONTAINER
+      ALIGNMENT="RIGHT"
+      SEPARATOR="Container.Separator"
+    >
+      <ACTION_CONTROL LABEL="Action.Control.PreviousDay">
+        <LINK PAGE_ID="Supervisor_resolvercasesWithIssuesByDateList">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="previousDate"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="recievedOnDate"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="week"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="week"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="Action.Control.NextDay">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="allowNext"
+          />
+        </CONDITION>
+        <LINK PAGE_ID="Supervisor_resolvercasesWithIssuesByDateList">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="nextDate"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="recievedOnDate"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="week"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="week"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+  </CLUSTER>
+
+
+  <LIST>
+    <!-- BEGIN, CR00340529, MR -->
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <!-- END, CR00340529 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.View">
+        <LINK PAGE_ID="Supervisor_listIssueCasesByType">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="supervisor.type"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseIssuesViewOptionCode"
+            />
+          </CONNECT>
+        </LINK>
+
+
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Label.CaseReference"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseReference"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Product"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="productType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00340529, MR -->
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <!-- END, CR00340529 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.NumOfIssues"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="issueCount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="20"
+    >
+      <!-- BEGIN, CR00294942, AKr  -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="priorityDates$startDate"
+        />
+      </CONNECT>
+      <!-- END, CR00294942 -->
+    </FIELD>
+  </LIST>
+</PAGE>

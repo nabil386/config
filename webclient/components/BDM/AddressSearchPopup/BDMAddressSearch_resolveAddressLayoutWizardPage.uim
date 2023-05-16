@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Resolver to navigate on create address evidence wizard  -->
+<PAGE
+  PAGE_ID="BDMAddressSearch_resolveAddressLayoutWizardPage"
+  SCRIPT_FILE="BDMSearchAddress.js"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+  >
+  <JSP_SCRIPTLET>
+
+      curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String wizardStateID = request.getParameter("wizardStateID");
+      String sourcePageAction = request.getParameter("sourcePageAction");
+      String searchID = request.getParameter("searchID");
+      String addressDetails = request.getParameter("addressDetails");
+      String countryID = request.getParameter("countryID");
+      String addressSelectedInd = request.getParameter("addressSelectedInd");
+      String clientSelectedAddressLine1 = request.getParameter("clientSelectedAddressLine1");
+      String clientSelectedAddressLine2 = request.getParameter("clientSelectedAddressLine2");
+      String clientSelectedPOBox = request.getParameter("clientSelectedPOBox");
+     // System.out.println("addressSelectedInd ::"+ addressSelectedInd);
+//System.out.println("clientSelectedAddressLine1 :"+clientSelectedAddressLine1+"  clientSelectedAddressLine2"+clientSelectedAddressLine2+"  clientSelectedPOBox"+clientSelectedPOBox);
+   
+      
+       String pageName="";
+      String url = "";
+    //  String actionID = "SAVE";
+      
+      if (wizardStateID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "wizardStateID");
+       throw e;
+      }
+      
+      if (sourcePageAction == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "sourcePageAction");
+       throw e;
+      }
+
+
+      
+		curam.interfaces.BDMAddressEvidenceWizardPkg.BDMAddressEvidenceWizard_getAddressEvidenceWizardDetails_TH
+		getTh = new curam.interfaces.BDMAddressEvidenceWizardPkg.BDMAddressEvidenceWizard_getAddressEvidenceWizardDetails_TH();
+		getTh.setFieldValue(getTh.wizardStateID$wizardStateID_idx,wizardStateID);
+		getTh.callServer();
+		
+		String adressData = getTh.getFieldValue(getTh.result$dtls$addressData_idx);
+		String countryCode = getTh.getFieldValue(getTh.result$dtls$countryCode_idx);
+		String addressSelectedIndNew = getTh.getFieldValue(getTh.result$dtls$step2DataDtls$addressSelectedInd_idx);
+		String country = getTh.getFieldValue(getTh.result$dtls$step2DataDtls$country_idx);
+		//System.out.println(""+adressData);
+
+		if(addressSelectedInd == null){
+			addressSelectedInd = addressSelectedIndNew;
+		}
+		if(addressSelectedInd.equals("")){
+			addressSelectedInd = addressSelectedIndNew;
+		}
+
+			//addressIsReadOnly
+          if(addressSelectedInd.equals("true")){
+				if(country.equals("CA")) {
+				pageName="BDMSearchAddressPopupStep2AddressIsReadOnly";
+			}} // countryIsCA
+			else if(addressSelectedInd.equals("false")){
+				if (country.equals("CA")){
+				pageName="BDMSearchAddressPopupStep2CountryIsCA";
+			} }// countryIsUS
+			if(country.equals("US")){
+				pageName="BDMSearchAddressPopupStep2CountryIsUS";
+			}//countryIsIntl
+			if(!country.equals("US")) {
+			if(!country.equals("CA")){
+				pageName="BDMSearchAddressPopupStep2CountryIsIntl";
+			}}
+		System.out.println("pageName ::"+ pageName);
+      //String message [] = th.getListField(th.result$dtls$dtls$message_idx);
+      
+     
+     
+		//pageName="BDMSearchAddressPopupStep4";
+        url = context + curam.omega3.request.RequestUtils.escapeURL(pageName) + "Page.do?wizardStateID=" + curam.omega3.request.RequestUtils.escapeURL(wizardStateID);
+        url += "&amp;" + "searchID="+curam.omega3.request.RequestUtils.escapeURL(searchID);
+		url += "&amp;" + "addressDetails="+curam.omega3.request.RequestUtils.escapeURL(adressData);
+		url += "&amp;" + "countryID="+curam.omega3.request.RequestUtils.escapeURL(countryID);
+		url += "&amp;" + "countryCode="+curam.omega3.request.RequestUtils.escapeURL(countryCode);
+      	url += "&amp;" + rh.getSystemParameters();
+      response.sendRedirect(response.encodeRedirectURL(url));
+		
+	
+      
+
+      
+
+  </JSP_SCRIPTLET>
+</PAGE>

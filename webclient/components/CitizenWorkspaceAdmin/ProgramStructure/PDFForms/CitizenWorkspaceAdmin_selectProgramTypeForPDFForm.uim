@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright (c) 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="CitizenWorkspaceAdmin_selectProgramTypeForPDFForm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <SERVER_INTERFACE CLASS="CitizenWorkspaceAdmin" NAME="DISPLAY" OPERATION="listPrograms" />
+  <SERVER_INTERFACE CLASS="PDFForm" NAME="ACTION" OPERATION="addProgramsToPDFForm" PHASE="ACTION" />
+
+  <PAGE_PARAMETER NAME="pdfFormID" />
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="pdfFormID" />
+    <TARGET NAME="ACTION" PROPERTY="pdfFormID" />
+  </CONNECT>
+
+  <LIST TITLE="List.ProgramTypes">
+
+    <ACTION_SET
+        ALIGNMENT="CENTER"
+        TOP="false"
+      >
+      <ACTION_CONTROL
+          IMAGE="SaveButton"
+          LABEL="ActionControl.Label.Save"
+          TYPE="SUBMIT"
+        >
+        <LINK PAGE_ID="CitizenWorkspaceAdmin_viewPDFForm">
+          <CONNECT>        
+            <SOURCE NAME="PAGE" PROPERTY="pdfFormID"/>
+            <TARGET NAME="PAGE" PROPERTY="pdfFormID"/>
+          </CONNECT>
+        </LINK>
+        
+        
+        
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+          IMAGE="CancelButton"
+          LABEL="ActionControl.Label.Cancel"
+        >
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      LABEL="List.Title.Select"
+      WIDTH="10"
+    >
+
+      <WIDGET TYPE="MULTISELECT">
+
+
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="programTypeID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="programTypeList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="List.Title.Name"
+      WIDTH="90"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+
+  </LIST>    
+
+</PAGE>

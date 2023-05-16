@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page is configured and called when the IEG script is completed.   -->
+<!-- It redirects the user to a Triage Result Recommendations page.         -->
+<PAGE
+  PAGE_ID="Intake_lifeEventExecution"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+      curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String executionID = request.getParameter("executionID");  
+      
+       if (executionID == null) {
+             core.ScriptletMissingParamException e = new
+               core.ScriptletMissingParamException(-20002, "executionID");
+             throw e;
+      }
+            
+      curam.interfaces.IntakeLifeEventPkg.IntakeLifeEvent_getParticipantLifeEventDetailsByIEGExecutionID_TH
+            thExecuteLifeEvent = new curam.interfaces.IntakeLifeEventPkg.IntakeLifeEvent_getParticipantLifeEventDetailsByIEGExecutionID_TH();
+      
+      thExecuteLifeEvent.setFieldValue(thExecuteLifeEvent.key$executionId_idx, executionID);
+      thExecuteLifeEvent.callServer();
+      
+     String participantLifeEventID = thExecuteLifeEvent.getFieldValue(thExecuteLifeEvent.result$participantLifeEventID_idx);
+     
+     String url = "";
+     url = context + "Intake_lifeEventProgramsPage.do?" + "participantLifeEventID=" + curam.omega3.request.RequestUtils.escapeURL(participantLifeEventID); 
+     url += "&amp;" + rh.getSystemParameters();
+     
+     
+     String encodedRedirectURL = response.encodeURL(url);
+     response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/ieg/CloseAndRedirect.jspx?redirect=" + encodedRedirectURL));
+      
+  </JSP_SCRIPTLET>
+</PAGE>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2005-2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the administrator to abort all failed Process         -->
+<!-- instances of a particular Process ID									-->
+<PAGE
+  PAGE_ID="WorkflowAdministration_abortAllMessages"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="WorkflowAdministration"
+    NAME="ACTION"
+    OPERATION="abortAllFailedProcesses"
+    PHASE="ACTION"
+  />
+  <PAGE_PARAMETER NAME="processName"/>
+  <PAGE_PARAMETER NAME="processVersion"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$processID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processVersion"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$processVersion"
+    />
+  </CONNECT>
+  <PAGE_PARAMETER NAME="processID"/>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="YesButton"
+      LABEL="Button.Label.Yes"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="WorkflowAdministration_listProcessInstanceErrors"/>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="NoButton"
+      LABEL="Button.Label.No"
+      TYPE="ACTION"
+    />
+  </ACTION_SET>
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.Label.Question"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

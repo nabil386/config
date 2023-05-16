@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- This jsp redirects the user to a Home Page.-->
+<!-- Each assignee type value is matched to a Home Page name.-->
+<PAGE
+  PAGE_ID="DefaultICInformationProvider_resolveCaseParticipantHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String caseParticipantRoleID  = request.getParameter("caseParticipantRoleID");
+      String concernRoleID = request.getParameter("concernRoleID");
+      String url = "";
+
+      if (caseParticipantRoleID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "caseParticipantRoleID");
+       System.out.println(e);
+       throw e;
+      }
+      
+      
+      if (concernRoleID == null) {
+       curam.interfaces.IntegratedCasePkg.IntegratedCase_readCaseIDandParticipantRoleIDDetails_TH 
+          th1 = new curam.interfaces.IntegratedCasePkg.IntegratedCase_readCaseIDandParticipantRoleIDDetails_TH();     
+          
+        th1.setFieldValue(th1.key$dtls$caseParticipantRoleID_idx,caseParticipantRoleID);          
+        th1.callServer();
+   
+        concernRoleID=th1.getFieldValue(th1.result$participantRoleID_idx);
+      }
+        
+      url = context + "Participant_resolvePage.do" + 
+          "?concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);        
+      
+      url += "&amp;" + rh.getSystemParameters();
+      response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+</PAGE>

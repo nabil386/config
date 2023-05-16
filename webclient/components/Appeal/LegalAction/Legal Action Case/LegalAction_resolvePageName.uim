@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed Materials - Property of IBM
+    
+    PID 5725-H26
+    
+    Copyright IBM Corporation 2014. All Rights Reserved.
+    
+    US Government Users Restricted Rights - Use, duplication or disclosure 
+    restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description                                                            -->
+<!-- ================                                                       -->
+<!-- Redirects to the create legal action home page                         -->
+<PAGE PAGE_ID="LegalAction_resolvePageName">
+  <JSP_SCRIPTLET>
+        
+        curam.interfaces.AdminLegalActionPkg.AdminLegalAction_getAdminLegalActionDetails_TH legaAction_TH = null;
+        String param = null;    
+        
+        curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+        
+        String context = request.getContextPath() + "/";
+        context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+        
+        String configLegalActionCategoryID = request.getParameter("configLegalActionCategoryID");  
+        String configLegalActionID = request.getParameter("configLegalActionID");  
+        String caseID = request.getParameter("caseID");  
+        String url = "";
+        
+        String pageName = "";
+        
+        if (null == configLegalActionID) {
+        core.ScriptletMissingParamException e = new
+        core.ScriptletMissingParamException(-20002, "configLegalActionID");
+        System.out.println(e);
+        throw e;
+        }        
+        
+        legaAction_TH =  new  curam.interfaces.AdminLegalActionPkg.AdminLegalAction_getAdminLegalActionDetails_TH ();
+        legaAction_TH.setFieldValue(legaAction_TH.key$key$key$legalActionID_idx,configLegalActionID);
+        legaAction_TH.callServer();            
+        
+        pageName = legaAction_TH.getFieldValue(legaAction_TH.result$dtls$legalActionDtls$createPage_idx);  
+        
+        
+        url = context + curam.omega3.request.RequestUtils.escapeURL(pageName) + "Page.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) + 
+        "&amp;configLegalActionCategoryID=" + curam.omega3.request.RequestUtils.escapeURL(configLegalActionCategoryID) + "&amp;configLegalActionID=" + curam.omega3.request.RequestUtils.escapeURL(configLegalActionID);
+        
+        url += "&amp;" + rh.getSystemParameters();
+        
+        response.sendRedirect(response.encodeRedirectURL(url));    
+        
+    </JSP_SCRIPTLET>
+</PAGE>

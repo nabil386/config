@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed Materials - Property of IBM Copyright IBM Corporation 2012. All Rights Reserved. US Government Users Restricted Rights - Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp. -->
+<!-- Copyright 2010 Curam Software Ltd.                                          -->
+<!-- All rights reserved.                                                        -->
+<!-- This software is the confidential and proprietary information of Curam      -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose         -->
+<!-- such Confidential Information and shall use it only in accordance with      -->
+<!-- the terms of the license agreement you entered into with Curam              -->
+<!-- Software.                                                                   -->
+<!--This page allows you to view the list of the text translations               -->
+<!-- for Organization description.                                                   -->
+<PAGE
+  PAGE_ID="System_listLocalizableDescriptionText"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="System"
+    NAME="DISPLAY"
+    OPERATION="listTranslationDescriptionText"
+  />
+  <PAGE_PARAMETER NAME="codetableName"/>
+  <PAGE_PARAMETER NAME="displayNameId"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="displayNameId"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$displayNameId"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddTranslation">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="System_addCodeTableFunctionalName"
+        SAVE_LINK="FALSE"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="codetableName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="codetableName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="displayNameId"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="displayNameId"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="System_resolveRefreshSearch"
+        SAVE_LINK="false"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST
+    BEHAVIOR="NONE"
+    TITLE="List.Title.Translations"
+  >
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_editLocalizableDescriptionText"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="codetableName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="codetableName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$translationTextdtls$displayNameId"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="displayNameId"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$translationTextdtls$LocaleCode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="LocaleCode"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$translationTextdtls$translationText"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="descText"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_removeLocalizableDescriptionText"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$translationTextdtls$displayNameId"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="displayNameId"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$translationTextdtls$LocaleCode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localeCode"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD
+      LABEL="Field.Title.Language"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="LocaleCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.Text">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="translationText"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

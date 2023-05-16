@@ -1,0 +1,74 @@
+<PAGE 
+  PAGE_ID="BDMParticipant_createNewTaxSlipFromExisting"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Static.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <PAGE_PARAMETER NAME="taxSlipDataID"/>
+  
+  
+  <SERVER_INTERFACE
+    NAME="ACTION"  
+    CLASS="BDMTaxSlips"
+    OPERATION="createNewTaxSlipFromExisting" 
+    PHASE="ACTION"
+   
+  />
+  
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL 
+      ALIGNMENT="LEFT" 
+      LABEL="ActionControl.Label.Cancel" 
+      TYPE="ACTION"/>
+    
+    <ACTION_CONTROL 
+      LABEL="ActionControl.Label.Create"
+      DEFAULT="true"    
+      TYPE="SUBMIT"
+     >
+      <LINK 
+        PAGE_ID="BDMParticipant_editTaxSlip" 
+        DISMISS_MODAL="false" 
+        SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$taxSlipDataID"/>
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxSlipDataID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+      
+  <CONNECT>
+    <SOURCE 
+      NAME="PAGE" 
+      PROPERTY="taxSlipDataID"/>
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$taxSlipDataID"/> 
+  </CONNECT>  
+          
+  <CLUSTER>
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="CreateTaxSlip.Description"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  
+    
+</PAGE>

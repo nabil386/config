@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2004, 2009, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to list integrated cases for a Service Plan. -->
+<PAGE
+  PAGE_ID="ServicePlanAdmin_listServicePlanIC"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServicePlan"
+    NAME="DISPLAY"
+    OPERATION="listServicePlanIC"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="servicePlanID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="servicePlanID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$servicePlanID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="LEFT"
+    BOTTOM="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="AddButton"
+      LABEL="ActionControl.Label.Add"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ServicePlanAdmin_addICToServicePlan"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="servicePlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="servicePlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+
+
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ServicePlanAdmin_removeICFromServicePlan"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="servicePlanID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="servicePlanID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+
+
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Label.Type">
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="integratedCaseType"
+        />
+      </CONNECT>
+
+
+      <LINK
+        PAGE_ID="Resource_viewIntegratedCaseType1"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="adminIntegratedCaseID"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.HomePage">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="homePageName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.MemberHomePage">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="memberHomePageName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

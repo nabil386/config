@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE PAGE_ID="CommonIntake_createApplicationCaseForConcernRole"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd" WINDOW_OPTIONS="width=850">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <SERVER_INTERFACE CLASS="ApplicationCase" NAME="DISPLAY" OPERATION="readDetailsForCreate" PHASE="DISPLAY"/>
+  <SERVER_INTERFACE CLASS="ApplicationCase" NAME="ACTION" OPERATION="createApplicationCaseForConcernRole" PHASE="ACTION"/>
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="concernRoleID"/>
+    <TARGET NAME="ACTION" PROPERTY="concernRoleID"/>
+  </CONNECT>
+
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Save" TYPE="SUBMIT">
+      <LINK PAGE_ID="CommonIntake_resolveApplicationCaseHomepage">
+        <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="result$applicationCaseID"/>
+            <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+  
+  <CLUSTER NUM_COLS="2">
+    <!-- Col 1 -->
+    <FIELD LABEL="Field.Label.Type">
+      <CONNECT>
+        <INITIAL NAME="DISPLAY" PROPERTY="name" HIDDEN_PROPERTY="applicationCaseAdminID"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="applicationCaseAdminID"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MethodOfApplication" USE_DEFAULT="false">
+      <CONNECT>
+        <INITIAL NAME="DISPLAY" PROPERTY="codeTableItemDetails$description"  HIDDEN_PROPERTY="codeTableItemDetails$code"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="methodOfApplication"/>
+      </CONNECT>
+    </FIELD>
+    <!-- Col 2 -->
+    <FIELD LABEL="Field.Label.ApplicationDate" USE_DEFAULT="true">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="applicationDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PreferredContact" USE_BLANK="true">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="preferredContact"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  
+  <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Title.SpecialAssistanceRequirements">
+    <FIELD LABEL="Cluster.Title.SpecialAssistanceRequirements" HEIGHT="4">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="specialAssistanceRequirement"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  
+</PAGE>

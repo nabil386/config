@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Displays a graphical view of the process instance associated with a Task. -->
+<PAGE
+  PAGE_ID="ExternalParty_visualiseProcessInstance"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewTask"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ExternalParty_taskHome"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="taskKey$taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.TaskHistory"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="ExternalParty_viewHistoryText">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="taskKey$taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.AssignmentList"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="ExternalParty_viewAssignmentList1">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="taskKey$taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.GraphicalView"
+      STYLE="in-page-current-link"
+    >
+      <LINK PAGE_ID="ExternalParty_visualiseProcessInstance">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="taskKey$taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="taskID"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Separator"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="name"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ExternalParty"
+    NAME="DISPLAY"
+    OPERATION="visualiseExternalPartyProcessInstanceForTask"
+  />
+
+
+  <PAGE_PARAMETER NAME="taskID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="taskID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="taskKey$taskID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+  >
+    <FIELD CONFIG="TaskUser.Config">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="workflowGraphXML"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

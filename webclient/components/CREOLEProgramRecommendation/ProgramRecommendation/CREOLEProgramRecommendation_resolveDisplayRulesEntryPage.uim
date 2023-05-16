@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<PAGE PAGE_ID="CREOLEProgramRecommendation_resolveDisplayRulesEntryPage">
+  <JSP_SCRIPTLET>
+  
+      curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String creoleProgramRecommendationID = request.getParameter("creoleProgramRecommendationID");
+      String simulatedDeterminationID = request.getParameter("simulatedDeterminationID");
+      String date = request.getParameter("date");
+      
+      curam.interfaces.CREOLEProgramRecommendationPkg.CREOLEProgramRecommendation_readDisplayRulesEntryPage_TH 
+         th = new curam.interfaces.CREOLEProgramRecommendationPkg.CREOLEProgramRecommendation_readDisplayRulesEntryPage_TH();
+      
+      th.setFieldValue(th.key$creoleProgramRecommendationID_idx, creoleProgramRecommendationID);
+      th.setFieldValue(th.key$simulatedDeterminationID_idx, simulatedDeterminationID);
+      th.callServer();
+      
+      String pageName = th.getFieldValue("result$displayPageName");
+      
+      String url = context + curam.omega3.request.RequestUtils.escapeURL(pageName) + "Page.do?";
+      url += "creoleProgramRecommendationID=" + curam.omega3.request.RequestUtils.escapeURL(creoleProgramRecommendationID);                   
+      url += "&amp;" + "simulatedDeterminationID=" + curam.omega3.request.RequestUtils.escapeURL(simulatedDeterminationID);
+      url += "&amp;" + "date=" + curam.omega3.request.RequestUtils.escapeURL(date);
+      url += "&amp;" + rh.getSystemParameters();
+            
+      response.sendRedirect(response.encodeRedirectURL(url));
+
+
+  </JSP_SCRIPTLET>
+</PAGE>

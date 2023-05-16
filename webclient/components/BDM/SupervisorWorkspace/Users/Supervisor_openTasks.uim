@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Description -->
+<!-- =========== -->
+<!-- This page displays a list of tasks associated with the case, that have been 
+  reserved by a particular user, that are open.-->
+<PAGE
+  PAGE_ID="Supervisor_openTasks"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00351910, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <SERVER_INTERFACE
+    CLASS="BDMMaintainSupervisorUsers"
+    NAME="DISPLAY"
+    OPERATION="listBDMReservedOpenTasksByUser"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00351910 -->
+
+
+  <PAGE_PARAMETER NAME="userName"/>
+  <PAGE_PARAMETER NAME="taskOptionCode"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$key$userName"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="userName"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL
+      IMAGE="ForwardButton"
+      LABEL="ActionControl.Label.Forward"
+    >
+      <!-- BEGIN, CR00372642, SG -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Supervisor_forwardTasksReservedByUserSearch"
+      >
+        <!-- END, CR00372642 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userFullName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taskOptionCode"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskOptionCode"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="ReallocateButton"
+      LABEL="ActionControl.Label.Reallocate"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Supervisor_reallocateTasksReservedByUser"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userFullName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taskOptionCode"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskOptionCode"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Supervisor_viewTask">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskKey$taskID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <SEPARATOR/>
+
+
+      <ACTION_CONTROL LABEL="Field.Label.Forward">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Supervisor_taskForward"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="Field.Label.Reallocate">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Supervisor_taskReallocate"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <SEPARATOR/>
+
+
+      <ACTION_CONTROL LABEL="Field.Label.ReserveFor">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Supervisor_reserveTask"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="Field.Label.Un-reserve">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Supervisor_unreserveTask"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <SEPARATOR/>
+
+
+      <ACTION_CONTROL LABEL="Field.Label.Defer">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Supervisor_deferTask"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="Field.Label.Restart">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Supervisor_restartTask"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <SEPARATOR/>
+
+
+      <ACTION_CONTROL LABEL="Field.Label.AddComment">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Supervisor_addTaskComment"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <SEPARATOR/>
+
+
+      <ACTION_CONTROL LABEL="Field.Label.Close">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="MaintainSupervisorTask_closeTask"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.TaskID"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="taskID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Subject"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="subject"
+        />
+      </CONNECT>
+    </FIELD>
+
+	<FIELD LABEL="Field.Label.CaseUrgentFlag"
+		WIDTH="15">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseUrgentFlagStr"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <!-- TASk 81173  -->
+      <FIELD
+      LABEL="Field.Title.EscalationLevel"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="taskDetailsList$escalationLevelDesc"
+        />
+      </CONNECT>
+    </FIELD>
+	<!--  -->    
+
+    <FIELD LABEL="Field.Title.SkillType"
+		WIDTH="15">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="taskDetailsList$skillType"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD
+      LABEL="Field.Label.Priority"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="priority"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Reserved"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="assignedDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Deadline"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dueDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

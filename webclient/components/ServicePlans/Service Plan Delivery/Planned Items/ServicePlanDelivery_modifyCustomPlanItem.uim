@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2008, 2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008-2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify the custom basic plan item details -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_modifyCustomPlanItem"
+  WINDOW_OPTIONS="width=750"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="ACTION"
+    OPERATION="modifyBasicPlanItem"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY"
+    OPERATION="viewPlanItem"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="plannedItemID"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="plannedItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="plannedItemIDKey$plannedItemID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="plannedItemID"
+    />
+    <!-- BEGIN, CR00161962, LJ -->
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="modifyPlannedItemDetailsStruct$modifyPlannedItemDetailsStruct$plannedItemDtls$plannedItemID"
+    />
+    <!-- END, CR00161962 -->
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="plannedSubGoalID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="plannedItemDtls$plannedSubGoalID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="planItemID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="planItemID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="status"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="status"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00161962, LJ -->
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="approvalProcessingStatus"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="approvalProcessingStatus"
+    />
+  </CONNECT>
+  <!-- END, CR00161962 -->
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$plannedItemDetails$plannedItemDtls$guidanceURL"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="modifyPlannedItemDetailsStruct$modifyPlannedItemDetailsStruct$plannedItemDtls$guidanceURL"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$plannedItemDetails$plannedItemDtls$isMandatoryInd"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="modifyPlannedItemDetailsStruct$modifyPlannedItemDetailsStruct$plannedItemDtls$isMandatoryInd"
+    />
+  </CONNECT>
+  <!-- END, CR00161962 -->
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="true"
+  >
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+  <!--BEGIN CR00108988, GBA-->
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="concerningModifiableInd"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Concerning">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="concernRoleID"
+          NAME="DISPLAY"
+          PROPERTY="concernRoleName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="concerningID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="concerningID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+  >
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="concerningModifiableInd"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Concerning">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="concerningName"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+  </CLUSTER>
+  <!--END CR00108988-->
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Label.Details"
+  >
+    <FIELD LABEL="Field.Label.PlanItemName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00108992, ANK -->
+      <!-- Included the TARGET element to make the field editable -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <!-- END CR00108992, -->
+    </FIELD>
+    <FIELD LABEL="Field.Label.ExpectedStartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expectedStartDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="expectedStartDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ActualStartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="actualStartDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="actualStartDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EstimatedCost">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="estimatedCost"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="estimatedCost"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ExpectedOutcome">
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="outcomeName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expectedOutcomeID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="expectedOutcomeID"
+        />
+      </CONNECT>
+      <LINK>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="planItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="planItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Outcome"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="outcomeAchieved"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="outcomeAchieved"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Sensitivity">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sensitivityCode"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="sensitivityCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ExpectedEndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expectedEndDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="expectedEndDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ActualEndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="actualEndDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="actualEndDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ActualCost">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="actualCost"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="actualCost"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.GoodCause">
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="goodCauseName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="goodCauseID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="goodCauseID"
+        />
+      </CONNECT>
+      <LINK>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="planItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="planItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <!-- BEGIN, CR00161962, LJ -->
+    <FIELD LABEL="Field.Label.GuidanceURL">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$plannedItemDetails$plannedItemDtls$guidanceURL"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_NEW="true"
+        URI_SOURCE_NAME="DISPLAY"
+        URI_SOURCE_PROPERTY="result$plannedItemDetails$plannedItemDtls$guidanceURL"
+      />
+    </FIELD>
+    <!-- END, CR00161962 -->
+  </CLUSTER>
+
+
+  <!--BEGIN CR00144311, GBA-->
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Label.Description"
+  >
+    <!-- BEGIN, CR00463142, EC -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Cluster.Label.Description"
+    >
+      <!-- END, CR00463142 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="plannedItemDtls$description"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!--END CR00144311-->
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    STYLE="outer-cluster-borderless"
+  >
+    <CLUSTER
+      LABEL_WIDTH="40"
+      NUM_COLS="1"
+      TITLE="Cluster.Label.Responsibility"
+    >
+      <!--BEGIN CR00109001, GBA-->
+      <FIELD
+        LABEL="Field.Label.Participant"
+        USE_BLANK="true"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="responsibilityID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="concernRoleID"
+            NAME="DISPLAY"
+            PROPERTY="concernRoleName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="responsibilitySetToParticipant"
+          />
+        </CONNECT>
+      </FIELD>
+      <!--END CR00109001-->
+      <FIELD LABEL="Field.Label.ResponsibilitySetToUser">
+        <CONNECT>
+          <INITIAL
+            NAME="DISPLAY"
+            PROPERTY="planItemResponsibilityName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="respUserName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="responsibilitySetToUser"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER
+      LABEL_WIDTH="40"
+      NUM_COLS="1"
+      TITLE="Cluster.Label.Owner"
+    >
+      <FIELD LABEL="Field.Label.OwnerSetToUser">
+        <CONNECT>
+          <INITIAL
+            NAME="DISPLAY"
+            PROPERTY="userFullName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="ownerUserName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="ownerUserName"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Label.Comments"
+  >
+    <!-- BEGIN, CR00417389, VT -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00417389 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

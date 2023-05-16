@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Creates a new Interview for a Intake Application.                      -->
+<PAGE
+  PAGE_ID="Intake_createInterview"
+  WINDOW_OPTIONS="width=925,height=430"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Application"
+    NAME="ACTION"
+    OPERATION="createInterview"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="Application"
+    NAME="DISPLAY"
+    OPERATION="listPotentialInterviewAttendees"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Application"
+    NAME="DISPLAYINFORMATIONAL"
+    OPERATION="getInterviewInformational"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="applicationID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$applicationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="DISPLAYINFORMATIONAL"
+      PROPERTY="key$applicationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="applicationID"
+    />
+  </CONNECT>
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYINFORMATIONAL"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+    <FIELD LABEL="Field.label.Subject">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="interviewSubject"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.label.Location">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="interviewLocation"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+    <FIELD
+      LABEL="Field.label.StartDateTime"
+      WIDTH="100"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="interviewStartDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Priority"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="interviewPriority"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.label.EndDateTime"
+      WIDTH="100"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="interviewEndDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Notes"
+  >
+    <FIELD
+      ALIGNMENT="CENTER"
+      HEIGHT="5"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="interviewNotes"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER NUM_COLS="2">
+    <!-- BEGIN,CR00273055,AM -->
+    <LIST
+      
+      TITLE="Cluster.Invite.Clients"
+      WIDTH="100"
+    >
+      <!-- END,CR00273055,AM -->
+      <CONTAINER
+        ALIGNMENT="CENTER"
+        LABEL="List.Title.Select"
+      >
+        <WIDGET TYPE="MULTISELECT">
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="concernRoleID"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="clientList"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="clientList"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+      <FIELD
+        LABEL="Field.label.ClientName"
+        WIDTH="40"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="clientName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.label.ClientGender"
+        WIDTH="35"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="clientGender"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.label.ClientAge"
+        WIDTH="25"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="clientAge"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+    <!-- BEGIN,CR00273055,AM -->
+    <LIST
+      
+      TITLE="Invite.Users"
+      WIDTH="100"
+    >
+      <!-- END,CR00273055,AM -->
+      <CONTAINER
+        ALIGNMENT="CENTER"
+        LABEL="List.Title.Select"
+      >
+        <WIDGET TYPE="MULTISELECT">
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="userName"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="userList"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="userList"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+      <FIELD
+        LABEL="Field.Label.UserName"
+        WIDTH="50"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="fullName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.label.Role"
+        WIDTH="50"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="userRole"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+</PAGE>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2016. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="GuidedChange_listSubmittedNextStepsActions"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="guidedChangeCOCID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="ManageGuidedChangeNextStep"
+    NAME="DISPLAY"
+    OPERATION="listActiveChange"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ManageGuidedChangeNextStep"
+    NAME="DISPLAY1"
+    OPERATION="listAddedChange"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="guidedChangeCOCID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$guidedChangeCOCID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="guidedChangeCOCID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$guidedChangeCOCID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER TITLE="Cluster.Title.ActionRequired">
+
+
+    <CLUSTER LABEL_WIDTH="15">
+      <FIELD LABEL="Field.Label.Eligibility">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$eligibilityDescription"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <LIST>
+      <FIELD
+        LABEL="Field.Label.Change"
+        WIDTH="15"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="changeType"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD WIDTH="10">
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Field.Text.Add"
+          />
+        </CONNECT>
+        <LINK
+          DISMISS_MODAL="false"
+          OPEN_MODAL="true"
+          PAGE_ID="Evidence_resolveCreateFromMetaData"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="changeType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="evidenceType"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.Description"
+        WIDTH="75"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </LIST>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.Description.CompletedActions"
+    TITLE="Cluster.Title.CompletedActions"
+  >
+    <LIST>
+      <FIELD
+        LABEL="Field.Label.Change"
+        WIDTH="50"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="changeType"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.Status"
+        WIDTH="50"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="result$status"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+</PAGE>

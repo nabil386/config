@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c)  2003-2006, 2008-2010  Curam Software Ltd.              -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to create task allocation blocking.          -->
+<PAGE PAGE_ID="User_taskAllocationBlocking" WINDOW_OPTIONS="width=500" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="UserTaskAllocationBlocking" NAME="DISPLAY" OPERATION="listTaskAllocationBlockingHistoryForUser" PHASE="DISPLAY"/>
+
+
+  <SERVER_INTERFACE CLASS="Inbox" NAME="DISPLAYSECURITY" OPERATION="getTaskRedirectionAndBlockingSecurity" PHASE="DISPLAY"/>
+
+
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+    <ACTION_CONTROL IMAGE="NewButton" LABEL="ActionControl.Label.NewAllocationBlocking">
+      <CONDITION>
+        <IS_TRUE NAME="DISPLAYSECURITY" PROPERTY="allowCreateAllocationBlocking"/>
+      </CONDITION>
+      <LINK OPEN_MODAL="true" PAGE_ID="User_createAllocationBlocking">
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST TITLE="List.Title.ActiveAndPendingBlocks">
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Clear">
+        <CONDITION>
+          <IS_TRUE NAME="DISPLAYSECURITY" PROPERTY="allowClearAllocationBlocking"/>
+        </CONDITION>
+        <LINK OPEN_MODAL="true" PAGE_ID="User_clearTaskAllocationBlock" SAVE_LINK="false">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$allAllocationDetailsList$activeAndPendingTaskAllocationBlockingPeriods$activeAndPendingDtls$taskRedirectionID"/>
+            <TARGET NAME="PAGE" PROPERTY="redirectedTaskID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$allAllocationDetailsList$activeAndPendingTaskAllocationBlockingPeriods$activeAndPendingDtls$startDateTime"/>
+            <TARGET NAME="PAGE" PROPERTY="startDateTime"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$allAllocationDetailsList$activeAndPendingTaskAllocationBlockingPeriods$activeAndPendingDtls$endDateTime"/>
+            <TARGET NAME="PAGE" PROPERTY="endDateTime"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$allAllocationDetailsList$activeAndPendingTaskAllocationBlockingPeriods$activeAndPendingDtls$versionNo"/>
+            <TARGET NAME="PAGE" PROPERTY="versionNum"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="userFullName"/>
+            <TARGET NAME="PAGE" PROPERTY="userFullName"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$userName"/>
+            <TARGET NAME="PAGE" PROPERTY="userName"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD LABEL="Field.Label.ActivePendingStartDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$allAllocationDetailsList$activeAndPendingTaskAllocationBlockingPeriods$activeAndPendingDtls$startDateTime"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ActivePendingEndDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$allAllocationDetailsList$activeAndPendingTaskAllocationBlockingPeriods$activeAndPendingDtls$endDateTime"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ActivePendingStatus">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$allAllocationDetailsList$activeAndPendingTaskAllocationBlockingPeriods$activeAndPendingDtls$taskAllocationBlockingStatus"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <LIST TITLE="List.Title.ExpiredBlocks">
+    <FIELD LABEL="Field.Label.ExpiredStartDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$allAllocationDetailsList$expiredTaskAllocationBlockingPeriods$expiredDtls$startDateTime"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ExpiredEndDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$allAllocationDetailsList$expiredTaskAllocationBlockingPeriods$expiredDtls$endDateTime"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

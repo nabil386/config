@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2009, 2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Creates a fixed third party deduction for a product delivery.          -->
+<PAGE
+  PAGE_ID="ProductDelivery_createThirdPartyFixedDeduction1"
+  WINDOW_OPTIONS="width=750"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Case"
+    NAME="DISPLAYNOMINEES"
+    OPERATION="listOperationalCaseNomineeDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ProductDelivery"
+    NAME="DISPLAYTPDN"
+    OPERATION="listThirdPartyDeductionName"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="IntegratedCase"
+    NAME="DISPLAYCPS"
+    OPERATION="listDeductionCaseParticipantWithoutProspect"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ProductDelivery"
+    NAME="DISPLAYPARTICIPANTS"
+    OPERATION="readThirdPartyDeductionParticipantsWithoutProspect"
+  />
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="details$actionIDProperty"
+    CLASS="ProductDelivery"
+    NAME="ACTION"
+    OPERATION="processThirdPartyFixedDeduction"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ProductDelivery"
+    NAME="LASTPAYMENTDATE"
+    OPERATION="readLastPaymentDate"
+  />
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="LASTPAYMENTDATE"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="LASTPAYMENTDATE"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAYTPDN"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAYNOMINEES"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAYCPS"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="deductionDtls$caseID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      ACTION_ID="ACTIVATE_NOW_THIRDPARTYFIXED"
+      LABEL="ActionControl.Label.ActivateNow"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      ACTION_ID="ACTIVATE_LATER_THIRDPARTYFIXED"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.ParticipantSearch.Description"
+    LABEL_WIDTH="25"
+    TITLE="Cluster.ThirdParty.Details"
+  >
+    <FIELD
+      LABEL="Field.Label.CaseParticipant"
+      USE_BLANK="TRUE"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="participantRoleID"
+          NAME="DISPLAYCPS"
+          PROPERTY="nameAndAgeOpt"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="caseParticipantConcernRoleID"
+        />
+      </CONNECT>
+    </FIELD>
+    <CONTAINER LABEL="Field.Label.Participant">
+      <FIELD WIDTH="25">
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="participantType"
+            NAME="DISPLAYPARTICIPANTS"
+            PROPERTY="participantDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="concernRoleType"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD WIDTH="50">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="clientConcernRoleID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.AccountDetails"
+  >
+    <FIELD LABEL="Field.Label.AccountName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="customerAccName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AccountNumber">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="customerAccNumber"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="25"
+    TITLE="Cluster.Title.Details"
+  >
+    <FIELD
+      LABEL="Field.Label.Nominee"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="caseNomineeID"
+          NAME="DISPLAYNOMINEES"
+          PROPERTY="nameAndDeliveryPattern"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="nomineeID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER NUM_COLS="2">
+    <FIELD
+      LABEL="Field.Label.DeductionName"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="deductionName"
+          NAME="DISPLAYTPDN"
+          PROPERTY="dtls$deductionName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="deductionName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AssignNextPriority">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="applyNextPriorityInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Amount"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="amount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Priority"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="priority"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00408407, VT -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00408407 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

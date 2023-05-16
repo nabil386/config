@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp redirects the user to the appropriate list page when they     -->
+<!-- click on the close button in a deductions view page.                   -->
+<PAGE
+  PAGE_ID="ProductDelivery_resolveListDeductionPageFromClose"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String caseDeductionItemID = request.getParameter("caseDeductionItemID");
+      String pageDescription = request.getParameter("pageDescription");
+      String caseID = request.getParameter("caseID");
+      String category = "";   
+      String url = "";
+          
+      if (caseDeductionItemID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "caseDeductionItemID");
+       System.out.println(e);
+       throw e;
+      }
+      if (pageDescription == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "pageDescription");
+       System.out.println(e);
+       throw e;
+      }   
+      if (category == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "category");
+       System.out.println(e);
+       throw e;
+      }
+      if (caseID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "caseID");
+       System.out.println(e);
+       throw e;
+      }   
+            
+      curam.interfaces.ProductDeliveryPkg.ProductDelivery_readDeductionCategory_TH th = new curam.interfaces.ProductDeliveryPkg.ProductDelivery_readDeductionCategory_TH();
+  
+      th.setFieldValue(th.key$caseDeductionItemID_idx,caseDeductionItemID);
+        
+      th.callServer();  
+  
+      category = th.getFieldValue(th.result$dtls$category_idx); 
+      
+      // BEGIN, CR00142751, ZV
+      curam.interfaces.FinancialPkg.Financial_readIntegratedCaseIDByCaseID_TH financialTH = new curam.interfaces.FinancialPkg.Financial_readIntegratedCaseIDByCaseID_TH();
+
+      financialTH.setFieldValue(financialTH.resolveIntegratedCaseKey$caseKey$caseID_idx,caseID);
+        
+      financialTH.callServer();
+
+      String integratedCaseID = financialTH.getFieldValue(financialTH.result$integratedCaseID$integratedCaseID_idx);
+      
+      if (integratedCaseID == null || integratedCaseID.equals("0")) {
+
+        if (category.equals("DC1") || category.equals("DC2")) {
+          url = context + "BenefitSample_listAppliedUnappliedDeductionPage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+         } else if (category.equals("DC3")) {
+          url = context + "BenefitSample_listThirdPartyDeductionPage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+        }
+         
+      } else {
+      
+        if (category.equals("DC1") || category.equals("DC2")) {
+          url = context + "ICProductSample_listAppliedUnappliedDeductionPage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+         } else if (category.equals("DC3")) {
+          url = context + "ICProductSample_listThirdPartyDeductionPage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+        }
+               
+      }
+      // END, CR00142751      
+      
+      if(pageDescription!=null) {
+        url += "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(pageDescription);
+      }
+      
+      url += "&amp;" + rh.getSystemParameters();  
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+    
+  </JSP_SCRIPTLET>
+</PAGE>

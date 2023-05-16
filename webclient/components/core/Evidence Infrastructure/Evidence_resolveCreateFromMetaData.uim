@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012-2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page attempts to read the configured meta data entry for a given  -->
+<!-- evidence type to find the correct create page. If its unable to find   -->
+<!-- a page then it will delegate to the original infrastructure resolve    -->
+<!-- script, Evidence_resolveCreate.uim                                     -->
+<PAGE
+  PAGE_ID="Evidence_resolveCreateFromMetaData"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <JSP_SCRIPTLET>
+  curam.omega3.request.RequestHandler 
+	rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+	
+	String context = request.getContextPath() + "/";
+	context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+	
+	String url = "";
+	
+	String caseID = request.getParameter("caseID");
+	String evidenceType = request.getParameter("evidenceType");
+	String contextDescription = request.getParameter("contextDescription");
+	
+	if (caseID == null) {
+	  throw new Exception("'caseID' parameter does not exist");
+	}
+	if (evidenceType == null) {
+	  throw new Exception("'evidenceType' parameter does not exist");
+	}
+	
+	// call server to find correct create page
+	curam.interfaces.EvidencePkg.Evidence_readCreateResolvePage_TH
+	  th = new curam.interfaces.EvidencePkg.Evidence_readCreateResolvePage_TH();
+	
+	th.setFieldValue(th.key$key$evidenceType_idx,evidenceType);
+	
+	th.callServer();
+     
+  String pageName = th.getFieldValue(th.result$pageDetails$pageName$pageName_idx);
+  
+  if (pageName.equals("")) {
+    pageName = "Evidence_resolveCreate";
+  }
+  
+  url = context + curam.omega3.request.RequestUtils.escapeURL(pageName) + "Page.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID)
+    + "&amp;" + "evidenceType=" + curam.omega3.request.RequestUtils.escapeURL(evidenceType) + "&amp;"
+    + "contextDescription=" + curam.omega3.request.RequestUtils.escapeURL(contextDescription);
+    
+  url += "&amp;" + rh.getSystemParameters();  
+  response.sendRedirect(response.encodeRedirectURL(url));
+  </JSP_SCRIPTLET>
+
+
+</PAGE>

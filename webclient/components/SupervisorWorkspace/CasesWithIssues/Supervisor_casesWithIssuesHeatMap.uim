@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2005, 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2005, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Reads a Task's home page details. -->
+<PAGE
+  PAGE_ID="Supervisor_casesWithIssuesHeatMap"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00294942, AKr -->
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorCasesWithIssues"
+    NAME="DISPLAY"
+    OPERATION="readCasesWithIssuesForHeatMap"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorCasesWithIssues"
+    NAME="ACTION"
+    OPERATION="listCasesWithIssuesByDate"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="week"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="week"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$dateRange$registrationFromDate"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="Field.StaticText.ReassignCases">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Supervisor_reassignCasesWithIssues"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="priorityDates$startDate"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="week"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="Field.StaticText.ViewList">
+      <LINK PAGE_ID="Supervisor_casesWithIssuesList">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="priorityDates$startDate"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="week"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <!-- BEGIN, CR00340529, MR -->
+    <ACTION_CONTROL
+      IMAGE="UpdateButton"
+      LABEL="Action.Control.Update"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="Supervisor_casesWithIssuesByDateHeatMap">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="chosenDate"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="recievedOnDate"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="week"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="week"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <!-- END, CR00340529 -->
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00191247, NP -->
+  <CLUSTER
+    NUM_COLS="3"
+    SHOW_LABELS="false"
+  >
+    <CLUSTER
+      LABEL_WIDTH="60"
+      SHOW_LABELS="true"
+    >
+      <CONTAINER
+        ALIGNMENT="LEFT"
+        LABEL="Field.Title.CasesRecieved"
+      >
+        <FIELD>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="priorityDates$startDate"
+            />
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <CLUSTER
+      LABEL_WIDTH="30"
+      SHOW_LABELS="true"
+    >
+      <CONTAINER
+        ALIGNMENT="LEFT"
+        LABEL="Field.Title.ChooseDay"
+      >
+        <FIELD
+          LABEL="Field.Title.ChooseDay"
+          WIDTH="45"
+        >
+          <CONNECT>
+            <!-- BEGIN, CR00350280, SS -->
+            <INITIAL
+              HIDDEN_PROPERTY="chosenDayDetails$date"
+              NAME="DISPLAY"
+              PROPERTY="chosenDayDetails$date"
+            />
+            <!-- END, CR00350280 -->
+          </CONNECT>
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="chosenDate"
+            />
+          </CONNECT>
+        </FIELD>
+
+
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <CONTAINER
+      ALIGNMENT="LEFT"
+      SEPARATOR="Container.Separator"
+    >
+      <ACTION_CONTROL LABEL="Action.Control.PreviousWeek">
+        <LINK PAGE_ID="Supervisor_casesWithIssuesHeatMap">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="previousDate"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="week"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="Action.Control.NextWeek">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="allowNext"
+          />
+        </CONDITION>
+        <LINK PAGE_ID="Supervisor_casesWithIssuesHeatMap">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="nextDate"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="week"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>
+  <!-- END, CR00191247 -->
+
+
+  <CLUSTER SHOW_LABELS="false">
+    <FIELD CONFIG="CasesWithIssues_HeatMap">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="heatMapXMLString"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00294942 -->
+</PAGE>

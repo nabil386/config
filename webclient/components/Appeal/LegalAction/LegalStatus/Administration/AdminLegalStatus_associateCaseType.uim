@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+    * Copyright 2008, 2011 Curam Software Ltd.
+    * All rights reserved.
+    *
+    * This software is the confidential and proprietary information of Curam
+    * Software, Ltd. ("Confidential Information"). You shall not disclose
+    * such Confidential Information and shall use it only in accordance with
+    * the terms of the license agreement you entered into with Curam
+    * Software.
+    *
+    * Description
+    * ===========
+    * This page is used to create a new legal action
+    *
+-->
+<!-- BEGIN, CR00237041, SS -->
+<PAGE
+  PAGE_ID="AdminLegalStatus_associateCaseType"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file:\\Curam\CuramUIMSchema"
+>
+  <!-- END, CR00237041 -->
+  <!-- The page title for this page -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="caseTypeCode"/>
+  <PAGE_PARAMETER NAME="relatedID"/>
+
+
+  <!-- Declare the 'action' server bean -->
+  <SERVER_INTERFACE
+    CLASS="AdminLegalStatus"
+    NAME="ACTION"
+    OPERATION="associateCaseTypes"
+    PHASE="ACTION"
+  />
+
+
+  <!-- Declare the 'display' server bean -->
+  <SERVER_INTERFACE
+    CLASS="AdminLegalStatus"
+    NAME="DISPLAY"
+    OPERATION="listLegalStatuses"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- connection parameters required for display bean -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseTypeCode"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="associatedCaseTypeCode"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="relatedID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="relatedID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseTypeCode"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="associatedCaseType"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="relatedID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="relatedID"
+    />
+  </CONNECT>
+
+
+  <!-- Actionset contains Save,SaveAndNew and Cancel link -->
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    BOTTOM="true"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00237041, SS -->
+  <LIST >
+    <CONTAINER ALIGNMENT="CENTER">
+      <!-- END, CR00237041 -->
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="legalStatusID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="relatedIDMultiselect"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.LegalStatusType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="legalStatusTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <!--<LIST WIDTH="50">
+        <CONDITION>
+            <IS_TRUE NAME="DISPLAY" PROPERTY="dateInd" />
+        </CONDITION>
+        <CONTAINER ALIGNMENT="CENTER" WIDTH="5">
+            <WIDGET TYPE="MULTISELECT">
+                <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="relatedID"/>
+                    </CONNECT>
+                </WIDGET_PARAMETER>
+                <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+                    <CONNECT>
+                        <TARGET NAME="ACTION" PROPERTY="relatedIDMultiselect"/>
+                    </CONNECT>
+                </WIDGET_PARAMETER>
+            </WIDGET>
+        </CONTAINER>
+        <FIELD LABEL="Field.Label.CaseTypes">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="result$legalStatusCaseTypeAssoDtlsList$legalStatusCaseTypeAssoDtlsList$associatedCaseType"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.StartDate">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="confStartDate"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.EndDate">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="confEndDate"/>
+            </CONNECT>
+        </FIELD>
+    </LIST>-->
+
+
+</PAGE>

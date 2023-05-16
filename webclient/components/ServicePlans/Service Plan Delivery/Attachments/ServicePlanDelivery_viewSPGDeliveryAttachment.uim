@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Attachment details                                                     -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_viewSPGDeliveryAttachment"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY_DESC"
+    OPERATION="getServicePlanGroupContextDescription"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="SPGDeliveryAttachment"
+    NAME="DISPLAY"
+    OPERATION="viewAttachment"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY_MENU"
+    OPERATION="getICServicePlanGroupMenuData"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="servicePlanGroupDeliveryId"
+    />
+    <TARGET
+      NAME="DISPLAY_MENU"
+      PROPERTY="servicePlanGroupDeliveryID"
+    />
+  </CONNECT>
+  <PAGE_PARAMETER NAME="attachmentID"/>
+  <PAGE_PARAMETER NAME="deliveryAttachmentLinkId"/>
+  <PAGE_PARAMETER NAME="servicePlanGroupDeliveryId"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="attachmentID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$attachmentID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="servicePlanGroupDeliveryId"
+    />
+    <TARGET
+      NAME="DISPLAY_DESC"
+      PROPERTY="servicePlanGroupDeliveryID"
+    />
+  </CONNECT>
+
+  <!-- BEGIN, CR00246725, MR -->
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+  >
+  <!-- END, CR00246725 -->
+    <CONTAINER LABEL="Field.Label.Name">
+      <WIDGET TYPE="FILE_DOWNLOAD">
+        <WIDGET_PARAMETER NAME="LINK_TEXT">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="attachmentName"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="PARAMS">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="attachmentDtls$attachmentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="attachmentID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Title.Location"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileLocation"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Title.DocumentType"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="documentType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.ParticipantName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseParticipantName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Title.Reference"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileReference"
+        />
+      </CONNECT>
+    </FIELD>
+
+  </CLUSTER>
+
+
+</PAGE>

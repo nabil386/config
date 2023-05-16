@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This scriplet determines the page that needs to be opened to carry out -->
+<!-- the action associated with a process instance.                         -->
+<PAGE
+  PAGE_ID="WorkflowAdministration_resolveProcessInstanceType"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String processInstanceType = request.getParameter("processInstanceType");
+      String processInstanceID = request.getParameter("processInstanceID");
+      String processName = request.getParameter("processName");
+      String startDateTime = request.getParameter("startDateTime");
+      
+      String url = "";
+  
+      if (processInstanceID == null) { 
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "processInstanceID");
+       System.out.println(e);
+       throw e;
+      }
+      
+      if (processInstanceType == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "processInstanceType");
+       System.out.println(e);
+       throw e;
+      }
+      
+      if (processName == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "processName");
+       System.out.println(e);
+       throw e;
+      }
+      
+       if (startDateTime == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "startDateTime");
+       System.out.println(e);
+       throw e;
+      }
+
+      if(processInstanceType.equals("PIET3")) {
+        url = context + "WorkflowAdministration_viewProcessInstanceByProcessDetailsPage.do?processInstanceID=" + curam.omega3.request.RequestUtils.escapeURL(processInstanceID) 
+          + "&amp;processName=" + curam.omega3.request.RequestUtils.escapeURL(processName);   
+      } else if (processInstanceType.equals("PIET2")){
+        url = context + "DeferredProcess_viewProcessInstancePage.do?processInstanceID=" + curam.omega3.request.RequestUtils.escapeURL(processInstanceID) 
+          + "&amp;processName=" + curam.omega3.request.RequestUtils.escapeURL(processName)  
+          + "&amp;startDateTime=" + curam.omega3.request.RequestUtils.escapeURL(startDateTime);          
+      }
+
+      url += "&amp;" + rh.getSystemParameters();  
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+  </JSP_SCRIPTLET>
+</PAGE>

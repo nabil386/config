@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2005, 2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software Ltd. ("Confidential Information"). You shall not        -->
+<!-- disclose such Confidential Information and shall use it only in        -->
+<!-- accordance with the terms of the license agreement you entered into    -->
+<!-- with Curam Software.                                                   -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Page to add a phone number to the hearing phone contacts for IC -->
+<PAGE
+  PAGE_ID="Appeal_addPhoneNumber"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="HearingPhoneContact"
+    NAME="ACTION"
+    OPERATION="addToHearingPhoneContact"
+    PHASE="ACTION"
+  >
+  </SERVER_INTERFACE>
+
+
+  <PAGE_PARAMETER NAME="contextDescription"/>
+  <PAGE_PARAMETER NAME="hearingID"/>
+  <PAGE_PARAMETER NAME="caseParticipantRoleID"/>
+  <PAGE_PARAMETER NAME="concernRolePhoneNumberID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="concernRoleName"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="hearingID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="hearingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRolePhoneNumberID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="concernRolePhoneNumberID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseParticipantRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="caseParticipantRoleID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="YesButton"
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    >
+      <!--BEGIN, CR00246377, GBA-->
+      <LINK PAGE_ID="Appeal_listPhoneNumberIC">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="hearingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="hearingID"
+          />
+        </CONNECT>
+      </LINK>
+      <!--END, CR00246377-->
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="NoButton"
+      LABEL="ActionControl.Label.No"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER SHOW_LABELS="false">
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.AddPhoneContact"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

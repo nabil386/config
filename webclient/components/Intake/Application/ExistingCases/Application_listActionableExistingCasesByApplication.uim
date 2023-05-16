@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                                                       -->
+<!-- All rights reserved.                                                                                         -->
+<!-- This software is the confidential and proprietary information of Curam        -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose               -->
+<!-- such Confidential Information and shall use it only in accordance with          -->
+<!-- the terms of the license agreement you entered into with Curam                 -->
+<!-- Software.                                                                                                        -->
+<!-- Description                                                                                                      -->
+<!-- ===========                                                                                           -->
+<!-- List existing cases for an application with record menu options                      -->
+<PAGE HIDE_CONDITIONAL_LINKS="false" PAGE_ID="Application_listActionableExistingCasesByApplication" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="ApplicationExistingCases" NAME="DISPLAY" OPERATION="listExistingCasesByApplicationID"/>
+
+
+  <PAGE_PARAMETER NAME="applicationID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="applicationID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="applicationIDKey$applicationID"/>
+  </CONNECT>
+
+
+  <LIST>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE URI_SOURCE_NAME="DISPLAY" URI_SOURCE_PROPERTY="previewPanelURL">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="caseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <!-- BEGIN ,CR00262069 ,AM -->
+    <FIELD ALIGNMENT="LEFT" LABEL="Field.Title.CaseReference" WIDTH="10">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="caseReference"/>
+      </CONNECT>
+      <LINK URI_SOURCE_NAME="DISPLAY" URI_SOURCE_PROPERTY="pageURL"/>
+    </FIELD>
+
+
+    <FIELD ALIGNMENT="LEFT" LABEL="Field.Title.Type" WIDTH="12">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="productTypeCode"/>
+      </CONNECT>
+    </FIELD><!-- BEGIN,CR00266625,JD -->
+    <FIELD ALIGNMENT="LEFT" LABEL="Field.Title.Client" WIDTH="25">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="client"/>
+      </CONNECT>
+    </FIELD>
+    <!-- END,CR00266625 -->
+
+
+    <FIELD ALIGNMENT="LEFT" LABEL="Field.Title.Owner" WIDTH="13">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="ownerUserName"/>
+      </CONNECT>
+      <LINK OPEN_MODAL="true" PAGE_ID="Organization_viewUserDetails" WINDOW_OPTIONS="width=900">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD ALIGNMENT="LEFT" LABEL="Field.Title.ApplicationAssociated" WIDTH="14">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="applicationAssociated"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD ALIGNMENT="LEFT" LABEL="Field.Title.StartDate" WIDTH="12">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="startDate"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD ALIGNMENT="LEFT" LABEL="Field.Title.Status" WIDTH="10">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="statusCode"/>
+      </CONNECT>
+    </FIELD>
+
+
+    
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.TransferApplicationToExistingCase">
+        <CONDITION>
+          <IS_TRUE NAME="DISPLAY" PROPERTY="transferMenuInd"/>
+        </CONDITION>
+
+
+        <LINK OPEN_MODAL="true" PAGE_ID="Application_transferApplicationToExistingCase">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="caseID"/>
+            <TARGET NAME="PAGE" PROPERTY="caseID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="applicationID"/>
+            <TARGET NAME="PAGE" PROPERTY="applicationID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.UndoTransferApplication">
+        <CONDITION>
+          <IS_TRUE NAME="DISPLAY" PROPERTY="undoTransferMenuInd"/>
+        </CONDITION>
+
+
+        <LINK OPEN_MODAL="true" PAGE_ID="Application_undoTransferApplicationToExistingCase">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="caseID"/>
+            <TARGET NAME="PAGE" PROPERTY="caseID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="applicationID"/>
+            <TARGET NAME="PAGE" PROPERTY="applicationID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+  </LIST>
+
+
+</PAGE>

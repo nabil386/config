@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2022. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view the list all the conditions.         -->
+<PAGE PAGE_ID="DecisionAssistAdmin_listConditions" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <!-- BEGIN, CR00208034, PS -->
+  <SERVER_INTERFACE CLASS="Condition" NAME="LIST_CONDITION" OPERATION="listConditionDetails"/>
+  <LIST>
+    <!-- BEGIN, CR00207167, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00207167 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit" TYPE="ACTION">
+        <!-- BEGIN, CR00213213, PS -->
+        <CONDITION>
+          <IS_TRUE NAME="LIST_CONDITION" PROPERTY="activeStatusInd"/>
+        </CONDITION>
+        <!-- END, CR00213213 -->
+        <!-- BEGIN, CR00198297, SS -->
+        <LINK OPEN_MODAL="true" PAGE_ID="DecisionAssistAdmin_modifyCondition" WINDOW_OPTIONS="width=700">
+          <!-- END, CR00198297 -->
+          <CONNECT>
+            <SOURCE NAME="LIST_CONDITION" PROPERTY="conditionID"/>
+            <TARGET NAME="PAGE" PROPERTY="conditionID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddICDcode" TYPE="ACTION">
+        <!-- BEGIN, CR00213213, PS -->
+        <CONDITION>
+          <IS_TRUE NAME="LIST_CONDITION" PROPERTY="activeStatusInd"/>
+        </CONDITION>
+        <!-- END, CR00213213 -->
+        <!-- BEGIN, CR00237410, AK -->
+        <LINK OPEN_MODAL="true" PAGE_ID="DecisionAssistAdmin_createICDCodesForConditions" WINDOW_OPTIONS="width=500">
+          <!-- END, CR00237410 -->
+          <CONNECT>
+            <SOURCE NAME="LIST_CONDITION" PROPERTY="conditionID"/>
+            <TARGET NAME="PAGE" PROPERTY="conditionID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="LIST_CONDITION" PROPERTY="name"/>
+            <TARGET NAME="PAGE" PROPERTY="conditionName"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddConditionNameTranslation" TYPE="ACTION">
+        <!-- BEGIN, CR00213213, PS -->
+        <CONDITION>
+          <IS_TRUE NAME="LIST_CONDITION" PROPERTY="activeStatusInd"/>
+        </CONDITION>
+        <!-- END, CR00213213 -->
+        <LINK OPEN_MODAL="true" PAGE_ID="DecisionAssistAdmin_createConditionNameTranslation">
+          <CONNECT>
+            <SOURCE NAME="LIST_CONDITION" PROPERTY="conditionID"/>
+            <TARGET NAME="PAGE" PROPERTY="conditionID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete" TYPE="ACTION">
+        <!-- BEGIN, CR00213213, PS -->
+        <CONDITION>
+          <IS_TRUE NAME="LIST_CONDITION" PROPERTY="activeStatusInd"/>
+        </CONDITION>
+        <!-- END, CR00213213 -->
+        <LINK OPEN_MODAL="true" PAGE_ID="DecisionAssistAdmin_deleteCondition">
+          <CONNECT>
+            <SOURCE NAME="LIST_CONDITION" PROPERTY="conditionID"/>
+            <TARGET NAME="PAGE" PROPERTY="conditionID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="LIST_CONDITION" PROPERTY="name"/>
+            <TARGET NAME="PAGE" PROPERTY="name"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="LIST_CONDITION" PROPERTY="versionNo"/>
+            <TARGET NAME="PAGE" PROPERTY="versionNo"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="LIST_CONDITION" PROPERTY="recordStatus"/>
+            <TARGET NAME="PAGE" PROPERTY="recordStatus"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00207167, SS -->
+    </ACTION_SET>
+    <FIELD LABEL="Field.Label.ConditionName" WIDTH="30">
+      <!-- END, CR00207167 -->
+      <CONNECT>
+        <SOURCE NAME="LIST_CONDITION" PROPERTY="name"/>
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207167, SS -->
+    <FIELD LABEL="Field.Label.ConditionType" WIDTH="22">
+      <!-- END, CR00207167 -->
+      <CONNECT>
+        <SOURCE NAME="LIST_CONDITION" PROPERTY="type"/>
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207167, SS -->
+    <FIELD LABEL="Field.Label.StartDate" WIDTH="18">
+      <!-- END, CR00207167 -->
+      <CONNECT>
+        <SOURCE NAME="LIST_CONDITION" PROPERTY="startDate"/>
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207167, SS -->
+    <FIELD LABEL="Field.Label.EndDate" WIDTH="18">
+      <!-- END, CR00207167 -->
+      <CONNECT>
+        <SOURCE NAME="LIST_CONDITION" PROPERTY="endDate"/>
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207167, SS -->
+    <FIELD LABEL="Field.Label.Status" WIDTH="13">
+      <!-- END, CR00207167 -->
+      <CONNECT>
+        <SOURCE NAME="LIST_CONDITION" PROPERTY="recordStatus"/>
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207167, SS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="DecisionAssistAdmin_viewCondition">
+        <CONNECT>
+          <SOURCE NAME="LIST_CONDITION" PROPERTY="conditionID"/>
+          <TARGET NAME="PAGE" PROPERTY="conditionID"/>
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00207167 -->
+  </LIST>
+  <!-- END, CR00208034 -->
+  <!-- BEGIN, CR00237620, AK -->
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL LABEL="ActionControl.Label.New" TYPE="ACTION">
+      <LINK OPEN_MODAL="true" PAGE_ID="DecisionAssistAdmin_createCondition"/>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- END, CR00237620 -->
+</PAGE>

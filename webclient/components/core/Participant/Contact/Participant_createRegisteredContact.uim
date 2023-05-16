@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2003, 2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2003, 2010, 2012 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This action allows the user to create a contact that is registered     -->
+<!-- with the organization for a participant.                               -->
+<PAGE
+  PAGE_ID="Participant_createRegisteredContact"
+  WINDOW_OPTIONS="width=450"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00307113, MV -->
+  <SERVER_INTERFACE
+    CLASS="Participant"
+    NAME="ACTION"
+    OPERATION="createConcernContact"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00307113 -->
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="true"
+  >
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER LABEL_WIDTH="18">
+    <CONTAINER LABEL="Container.Label.Contact">
+      <!--BEGIN CR00021337, SG -->
+      <!-- BEGIN, HARP 64078, GYH -->
+      <FIELD WIDTH="42">
+        <!-- END, HARP 64078 -->
+        <!-- END CR00021337 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="contactConcernRoleType"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="contactConRoleID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.ContactType"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="contactTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.FromDate"
+      WIDTH="30"
+    >
+      <!-- BEGIN, CR00307113, MV -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="concernContactRMultiDtls$startDate"
+        />
+        <!-- END, CR00307113 -->
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ToDate"
+      USE_DEFAULT="false"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00408407, VT -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00408407 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

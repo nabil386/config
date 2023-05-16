@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2015. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2005-2006, 2008, 2010 Curam Software Ltd.                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Discard pending update evidence                                        -->
+<PAGE
+  PAGE_ID="Evidence_discardPendingUpdate"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+  >
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <!-- BEGIN, CR00471820, JAY -->
+  <SERVER_INTERFACE
+    CLASS="Evidence"
+    NAME="DISPLAY"
+    OPERATION="listMultiParticipantDiscardPendingEvidence"
+  />
+  
+  <SERVER_INTERFACE
+    CLASS="Evidence"
+    NAME="ACTION"
+    OPERATION="discardPendingUpdateMultiParticipant"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00471820, JAY -->
+  
+  <PAGE_PARAMETER NAME="evidenceDescriptorID"/>
+  <PAGE_PARAMETER NAME="contextDescription"/>
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="evidenceDescriptorID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="evidenceDescriptorIDParam"
+    />
+  </CONNECT>
+  
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+    >
+    <ACTION_CONTROL
+      IMAGE="YesButton"
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="NoButton"
+      LABEL="ActionControl.Label.No"
+    />
+  </ACTION_SET>  
+  
+  <!-- BEGIN, CR00471820, JAY -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="evidenceDescriptorID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="evidenceDescriptorID"
+    />
+  </CONNECT>
+  
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+    >
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="isMultiParticipantList"
+      />
+    </CONDITION>
+    <!-- BEGIN, CR00050298, MR -->
+    <!-- BEGIN, HARP 64908, SP -->
+    <FIELD LABEL="Field.Label.DiscardEvidence">
+      <!-- END, HARP 64908 -->
+      <!-- END, CR00050298 -->
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.DiscardEvidence"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+    >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="isMultiParticipantList"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.MultiSelect.DiscardEvidence">       
+      
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="discardEvidenceMessage"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  
+  <LIST TITLE="List.Title.MultiEvidenceList"
+    >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="isMultiParticipantList"
+      />
+    </CONDITION>
+    
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      LABEL="List.Multiselect.Header"
+      WIDTH="6"
+      >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="multiEvidenceDtls$list$evidenceDescriptorID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        
+        
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="evidenceDescriptorMultiSelectList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.MultiSelect.Label.Name"
+      WIDTH="25"
+      WIDTH_UNITS="PERCENT"
+      >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"  
+          PROPERTY="multiEvidenceDtls$list$participantDetails"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.MultiSelect.Label.EvidenceDescription"
+      WIDTH="45"
+      WIDTH_UNITS="PERCENT"
+      >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="multiEvidenceDtls$list$summary"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.MultiSelect.Label.Period"
+      WIDTH="20"
+      WIDTH_UNITS="PERCENT"
+      >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="multiEvidenceDtls$list$period"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- END, CR00471820, JAY -->
+</PAGE>

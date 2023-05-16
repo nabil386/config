@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2004, 2014, 2015. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2004, 2010-2011 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This process allows the user to enter bank branch details.             -->
+<PAGE PAGE_ID="Organization_createBankBranch" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="Organization" NAME="ACTION" OPERATION="createBankBranch" PHASE="ACTION"/>
+  <!-- BEGIN, CR00371769, VT -->
+  <SERVER_INTERFACE CLASS="Participant" NAME="DISPLAY" OPERATION="readIban"/>
+  <!-- END, CR00371769 -->
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="bankID"/>
+  <PAGE_PARAMETER NAME="bankName"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="bankID"/>
+    <TARGET NAME="ACTION" PROPERTY="bankID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="bankName"/>
+    <TARGET NAME="ACTION" PROPERTY="bankName"/>
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00280054, PB -->
+  <CLUSTER LABEL_WIDTH="50" NUM_COLS="2" SHOW_LABELS="true">
+    <!-- END, CR00280054 -->
+    <!-- BEGIN, CR00371769, VT -->
+    <CONDITION>
+      <IS_FALSE NAME="DISPLAY" PROPERTY="ibanInd"/>
+    </CONDITION>
+    <!-- END, CR00371769 -->
+
+
+    <FIELD LABEL="Field.Label.BankName">
+      <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="bankName"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate" WIDTH="40">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="startDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.SortCode" WIDTH="40">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="bankSortCode"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.BranchName">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="name"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate" USE_DEFAULT="false" WIDTH="40">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="endDate"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00371769, VT -->
+  <CLUSTER LABEL_WIDTH="39" NUM_COLS="2" SHOW_LABELS="true">
+
+
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="ibanInd"/>
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.BankName">
+      <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="bankName"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="startDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.SortCode">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="bankSortCode"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.BranchName">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="name"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate" USE_DEFAULT="false" WIDTH="70">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="endDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Bic">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="details$bankBranchStruct$bicOpt"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00371769-->
+
+
+  <!-- BEGIN, CR00280054, PB -->
+  <CLUSTER LABEL_WIDTH="50" NUM_COLS="2" TAB_ORDER="ROW" TITLE="Cluster.Title.Address">
+    <!-- END, CR00280054 -->
+    <FIELD>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="addressData"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00280054, PB -->
+  <CLUSTER LABEL_WIDTH="26.5" NUM_COLS="1" SHOW_LABELS="true" TITLE="Cluster.Title.Contact">
+    <CONTAINER LABEL="Container.Label.PhoneNumber">
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD LABEL="Field.Label.PhoneCountryCode" WIDTH="3" WIDTH_UNITS="CHARS">
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="phoneCountryCode"/>
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD LABEL="Field.Label.PhoneAreaCode" WIDTH="3" WIDTH_UNITS="CHARS">
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="phoneAreaCode"/>
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD LABEL="Field.Label.PhoneNumber" WIDTH="7" WIDTH_UNITS="CHARS">
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="phoneNumber"/>
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD LABEL="Field.Label.PhoneExtension" WIDTH="3" WIDTH_UNITS="CHARS">
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="phoneExtension"/>
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <CONTAINER LABEL="Container.Label.Fax">
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD LABEL="Field.Label.FaxCountryCode" WIDTH="3" WIDTH_UNITS="CHARS">
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="faxCountryCode"/>
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD LABEL="Field.Label.FaxAreaCode" WIDTH="3" WIDTH_UNITS="CHARS">
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="faxAreaCode"/>
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD LABEL="Field.Label.FaxNumber" WIDTH="7" WIDTH_UNITS="CHARS">
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="faxNumber"/>
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.Email" WIDTH="49">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="emailAddress"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00280054 -->
+  <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Title.Comments">
+    <!-- BEGIN, CR00408407, VT -->
+    <FIELD HEIGHT="4" LABEL="Field.Label.Comments">
+      <!-- END, CR00408407 -->
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="comments"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

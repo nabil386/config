@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008 Curam Software Ltd.																											-->
+<!-- All rights reserved.                                                                   -->
+<!-- This software is the confidential and proprietary information of Curam		    -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose		    -->
+<!-- such Confidential Information and shall use it only in accordance with		    -->
+<!-- the terms of the license agreement you entered into with Curam		            -->
+<!-- Software.                                                                              -->
+<!-- Description                                                                            -->
+<!-- ===========                                                                            -->
+<!-- The page to view Allegation details from view Action page.                             -->
+<?curam-deprecated Since Curam 6.0, as part of the Action Plan Enhancement, 
+  allegations are now associated to situations and not actions. 
+  See release note:CEF-722 : ActionPlan Enhancement
+?>
+<PAGE
+  PAGE_ID="InvestigationDelivery_viewActionAllegation"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="InvestigationDelivery"
+    NAME="DISPLAY"
+    OPERATION="readAllegationHomeDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="allegationID"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="allegationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$allegationID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    BOTTOM="true"
+  >
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    >
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    TITLE="Cluster.Label.Details"
+  >
+
+
+    <CLUSTER
+      LABEL_WIDTH="49"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+
+
+      <FIELD LABEL="Field.Label.Type">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="type"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.AllegationDateTime">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="allegationDateTime"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.CreationDate">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="creationDate"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+
+
+    <CLUSTER
+      LABEL_WIDTH="24.5"
+      NUM_COLS="1"
+      STYLE="cluster-cpr-no-border"
+    >
+
+
+      <FIELD LABEL="Field.Label.Description">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$allegationDetails$description"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Status">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$allegationDetails$recordStatus"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.Participants">
+
+
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="concernRoleName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Participant_resolveRoleHome"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$roleList$participantRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$roleList$concernRoleType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="participantType"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Role"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="roleType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+    SHOW_LABELS="true"
+    TITLE="Cluster.Label.SourceDetails"
+  >
+    <FIELD LABEL="Field.Label.Anonymous">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="allegationDetails$anonymousInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.SourceParticipant">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sourceName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Participant_resolveRoleHome"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$sourceDtls$participantRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$sourceDtls$concernRoleType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="participantType"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ReportedDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reportedDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Method">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="method"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+    SHOW_LABELS="true"
+    TITLE="Cluster.Label.FindingDetails"
+  >
+
+
+    <FIELD LABEL="Field.Label.Finding">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="finding"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EffectiveDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="effectiveDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

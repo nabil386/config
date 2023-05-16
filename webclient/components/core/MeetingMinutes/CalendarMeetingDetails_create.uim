@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012-2017. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description -->
+<!-- =========== -->
+<!-- Modify attendees for the meeting -->
+<PAGE
+  PAGE_ID="CalendarMeetingDetails_create"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- Do not add windows options for size to this UIM, as this may distort -->
+  <!-- meeting minutes agenda wizard screens. -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MeetingMinutesManagement"
+    NAME="DISPLAY"
+    OPERATION="readActivitiesForCase"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="meetingID"/>
+  <PAGE_PARAMETER NAME="contextDescription"/>
+  <PAGE_PARAMETER NAME="meetingOriginPage"/>
+  <PAGE_PARAMETER NAME="activityID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET TOP="false">
+    <ACTION_CONTROL
+      ALIGNMENT="RIGHT"
+      LABEL="ActionControl.Label.Next"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="MeetingMinutesWizard_resolveStart"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="ZeroID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="meetingID"
+          />
+        </CONNECT>
+        <!-- BEGIN, 192763, JAF -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="activityID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="activityID"
+          />
+        </CONNECT>
+        <!-- END, 192763, JAF -->
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00233309, ELG -->
+  <LIST DESCRIPTION="List.Description">
+    <!-- END, CR00233309 -->
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="8"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.Select">
+	  <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="MeetingMinutesWizard_resolveStart"
+        SAVE_LINK="false"
+      >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="ZeroID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="meetingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$key"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="activityID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.Subject"
+      WIDTH="38"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="subjectName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.LocationName"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="locationName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Organizer"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="organizer"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.StartTime"
+      WIDTH="12"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Duration"
+      WIDTH="12"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="duration"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page provides a graphical view of the progress of a Process Instance   -->
+<PAGE
+  PAGE_ID="WorkflowAdministration_visualiseProcessInstance"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewProcessInstance"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="WorkflowAdministration_viewProcessInstance"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Activities"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="WorkflowAdministration_listProcessInstanceActivities"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.visualiseProcessInstance"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="WorkflowAdministration_visualiseProcessInstance"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.StaticText"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="processName"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- BEGIN, CR00071552, GBA -->
+  <!-- END, CR00071552 -->
+  <SERVER_INTERFACE
+    CLASS="ProcessAdmin"
+    NAME="DISPLAY"
+    OPERATION="getAdminGraphXML"
+  />
+  <PAGE_PARAMETER NAME="processInstanceID"/>
+  <PAGE_PARAMETER NAME="processName"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processInstanceID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="processInstanceKey$processInstanceID"
+    />
+  </CONNECT>
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+  >
+    <FIELD CONFIG="Admin.Config">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="workflowGraphXML"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

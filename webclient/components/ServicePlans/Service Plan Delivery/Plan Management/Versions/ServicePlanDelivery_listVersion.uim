@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2005, 2009-2011 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Page to list service plan delivery versions.                           -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_listVersion"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY"
+    OPERATION="listVersions"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+    <FIELD
+      LABEL="Field.Title.PlanReferenceNumber"
+      WIDTH="60"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseReference"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00146960, DJ -->
+      <LINK
+        PAGE_ID="ServicePlanDelivery_home1"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="relatedCaseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END,CR00146960 -->
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.DateCreated"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+  </LIST>
+
+
+</PAGE>

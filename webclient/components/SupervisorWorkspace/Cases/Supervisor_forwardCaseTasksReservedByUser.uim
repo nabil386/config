@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- Copyright (c) 2003-2006, 2008, 2010 Curam Software Ltd.                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!--    This page allows the supervisor to forward selected case tasks to an alternative
+    target. The case tasks currently reserved by the user are displayed, divided
+    into a list of open and a list of deferred tasks.  -->
+<PAGE
+  PAGE_ID="Supervisor_forwardCaseTasksReservedByUser"
+  WINDOW_OPTIONS="width=825"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="userName"/>
+  <PAGE_PARAMETER NAME="taskOptionCode"/>
+  <PAGE_PARAMETER NAME="userFullName"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorCase"
+    NAME="DEFERREDTASKSDISPLAY"
+    OPERATION="listDeferredCaseTasksReservedByUser"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorCase"
+    NAME="OPENTASKSDISPLAY"
+    OPERATION="listOpenCaseTasksReservedByUser"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorUsers"
+    NAME="USERSDISPLAY"
+    OPERATION="listSupervisorUsers"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorOrgUnits"
+    NAME="ORGUNITDISPLAY"
+    OPERATION="listSupervisorOrgUnits"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorCase"
+    NAME="ACTION"
+    OPERATION="forwardCaseTasksReservedByUser"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="DEFERREDTASKSDISPLAY"
+      PROPERTY="key$key$userName"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DEFERREDTASKSDISPLAY"
+      PROPERTY="key$key$caseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="userName"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="OPENTASKSDISPLAY"
+      PROPERTY="key$key$userName"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="OPENTASKSDISPLAY"
+      PROPERTY="key$key$caseID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      DEFAULT="true"
+      IMAGE="SaveButton"
+      LABEL="ActionControl.SaveButton.label"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.CancelButton.label"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="17.5">
+    <CONTAINER LABEL="Container.Label.User">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="userFullName"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="Supervisor_userWorkspace">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="supervisor.viewTaskOption"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskOptionCode"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+  >
+    <FIELD
+      LABEL="Field.Label.MyUsers"
+      USE_BLANK="true"
+      WIDTH="100"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="userName"
+          NAME="USERSDISPLAY"
+          PROPERTY="fullName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="forwardToUser"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.MyOrgUnits"
+      USE_BLANK="true"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="orgUnitID"
+          NAME="ORGUNITDISPLAY"
+          PROPERTY="orgUnitName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="forwardToOrgUnit"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00137796, SK -->
+  <CLUSTER LABEL_WIDTH="17.5">
+    <CONTAINER LABEL="Container.Title.ForwardTo">
+      <FIELD
+        USE_BLANK="true"
+        WIDTH="25"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="forwardToType"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD WIDTH="40">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="forwardToID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+  <!-- END, CR00137796 -->
+
+
+  <LIST TITLE="Cluster.Title.OpenTasks">
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      LABEL="List.MultiSelect.Select"
+      WIDTH="5"
+    >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="OPENTASKSDISPLAY"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="openTaskIDList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Label.OpenTaskID"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="OPENTASKSDISPLAY"
+          PROPERTY="taskID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.OpenSubject"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="OPENTASKSDISPLAY"
+          PROPERTY="taskSubject"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.OpenPriority"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="OPENTASKSDISPLAY"
+          PROPERTY="taskPriority"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.OpenReserved"
+      WIDTH="20"
+    >
+      <!-- BEGIN, CR00118626, SK -->
+      <CONNECT>
+        <SOURCE
+          NAME="OPENTASKSDISPLAY"
+          PROPERTY="taskAssignedDateTime"
+        />
+      </CONNECT>
+      <!-- END, CR00118626 -->
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.OpenDeadline"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="OPENTASKSDISPLAY"
+          PROPERTY="taskDeadlineDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <LIST TITLE="Cluster.Title.DeferredTasks">
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      LABEL="List.MultiSelect.Select"
+      WIDTH="5"
+    >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DEFERREDTASKSDISPLAY"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="deferredTaskIDList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.DeferredTaskID"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DEFERREDTASKSDISPLAY"
+          PROPERTY="taskID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.DeferredSubject"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DEFERREDTASKSDISPLAY"
+          PROPERTY="taskSubject"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.DeferredPriority"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DEFERREDTASKSDISPLAY"
+          PROPERTY="taskPriority"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.DeferredRestart"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DEFERREDTASKSDISPLAY"
+          PROPERTY="taskRestartDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.DeferredDeadline"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DEFERREDTASKSDISPLAY"
+          PROPERTY="taskDeadlineDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2003, 2010-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Modifies an existing Billing Pattern.                                 -->
+<PAGE
+  PAGE_ID="Product_viewBillingPattern"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewBillingPattern"
+      STYLE="in-page-current-link"
+    >
+      <LINK PAGE_ID="Product_viewBillingPattern">
+        <CONNECT>
+          <!-- BEGIN, CR00235829, GP -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$productDeliveryPatternInfoID"
+          />
+          <!-- END, CR00235829 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="productDeliveryPatternInfoID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.BillingPatternHistory"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="Product_listBillingPatternHistory">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="productDeliveryPatternID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="productDeliveryPatternID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="name"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="name"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <!-- BEGIN, CR00235829, GP -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$productDeliveryPatternInfoID"
+          />
+          <!-- END, CR00235829 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="productDeliveryPatternInfoID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <CLUSTER
+    LABEL_WIDTH="25"
+    NUM_COLS="2"
+  >
+
+
+    <FIELD LABEL="Field.Label.Max">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="maximumAmount"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Offset">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="offset"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER LABEL="Container.Label.Default">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="defaultPatternInd"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.Change"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Product_setAsDefaultBillingPattern"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="productDeliveryPatternID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="productDeliveryPatternID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="productID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="productID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="name"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.Cover">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="coverPattern"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <INCLUDE FILE_NAME="Product_viewDeliveryPatternView.vim"/>
+
+
+</PAGE>

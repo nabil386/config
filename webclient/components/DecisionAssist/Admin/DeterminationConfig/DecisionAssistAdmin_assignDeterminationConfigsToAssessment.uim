@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to assign one or more determination          -->
+<!-- configurations to an assessment.                                       -->
+<PAGE
+  PAGE_ID="DecisionAssistAdmin_assignDeterminationConfigsToAssessment"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_PARAMETER NAME="assessmentConfigurationID"/>
+  <SERVER_INTERFACE
+    CLASS="DeterminationConfig"
+    NAME="ASSESSMENTS_DETAILS"
+    OPERATION="readAssessment"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="assessmentConfigurationID"
+    />
+    <TARGET
+      NAME="ASSESSMENTS_DETAILS"
+      PROPERTY="key$dtls$dtls$assessmentConfigurationID"
+    />
+  </CONNECT>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="DeterminationConfig"
+    NAME="ACTIVE_DETERMINATION_LIST"
+    OPERATION="listActiveDeterminationConfig"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="assessmentConfigurationID"
+    />
+    <TARGET
+      NAME="ACTIVE_DETERMINATION_LIST"
+      PROPERTY="key$dtls$dtls$assessmentConfigurationID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="DeterminationConfig"
+    NAME="ASSIGN_DETERMINATION_CONFIGS"
+    OPERATION="assignDCsToAssessment"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="assessmentConfigurationID"
+    />
+    <TARGET
+      NAME="ASSIGN_DETERMINATION_CONFIGS"
+      PROPERTY="dtls$key$dtls$dtls$assessmentConfigurationID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00207167, SS -->
+  <CLUSTER SHOW_LABELS="false">
+    <!-- END, CR00207167 -->
+    <FIELD CONTROL="SKIP"/>
+    <FIELD CONTROL="TRANSFER_LIST">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$list$list$dtls$determinationConfigID"
+          NAME="ACTIVE_DETERMINATION_LIST"
+          PROPERTY="result$list$list$dtls$name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ASSIGN_DETERMINATION_CONFIGS"
+          PROPERTY="dtls$DeterminationConfigIDs"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+</PAGE>

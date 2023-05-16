@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- The included view for the create Microsoft Word communication details.        -->
+<PAGE
+  PAGE_ID="Participant_modifyDraftMSWordCommunication"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="Communication"
+    NAME="DISPLAY"
+    OPERATION="readMSWordCommunication1"
+  />
+  <SERVER_INTERFACE
+    CLASS="Communication"
+    NAME="ACTION"
+    OPERATION="modifyMSWordCommunication1"
+    PHASE="ACTION"
+  />
+
+
+  <!--SERVER_INTERFACE
+    CLASS="Participant"
+    NAME="DISPADDRESS"
+    OPERATION="listAddressString"
+  /-->
+  
+  <SERVER_INTERFACE
+    CLASS="BDMParticipant"
+    NAME="DISPADDRESS"
+    OPERATION="readMailingAddress"
+  />
+
+
+  <PAGE_PARAMETER NAME="pageDescription"/>
+  <PAGE_PARAMETER NAME="communicationID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="correspondentConcernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="correspondentConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPADDRESS"
+      PROPERTY="key$maintainAddressKey$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="communicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$communicationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="communicationID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$dtls$communicationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="documentTemplateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$dtls$documentTemplateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="correspondentParticipantRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="correspondentParticipantRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="correspondentName"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="correspondentName"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="participantRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="participantRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="statusCode"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="statusCode"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPADDRESS"
+      PROPERTY="addressID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="addressID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.SaveButton.label"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="SaveAndOpenWordButton"
+      LABEL="ActionControl.SaveAndOpenWordButton.label"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        PAGE_ID="Participant_controlMSWord"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="details$dtls$communicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="communicationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="details$dtls$documentTemplateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="templateID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+  <CLUSTER
+    LABEL_WIDTH="25"
+    NUM_COLS="1"
+  >
+    <FIELD LABEL="Field.Label.Subject">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="subjectText"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="subjectText"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CLUSTER
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+
+
+      <FIELD LABEL="Field.Label.CorrespondentName">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="correspondentName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.CorrespondentType">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="correspondentTypeCode"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="correspondentTypeCode"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <!--BEGIN, CR00237168, PB-->
+    <CLUSTER LABEL_WIDTH="25">
+      <!--END, CR00237168-->
+      <FIELD
+        LABEL="Field.Label.Address"
+        USE_BLANK="true"
+      >
+        <!--CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="addressID"
+            NAME="DISPADDRESS"
+            PROPERTY="addressString"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="addressID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="addressID"
+          />
+        </CONNECT-->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPADDRESS"
+            PROPERTY="formattedAddressData"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <CLUSTER
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD LABEL="Field.Label.CommunicationStatus">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="communicationStatus"
+          />
+        </CONNECT>
+        <!--CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="communicationStatus"
+          />
+        </CONNECT-->
+      </FIELD>
+      <!--FIELD LABEL="Field.Label.Date">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="communicationDate"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="communicationDate"
+          />
+        </CONNECT>
+      </FIELD-->
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.AssociatedFiles"
+  >
+
+
+    <FIELD LABEL="Field.Label.FileLocation">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileLocation"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fileLocation"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DocumentLocation">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="documentLocation"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="documentLocation"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.FileReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileReferenceNumber"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fileReferenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DocumentReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="documentRefNumber"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="documentRefNumber"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00408407, VT -->
+    <FIELD HEIGHT="4" LABEL="Field.Label.Comments">
+      <!-- END, CR00408407 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

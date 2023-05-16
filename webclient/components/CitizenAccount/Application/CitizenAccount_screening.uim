@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012,2016. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Page used to link from the IEGTester page to the IEGScriptPlayer JSP.  -->
+<!-- A check for validation errors is carried out first and if there are    -->
+<!-- any present, the validation errors page is displayed.                  -->
+<PAGE PAGE_ID="CitizenAccount_screening">
+  <JSP_SCRIPTLET>
+    
+    
+		// This sets up screening for Citizen Account. The process is simiar to that in the SetupScreening.jspx file.
+		// Some security code has been removed as the user is always logged in when this page his hit.
+		// This adds a different context to the URL than SetupScreening.jspx
+		
+		// This version is retrieving the playerID from the session as opposed to the page / request.
+		
+      javax.servlet.http.HttpServletRequest hsRequest = (javax.servlet.http.HttpServletRequest) request;
+      javax.servlet.http.HttpSession httpSession = hsRequest.getSession();
+      
+      String contextPath = request.getContextPath();
+
+      String playerID = (String) httpSession.getAttribute("curam.page.playerExecutionID");
+      playerID = curam.omega3.request.RequestUtils.escapeURL(playerID);
+      String pageName = request.getParameter("page");
+      
+      String url;
+      
+      String newPlayerId = playerID;
+      String pageParams = "";
+      String pageType = "";
+
+      if(null == pageName) {
+      
+        // Call setup screening process
+        curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_setupScreening_TH th = 
+          new curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_setupScreening_TH();
+        th.setFieldValue(th.details$playerID_idx, playerID);       
+        th.callServer();
+      
+        newPlayerId = th.getFieldValue(th.result$playerID_idx);
+        pageName = th.getFieldValue(th.result$nextPage_idx);
+        pageType = th.getFieldValue(th.result$pageType_idx);
+        pageParams = th.getFieldValue(th.result$pageParams_idx);
+      }
+
+      // determine whether to route to ResolvePage or PagePlayerPage     
+      if (pageType.equals("resolve")) {
+        
+        // send to the resolve script. under certain configurations we route directly
+        // to the StartIntakeScript jsp file to start intake without any more pages
+        // being played.
+        url = contextPath + "/cw/" + "ResolvePage.do?";
+
+      } else {
+        // Forward to the page player, passing the executionID and page to display
+        url = contextPath + "/cw/" + "PlayerPage.do?";
+      }
+
+      url += "id=" + curam.omega3.request.RequestUtils.escapeURL(newPlayerId) + "&amp;page=" + curam.omega3.request.RequestUtils.escapeURL(pageName);
+      
+      if (!citizenworkspace.util.StringHelper.isEmpty(pageParams)) {
+         pageParams = citizenworkspace.util.ParameterEncodingHelper.getEncodedPageParms(pageParams);
+            url += "&amp;" + pageParams;
+      }
+
+      response.sendRedirect(response.encodeRedirectURL(url));     
+
+    
+  </JSP_SCRIPTLET>
+</PAGE>

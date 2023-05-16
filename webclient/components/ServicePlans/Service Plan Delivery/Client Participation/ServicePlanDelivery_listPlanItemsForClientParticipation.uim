@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                               	-->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to select the plan item to record            -->
+<!-- client participation for.												-->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_listPlanItemsForClientParticipation"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY"
+    OPERATION="listPlanItemsForClientParticipation"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="ACTION"
+    OPERATION="getPlannedItemIDAndName"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <!--BEGIN CR00139526, GBA-->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <!-- BEGIN, CR00234092, SS -->
+    <ACTION_CONTROL
+      IMAGE="NextButton"
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="createClientPartInd"
+        />
+      </CONDITION>
+      <LINK
+        DISMISS_MODAL="false"
+        OPEN_MODAL="true"
+        PAGE_ID="ServicePlanDelivery_addClientParticipationDefaultPlanItem"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="key$plannedItemIDKey$plannedItemIDKey$plannedItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="plannedItemID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="name"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="name"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="createClientPartInd"
+        />
+      </CONDITION>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    >
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="createClientPartInd"
+        />
+      </CONDITION>
+    </ACTION_CONTROL>
+    <!-- END, CR00234092 -->
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="6"
+    NUM_COLS="1"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="createClientPartInd"
+      />
+    </CONDITION>
+    <FIELD WIDTH="60">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="dtls$plannedItemID"
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$plannedItemIDKey$plannedItemIDKey$plannedItemID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <!--END CR00139526-->
+
+
+</PAGE>

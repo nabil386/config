@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page redirects the user to either change set details page or       -->
+<!--   released change set page based on the change set status.              -->
+<PAGE
+  PAGE_ID="CTM_resolveChangeSetView"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <JSP_SCRIPTLET>
+        curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+        
+        String context = request.getContextPath() + "/";
+        context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+        String url = "";
+        String changeSetID = request.getParameter("changeSetID");
+
+        // BEGIN, CR00280244, SS
+        curam.interfaces.MaintainChangeSetPkg.MaintainChangeSet_viewChangeSet_TH 
+        th = new curam.interfaces.MaintainChangeSetPkg.MaintainChangeSet_viewChangeSet_TH();
+        
+        th.setFieldValue(th.key$changeSetID_idx,changeSetID);
+        th.callServer();
+        
+        String isChangeSetReleased = th.getFieldValue("result$isReleased");
+        
+       if (isChangeSetReleased.equals("true")){
+       // END, CR00280244
+        url = context + "CTM_viewReleasedChangeSetPage.do?changeSetID="+curam.omega3.request.RequestUtils.escapeURL(changeSetID);
+        }
+        else{
+        // BEGIN, CR00280393, SS
+        url = context + "CTM_viewChangeSetDetailsPage.do?changeSetID="+curam.omega3.request.RequestUtils.escapeURL(changeSetID);
+        // END, CR00280393
+        }
+        
+        url += "&amp;" + rh.getSystemParameters();
+        response.sendRedirect(response.encodeRedirectURL(url));
+    </JSP_SCRIPTLET>
+</PAGE>

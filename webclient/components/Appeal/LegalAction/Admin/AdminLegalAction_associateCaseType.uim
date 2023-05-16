@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+    * Copyright 2008, 2010-2011 Curam Software Ltd.
+    * All rights reserved.
+    *
+    * This software is the confidential and proprietary information of Curam
+    * Software, Ltd. ("Confidential Information"). You shall not disclose
+    * such Confidential Information and shall use it only in accordance with
+    * the terms of the license agreement you entered into with Curam
+    * Software.
+    *
+    * Description
+    * ===========
+    * This page is used to create a new legal action
+    *
+-->
+<!-- BEGIN, CR00237366, GP -->
+<PAGE
+  PAGE_ID="AdminLegalAction_associateCaseType"
+  WINDOW_OPTIONS="height=275"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file:\\Curam\CuramUIMSchema"
+>
+  <!-- END, CR00237366 -->
+
+
+  <!-- The page title for this page -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="configLegalActionID"/>
+  <PAGE_PARAMETER NAME="caseTypeCode"/>
+
+
+  <!-- Declare the 'action' server bean -->
+  <SERVER_INTERFACE
+    CLASS="AdminLegalAction"
+    NAME="ACTION"
+    OPERATION="associateCaseTypes"
+    PHASE="ACTION"
+  />
+
+
+  <!-- Declare the 'display' server bean -->
+  <SERVER_INTERFACE
+    CLASS="AdminLegalAction"
+    NAME="DISPLAY"
+    OPERATION="listCaseTypes"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- connection parameters required for display bean -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="configLegalActionID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="configLegalActionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseTypeCode"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="associatedCaseType"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="configLegalActionID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="configLegalActionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseTypeCode"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="associatedCaseType"
+    />
+  </CONNECT>
+
+
+  <!-- Actionset contains Save,SaveAndNew and Cancel link -->
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    BOTTOM="true"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00206667, GP -->
+  <!-- BEGIN, CR00237366, GP -->
+  <!-- List fields on this page -->
+  <!-- BEGIN, CR00169111, SS -->
+  <LIST >
+    <!-- END, CR00169111 -->
+    <!-- END, CR00237366 -->
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="dateInd"
+      />
+    </CONDITION>
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      WIDTH="10"
+    >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="relatedID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="relatedIDMultiselect"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <!-- BEGIN, CR00237366, GP -->
+    <FIELD
+      LABEL="Field.Label.CaseTypes"
+      WIDTH="100"
+    >
+      <!-- END, CR00237366 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="value"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <!-- BEGIN, CR00237366, GP -->
+  <!-- BEGIN, CR00169111, SS -->
+  <LIST >
+    <!-- END, CR00169111 -->
+    <!-- END, CR00237366 -->
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="dateInd"
+      />
+    </CONDITION>
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      WIDTH="10"
+    >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="relatedID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="relatedIDMultiselect"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <!-- BEGIN, CR00237366, GP -->
+    <FIELD
+      LABEL="Field.Label.CaseTypes"
+      WIDTH="60"
+    >
+      <!-- END, CR00237366 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="value"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="confStartDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="confEndDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- END, CR00206667 -->
+
+
+</PAGE>

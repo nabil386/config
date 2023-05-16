@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010-2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<PAGE PAGE_ID="LegalAction_getCreatePageName">
+  <JSP_SCRIPTLET>
+
+    curam.interfaces.AdminLegalActionPkg.AdminLegalAction_getAdminLegalActionDetails_TH legaAction_TH = null;
+    String param = null;
+    String pageName = null;
+    StringBuffer sb = new StringBuffer();
+
+    param = request.getParameter("Param");
+    //BEGIN, CR00190255, MC
+    curam.omega3.request.RequestHandler rh =
+      curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+    String pageContextDesc = request.getParameter("o3ctx");
+    
+    // BEGIN, CR00396755, JAF
+    // If pageContextDesc is a not number, set to a default value, e.g. 256
+    try {
+      Integer.parseInt(pageContextDesc);
+      pageContextDesc = "o3ctx="+pageContextDesc;
+    } catch (NumberFormatException nfe) {
+     pageContextDesc = "o3ctx=256";
+    }
+    // END, CR00396755, JAF
+
+    //END, CR00190255
+    try{
+        if (param != null){
+
+
+          param = param.trim().toLowerCase();
+          boolean namesAdded = false;
+          legaAction_TH =  new  curam.interfaces.AdminLegalActionPkg.AdminLegalAction_getAdminLegalActionDetails_TH ();
+              legaAction_TH.setFieldValue(legaAction_TH.key$key$key$legalActionID_idx,param);
+              legaAction_TH.callServer();
+              // BEGIN, CR00396755, JAF
+              pageName = curam.omega3.request.RequestUtils.escapeURL(legaAction_TH.getFieldValue(legaAction_TH.result$dtls$legalActionDtls$createPage_idx));
+              // END, CR00396755, JAF
+
+                  if(pageName != null){
+                    sb.append("&lt;redirectPage&gt;");
+              sb.append("&lt;pageName&gt;" + pageName + "&lt;/pageName&gt;");
+              //Start CR00111580 AS
+              sb.append("&lt;pageContextDesc&gt;" + pageContextDesc + "&lt;/pageContextDesc&gt;");
+              //End CR00111580 AS
+              sb.append("&lt;/redirectPage&gt;");
+
+              namesAdded =true;
+             }
+
+
+            if (namesAdded) {
+              response.setContentType("text/xml");
+              response.setHeader("Cache-Control", "no-cache");
+              out.println(sb.toString());
+            } else {
+              //nothing to show
+              response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            }
+          }
+          else {
+            //nothing to show
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+          }
+      }
+      catch(Exception e){
+        // BEGIN, CR00396755, JAF
+        // Removed printStackTrace()
+        // END, CR00396755, JAF
+      }
+
+   </JSP_SCRIPTLET>
+</PAGE>

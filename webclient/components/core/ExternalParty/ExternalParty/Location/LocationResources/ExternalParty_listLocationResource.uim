@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to list all resources for an external party location. -->
+<PAGE
+  PAGE_ID="ExternalParty_listLocationResource"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ExternalParty"
+    NAME="DISPLAY"
+    OPERATION="listExternalPartyResourcesForLocation"
+  />
+
+
+  <PAGE_PARAMETER NAME="locationID"/>
+  <PAGE_PARAMETER NAME="locationStructureID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="locationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="locationKeyRef$locationID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET BOTTOM="false">
+
+
+    <ACTION_CONTROL
+      IMAGE="CreateResourceButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_createLocationResource"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="AssignResourceButton"
+      LABEL="ActionControl.Label.Assign"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_assignLocationResource"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <LIST>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <LINK PAGE_ID="Organization_cancelLocationResource">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="locationStructureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="locationStructureID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="resourceID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="resourceID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="locationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="locationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="resourceName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.ResourceName"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="resourceName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ResourceTypeCode"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="resourceTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ResourceStatus"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="resourceStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <MENU MODE="NAVIGATION">
+    <ACTION_CONTROL LABEL="Field.Label.Browse">
+      <LINK PAGE_ID="Organization_resolveLocationTree">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+</PAGE>

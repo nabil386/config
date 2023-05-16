@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:curam="http://www.curamsoftware.com/curam"
+  xmlns:cing="http://www.curamsoftware.com/curam/jde/client/curam-ng" version="2.0">
+  <jsp:directive.page isErrorPage="false" pageEncoding="UTF-8" contentType="text/html;charset=UTF-8"
+    isELIgnored="false" language="java" buffer="32kb"/>
+  <jsp:output omit-xml-declaration="yes"/>
+
+  <!-- 
+  UA team will place script elements here to include JavaScript needed in the
+  top level document. Ideally require statements should be used, but not all
+  of the code is "AMD" ready yet and needs a direct script include.
+  -->
+  <jsp:scriptlet>
+    <![CDATA[
+    
+    curam.omega3.util.UserUtils.setUserPreferences(session);
+    
+    curam.omega3.user.UserPreferences prefs = curam.omega3.user.UserPreferencesFactory.getUserPreferences(session);
+    
+    String locale = prefs.getLocale().toString();
+    
+    java.lang.String timeStamp = java.lang.Long.toHexString(new java.util.Date().getTime());
+    
+    out.println("<link type=\"text/css\" rel=\"stylesheet\" href=\"servlet/template?r=cw-fragment-css-template&amp;pr=cw-fragment-css-properties&amp;l=" + locale + "&amp;t=" + timeStamp + "\" >");
+    if(request.getParameter("htmlDirection").equals("rtl")) {
+      out.println("<link type=\"text/css\" rel=\"stylesheet\" href=\"servlet/template?r=cw-fragment-css-template-rtl&amp;pr=cw-fragment-css-properties-rtl&amp;l=" + locale + "&amp;t=" + timeStamp + "\" >");
+    }
+    ]]>
+    
+  </jsp:scriptlet>
+  
+  <script type="text/javascript" src="CDEJ/jscript/cwtk/cw.js">// dummy script content</script>
+  
+  <script>
+    
+    function appContentLoadStart() {
+    
+      var url = dijit.byId("app-content").attr("href");
+      
+      if (browserHasLocalStorage()) {
+        localStorage.setItem("main-content-url", url);
+      }
+      return "";
+    }
+    
+    function loadMainContentFromStorage() {
+      if (browserHasLocalStorage()) {
+        var url = localStorage.getItem("main-content-url");
+        if (url &amp;&amp; url.length > 0) {
+          dijit.byId("app-content").attr("href", url);
+          return true;
+        }
+      }
+      return false;
+    }
+    
+    function browserHasLocalStorage() {
+      try {
+        return "localStorage" in window &amp;&amp; window['localStorage'] !== null;
+      } catch (e) {
+        return false;
+      }
+    }
+  </script>
+  <jsp:include page="application-custom-extension.jspx"/>
+</jsp:root>

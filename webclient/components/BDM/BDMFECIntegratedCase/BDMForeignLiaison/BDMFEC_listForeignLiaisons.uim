@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- BDM Foreign Liaisons List page. -->
+
+<PAGE PAGE_ID="BDMFEC_listForeignLiaisons"
+  HIDE_CONDITIONAL_LINKS="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <SERVER_INTERFACE CLASS="BDMForeignLiaison"
+    NAME="DISPLAY" OPERATION="listForeignLiaisons" />
+
+  <PAGE_PARAMETER NAME="caseID" />
+
+  <CONNECT>
+    <SOURCE PROPERTY="caseID" NAME="PAGE" />
+    <TARGET PROPERTY="key$caseID" NAME="DISPLAY" />
+  </CONNECT>
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <LINK OPEN_MODAL="true"
+        PAGE_ID="BDMFEC_resolveFrgnLiasnWizard">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="caseID" />
+          <TARGET NAME="PAGE" PROPERTY="caseID" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  
+
+  <LIST>
+
+   <DETAILS_ROW>
+      <INLINE_PAGE
+        PAGE_ID="BDMFEC_detailsForeignLiaison">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY"
+            PROPERTY="result$dtls$foreignLiaisonID" />
+          <TARGET NAME="PAGE" PROPERTY="foreignLiaisonID" />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+  			<LINK OPEN_MODAL="true"
+  				PAGE_ID="BDMFEC_resolveFrgnLiasnWizard">
+  				<CONNECT>
+  					<SOURCE NAME="PAGE" PROPERTY="caseID" />
+  					<TARGET NAME="PAGE" PROPERTY="caseID" />
+  				</CONNECT>
+  				<CONNECT>
+  					<SOURCE NAME="DISPLAY" PROPERTY="result$dtls$foreignLiaisonID" />
+  					<TARGET NAME="PAGE" PROPERTY="foreignLiaisonID" />
+  				</CONNECT>				
+  			</LINK>
+      </ACTION_CONTROL>
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK OPEN_MODAL="true"
+          PAGE_ID="BDMFEC_deleteForeignLiaison">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$foreignLiaisonID" />
+            <TARGET NAME="PAGE" PROPERTY="foreignLiaisonID" />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$versionNo" />
+            <TARGET NAME="PAGE" PROPERTY="versionNo" />
+          </CONNECT>       
+        </LINK>
+      </ACTION_CONTROL>
+
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.List.Label.Direction">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$dtls$liaisonRefDesc" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.List.Label.Date">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$dtls$receiveDate" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.List.Label.ForeignApplication">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$dtls$frgnAppRefDesc" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.List.Label.ForeignIdentifier">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$dtls$foreignIdntifier" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.List.Label.RecordStatus">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$dtls$recordStatus" />
+      </CONNECT>
+    </FIELD>
+    
+  </LIST>
+
+</PAGE>
+  

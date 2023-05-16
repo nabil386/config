@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PAGE
+  PAGE_ID="BDMAddressEvidence_editAddressWizardStep1"
+  WINDOW_OPTIONS="width=1045,height=700"
+  SCRIPT_FILE="BDMDynamicCluster.js"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT"  PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+  </PAGE_TITLE>
+
+   <!--BEGIN: Task 60485: DEV: Implement- Informational message -->
+   <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="dtls2$dtls$message" />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!--END: Task 60485: DEV: Implement- Informational message -->
+  
+  <SERVER_INTERFACE CLASS="IntegratedCase" NAME="LIST_CASE"  OPERATION="listCaseParticipantsWithAge"/>
+   <SERVER_INTERFACE CLASS="BDMAddressEvidenceWizard"  NAME="EXISTING_ADDRESS" OPERATION="getExistingAddressDtls" PHASE="DISPLAY"/>
+   <SERVER_INTERFACE CLASS="BDMAddressEvidenceWizard"  NAME="DISPLAY" OPERATION="getAddressEvidenceWizardDetails" PHASE="DISPLAY"/>
+  <SERVER_INTERFACE CLASS="BDMAddressEvidenceWizard" NAME="ACTION"  OPERATION="setAddressEvidenceWizardDetails"  PHASE="ACTION"  ACTION_ID_PROPERTY="actionIDProperty" />
+  
+ <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE NAME="CONSTANT" PROPERTY="EditAddressEvidenceWizard"/>
+    </CONNECT>
+  </MENU>
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="evidenceID"/>
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+
+ <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="evidenceID" />
+    <TARGET NAME="EXISTING_ADDRESS"  PROPERTY="key$evidenceID"/>
+  </CONNECT>
+
+ <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="wizardStateID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="wizardStateID$wizardStateID"/>
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="evidenceID" />
+    <TARGET NAME="DISPLAY"  PROPERTY="wizardStateID$evidenceID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="result$wizardKey$wizardStateID" />
+    <TARGET NAME="ACTION" PROPERTY="wizardStateID$wizardStateID"/>
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE NAME="CONSTANT" PROPERTY="EditAddressEvidenceWizardStep1" />
+    <TARGET NAME="ACTION" PROPERTY="currentStepNum"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="evidenceID" />
+    <TARGET NAME="ACTION"  PROPERTY="evidenceID"/>
+  </CONNECT>
+
+  <CONNECT>
+    <SOURCE  NAME="PAGE" PROPERTY="caseID" />
+    <TARGET  NAME="LIST_CASE" PROPERTY="caseID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="LIST_CASE" PROPERTY="caseID" />
+    <TARGET NAME="ACTION"  PROPERTY="caseID"/>
+  </CONNECT>
+  
+   
+  <!-- fulfill the mandatory fields requirements from step 2 -->
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$step2DataDtls$country"/>
+    <TARGET NAME="ACTION" PROPERTY="wizardDtls$step2DataDtls$country"/>
+  </CONNECT>
+
+  <ACTION_SET  BOTTOM="true" >
+    
+    <ACTION_CONTROL ALIGNMENT="LEFT" LABEL="ActionControl.Label.Cancel" />
+	
+	<!--BEGIN: Task 60485: DEV: Implement- Informational message -->
+    <ACTION_CONTROL ACTION_ID="SAVENCLOSE"  LABEL="ActionControl.Label.SaveAndClose"  TYPE="SUBMIT">
+      <LINK DISMISS_MODAL="true" PAGE_ID="BDMCloseModalAndNavigateToTab" >
+        <CONNECT>
+          <SOURCE NAME="ACTION" PROPERTY="wizardStateID$wizardStateID" />
+          <TARGET NAME="PAGE" PROPERTY="wizardStateID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="CONSTANT"  PROPERTY="EditAddressEvidence"/>
+          <TARGET NAME="PAGE" PROPERTY="sourcePageAction" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!--END: Task 60485: DEV: Implement- Informational message -->
+    
+    <ACTION_CONTROL ACTION_ID="NEXTPAGE"  LABEL="ActionControl.Label.Next"  TYPE="SUBMIT">
+      <LINK DISMISS_MODAL="false" PAGE_ID="BDMAddressEvidence_resolveEditAddressStepWizardPage" SAVE_LINK="false" >
+        <CONNECT>
+          <SOURCE NAME="ACTION" PROPERTY="wizardStateID$wizardStateID" />
+          <TARGET NAME="PAGE" PROPERTY="wizardStateID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="CONSTANT"  PROPERTY="EditAddressEvidence"/>
+          <TARGET NAME="PAGE" PROPERTY="sourcePageAction" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+        
+  </ACTION_SET>
+  
+  <!-- Case participant cluster -->
+   <CLUSTER TITLE="Cluster.Title.CaseParticipant"  LABEL_WIDTH="20.5" STYLE="cluster-cpr-no-border">
+      <CONDITION>
+        <IS_TRUE NAME="LIST_CASE" PROPERTY="showCaseParticipantCluster" />
+      </CONDITION>
+      <FIELD LABEL="Cluster.Field.Label.CaseParticipant" USE_BLANK="FALSE"  WIDTH="35" >
+        <CONNECT>
+          <INITIAL HIDDEN_PROPERTY="participantRoleID" NAME="LIST_CASE" PROPERTY="name" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY"  PROPERTY="caseParticipantRoleID"/>
+        </CONNECT>
+        <CONNECT>
+          <TARGET NAME="ACTION"  PROPERTY="caseParticipantRoleID"/>
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <!-- BEGIN TASK-28473 Change Reason Field Is missing on Edit Evidence-->
+  <INCLUDE FILE_NAME="BDMAddressEvidence_basicInformationViewEdit.vim"/>
+   <!-- END TASK-28473 -->
+   <!-- Current address cluster -->
+  <CLUSTER TITLE="Cluster.Title.AddressCorrection"  NUM_COLS="2" >
+      <FIELD LABEL="Cluster.Field.Label.ExistingAddress"  WIDTH="35" >
+        <CONNECT>
+          <SOURCE NAME="EXISTING_ADDRESS"  PROPERTY="result$existingAddressDtls"/>
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Cluster.Field.Label.IntentionForCorrection"  WIDTH="35">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY"  PROPERTY="editInd"/>
+        </CONNECT>
+        <CONNECT>
+          <TARGET NAME="ACTION"  PROPERTY="editInd"/>
+        </CONNECT>
+      </FIELD>
+   </CLUSTER>
+  
+  <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Title.Comments">
+	    <FIELD HEIGHT="4" LABEL="Cluster.Field.Label.Comments">
+	      <CONNECT>
+	        <SOURCE NAME="DISPLAY" PROPERTY="comments" />
+	      </CONNECT>
+	      <CONNECT>
+	        <TARGET NAME="ACTION" PROPERTY="comments" />
+	      </CONNECT>
+	    </FIELD>
+  </CLUSTER>
+
+</PAGE>

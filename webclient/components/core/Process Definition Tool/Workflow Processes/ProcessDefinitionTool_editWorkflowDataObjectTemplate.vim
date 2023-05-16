@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<VIEW
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="displayName"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="WorkflowDataObjectTemplateAdmin"
+    NAME="DISPLAY"
+    OPERATION="readWorkflowDataObjectTemplateDetailsForModify"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="WorkflowDataObjectTemplateAdmin"
+    NAME="ACTION"
+    OPERATION="modifyWorkflowDataObjectTemplate"
+    PHASE="ACTION"
+  />
+  <PAGE_PARAMETER NAME="templateID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="templateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="wdoTemplateKey$templateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="templateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="templateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+  <CLUSTER LABEL_WIDTH="30%">
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DisplayName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="displayName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="displayName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Category"
+      WIDTH="60"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="category"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="category"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.IsListWDO">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="isListWDO"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="isListWDO"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Description"
+  >
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Description"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="description"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</VIEW>

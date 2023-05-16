@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Popup External Party Office search page -->
+<PAGE
+  PAGE_ID="Issue_ExternalPartyOffice_search"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <!-- BEGIN, CR00236667, AK -->
+  <INCLUDE FILE_NAME="ExternalPartyOffice_searchCriteriaView.vim"/>
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="Issue_ExternalPartyOffice_search"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="CancelButton"
+        LABEL="ActionControl.Label.Cancel"
+      >
+        <LINK PAGE_ID="Appeal_scheduleHearingCaseIssueHearingIC">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+  <LIST TITLE="List.Title.SearchResults">
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.Select">
+        <LINK PAGE_ID="Appeal_confirmIssueExternalLocationHearingIC">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="externalPartyOfficeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="locationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtlsList$externalPartyOfficeName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="locationName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Title.OfficeName"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$externalPartyOfficeName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="ExternalParty_listExternalPartyOffice">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtlsList$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$externalPartyDetails"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="ExternalParty_home">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Address"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="formattedAddress"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Type"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$externalPartyType"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- END, CR00236667 -->
+</PAGE>

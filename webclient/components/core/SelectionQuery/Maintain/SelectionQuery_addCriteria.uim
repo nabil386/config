@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                            		-->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows a user to add criteria to a selection query           -->
+<PAGE PAGE_ID="SelectionQuery_addCriteria" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="SelectionQuery" NAME="QUERYDISPLAY" OPERATION="readSelectionQuery" PHASE="DISPLAY"/>
+
+
+  <SERVER_INTERFACE CLASS="SelectionQuery" NAME="DISPLAY" OPERATION="listSelectionQueryCriteria" PHASE="DISPLAY"/>
+
+
+  <SERVER_INTERFACE ACTION_ID_PROPERTY="key$actionIDProperty" CLASS="SelectionQuery" NAME="ACTION" OPERATION="validateOrUndoQuery" PHASE="ACTION"/>
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE NAME="ACTION" PROPERTY="informationMsgTxt"/>
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <PAGE_PARAMETER NAME="selectionQueryID"/>
+
+
+  <ACTION_SET>
+
+
+    <ACTION_CONTROL IMAGE="BackButton" LABEL="ActionControl.Label.Back">
+      <LINK DISMISS_MODAL="false" PAGE_ID="SelectionQuery_createSelectionQuery">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="selectionQueryID"/>
+          <TARGET NAME="PAGE" PROPERTY="selectionQueryID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL ACTION_ID="VALIDATE_SELECTION_QUERY" LABEL="ActionControl.Label.ValidateQuery" TYPE="SUBMIT">
+      <LINK DISMISS_MODAL="false" PAGE_ID="SelectionQuery_addCriteria"/>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL ACTION_ID="DUMMY_SUBMIT" IMAGE="FinishButton" LABEL="ActionControl.Label.Finish" TYPE="SUBMIT">
+      <LINK PAGE_ID="SelectionQuery_listSelectionQueries"/>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL ACTION_ID="UNDO_SELECTION_QUERY" ALIGNMENT="LEFT" IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel" TYPE="SUBMIT">
+      <LINK PAGE_ID="SelectionQuery_listSelectionQueries"/>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="selectionQueryID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$selectionQueryID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="selectionQueryID"/>
+    <TARGET NAME="QUERYDISPLAY" PROPERTY="key$selectionQueryID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="selectionQueryID"/>
+    <TARGET NAME="ACTION" PROPERTY="key$selectionQueryID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="QUERYDISPLAY" PROPERTY="result$details$dtls$versionNo"/>
+    <TARGET NAME="ACTION" PROPERTY="key$versionNo"/>
+  </CONNECT>
+
+
+  <CLUSTER NUM_COLS="1" SHOW_LABELS="FALSE" TITLE="Cluster.Title.SQLDetails">
+
+
+    <FIELD HEIGHT="4">
+      <CONNECT>
+        <SOURCE NAME="QUERYDISPLAY" PROPERTY="sqlText"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER DESCRIPTION="Cluster.Title.Criteria.Description" NUM_COLS="1" SHOW_LABELS="FALSE" TITLE="Cluster.Title.Criteria">
+
+
+    <CONTAINER ALIGNMENT="LEFT">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddCriteria">
+        <LINK DISMISS_MODAL="false" OPEN_MODAL="true" PAGE_ID="SelectionQuery_createCriteriaFromCreate">
+          <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="selectionQueryID"/>
+            <TARGET NAME="PAGE" PROPERTY="selectionQueryID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+  </CLUSTER>
+
+
+  <LIST PAGINATED="false">
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK OPEN_MODAL="true" PAGE_ID="SelectionQuery_modifyCriteria">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$dtls$criteriaID"/>
+            <TARGET NAME="PAGE" PROPERTY="criteriaID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK OPEN_MODAL="true" PAGE_ID="SelectionQuery_deleteCriteria">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$dtls$criteriaID"/>
+            <TARGET NAME="PAGE" PROPERTY="criteriaID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$dtls$name"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Value">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$dtls$value"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DisplayName">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$dtls$displayName"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DisplayValue">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$dtls$displayValue"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

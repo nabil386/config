@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page displays the list of change set to the user.                 -->
+<!-- BEGIN, CR00280244, SS -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="CTM_listChangeSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+  <SERVER_INTERFACE
+    CLASS="MaintainChangeSet"
+    NAME="DISPLAY"
+    OPERATION="listChangeSet"
+    PHASE="DISPLAY"
+  />
+
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="CTM_createChangeSet"
+      />
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Import">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="CTM_uploadChangeSet"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="isReleased"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CTM_modifyChangeSet"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="changeSetID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="changeSetID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+ <SEPARATOR/>
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddBusinessObjects">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isOpen"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CTM_addBusinessObjectsToChangeSet"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="changeSetName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="changeSetName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="changeSetID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="changeSetID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.RemoveBusinessObjects">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isNotReleased"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CTM_removeBusinessObjects"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="changeSetID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="changeSetID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+<SEPARATOR/>
+
+   <ACTION_CONTROL LABEL="ActionControl.Label.Release">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isNotReleased"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CTM_releaseChangeSet"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="changeSetName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="changeSetName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="changeSetID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="changeSetID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+  <SEPARATOR/>
+  
+      <ACTION_CONTROL LABEL="ActionControl.Label.Transport">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isReleased"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CTM_selectTargetSystem"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="changeSetName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="changeSetName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="changeSetID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="changeSetID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+<SEPARATOR/>
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Apply">
+        <!-- BEGIN, CR00280915, SS -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isReleased"
+          />
+        </CONDITION>
+ 
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CTM_resolveInitialAndSuccessiveApplyAction"
+          WINDOW_OPTIONS="width=630"
+        >
+          <!-- END, CR00280915 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$dtls$changeSetName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="changeSetName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$dtls$changeSetID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="changeSetID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$dtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.ApplyRevert">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isRevert"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CTM_applyChangeSetWithConfigurationOff"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$dtls$changeSetName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="changeSetName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$dtls$changeSetID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="changeSetID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$dtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+<SEPARATOR/>
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Clone">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isReleased"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CTM_cloneChangeSet"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$dtls$changeSetID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="changeSetID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      
+<SEPARATOR/>
+
+   <ACTION_CONTROL LABEL="ActionControl.Label.Export" TYPE="FILE_DOWNLOAD">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isReleased"
+          />
+        </CONDITION>
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$dtls$changeSetID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="changeSetID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="isNotEncrypt"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="encryptInd"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          
+        </LINK>
+      </ACTION_CONTROL>
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.ExportWithEncrypt" TYPE="FILE_DOWNLOAD">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isReleased"
+          />
+        </CONDITION>
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$dtls$changeSetID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="changeSetID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="isEncrypt"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="encryptInd"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          
+        </LINK>
+      </ACTION_CONTROL>
+
+<SEPARATOR/>
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="isDeleted"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CTM_deleteChangeSet"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="changeSetID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="changeSetID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="changeSetName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="changeSetName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$dtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- END, CR00280244 -->
+    <!-- Displaying the change set list details -->
+    <FIELD
+      LABEL="Field.Label.ChangeSetName"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="changeSetName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ChangeSetSource"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="systemSource"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Released"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="releasedDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Created"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ChangeSetOwner"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="createdByFullName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+        WINDOW_OPTIONS="width=900,height=300"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="createdBy"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ChangeSetStatus"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- Inline page to display details of a change set -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="CTM_resolveChangeSetView">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtlsList$dtls$changeSetID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="changeSetID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+</PAGE>

@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2012 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view a list of addresses for both the     -->
+<!-- original and duplicate Participants. The page allows a user merge      -->
+<!-- selected duplicate participant contact records with the original       -->
+<!-- participant                                                            -->
+<PAGE
+  PAGE_ID="Participant_mergeContacts"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00294967, MV -->
+  <SERVER_INTERFACE
+    CLASS="ClientMerge"
+    NAME="DISPLAY"
+    OPERATION="listConcernContactsForMerge"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00294967 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="ClientMerge"
+    NAME="ACTION"
+    OPERATION="mergeContacts"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="originalConcernRoleID"/>
+  <PAGE_PARAMETER NAME="duplicateConcernRoleID"/>
+  <PAGE_PARAMETER NAME="concernRoleMergeID"/>
+  <PAGE_PARAMETER NAME="contextDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="originalConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="originalConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="duplicateConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="duplicateConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="originalConcernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="originalConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleMergeID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="concernRoleMergeID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="THIS"/>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <LIST TITLE="List.Title.Contacts">
+
+
+    <!-- BEGIN, CR00223827 ,MC -->
+    <DETAILS_ROW>
+
+
+      <INLINE_PAGE PAGE_ID="Participant_viewMergeContact">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="origList$dtls$contactID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contactID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+
+
+    </DETAILS_ROW>
+    <!-- END, CR00223827 -->
+
+
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="origList$dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="origList$dtls$contactTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.From"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="origList$dtls$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.To"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="origList$dtls$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="origList$dtls$statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <LIST
+    DESCRIPTION="List.MergeContacts.Description"
+    TITLE="List.Title.MergeContacts"
+  >
+
+
+    <CONTAINER WIDTH="7">
+
+
+      <WIDGET TYPE="MULTISELECT">
+
+
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dupList$dtls$contactID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+
+
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="mergeTabList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+
+
+      </WIDGET>
+
+
+    </CONTAINER>
+    <!-- BEGIN, CR00223827 ,MC -->
+    <DETAILS_ROW>
+
+
+      <INLINE_PAGE PAGE_ID="Participant_viewMergeContact">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dupList$dtls$contactID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contactID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+
+
+    </DETAILS_ROW>
+    <!-- END, CR00223827 -->
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dupList$dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dupList$dtls$contactTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.From"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dupList$dtls$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.To"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dupList$dtls$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dupList$dtls$statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:curam="http://www.curamsoftware.com/curam"
+  xmlns:cing="http://www.curamsoftware.com/curam/jde/client/curam-ng"
+  xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+  <jsp:directive.page isErrorPage="false" pageEncoding="UTF-8" contentType="text/html;charset=UTF-8"
+    isELIgnored="false" language="java" buffer="32kb" errorPage="/cw/ErrorPage.do"/>
+  <jsp:output omit-xml-declaration="yes"/>
+  <jsp:text><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></jsp:text>
+  <jsp:scriptlet> pageContext.setAttribute("pageLocale",
+    curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+    pageContext.getSession()).getLocale().toString()); </jsp:scriptlet>
+  <curam:userPreferences localeCode="${pageScope.pageLocale}"/>
+  <jsp:scriptlet>
+    <![CDATA[
+
+      javax.servlet.http.HttpServletRequest hsRequest;
+      javax.servlet.http.HttpSession httpSession;
+      hsRequest = (javax.servlet.http.HttpServletRequest) request;
+      httpSession = hsRequest.getSession();
+ 
+      String iegExecutionID = request.getParameter("executionID");
+      
+      String pagePlayerID = request.getParameter("playerID");  
+              
+      String motivationID = (String) httpSession.getAttribute("curam.motivationid");
+      
+            // Call the Server to determine the next page
+      curam.interfaces.MotivationPkg.Motivation_createMotivationResults_TH th = 
+        new curam.interfaces.MotivationPkg.Motivation_createMotivationResults_TH (); 
+      
+      th.setFieldValue(th.key$motivationID_idx, motivationID);     
+      
+      th.callServer();
+      
+      String url = "CitizenWorkspace_eligibilityResultsPage.do?o3ctx=512&motivationID=" + curam.omega3.request.RequestUtils.escapeURL(motivationID);      
+      
+       out.print("<script>window.parent.displayContent({pageID:'CitizenWorkspace_eligibilityResults', param: [{paramKey:\"motivationID\", paramValue:\""
+        + curam.omega3.request.RequestUtils.escapeURL(motivationID) + "\"}]})" + "</script>");
+
+      ]]>
+  </jsp:scriptlet>
+</jsp:root>

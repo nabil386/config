@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed Materials - Property of IBM Copyright IBM Corporation 2012. 
+	All Rights Reserved. US Government Users Restricted Rights - Use, duplication 
+	or disclosure restricted by GSA ADP Schedule Contract with IBM Corp. -->
+
+<!-- Copyright (c) 2007, 2008, 2010 Curam Software Ltd. -->
+<!-- All rights reserved. -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam -->
+<!-- Software. -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page displays a list of the tasks assigned to a member of the organization 
+	unit, due in a particular week. -->
+<PAGE PAGE_ID="Supervisor_orgUnitTasksDueByWeekAssignedTo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+	<PAGE_TITLE>
+		<CONNECT>
+			<SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText" />
+		</CONNECT>
+		<CONNECT>
+			<SOURCE NAME="PAGE" PROPERTY="deadlineDate" />
+		</CONNECT>
+	</PAGE_TITLE>
+
+
+	<SERVER_INTERFACE
+		CLASS="BDMMaintainSupervisorOrgUnits" NAME="DISPLAY"
+		OPERATION="listOrgUnitTasksDueByWeek" PHASE="DISPLAY" />
+
+
+	<PAGE_PARAMETER NAME="deadlineDate" />
+	<PAGE_PARAMETER NAME="userName" />
+	<PAGE_PARAMETER NAME="orgUnitID" />
+	<PAGE_PARAMETER NAME="orgStructureID" />
+	<PAGE_PARAMETER NAME="taskOptionCode" />
+	<PAGE_PARAMETER NAME="userFullName" />
+	<PAGE_PARAMETER NAME="taskType" />
+
+
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="userName" />
+		<TARGET NAME="DISPLAY" PROPERTY="key$key$userName" />
+	</CONNECT>
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="orgUnitID" />
+		<TARGET NAME="DISPLAY" PROPERTY="key$orgUnitID" />
+	</CONNECT>
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="deadlineDate" />
+		<TARGET NAME="DISPLAY" PROPERTY="key$key$deadlineDate" />
+	</CONNECT>
+
+
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="taskType" />
+		<TARGET NAME="DISPLAY" PROPERTY="key$key$taskReservationStatus" />
+	</CONNECT>
+
+
+	<INCLUDE
+		FILE_NAME="Supervisor_orgUnitAssignedTasksDueByWeekChartView.vim" />
+
+
+	<LIST>
+		<TITLE>
+			<CONNECT>
+				<SOURCE NAME="TEXT"
+					PROPERTY="List.Title.AssignedTasksDueWeekStarting" />
+			</CONNECT>
+			<CONNECT>
+				<SOURCE NAME="PAGE" PROPERTY="userFullName" />
+			</CONNECT>
+		</TITLE>
+
+
+		<DETAILS_ROW>
+			<INLINE_PAGE PAGE_ID="Supervisor_viewTask">
+				<CONNECT>
+					<SOURCE NAME="DISPLAY" PROPERTY="taskID" />
+					<TARGET NAME="PAGE" PROPERTY="taskKey$taskID" />
+				</CONNECT>
+			</INLINE_PAGE>
+		</DETAILS_ROW>
+
+
+		<ACTION_SET TYPE="LIST_ROW_MENU">
+			<ACTION_CONTROL LABEL="Field.Label.Forward">
+				<LINK OPEN_MODAL="true" PAGE_ID="Supervisor_taskForward">
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="taskID" />
+						<TARGET NAME="PAGE" PROPERTY="taskID" />
+					</CONNECT>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="versionNo" />
+						<TARGET NAME="PAGE" PROPERTY="versionNo" />
+					</CONNECT>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="description" />
+						<TARGET NAME="PAGE" PROPERTY="description" />
+					</CONNECT>
+				</LINK>
+			</ACTION_CONTROL>
+
+
+			<ACTION_CONTROL LABEL="Field.Label.Reallocate">
+				<LINK OPEN_MODAL="true" PAGE_ID="Supervisor_taskReallocate">
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="taskID" />
+						<TARGET NAME="PAGE" PROPERTY="taskID" />
+					</CONNECT>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="versionNo" />
+						<TARGET NAME="PAGE" PROPERTY="versionNo" />
+					</CONNECT>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="description" />
+						<TARGET NAME="PAGE" PROPERTY="description" />
+					</CONNECT>
+				</LINK>
+			</ACTION_CONTROL>
+
+
+			<SEPARATOR />
+
+
+			<ACTION_CONTROL LABEL="Field.Label.ReserveFor">
+				<LINK OPEN_MODAL="true" PAGE_ID="Supervisor_reserveTask">
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="taskID" />
+						<TARGET NAME="PAGE" PROPERTY="taskID" />
+					</CONNECT>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="versionNo" />
+						<TARGET NAME="PAGE" PROPERTY="versionNo" />
+					</CONNECT>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="description" />
+						<TARGET NAME="PAGE" PROPERTY="description" />
+					</CONNECT>
+				</LINK>
+			</ACTION_CONTROL>
+
+
+			<ACTION_CONTROL LABEL="Field.Label.Un-reserve">
+				<LINK OPEN_MODAL="true" PAGE_ID="Supervisor_unreserveTask">
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="taskID" />
+						<TARGET NAME="PAGE" PROPERTY="taskID" />
+					</CONNECT>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="versionNo" />
+						<TARGET NAME="PAGE" PROPERTY="versionNo" />
+					</CONNECT>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="description" />
+						<TARGET NAME="PAGE" PROPERTY="description" />
+					</CONNECT>
+				</LINK>
+			</ACTION_CONTROL>
+
+
+			<SEPARATOR />
+
+
+			<ACTION_CONTROL LABEL="Field.Label.Defer">
+				<LINK OPEN_MODAL="true" PAGE_ID="Supervisor_deferTask">
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="taskID" />
+						<TARGET NAME="PAGE" PROPERTY="taskID" />
+					</CONNECT>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="versionNo" />
+						<TARGET NAME="PAGE" PROPERTY="versionNo" />
+					</CONNECT>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="description" />
+						<TARGET NAME="PAGE" PROPERTY="description" />
+					</CONNECT>
+				</LINK>
+			</ACTION_CONTROL>
+
+
+			<ACTION_CONTROL LABEL="Field.Label.Restart">
+				<LINK OPEN_MODAL="true" PAGE_ID="Supervisor_restartTask">
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="taskID" />
+						<TARGET NAME="PAGE" PROPERTY="taskID" />
+					</CONNECT>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="versionNo" />
+						<TARGET NAME="PAGE" PROPERTY="versionNo" />
+					</CONNECT>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="description" />
+						<TARGET NAME="PAGE" PROPERTY="description" />
+					</CONNECT>
+				</LINK>
+			</ACTION_CONTROL>
+
+
+			<SEPARATOR />
+
+
+			<ACTION_CONTROL LABEL="Field.Label.AddComment">
+				<LINK OPEN_MODAL="true" PAGE_ID="Supervisor_addTaskComment">
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="taskID" />
+						<TARGET NAME="PAGE" PROPERTY="taskID" />
+					</CONNECT>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="description" />
+						<TARGET NAME="PAGE" PROPERTY="description" />
+					</CONNECT>
+				</LINK>
+			</ACTION_CONTROL>
+
+
+			<SEPARATOR />
+
+
+			<ACTION_CONTROL LABEL="Field.Label.Close">
+				<LINK OPEN_MODAL="true"
+					PAGE_ID="MaintainSupervisorTask_closeTask">
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="taskID" />
+						<TARGET NAME="PAGE" PROPERTY="taskID" />
+					</CONNECT>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="versionNo" />
+						<TARGET NAME="PAGE" PROPERTY="versionNo" />
+					</CONNECT>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="description" />
+						<TARGET NAME="PAGE" PROPERTY="description" />
+					</CONNECT>
+				</LINK>
+			</ACTION_CONTROL>
+		</ACTION_SET>
+
+
+		<FIELD LABEL="Field.Label.TaskID" WIDTH="10">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="taskID" />
+			</CONNECT>
+		</FIELD>
+
+
+		<FIELD LABEL="Field.Label.Subject" WIDTH="20">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="taskSubject" />
+			</CONNECT>
+		</FIELD>
+
+
+		<!-- START : TASK 86597 -->
+
+		<FIELD LABEL="Field.Label.UrgentFlag" WIDTH="10">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="caseUrgentFlagStr" />
+			</CONNECT>
+		</FIELD>
+
+		<FIELD LABEL="Field.Label.EscalationLevel" WIDTH="10">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="escalationLevelDesc" />
+			</CONNECT>
+		</FIELD>
+
+		<!-- END : TASK 86597 -->
+
+		<FIELD LABEL="Field.Label.Priority" WIDTH="10">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="taskPriority" />
+			</CONNECT>
+		</FIELD>
+
+
+		<FIELD LABEL="Field.Label.Assigned" WIDTH="20">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="taskAssignedDateTime" />
+			</CONNECT>
+		</FIELD>
+
+
+		<FIELD LABEL="Field.Label.Deadline" WIDTH="20">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="deadlineDate" />
+			</CONNECT>
+		</FIELD>
+	</LIST>
+</PAGE>

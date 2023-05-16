@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page displays details of a particular Process Instance            -->
+<PAGE
+  PAGE_ID="DeferredProcess_viewProcessInstance"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00071552, GBA -->
+  <!-- END, CR00071552 -->
+  <SERVER_INTERFACE
+    CLASS="WorkflowAdministration"
+    NAME="DISPLAY"
+    OPERATION="readDeferredProcessError"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="processInstanceID"/>
+  <PAGE_PARAMETER NAME="processName"/>
+  <PAGE_PARAMETER NAME="startDateTime"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processInstanceID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$processInstanceID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processName"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$processName"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+    <FIELD LABEL="Field.Label.ProcessName">
+      <CONNECT>
+        <SOURCE
+          NAME="PAGE"
+          PROPERTY="processName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDateTime">
+      <CONNECT>
+        <SOURCE
+          NAME="PAGE"
+          PROPERTY="startDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.InstanceData">
+    <FIELD LABEL="Field.Label.InstanceDateName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$wmName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.InstanceDataValue">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$wmValue"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

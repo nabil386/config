@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2011, 2013. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011, 2013 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp redirects the user to the appropriate evidence attribution    -->
+<!-- page.                                                                  -->
+<PAGE
+  PAGE_ID="EvidenceBroker_resolveIncomingEvidence"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+      curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+      pageContext.getSession()).getLocale() + "/";
+      String caseID = request.getParameter("caseID");
+
+      if (null == caseID) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "caseID");
+       System.out.println(e);
+       throw e;
+      }
+
+      String productCategoryOrTypeCode = "";
+
+      curam.interfaces.CasePkg.Case_getProductCategoryCode_TH 
+      caseTH = new curam.interfaces.CasePkg.Case_getProductCategoryCode_TH();
+      caseTH.setFieldValue(caseTH.key$caseID_idx, caseID);
+      caseTH.callServer();
+      productCategoryOrTypeCode=caseTH.getFieldValue(
+      caseTH.result$productCategoryCode_idx);
+      // BEGIN, CR00398056, RD
+      String url = "";
+      boolean caseResolveInd = false;
+      try
+      {
+	      if(productCategoryOrTypeCode.equals("")){
+		  curam.interfaces.ProductDeliveryPkg.ProductDelivery_readProductType_TH 
+		  productTH = new curam.interfaces.ProductDeliveryPkg.ProductDelivery_readProductType_TH(); 
+		  productTH.setFieldValue(productTH.productDeliveryKey$caseID_idx, caseID);
+		  productTH.callServer();
+		  productCategoryOrTypeCode=productTH.getFieldValue(
+		  productTH.result$productType_idx);
+	      }
+      }catch(Exception rnfe)
+      {
+      	url = context + "Case_resolveCaseHomePage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+      	caseResolveInd = true;
+      }
+
+
+      if(!caseResolveInd)
+      {
+	      if(productCategoryOrTypeCode.equals("PC9")) {
+	          url = context + "EvidenceBroker_listIdenticalIncomingEvidenceFromSGICasePage.do?caseID=" + 
+	          curam.omega3.request.RequestUtils.escapeURL(caseID);
+	      } else if(productCategoryOrTypeCode.equals("PC2211")) {
+	          url = context + "EvidenceBroker_listIdenticalIncomingEvidenceFromCDPICHomePage.do?caseID=" + 
+	          curam.omega3.request.RequestUtils.escapeURL(caseID); 
+	      } else if(productCategoryOrTypeCode.equals("PC2201")) {
+	          url = context + "EvidenceBroker_listIdenticalIncomingEvidenceFromCTPICHomePage.do?caseID=" + 
+	          curam.omega3.request.RequestUtils.escapeURL(caseID);
+	      } else if(productCategoryOrTypeCode.equals("PT2211")) {
+	          url = context + "EvidenceBroker_listIdenticalIncomingEvidenceFromCDPPDCasePage.do?caseID=" + 
+	          curam.omega3.request.RequestUtils.escapeURL(caseID); 
+	      } else if(productCategoryOrTypeCode.equals("PT2201")) {
+	          url = context + "EvidenceBroker_listIdenticalIncomingEvidenceFromCTPPDCasePage.do?caseID=" + 
+	          curam.omega3.request.RequestUtils.escapeURL(caseID); 
+	      } else if(productCategoryOrTypeCode.equals("PC1")) {
+	          url = context + "EvidenceBroker_listIdenticalIncomingEvidenceFromIntegratedCasePage.do?caseID=" + 
+	          curam.omega3.request.RequestUtils.escapeURL(caseID); 
+	      } else if(productCategoryOrTypeCode.equals("DP1")) {
+	          url = context + "EvidenceBroker_listIdenticalIncomingEvidenceFromPDCasePage.do?caseID=" + 
+	          curam.omega3.request.RequestUtils.escapeURL(caseID); 
+	      } else if(productCategoryOrTypeCode.equals("PT30")) {
+	          url = context + "EvidenceBroker_listIdenticalIncomingEvidenceFromSGPDCasePage.do?caseID=" + 
+	          curam.omega3.request.RequestUtils.escapeURL(caseID); 
+	      } else {
+	          url = context + "EvidenceBroker_listIdenticalIncomingEvidencePage.do?caseID=" + 
+	          curam.omega3.request.RequestUtils.escapeURL(caseID);
+	      }
+      }
+      // END, CR00398056
+      url += "&amp;" + rh.getSystemParameters();
+        
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+  </JSP_SCRIPTLET>
+</PAGE>

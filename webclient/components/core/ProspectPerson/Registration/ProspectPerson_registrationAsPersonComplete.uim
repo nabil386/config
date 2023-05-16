@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page confirms the registration of a prospect person             -->
+<!-- as an employer.                                                        -->
+<PAGE PAGE_ID="ProspectPerson_registrationAsPersonComplete" WINDOW_OPTIONS="width=400" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="alternateID"/>
+
+
+  <!-- BEGIN, CR00114322, PA -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="informationMsgTxt"/>
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <!-- Declare the 'DISPLAY' server bean -->
+  <SERVER_INTERFACE CLASS="Person" NAME="DISPLAY" OPERATION="readInformationalMessage" PHASE="DISPLAY"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="concernRoleID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="concernRoleID"/>
+  </CONNECT>
+  <!-- END, CR00114322, PA -->
+
+
+  <CLUSTER SHOW_LABELS="false" STYLE="outer-cluster-borderless">
+    <FIELD>
+      <CONNECT>
+        <SOURCE NAME="TEXT" PROPERTY="Field.StaticText.RegistrationComplete"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER SHOW_LABELS="false">
+    <CONTAINER>
+      <ACTION_CONTROL LABEL="ActionControl.Label.PersonHome">
+        <LINK PAGE_ID="Person_resolveHomePage">
+          <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="concernRoleID"/>
+            <TARGET NAME="PAGE" PROPERTY="concernRoleID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <CONTAINER>
+      <ACTION_CONTROL LABEL="ActionControl.Label.RegisterAnother">
+        <LINK PAGE_ID="ProspectPerson_search"/>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>
+</PAGE>

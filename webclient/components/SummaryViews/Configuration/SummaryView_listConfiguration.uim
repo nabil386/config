@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<PAGE
+  PAGE_ID="SummaryView_listConfiguration"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYCONTEXT"
+        PROPERTY="description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="productID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="SummaryViewConfiguration"
+    NAME="DISPLAYCONTEXT"
+    OPERATION="getProductContextDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="productID"
+    />
+    <TARGET
+      NAME="DISPLAYCONTEXT"
+      PROPERTY="productID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="SummaryViewConfiguration"
+    NAME="DISPLAY"
+    OPERATION="listAllConfigurationForProduct"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="productID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$productID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <LINK PAGE_ID="SummaryView_createConfiguration">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      SEPARATOR="Container.Separator"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.View">
+        <LINK PAGE_ID="SummaryView_viewConfiguration">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$dtls$summaryViewDefinitionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="summaryViewDefinitionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="productID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="productID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Label.SummaryViewName"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtlsList$dtls$summaryViewName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.RuleSetID"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtlsList$dtls$ruleSetID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.SummaryType"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtlsList$dtls$summaryType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtlsList$dtls$status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

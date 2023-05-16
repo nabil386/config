@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+  * Copyright (c) 2008 Curam Software Ltd.
+  * All rights reserved.
+  *
+  * This software is the confidential and proprietary information of Curam
+  * Software, Ltd. ("Confidential Information"). You shall not disclose
+  * such Confidential Information and shall use it only in accordance with
+  * the terms of the license agreement you entered into with Curam
+  * Software.
+  *
+-->
+<PAGE
+  PAGE_ID="Person_listIndigenousGroup"
+  POPUP_PAGE="true"
+>
+
+
+  <!-- The page title for this page -->
+  <PAGE_TITLE DESCRIPTION="Page.Title">
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <!-- Declare the 'display' server bean -->
+  <SERVER_INTERFACE
+    CLASS="Person"
+    NAME="SEARCH"
+    OPERATION="searchIndigenousGroup"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      LABEL="Control.Label.Search"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="THIS"/>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="ResetButton"
+      LABEL="ActionControl.Label.Reset"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="Person_listIndigenousGroup"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="DISMISS"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER TITLE="Cluster.Title.IndigenousDetails">
+    <FIELD
+      LABEL="Field.Label.IndigenousGroup"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="SEARCH"
+          PROPERTY="key$searchKey"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- List fields on this page -->
+  <LIST
+    
+    TITLE="List.Title.IndigenousDetails"
+  >
+
+
+    <CONTAINER
+      LABEL="Field.Label.Action"
+      SEPARATOR="Field.separator"
+      WIDTH="15"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="SEARCH"
+              PROPERTY="result$list$list$indigenousRegionName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="SEARCH"
+              PROPERTY="result$list$list$indigenousGroupCode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.IndigenousGroupName">
+      <CONNECT>
+        <SOURCE
+          NAME="SEARCH"
+          PROPERTY="result$list$list$indigenousGroupName"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

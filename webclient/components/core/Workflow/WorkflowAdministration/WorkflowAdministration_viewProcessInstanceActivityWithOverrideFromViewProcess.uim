@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2006 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page displays details of a particular Process Instance Activity   -->
+<PAGE
+  PAGE_ID="WorkflowAdministration_viewProcessInstanceActivityWithOverrideFromViewProcess"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.StaticText"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="result$activityName"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="WorkflowAdministration"
+    NAME="DISPLAY"
+    OPERATION="viewProcessInstanceActivity"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="activityInstanceID"/>
+  <PAGE_PARAMETER NAME="processInstanceID"/>
+  <PAGE_PARAMETER NAME="processName"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="activityInstanceID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$activityInstanceID"
+    />
+  </CONNECT>
+
+
+  <INCLUDE FILE_NAME="WorkflowAdministration_viewProcessInstanceActivity.vim"/>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="OverrideButton"
+      LABEL="Button.Label.Override"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="WorkflowAdministration_listProcessInstanceActivityEvents">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$activityName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="activityInstanceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="activityInstanceID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="Button.Label.Close"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="WorkflowAdministration_viewProcessInstance">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

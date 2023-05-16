@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view the version history of a questionnaire.  -->
+<PAGE
+  PAGE_ID="DecisionAssistAdmin_viewQuestionnaireVersionHistory"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <SERVER_INTERFACE
+    CLASS="Questionnaire"
+    NAME="VIEW_QUESTIONNAIREVERSION"
+    OPERATION="viewQuestionnaireDetails"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="Questionnaire"
+    NAME="READ_IEGSCRIPTKEY_INFO"
+    OPERATION="readIEGScriptKey"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="questionnaireVersionID"/>
+  <PAGE_PARAMETER NAME="questionnaireID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionnaireVersionID"
+    />
+    <TARGET
+      NAME="VIEW_QUESTIONNAIREVERSION"
+      PROPERTY="key$dtls$questionnaireVersionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionnaireVersionID"
+    />
+    <TARGET
+      NAME="READ_IEGSCRIPTKEY_INFO"
+      PROPERTY="key$dtls$questionnaireVersionID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER NUM_COLS="2">
+    <FIELD LABEL="Field.Label.QuestionnaireName">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_QUESTIONNAIREVERSION"
+          PROPERTY="result$specifiedVersionDtls$dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireInitialCreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_QUESTIONNAIREVERSION"
+          PROPERTY="result$initialVersionDtls$dtls$dateCreated"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireInitiallyReleasedOn">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_QUESTIONNAIREVERSION"
+          PROPERTY="result$initialVersionDtls$dtls$fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireType">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_QUESTIONNAIREVERSION"
+          PROPERTY="result$specifiedVersionDtls$dtls$type"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.QuestionDetails"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="VIEW_QUESTIONNAIREVERSION"
+        PROPERTY="result$inEditStatusInd"
+      />
+    </CONDITION>
+    <LIST>
+      <FIELD
+        LABEL="Field.Label.Page"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="VIEW_QUESTIONNAIREVERSION"
+            PROPERTY="result$questionsList$dtls$questionPageName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.Questions"
+        WIDTH="60"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="VIEW_QUESTIONNAIREVERSION"
+            PROPERTY="result$questionsList$dtls$questionText"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.QuestionDetails"
+  >
+    <CONDITION>
+      <IS_FALSE
+        NAME="VIEW_QUESTIONNAIREVERSION"
+        PROPERTY="result$inEditStatusInd"
+      />
+    </CONDITION>
+    <LIST>
+      <FIELD
+        LABEL="Field.Label.Page"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="VIEW_QUESTIONNAIREVERSION"
+            PROPERTY="result$questionsList$dtls$questionPageName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.Questions"
+        WIDTH="60"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="VIEW_QUESTIONNAIREVERSION"
+            PROPERTY="result$questionsList$dtls$questionText"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.QuestionnaireComments"
+  >
+    <FIELD HEIGHT="3">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_QUESTIONNAIREVERSION"
+          PROPERTY="result$specifiedVersionDtls$dtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

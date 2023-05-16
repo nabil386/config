@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009-2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp redirects the user to the appropriate modify deduction page   -->
+<PAGE
+  PAGE_ID="ProductDelivery_resolveModifyDeductionView1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      String context = request.getContextPath() + "/";
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String caseDeductionItemID = request.getParameter("caseDeductionItemID");
+      String category = request.getParameter("category");
+      String description = request.getParameter("description");
+      String caseID = request.getParameter("caseID");
+      String url = "";
+
+      description="";
+
+      if (caseDeductionItemID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "caseDeductionItemID");
+       System.out.println(e);
+       throw e;
+      }
+      if (category == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "category");
+       System.out.println(e);
+       throw e;
+      }   
+      if (caseID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "caseID");
+       System.out.println(e);
+       throw e;
+       
+      }        
+             
+      if (category.equals("DC3")) {
+        url = context + "ProductDelivery_modifyThirdPartyDeductionFromList1Page.do?caseDeductionItemID=" 
+                + curam.omega3.request.RequestUtils.escapeURL(caseDeductionItemID) + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(description);
+                
+      } else if (category.equals("DC1")) {
+        url = context + "ProductDelivery_modifyAppliedDeductionDetailsFromListPage.do?caseDeductionItemID=" + curam.omega3.request.RequestUtils.escapeURL(caseDeductionItemID) + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(description);
+      
+      } else if (category.equals("DC2")) {
+        url = context + "ProductDelivery_modifyUnappliedDeductionDetailsFromListPage.do?caseDeductionItemID=" + curam.omega3.request.RequestUtils.escapeURL(caseDeductionItemID) + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(description);
+      
+      }
+      // END, CR00110216
+      url += "&amp;" + rh.getSystemParameters();
+      response.sendRedirect(response.encodeRedirectURL(url));
+
+    
+  </JSP_SCRIPTLET>
+</PAGE>

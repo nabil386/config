@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This page allows a user to view a case attachment. -->
+<PAGE PAGE_ID="Case_viewAttachment"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+	<PAGE_TITLE>
+		<CONNECT>
+			<SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+		</CONNECT>
+	</PAGE_TITLE>
+	<!-- TASK : 12776 CAll custom server interfcae -->
+	<SERVER_INTERFACE CLASS="BDMCase" NAME="DISPLAY"
+		OPERATION="readCaseAttachment" />
+
+
+	<PAGE_PARAMETER NAME="attachmentID" />
+	<PAGE_PARAMETER NAME="caseAttachmentLinkID" />
+	<PAGE_PARAMETER NAME="pageDescription" />
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="attachmentID" />
+		<TARGET NAME="DISPLAY" PROPERTY="attachmentID" />
+	</CONNECT>
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="caseAttachmentLinkID" />
+		<TARGET NAME="DISPLAY" PROPERTY="caseAttachmentLinkID" />
+	</CONNECT>
+	<CLUSTER LABEL_WIDTH="30" NUM_COLS="2">
+		<!-- BEGIN, 213970, MD -->
+		<CONDITION>
+			<IS_FALSE NAME="DISPLAY" PROPERTY="cancelledInd" />
+		</CONDITION>
+		<!-- END, 213970 -->
+		<CONTAINER LABEL="Field.Label.Name">
+			<!-- BEGIN HARP 47675 -->
+			<WIDGET TYPE="FILE_DOWNLOAD">
+				<WIDGET_PARAMETER NAME="LINK_TEXT">
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="attachmentName" />
+					</CONNECT>
+				</WIDGET_PARAMETER>
+				<WIDGET_PARAMETER NAME="PARAMS">
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="attachmentID" />
+						<TARGET NAME="PAGE" PROPERTY="attachmentID" />
+					</CONNECT>
+				</WIDGET_PARAMETER>
+			</WIDGET>
+			<!-- END HARP 47675 -->
+		</CONTAINER>
+		<FIELD LABEL="Field.Label.FileLocation">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="fileLocation" />
+			</CONNECT>
+		</FIELD>
+		<FIELD LABEL="Field.Label.DocumentType">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="documentType" />
+			</CONNECT>
+		</FIELD>
+
+
+		<FIELD LABEL="Field.Label.ParticipantName">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="caseParticipantName" />
+			</CONNECT>
+		</FIELD>
+		<FIELD LABEL="Field.Label.FileReference">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="fileReference" />
+			</CONNECT>
+		</FIELD>
+
+
+		<FIELD LABEL="Field.Label.ReceiptDate">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="receiptDate" />
+			</CONNECT>
+		</FIELD>
+	</CLUSTER>
+
+
+	<!-- BEGIN, 213970, MD -->
+	<CLUSTER LABEL_WIDTH="30" NUM_COLS="2">
+		<CONDITION>
+			<IS_TRUE NAME="DISPLAY" PROPERTY="cancelledInd" />
+		</CONDITION>
+		<FIELD LABEL="Field.Label.Name">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="attachmentName" />
+			</CONNECT>
+		</FIELD>
+
+		<FIELD LABEL="Field.Label.FileLocation">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="fileLocation" />
+			</CONNECT>
+		</FIELD>
+		<FIELD LABEL="Field.Label.DocumentType">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="documentType" />
+			</CONNECT>
+		</FIELD>
+		
+		<!-- TASK 12776  -->
+		<FIELD LABEL="Field.Label.FileSource">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="fileSource" />
+			</CONNECT>
+		</FIELD>
+
+		<FIELD LABEL="Field.Label.ParticipantName">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="caseParticipantName" />
+			</CONNECT>
+		</FIELD>
+		<FIELD LABEL="Field.Label.FileReference">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="fileReference" />
+			</CONNECT>
+		</FIELD>
+
+		<FIELD LABEL="Field.Label.ReceiptDate">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="receiptDate" />
+			</CONNECT>
+		</FIELD>
+	</CLUSTER>
+	<!-- END, 213970 -->
+</PAGE>

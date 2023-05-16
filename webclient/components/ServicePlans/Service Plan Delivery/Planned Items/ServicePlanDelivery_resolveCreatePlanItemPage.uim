@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012-2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2005, 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This jsp redirects the user to the Create PlanItem Page.-->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_resolveCreatePlanItemPage"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String planItemID = request.getParameter("planItemID");
+      String plannedSubGoalID = request.getParameter("plannedSubGoalID");
+      String description = request.getParameter("description");
+      String createPlanItemPageName="";
+      String planItemParameterName="";
+      String subGoalParameterName="";
+      String url = "";
+   
+      if (planItemID == null) {
+        // BEGIN, CR00124523, SK
+         core.ScriptletMissingParamException e = new
+            core.ScriptletMissingParamException(-20002, "planItemID");
+        throw e;
+       // END, CR00124523
+      }
+      
+      if (plannedSubGoalID == null) {
+              
+        // BEGIN, CR00124523, SK
+           core.ScriptletMissingParamException e = new
+                   core.ScriptletMissingParamException(-20002, "plannedSubGoalID");
+           throw e;
+       // END, CR00124523
+      }
+      
+      
+      curam.interfaces.ServicePlanDeliveryPkg.ServicePlanDelivery_resolveCreatePlanItemPage_TH
+        th = new curam.interfaces.ServicePlanDeliveryPkg.ServicePlanDelivery_resolveCreatePlanItemPage_TH();
+        
+      th.setFieldValue(th.planItemIDDetailsStruct$planItemIDDetailsStruct$planItemIDDetailsStruct$planItemID_idx,planItemID);
+
+      th.callServer();
+     
+      createPlanItemPageName=th.getFieldValue(th.result$createPageName$createPageName_idx);
+      
+      planItemParameterName=th.getFieldValue(th.result$planItemParameterName$createPagePlanItemIDParamName_idx);
+     
+      subGoalParameterName=th.getFieldValue(th.result$subGoalParameterName$createPageSubGoalIDParamName_idx);
+      
+      url = context + curam.omega3.request.RequestUtils.escapeURL(createPlanItemPageName) + "Page.do?" + curam.omega3.request.RequestUtils.escapeURL(planItemParameterName) + "=" + curam.omega3.request.RequestUtils.escapeURL(planItemID) +"&amp;" + curam.omega3.request.RequestUtils.escapeURL(subGoalParameterName) + "=" + curam.omega3.request.RequestUtils.escapeURL(plannedSubGoalID) + "&amp;description=" + curam.omega3.request.RequestUtils.escapeURL(description);
+ 
+      url += "&amp;" + rh.getSystemParameters();  
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+    
+  </JSP_SCRIPTLET>
+</PAGE>

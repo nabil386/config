@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2005, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to compare baselines.                        -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_baselineComparisonGantt"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <MENU MODE="INTEGRATED_CASE">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="menuData"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY"
+    OPERATION="compareBaselines"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="originalBaselineID"/>
+  <PAGE_PARAMETER NAME="selectedBaselineID"/>
+  <PAGE_PARAMETER NAME="currentPlanInd"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="originalBaselineID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="originalBaselineID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="selectedBaselineID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="selectedBaselineID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="currentPlanInd"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="currentPlanInd"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    SHOW_LABELS="true"
+  >
+    <FIELD LABEL="Field.Label.Baseline">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="baselineName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ComparedWith">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comparedItemName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ServicePlanDelivery_selectBaselineForCompare"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="originalBaselineID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="baseLineID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+  >
+    <FIELD CONFIG="Gantt.Config">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="baselineXMLString"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

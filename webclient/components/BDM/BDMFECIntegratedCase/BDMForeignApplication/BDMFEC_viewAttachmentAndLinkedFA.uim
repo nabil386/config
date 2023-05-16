@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This page allows a user to view a case attachment. -->
+<PAGE PAGE_ID="BDMFEC_viewAttachmentAndLinkedFA"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- TASK : 12776 CAll custom server interfcae -->
+  <SERVER_INTERFACE CLASS="BDMCase" NAME="DISPLAY"
+    OPERATION="readCaseAttachment" />
+
+
+  <PAGE_PARAMETER NAME="attachmentID" />
+  <PAGE_PARAMETER NAME="caseAttachmentLinkID" />
+  <PAGE_PARAMETER NAME="pageDescription" />
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="attachmentID" />
+    <TARGET NAME="DISPLAY" PROPERTY="attachmentID" />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseAttachmentLinkID" />
+    <TARGET NAME="DISPLAY" PROPERTY="caseAttachmentLinkID" />
+  </CONNECT>
+
+  <SERVER_INTERFACE CLASS="BDMForeignEngagementCase"
+    NAME="GETFALISTLINKEDTOATTACHMENT"
+    OPERATION="getFAListLinkedToAttachment" />
+
+
+  <CONNECT>
+    <SOURCE PROPERTY="attachmentID" NAME="PAGE" />
+    <TARGET PROPERTY="key$attachmentID"
+      NAME="GETFALISTLINKEDTOATTACHMENT" />
+  </CONNECT>
+
+  <CLUSTER LABEL_WIDTH="30" NUM_COLS="2">
+    <!-- BEGIN, 213970, MD -->
+    <CONDITION>
+      <IS_FALSE NAME="DISPLAY" PROPERTY="cancelledInd" />
+    </CONDITION>
+    <!-- END, 213970 -->
+    <!-- START : TASK 93728 -->
+    <FIELD LABEL="Field.Label.Name" >
+    <LINK URI_SOURCE_NAME="DISPLAY"
+				URI_SOURCE_PROPERTY="fileLocationURL"  OPEN_NEW= "true"/>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="fileName" />
+      </CONNECT>
+    </FIELD>
+
+	
+     <!-- END  : TASK 93728 -->
+    <FIELD LABEL="Field.Label.FileLocation">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="fileLocation" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DocumentType">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="documentType" />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ParticipantName">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="caseParticipantName" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.FileReference">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="fileReference" />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ReceiptDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="receiptDate" />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, 213970, MD -->
+  <CLUSTER LABEL_WIDTH="30" NUM_COLS="2">
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="cancelledInd" />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="fileName" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.FileLocation">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="fileLocation" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DocumentType">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="documentType" />
+      </CONNECT>
+    </FIELD>
+
+    <!-- TASK 12776 -->
+    <FIELD LABEL="Field.Label.FileSource">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="fileSource" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.ParticipantName">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="caseParticipantName" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.FileReference">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="fileReference" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.ReceiptDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="receiptDate" />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, 213970 -->
+
+
+  <LIST TITLE="List.Title.ForeignApplications">
+
+  <ACTION_SET TYPE="LIST_ROW_MENU">
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Unlink">
+      <LINK PAGE_ID="BDMFEC_unlinkFAFromAttachment" OPEN_MODAL="true"
+        SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="GETFALISTLINKEDTOATTACHMENT"
+            PROPERTY="result$bdmFADetails$fApplicationID" />
+          <TARGET NAME="PAGE" PROPERTY="fApplicationID" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="GETFALISTLINKEDTOATTACHMENT"
+            PROPERTY="result$bdmFADetails$feAttachmentLinkID" />
+          <TARGET NAME="PAGE" PROPERTY="feAttachmentLinkID" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="GETFALISTLINKEDTOATTACHMENT"
+            PROPERTY="result$bdmFADetails$caseID" />
+          <TARGET NAME="PAGE" PROPERTY="caseID" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+  </ACTION_SET>
+
+    <FIELD LABEL="Field.List.Label.ApplicationType">
+      <CONNECT>
+        <SOURCE NAME="GETFALISTLINKEDTOATTACHMENT"
+          PROPERTY="result$bdmFADetails$faApplTypeAndRefNumStr" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.List.Label.ReceivedDate">
+      <CONNECT>
+        <SOURCE NAME="GETFALISTLINKEDTOATTACHMENT"
+          PROPERTY="result$bdmFADetails$receiveDate" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.List.Label.ApplicationStatus">
+      <CONNECT>
+        <SOURCE NAME="GETFALISTLINKEDTOATTACHMENT"
+          PROPERTY="result$bdmFADetails$status" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.List.Label.RecordStatus">
+      <CONNECT>
+        <SOURCE NAME="GETFALISTLINKEDTOATTACHMENT"
+          PROPERTY="result$bdmFADetails$recordStatus" />
+      </CONNECT>
+    </FIELD>
+
+  </LIST>
+
+
+
+
+</PAGE>

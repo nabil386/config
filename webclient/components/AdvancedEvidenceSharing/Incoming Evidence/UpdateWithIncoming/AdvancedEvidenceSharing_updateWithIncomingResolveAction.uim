@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2017. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->                                                             
+<PAGE
+  COMPONENT_STYLE="page-omit-sidebar"
+  PAGE_ID="AdvancedEvidenceSharing_updateWithIncomingResolveAction"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  
+  <JSP_SCRIPTLET>
+      
+	  curam.omega3.request.RequestHandler rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+	
+	  String context = request.getContextPath() + "/";
+	  context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+	  
+	  String wizardStateID = request.getParameter("wizardStateID"); 
+	
+	  curam.interfaces.IncomingEvidencePkg.IncomingEvidence_readIncomingModifyPage_TH
+	  th = new   curam.interfaces.IncomingEvidencePkg.IncomingEvidence_readIncomingModifyPage_TH();
+	  th.setFieldValue(th.key$wizardStateID_idx, wizardStateID);
+	  th.callServer();
+	
+	  String pageName = th.getFieldValue(th.result$pageName$pageName_idx);
+	  String caseID = th.getFieldValue(th.result$caseID_idx);
+	  String evidenceID = th.getFieldValue(th.result$evidenceID_idx);
+	  String effectiveDate = th.getFieldValue(th.result$effectiveDate_idx);
+	  String effectiveFrom = th.getFieldValue(th.result$effectiveFrom_idx);
+	  String receivedDate = th.getFieldValue(th.result$receivedDate_idx);
+	  String evidenceType = th.getFieldValue(th.result$evidenceType_idx);
+	        
+	  String url = context + pageName + "Page.do?wizardStateID=" + curam.omega3.request.RequestUtils.escapeURL(wizardStateID);
+	  url += "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+	  url += "&amp;evidenceID=" + curam.omega3.request.RequestUtils.escapeURL(evidenceID);
+	  url += "&amp;effectiveDate=" + curam.omega3.request.RequestUtils.escapeURL(effectiveDate);
+	  url += "&amp;effectiveFrom=" + curam.omega3.request.RequestUtils.escapeURL(effectiveFrom);
+	  url += "&amp;receivedDate=" + curam.omega3.request.RequestUtils.escapeURL(receivedDate);
+	  url += "&amp;evidenceType=" + curam.omega3.request.RequestUtils.escapeURL(evidenceType);
+	  url += "&amp;" + rh.getSystemParameters();
+	  response.sendRedirect(response.encodeRedirectURL(url));      
+
+  </JSP_SCRIPTLET>
+</PAGE>

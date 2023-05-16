@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view a list of ICD code versions.         -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="DecisionAssistAdmin_listICDCodeVersions"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- BEGIN, CR00247672, AK -->
+  <SERVER_INTERFACE
+    CLASS="ICDCodes"
+    NAME="LIST_VERSIONS"
+    OPERATION="listICDCodeVersionDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <LIST>
+    <!-- BEGIN, CR00207167, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00207167 -->
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Release"
+        TYPE="ACTION"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="LIST_VERSIONS"
+            PROPERTY="result$dtlsList$inEditStatusInd"
+          />
+        </CONDITION>
+        <!-- BEGIN, CR00198884, SS -->
+        <!-- BEGIN, CR00198297, SS -->
+        <!-- BEGIN, CR00237410, AK -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DecisionAssistAdmin_releaseICDCodeVersion"
+          WINDOW_OPTIONS="width=500"
+        >
+          <!-- END, CR00237410 -->
+          <!-- END, CR00198297 -->
+          <!-- END, CR00198884 -->
+          <CONNECT>
+            <SOURCE
+              NAME="LIST_VERSIONS"
+              PROPERTY="result$dtlsList$dtls$viewVersionDtls$ICDCodeVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="ICDCodeVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="LIST_VERSIONS"
+              PROPERTY="result$dtlsList$dtls$viewVersionDtls$versionNumber"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="ICDCodeVersion"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Delete"
+        TYPE="ACTION"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="LIST_VERSIONS"
+            PROPERTY="result$dtlsList$inEditStatusInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DecisionAssistAdmin_deleteICDCodeVersion"
+          WINDOW_OPTIONS="width=500"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="LIST_VERSIONS"
+              PROPERTY="result$dtlsList$dtls$viewVersionDtls$ICDCodeVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="ICDCodeVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="LIST_VERSIONS"
+              PROPERTY="result$dtlsList$dtls$viewVersionDtls$versionNumber"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="ICDCodeVersion"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Remove"
+        TYPE="ACTION"
+      >
+        <CONDITION>
+          <IS_FALSE
+            NAME="LIST_VERSIONS"
+            PROPERTY="result$dtlsList$inEditStatusInd"
+          />
+        </CONDITION>
+        <!-- BEGIN, CR00198884, SS -->
+        <!-- BEGIN, CR00198297, SS -->
+        <!-- BEGIN, CR00237410, AK -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DecisionAssistAdmin_removeICDCodeVersion"
+          WINDOW_OPTIONS="width=500"
+        >
+          <!-- END, CR00237410 -->
+          <!-- END, CR00198297 -->
+          <!-- END, CR00198884 -->
+          <CONNECT>
+            <SOURCE
+              NAME="LIST_VERSIONS"
+              PROPERTY="result$dtlsList$dtls$viewVersionDtls$ICDCodeVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="ICDCodeVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="LIST_VERSIONS"
+              PROPERTY="result$dtlsList$dtls$viewVersionDtls$versionNumber"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="ICDCodeVersion"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- BEGIN, CR00215172, PS -->
+    <FIELD LABEL="Field.Label.ICDVersion">
+      <CONNECT>
+        <SOURCE
+          NAME="LIST_VERSIONS"
+          PROPERTY="result$dtlsList$dtls$viewVersionDtls$versionNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ICDFrom">
+      <CONNECT>
+        <SOURCE
+          NAME="LIST_VERSIONS"
+          PROPERTY="result$dtlsList$dtls$viewVersionDtls$fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ICDTo">
+      <CONNECT>
+        <SOURCE
+          NAME="LIST_VERSIONS"
+          PROPERTY="result$dtlsList$dtls$viewVersionDtls$toDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ICDVersionStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="LIST_VERSIONS"
+          PROPERTY="result$dtlsList$dtls$viewVersionDtls$versionStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.UploadDate">
+      <!-- END, CR00215172 -->
+      <CONNECT>
+        <SOURCE
+          NAME="LIST_VERSIONS"
+          PROPERTY="result$dtlsList$dtls$viewVersionDtls$dateUploaded"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- END, CR00247672 -->
+</PAGE>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed Materials - Property of IBM
+    
+    Copyright IBM Corporation 2012. All Rights Reserved.
+    
+    US Government Users Restricted Rights - Use, duplication or disclosure 
+    restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<PAGE PAGE_ID="CitizenAccount_viewRemoteSystems" SCRIPT_FILE="display-hide-div.js"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+    <PAGE_TITLE ICON="CitizenAccount_viewRemoteSystems.Page.Icon">
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText"/>
+        </CONNECT>
+    </PAGE_TITLE>
+
+    <SERVER_INTERFACE CLASS="CitizenLifeEvents" NAME="DISPLAY" OPERATION="listRemoteSystems"
+        PHASE="DISPLAY"/>
+    <SERVER_INTERFACE CLASS="CitizenLifeEvents" NAME="ACTION" OPERATION="sendToRemoteSystems"
+        PHASE="ACTION"/>
+
+    <PAGE_PARAMETER NAME="lifeEventID"/>
+    <PAGE_PARAMETER NAME="lifeEventContextID"/>
+    <PAGE_PARAMETER NAME="id"/>
+
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="lifeEventID"/>
+        <TARGET NAME="DISPLAY" PROPERTY="key$lifeEventID"/>
+    </CONNECT>
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="lifeEventContextID"/>
+        <TARGET NAME="DISPLAY" PROPERTY="key$lifeEventContextID"/>
+    </CONNECT>
+	<CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="id"/>
+        <TARGET NAME="DISPLAY" PROPERTY="key$sessionID"/>
+    </CONNECT>
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="lifeEventID"/>
+        <TARGET NAME="ACTION" PROPERTY="lifeEventID"/>
+    </CONNECT>
+	<CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="id"/>
+        <TARGET NAME="ACTION" PROPERTY="playerExecutionID"/>
+    </CONNECT>
+
+    <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+        <ACTION_CONTROL LABEL="ActionControl.Label.Send" TYPE="SUBMIT">
+            <LINK PAGE_ID="CitizenAccount_viewLifeEventPostSubmit">
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="lifeEventID"/>
+                    <TARGET NAME="PAGE" PROPERTY="lifeEventID"/>
+                </CONNECT>
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="lifeEventContextID"/>
+                    <TARGET NAME="PAGE" PROPERTY="lifeEventContextID"/>
+                </CONNECT>
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="id"/>
+                    <TARGET NAME="PAGE" PROPERTY="id"/>
+                </CONNECT>
+            </LINK>
+        </ACTION_CONTROL>
+    </ACTION_SET>
+
+    <LIST>
+    	<!-- 5% FOR THIS -->
+        <WIDGET TYPE="MULTISELECT" WIDTH="5">
+            <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+                <CONNECT>
+                    <SOURCE NAME="DISPLAY" PROPERTY="selectedSystems"/>
+                </CONNECT>
+            </WIDGET_PARAMETER>
+            <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+                <CONNECT>
+                    <SOURCE NAME="DISPLAY" PROPERTY="dtls$remoteSystemID"/>
+                </CONNECT>
+            </WIDGET_PARAMETER>
+            <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+                <CONNECT>
+                    <TARGET NAME="ACTION" PROPERTY="keyList"/>
+                </CONNECT>
+            </WIDGET_PARAMETER>
+        </WIDGET>
+
+        <FIELD LABEL="Field.Label.Name" WIDTH="25">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="dtls$displayName"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.Description" WIDTH="45">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="dtls$description"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.System" WIDTH="25">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="dtls$systemName"/>
+            </CONNECT>
+        </FIELD>
+    </LIST>
+
+</PAGE>

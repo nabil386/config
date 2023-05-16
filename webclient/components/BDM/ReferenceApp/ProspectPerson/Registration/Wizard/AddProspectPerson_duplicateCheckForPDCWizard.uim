@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Description -->
+<!-- =========== -->
+<!-- Prospect Person search page                                            -->
+<PAGE
+  PAGE_ID="AddProspectPerson_duplicateCheckForPDCWizard"
+  HIDE_CONDITIONAL_LINKS="false"
+  WINDOW_OPTIONS="width=975,height=750"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <CLUSTER SHOW_LABELS="false">
+      <FIELD>
+          <CONNECT>
+              <SOURCE NAME="TEXT" PROPERTY="Person.search.static.message" />
+          </CONNECT>
+      </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00282028, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00282028 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="BDMParticipantRegistrationDetails"
+    NAME="DISPLAY"
+    OPERATION="getAddProspectPersonSearchCriteria"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00282028, IBM -->
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionIDProperty"
+    CLASS="BDMParticipantRegistrationDetails"
+    NAME="ACTION"
+    OPERATION="setAddProspectPersonSearchCriteriaDetailsExt"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00282028 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="ParticipantRegistration"
+    NAME="DISPLAYWIZARD"
+    OPERATION="getAddProspectPersonWizard"
+  />
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="wizardStateID$wizardStateID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="stateID$wizardStateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="stateID$wizardStateID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL
+      ACTION_ID="NEXTPAGE"
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+     <CONDITION>
+      <IS_TRUE
+        NAME="ACTION"
+        PROPERTY="result$isNextButtonEnabled"
+      />
+     </CONDITION>
+      <LINK
+        DISMISS_MODAL="false"
+        OPEN_MODAL="false"
+        PAGE_ID="AddProspectPerson_registerForPDCWizard"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="wizardStateID$wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+  </ACTION_SET>
+
+
+  <INCLUDE FILE_NAME="AddProspectPerson_duplicateCheckForPDCWizardView.vim"/>
+
+
+</PAGE>

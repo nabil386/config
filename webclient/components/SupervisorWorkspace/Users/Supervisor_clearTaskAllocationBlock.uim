@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- Copyright (c) 2003-2006, 2008, 2010 Curam Software Ltd.                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify a Dependant Data Item record.      -->
+<PAGE PAGE_ID="Supervisor_clearTaskAllocationBlock" WINDOW_OPTIONS="width=400" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE CLASS="MaintainSupervisorUsers" NAME="ACTION" OPERATION="clearTaskAllocationBlockForUser" PHASE="ACTION"/>
+  <PAGE_PARAMETER NAME="redirectedTaskID"/>
+  <PAGE_PARAMETER NAME="startDateTime"/>
+  <PAGE_PARAMETER NAME="endDateTime"/>
+  <PAGE_PARAMETER NAME="versionNum"/>
+  <PAGE_PARAMETER NAME="userFullName"/>
+  <PAGE_PARAMETER NAME="userName"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="redirectedTaskID"/>
+    <TARGET NAME="ACTION" PROPERTY="key$taskRedirectionID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="startDateTime"/>
+    <TARGET NAME="ACTION" PROPERTY="key$startDateTime"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="endDateTime"/>
+    <TARGET NAME="ACTION" PROPERTY="key$endDateTime"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="versionNum"/>
+    <TARGET NAME="ACTION" PROPERTY="key$versionNo"/>
+  </CONNECT>
+  <CLUSTER SHOW_LABELS="false" STYLE="outer-cluster-borderless">
+    <FIELD>
+      <CONNECT>
+        <SOURCE NAME="TEXT" PROPERTY="Field.Label.ConfirmationMsg"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <ACTION_SET ALIGNMENT="CENTER" TOP="FALSE">
+    <!-- BEGIN, CR00114357, SK -->
+    <ACTION_CONTROL DEFAULT="true" IMAGE="YesButton" LABEL="ActionControl.Label.Yes" TYPE="SUBMIT">
+      <!-- BEGIN, CR00161962, BK -->
+      <LINK PAGE_ID="Supervisor_taskAllocationBlocking">
+        <!-- END, CR00161962 -->
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="userFullName"/>
+          <TARGET NAME="PAGE" PROPERTY="userFullName"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00114357 -->
+
+
+    <ACTION_CONTROL IMAGE="NoButton" LABEL="ActionControl.Label.No"/>
+  </ACTION_SET>
+</PAGE>

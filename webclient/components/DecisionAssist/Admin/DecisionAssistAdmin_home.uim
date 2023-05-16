@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2022. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to create an asessment.                      -->
+<PAGE PAGE_ID="DecisionAssistAdmin_home" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+    </CONNECT>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Delimiter"/>
+    </CONNECT>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.SubTitle"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE CLASS="DeterminationConfig" NAME="LIST_ACTIVE_ASSESSMENTS" OPERATION="listActiveDAAssessmentConfig" PHASE="DISPLAY"/>
+
+
+  <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Title.MyShortcuts" WIDTH="50">
+    <CONTAINER>
+      <ACTION_CONTROL LABEL="ActionControl.Label.NewAssessment">
+        <!-- BEGIN, CR00198144, SS -->
+        <LINK OPEN_MODAL="true" PAGE_ID="DecisionAssistAdmin_createAssessment" WINDOW_OPTIONS="width=700"/>
+        <!-- END, CR00198144 -->
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <CONTAINER>
+      <ACTION_CONTROL LABEL="ActionControl.Label.NewDeterminationConfig">
+
+
+        <!-- BEGIN, CR00198144, SS -->
+        <LINK OPEN_MODAL="true" PAGE_ID="DecisionAssistAdmin_createDeterminationConfig" WINDOW_OPTIONS="width=725"/>
+        <!-- END, CR00198144 -->
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <CONTAINER>
+      <ACTION_CONTROL LABEL="ActionControl.Label.NewQuestionnaire">
+        <!-- BEGIN, CR00198144, SS -->
+        <LINK OPEN_MODAL="true" PAGE_ID="DecisionAssistAdmin_createQuestionnaire" WINDOW_OPTIONS="width=525"/>
+        <!-- END, CR00198144 -->
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <CONTAINER>
+      <ACTION_CONTROL LABEL="ActionControl.Label.NewOutcome">
+        <!-- BEGIN, CR00198144, SS -->
+        <LINK OPEN_MODAL="true" PAGE_ID="DecisionAssistAdmin_createOutcome" WINDOW_OPTIONS="width=700"/>
+        <!-- END, CR00198144 -->
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>
+
+
+  <LIST TITLE="Cluster.Title.Assessments">
+    <FIELD LABEL="Field.Label.Name" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="LIST_ACTIVE_ASSESSMENTS" PROPERTY="result$list$list$list$dtls$name"/>
+      </CONNECT>
+      <LINK PAGE_ID="DecisionAssistAdmin_viewAssessmentDetails">
+        <CONNECT>
+          <SOURCE NAME="LIST_ACTIVE_ASSESSMENTS" PROPERTY="result$list$list$list$dtls$assessmentConfigurationID"/>
+          <TARGET NAME="PAGE" PROPERTY="assessmentConfigurationID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate" WIDTH="10">
+      <CONNECT>
+        <SOURCE NAME="LIST_ACTIVE_ASSESSMENTS" PROPERTY="result$list$list$list$dtls$startDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate" WIDTH="10">
+      <CONNECT>
+        <SOURCE NAME="LIST_ACTIVE_ASSESSMENTS" PROPERTY="result$list$list$list$dtls$endDate"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

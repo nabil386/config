@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page displays a list of the codetables present in the Curam       -->
+<!-- application.                                                           -->
+<PAGE
+  PAGE_ID="System_searchSecurityIdentifier"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="System"
+    NAME="ACTION"
+    OPERATION="searchSecurityIdentifiers"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL
+      IMAGE="NewSIDButton"
+      LABEL="ActionControl.Label.NewSID"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="System_createSecurityIdentifier"
+      />
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="NewFunctionSIDButton"
+      LABEL="ActionControl.Label.NewFunctionSID"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="System_createFunctionSecurityIdentifier"
+      />
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="PublishButton"
+      LABEL="ActionControl.Label.Publish"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="System_publishSecurityChanges"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="26"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD LABEL="Field.Label.IdentifierName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$securityIdentifierName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="System_searchSecurityIdentifier"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST
+    PAGINATED="true"
+    TITLE="List.Title.SearchResults"
+  >
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Security_resolveSecurityIDTypeToView">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$securityIdentifierID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="securityIdentifierID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="sidType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="sidType"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Security_resolveSecurityIDTypeToModify"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$securityIdentifierID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="securityIdentifierID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="sidType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="sidType"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="DeleteButton"
+        LABEL="ActionControl.Label.Delete"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_cancelSecurityIdentifier"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="securityIdentifierID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="securityIdentifierID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.Identifier"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="sidName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="sidType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- Possibly add sidDescription here -->
+
+
+  </LIST>
+
+
+</PAGE>

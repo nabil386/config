@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2005 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This script redirects the user to the appropriate starting page when   -->
+<!-- editing a decision attachment.                                         -->
+<PAGE PAGE_ID="LegalAction_resolveModifyDecisionAttachment">
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler rh 
+        = curam.omega3.request.RequestHandlerFactory
+        .getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences
+        (pageContext.getSession()).getLocale() + "/";
+        
+      String description = request.getParameter("description");
+      String decisionAttachmentType 
+        = request.getParameter("decisionAttachmentType");
+      String attachmentLinkID = request.getParameter("attachmentLinkID");
+      String searchPage = request.getParameter("searchPage");
+      String url = "";
+      
+      if (decisionAttachmentType == null) {
+        
+        // BEGIN, CR00110216, SK
+             core.ScriptletMissingParamException e = new
+                   core.ScriptletMissingParamException(-20002, "decisionAttachmentType");
+             System.out.println(e);
+             throw e;
+        // END, CR00110216
+        
+      }
+            
+      if (decisionAttachmentType.equals("DAT2")) {
+        url = context 
+              + "LegalAction_modifyDecisionAttachmentPage.do?attachmentLinkID=" 
+              + curam.omega3.request.RequestUtils.escapeURL(attachmentLinkID) 
+              + "&amp;description=" + curam.omega3.request.RequestUtils.escapeURL(description);
+              
+      } else {
+        url = context 
+              + "LegalAction_modifyInternalAttachmentPage.do?attachmentLinkID=" 
+              + curam.omega3.request.RequestUtils.escapeURL(attachmentLinkID) 
+              + "&amp;searchPage=" + curam.omega3.request.RequestUtils.escapeURL(searchPage) 
+              + "&amp;description=" + curam.omega3.request.RequestUtils.escapeURL(description);
+      }
+      
+      url += "&amp;" + rh.getSystemParameters(); 
+
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+    
+  </JSP_SCRIPTLET>
+</PAGE>

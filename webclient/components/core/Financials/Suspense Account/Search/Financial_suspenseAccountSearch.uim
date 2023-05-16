@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to search the suspense account.              -->
+<PAGE
+  PAGE_ID="Financial_suspenseAccountSearch"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="Financial"
+    NAME="ACTION"
+    OPERATION="searchSuspenseAccount"
+    PHASE="ACTION"
+  />
+
+
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD
+      LABEL="Field.Label.IssuerName"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$issuerName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ReceivedDateFrom"
+      USE_DEFAULT="false"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$receivedDateFrom"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ReceiptMethod"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$receiptMethodCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <FIELD
+      LABEL="Field.Label.ReceivedDateTo"
+      USE_DEFAULT="false"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$receivedDateTo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Amount"
+      USE_DEFAULT="false"
+      WIDTH="10"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$amount"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="Financial_suspenseAccountSearch"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="Field.Label.Person">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Financial_suspenseTransferSearchPerson"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$suspenseAccountID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="suspenseAccountID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="Field.Label.Employer">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Financial_suspenseTransferSearchEmployer"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$suspenseAccountID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="suspenseAccountID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD
+      LABEL="Field.Title.IssuerName"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$issuerName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.ReceivedDate"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$receivedDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.EffectiveDate"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$effectiveDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      ALIGNMENT="RIGHT"
+      LABEL="Field.Title.Amount"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$amount"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Financial_viewSuspenseAccountItemDetail">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$suspenseAccountID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="suspenseAccountID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+  </LIST>
+</PAGE>

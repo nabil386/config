@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2008, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd. -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This is the home page for the web application.                         -->
+<PAGE
+  PAGE_ID="FundPM_fundManagerHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Welcome"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="WorkAllocation"
+    NAME="DISPLAY"
+    OPERATION="listTaskAndActivitiesForCurrentUser"
+  />
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <LIST TITLE="List.Title.Tasks">
+      <FIELD
+        LABEL="Field.Title.TaskID"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="TaskManagement_taskHome">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Title.Subject"
+        WIDTH="40"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="reservedTasks$dtlsList$dtls$subject"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Title.DueDate"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dueDateTime"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Title.Priority"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="priority"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.MyShortcuts"
+    >
+      <CONTAINER>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Inbox">
+          <!-- BEGIN, CR00281182, PS -->
+          <LINK PAGE_ID="Inbox_listReservedTasks"/>
+          <!-- END, CR00281182 -->
+        </ACTION_CONTROL>
+      </CONTAINER>
+      <CONTAINER>
+        <ACTION_CONTROL LABEL="ActionControl.Label.ChangePassword">
+          <!-- BEGIN, CR00198414, AS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="Organization_modifyUserPassword"
+            WINDOW_OPTIONS="width=700"
+          />
+          <!-- END, CR00198414 -->
+        </ACTION_CONTROL>
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <LIST TITLE="List.Title.MyCalendar">
+      <FIELD
+        LABEL="Field.Title.StartDate"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="startDateTime"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Title.Subject"
+        WIDTH="70"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="intervalDetailsList$subject"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="Activity_resolveApplicationHome">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="activityID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="ID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="activityTypeCode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="TYPE"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="recurringInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="RE"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="activityLevel"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="LV"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="attendeeInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="AT"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="acceptanceProvisionalInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="AC"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+</PAGE>

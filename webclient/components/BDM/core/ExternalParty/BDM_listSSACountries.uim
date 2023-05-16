@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002-2003, 2011 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view a list of SSA Countries.        -->
+<PAGE HIDE_CONDITIONAL_LINKS="true"
+	PAGE_ID="BDM_listSSACountries"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+	<PAGE_TITLE>
+		<CONNECT>
+			<SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+		</CONNECT>
+	</PAGE_TITLE>
+
+	<SERVER_INTERFACE CLASS="BDMExternalParty"
+		NAME="DISPLAY" OPERATION="listSSACountries" />
+
+	<ACTION_SET BOTTOM="false">
+		<ACTION_CONTROL LABEL="ActionControl.Label.New">
+			<CONDITION>
+				<IS_TRUE NAME="DISPLAY" PROPERTY="newInd" />
+			</CONDITION>
+			<LINK OPEN_MODAL="true"
+				PAGE_ID="RegisterExternalParty_duplicateCheckWizard">
+				<CONNECT>
+					<SOURCE NAME="CONSTANT" PROPERTY="Constant.NoValue" />
+					<TARGET NAME="PAGE" PROPERTY="wizardStateID" />
+				</CONNECT>
+			</LINK>
+		</ACTION_CONTROL>
+	</ACTION_SET>
+
+	<LIST>
+		<FIELD LABEL="Field.Label.CountryName" WIDTH="20">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="name" />
+			</CONNECT>
+			<LINK PAGE_ID="ExternalParty_home">
+				<CONNECT>
+					<SOURCE NAME="DISPLAY" PROPERTY="concernRoleID" />
+					<TARGET NAME="PAGE" PROPERTY="concernRoleID" />
+				</CONNECT>
+			</LINK>
+		</FIELD>
+
+		<FIELD LABEL="Field.Label.CountryOfAgreement" WIDTH="20">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="countryOfAgreement" />
+			</CONNECT>
+		</FIELD>
+
+		<FIELD LABEL="Field.Label.CenterOfSpecialization" WIDTH="20">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="centerOfSpeclizn" />
+			</CONNECT>
+		</FIELD>
+
+		<FIELD LABEL="Field.Label.StatusOfAgreement" WIDTH="20">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="statusOfAgreement" />
+			</CONNECT>
+		</FIELD>
+
+		<FIELD LABEL="Field.Label.EntryWithQuebec" WIDTH="20">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="entryWithQuebec" />
+			</CONNECT>
+		</FIELD>
+	</LIST>
+</PAGE>

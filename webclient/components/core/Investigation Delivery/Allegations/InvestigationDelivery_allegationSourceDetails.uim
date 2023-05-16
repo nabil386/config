@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                                     -->
+<!-- All rights reserved.                                                                   -->
+<!-- This software is the confidential and proprietary information of Curam                 -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose                    -->
+<!-- such Confidential Information and shall use it only in accordance with                 -->
+<!-- the terms of the license agreement you entered into with Curam                         -->
+<!-- Software.                                                                              -->
+<!-- Description                                                                            -->
+<!-- ===========                                                                            -->
+<!-- This page provide a view of an investigation allegation.                               -->
+<PAGE
+  PAGE_ID="InvestigationDelivery_allegationSourceDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="InvestigationDelivery"
+    NAME="DISPLAY"
+    OPERATION="readAllegationHomeDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="allegationID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="allegationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$allegationID"
+    />
+  </CONNECT>
+  
+      <MENU MODE="IN_PAGE_NAVIGATION">
+      
+        <ACTION_CONTROL
+          LABEL="ActionControl.Label.Details"
+          STYLE="in-page-link"
+         >
+           <LINK
+             PAGE_ID="InvestigationDelivery_viewAllegation"
+            SAVE_LINK="false"
+            >  
+      
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="allegationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="allegationID"
+          />
+              </CONNECT>
+              
+          </LINK>
+        </ACTION_CONTROL>
+
+        <ACTION_CONTROL
+          LABEL="ActionControl.Label.Participants"
+          STYLE="in-page-link"
+         >
+           <LINK
+             PAGE_ID="InvestigationDelivery_allegationParticipantDetails"
+            SAVE_LINK="false"
+            >
+
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="allegationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="allegationID"
+              />
+            </CONNECT>
+
+          </LINK>
+        </ACTION_CONTROL> 
+
+        <ACTION_CONTROL
+          LABEL="ActionControl.Label.Source"
+          STYLE="in-page-current-link"
+         >
+           <LINK
+             PAGE_ID="InvestigationDelivery_allegationSourceDetails"
+            SAVE_LINK="false"
+            >
+              <CONNECT>
+                <SOURCE
+                  NAME="PAGE"
+                  PROPERTY="allegationID"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="allegationID"
+                />
+              </CONNECT>
+           </LINK>
+        </ACTION_CONTROL> 
+
+        <ACTION_CONTROL
+          LABEL="ActionControl.Label.Attachements"
+          STYLE="in-page-link"
+         >
+           <LINK
+             PAGE_ID="InvestigationDelivery_allegationAttachmentDetails"
+            SAVE_LINK="false"
+            >
+
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="allegationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="allegationID"
+              />
+            </CONNECT>
+
+          </LINK>
+        </ACTION_CONTROL>
+      </MENU> 
+  
+  
+    <CLUSTER
+      LABEL_WIDTH="25"
+      NUM_COLS="2"
+      SHOW_LABELS="true"
+    >
+      <FIELD LABEL="Field.Label.Anonymous">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="allegationDetails$anonymousInd"
+          />
+        </CONNECT>
+      </FIELD>
+  
+  
+      <FIELD LABEL="Field.Label.SourceParticipant">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="sourceName"
+          />
+        </CONNECT>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Participant_resolveRoleHome"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$sourceDtls$participantRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$sourceDtls$concernRoleType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="participantType"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+  
+  
+      <FIELD LABEL="Field.Label.ReportedDate">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="reportedDateTime"
+          />
+        </CONNECT>
+      </FIELD>
+  
+  
+      <FIELD LABEL="Field.Label.Method">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="method"
+          />
+        </CONNECT>
+      </FIELD>
+  
+  
+  </CLUSTER>
+  
+  
+  </PAGE>

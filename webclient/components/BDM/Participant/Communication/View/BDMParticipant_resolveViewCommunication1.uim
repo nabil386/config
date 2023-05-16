@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Description                                                            -->
+<!-- ===============                                                        -->
+<!-- This jsp redirects the user the appropriate communication view page.   -->
+<!-- Each assignee type value is matched to a Home Page name.               -->
+<PAGE
+  PAGE_ID="BDMParticipant_resolveViewCommunication1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+  <PAGE_PARAMETER NAME="communicationID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+  <PAGE_PARAMETER NAME="correspondentConcernRoleID"/>
+  <PAGE_PARAMETER NAME="status"/>
+  <PAGE_PARAMETER NAME="communicationFormat"/>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String communicationID = request.getParameter("communicationID");
+      String correspondentConcernRoleID = request.getParameter("correspondentConcernRoleID");       
+      String pageDescription = request.getParameter("pageDescription");
+      String status = request.getParameter("status");
+      String communicationFormat = request.getParameter("communicationFormat");
+      String url = "";
+  
+      if (communicationID == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "communicationID");
+       throw e;
+       // END, CR00110216
+      }
+                  
+
+      if (status == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "status");
+       throw e;
+       // END, CR00110216
+      }
+      
+      if (communicationFormat == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "communicationFormat");
+       throw e;
+       // END, CR00110216
+      }      
+      
+      if (correspondentConcernRoleID == null) {
+
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "correspondentConcernRoleID");
+       throw e;
+
+      }        
+      
+      // email communication
+      if (communicationFormat.equals("CF2")) {
+      // BEGIN, CR00110216, SK
+        // email
+        if (status.equals("CS1")) {
+          url = context + "Participant_viewDraftEmailCommunication1Page.do" + "?communicationID=" 
+            + curam.omega3.request.RequestUtils.escapeURL(communicationID) + "&amp;correspondentConcernRoleID="                                            
+            + curam.omega3.request.RequestUtils.escapeURL(correspondentConcernRoleID)            
+            + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(pageDescription); 
+        
+        } else {
+          url = context + "Participant_viewEmailCommunication1Page.do" + "?communicationID=" 
+            + curam.omega3.request.RequestUtils.escapeURL(communicationID) + "&amp;correspondentConcernRoleID="                                            
+            + curam.omega3.request.RequestUtils.escapeURL(correspondentConcernRoleID)            
+            + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(pageDescription); 
+        
+        }      
+      }
+      
+      // Recorded communication
+      else if (communicationFormat.equals("CF4")) {
+              
+        url = context + "Participant_viewRecordedCommunication1Page.do" + "?communicationID=" 
+                      + curam.omega3.request.RequestUtils.escapeURL(communicationID) + "&amp;correspondentConcernRoleID="                                            
+                      + curam.omega3.request.RequestUtils.escapeURL(correspondentConcernRoleID)
+                      + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(pageDescription); 
+      }
+      
+      // Pro Forma communication
+      else if (communicationFormat.equals("CF3")) {
+                    
+      url = context + "Participant_viewProFormaCommunication1Page.do" + "?communicationID=" 
+                    + curam.omega3.request.RequestUtils.escapeURL(communicationID) + "&amp;correspondentConcernRoleID="                                            
+                    + curam.omega3.request.RequestUtils.escapeURL(correspondentConcernRoleID) + "&amp;communicationFormat=" 
+                    + curam.omega3.request.RequestUtils.escapeURL(communicationFormat) + "&amp;status=" 
+                    + curam.omega3.request.RequestUtils.escapeURL(status)                  
+                    + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(pageDescription); 
+      }
+      
+      // Microsoft Word communication
+      else if (communicationFormat.equals("CF1")) {
+       
+        url = context + "Participant_viewMSWordCommunication1Page.do" + "?communicationID=" 
+                      + curam.omega3.request.RequestUtils.escapeURL(communicationID) + "&amp;correspondentConcernRoleID="                                            
+                      + curam.omega3.request.RequestUtils.escapeURL(correspondentConcernRoleID)
+                      + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(pageDescription); 
+      }
+      
+      // Correspondence Communication 
+      else if (communicationFormat.equals("BDMCF5")) {
+      
+        url = context + "BDMParticipant_viewCorrespondencePage.do" + "?communicationID=" 
+                      + curam.omega3.request.RequestUtils.escapeURL(communicationID);
+      }
+      
+      // END, CR00110216
+      url += "&amp;" + rh.getSystemParameters();  
+      response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+   
+</PAGE>

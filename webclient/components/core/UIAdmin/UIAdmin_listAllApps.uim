@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description -->
+<!-- =========== -->
+<!--   -->
+<PAGE PAGE_ID="UIAdmin_listAllApps">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationView"
+    NAME="ACTION"
+    OPERATION="searchApplications"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="CONSTANT"
+      PROPERTY="Field.Label.Application.External"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="externalAppDescription"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="CONSTANT"
+      PROPERTY="Field.Label.Application.Internal"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="internalAppDescription"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="Control.Label.New.External">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="External_createApplicationDetails"
+      >
+        </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="Control.Label.New">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="UIAdminApplication_create"
+      >
+        </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="Control.Label.Publish">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="UIAdmin_publishChanges"
+      >
+        </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    BEHAVIOR="NONE"
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    TITLE="Cluster.Filter.Title"
+  >
+    <FIELD
+      LABEL="Field.Label.ApplicationName"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="input$applicationName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      BOTTOM="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="UIAdmin_listAllApps"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResult">
+    <FIELD
+      LABEL="Field.Label.AppID"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="id"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Application"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="subtitle"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Component"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="title"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Mode"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="appTypeDescription"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="Control.Label.Edit">
+        <LINK
+          URI_SOURCE_NAME="ACTION"
+          URI_SOURCE_PROPERTY="viewPageURL"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="id"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="applicationID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="Control.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="UIAdminApplication_delete"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="id"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="applicationID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </LIST>
+
+
+</PAGE>

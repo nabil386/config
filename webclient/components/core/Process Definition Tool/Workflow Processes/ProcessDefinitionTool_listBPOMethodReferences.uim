@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012, 2017. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="ProcessDefinitionTool_listBPOMethodReferences"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+<PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <SERVER_INTERFACE
+    CLASS="BPOMethodReferencesAdmin"
+    NAME="ACTION"
+    OPERATION="searchBPOMethodReferences"
+    PHASE="ACTION"
+  />
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="Link.AddReference">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProcessDefinitionTool_createBPOMethodReference"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <CLUSTER
+    LABEL_WIDTH="30%"
+    NUM_COLS="2"
+    TITLE="Cluster.SearchCriteria.Title"
+  >
+    <ACTION_SET>
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Reset"
+        TYPE="ACTION"
+      >
+        <LINK PAGE_ID="ProcessDefinitionTool_listBPOMethodReferences"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Cluster.SearchCriteria.InterfaceName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="bpoMethodReferenceSearchDetails$interfaceName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Cluster.SearchCriteria.Category"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="category"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Cluster.SearchCriteria.Status"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Cluster.SearchCriteria.MethodName"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="bpoMethodReferenceSearchDetails$methodName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Cluster.SearchCriteria.Type"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="type"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST TITLE="List.SearchResults.Title">
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="Action.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProcessDefinitionTool_editBPOMethodReference"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="methodID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="methodID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProcessDefinitionTool_deleteBPOMethodReference"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="methodID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="methodID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$dtls$methodName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="fullyQualifiedMethodName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProcessDefinitionTool_viewBPOMethodReference">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="methodID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="methodID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <FIELD
+      LABEL="Field.Label.InterfaceName"
+      WIDTH="60"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$interfaceName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.MethodName"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$methodName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Valid"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="valid"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

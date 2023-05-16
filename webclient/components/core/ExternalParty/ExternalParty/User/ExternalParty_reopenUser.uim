@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page reopen an existing closed user for an external party.        -->
+<PAGE
+  PAGE_ID="ExternalParty_reopenUser"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="ACTION"
+    OPERATION="reopenUser"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="userName"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <PAGE_PARAMETER NAME="description"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="userName"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        PAGE_ID="ExternalParty_userHome"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+      <LINK
+        PAGE_ID="ExternalParty_userHome"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.ReopenUser"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    DESCRIPTION="Cluster,Details.Description"
+    LABEL_WIDTH="30"
+    NUM_COLS="1"
+    TITLE="Cluster.Title.Details"
+  >
+    <FIELD LABEL="Field.Label.ReopenPreviousPositions">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="reopenPositionInd"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

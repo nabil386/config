@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2011, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view details of a Judicial Review on an   -->
+<!-- integrated case.                                                       -->
+<PAGE
+  PAGE_ID="Appeal_judicialReviewHomeViewOnly"
+  WINDOW_OPTIONS="width=800"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="JudicialReview"
+    NAME="DISPLAY"
+    OPERATION="readJudicialReviewSummaryIC"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="priorAppealCaseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="judicialReviewCaseKey$caseID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Decision"
+  >
+
+
+    <FIELD LABEL="Field.Label.Resolution">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="decisionResolution"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00021086, RKi -->
+
+
+  <JSP_SCRIPTLET>
+    curam.omega3.texthelper.TextHelper  th
+                                    = (curam.omega3.texthelper.TextHelper)pageContext.findAttribute("DISPLAY");
+                  String multipleAppellantInd =
+                    th.getFieldValue("result$judicialReviewCaseSummaryDetails$multipleAppellant$multipleAppellants");
+                        if (multipleAppellantInd.equals("false"))
+                        {
+
+  </JSP_SCRIPTLET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+
+
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="judicialReviewReference"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Appellant">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="appellantName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Owner">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="ownerFullName"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Respondent">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="respondentName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="judicialCaseStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Difficulty">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="difficultyCode"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <JSP_SCRIPTLET>
+  }else if(multipleAppellantInd.equals("true"))
+                        {
+  </JSP_SCRIPTLET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+
+
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="judicialReviewReference"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Appellant">
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.Label.MultipleAppellants"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Owner">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="ownerFullName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Respondent">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="respondentName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="judicialCaseStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Difficulty">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="difficultyCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <JSP_SCRIPTLET>
+  }
+  </JSP_SCRIPTLET>
+
+
+  <!-- END, CR00021086 -->
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00417165, GK -->
+    <FIELD LABEL="Field.Label.Comments">
+      <!-- END, CR00417165 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00125512, LP   -->
+  <CLUSTER SHOW_LABELS="false">
+    <LIST TITLE="List.Title.RecentChanges">
+      <FIELD LABEL="Field.Label.EventType">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="eventTypeDesc"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Description">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="transactionDescription"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.TransactionDateTime">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="transactionDateTime"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.UserFullname">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="userFullName"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    />
+  </ACTION_SET>
+
+
+</PAGE>

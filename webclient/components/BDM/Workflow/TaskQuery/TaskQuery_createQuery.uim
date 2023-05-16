@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2010,2012,2013,2017. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows users to create a task query.                         -->
+<!-- BEGIN, CR00350581, PB -->
+<PAGE PAGE_ID="TaskQuery_createQuery" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <!-- END, CR00350581 -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="TaskQuery" NAME="DISPLAY" OPERATION="getUserOrgObjects"/>
+
+
+  <SERVER_INTERFACE ACTION_ID_PROPERTY="details$actionIDProperty" CLASS="BDMTaskQuery" NAME="ACTION" OPERATION="createOrRunBDMQuery" PHASE="ACTION"/>
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE NAME="ACTION" PROPERTY="informationMsgTxt"/>
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+
+
+    <ACTION_CONTROL ACTION_ID="SAVE_QUERY" IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+
+
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel"/>
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="27.5" NUM_COLS="1">
+
+
+    <FIELD LABEL="Field.Label.QueryName" WIDTH="50">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="details$criteria$criteria$queryName"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER TITLE="Cluster.Title.QueryCriteria">
+    <CLUSTER LABEL_WIDTH="27.5" STYLE="cluster-cpr-no-border">
+
+
+      <FIELD LABEL="Field.Label.MyTasksListOnly">
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="details$criteria$criteria$searchMyTasksOnly"/>
+        </CONNECT>
+      </FIELD>
+
+
+      <CONTAINER LABEL="Container.Label.AssignedTo">
+        <FIELD ALIGNMENT="LEFT" CONTROL="CHECKBOXED_LIST" HEIGHT="5" USE_BLANK="false">
+          <CONNECT>
+            <INITIAL HIDDEN_PROPERTY="result$dtls$value" NAME="DISPLAY" PROPERTY="result$dtls$name"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$selectedValues"/>
+          </CONNECT>
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$criteria$criteria$selectedOrgObjects"/>
+          </CONNECT>
+        </FIELD>
+
+
+      </CONTAINER>
+
+
+      <CONTAINER LABEL="Container.Label.BusinessObjType">
+        <FIELD ALIGNMENT="LEFT" USE_BLANK="true" WIDTH="35">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$criteria$criteria$businessObjectType"/>
+          </CONNECT>
+        </FIELD>
+        <FIELD ALIGNMENT="LEFT" WIDTH="45">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$criteria$criteria$businessObjectID"/>
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+
+      <CLUSTER NUM_COLS="2">
+      
+        <FIELD LABEL="Field.Label.Status" USE_BLANK="true" USE_DEFAULT="false" WIDTH="35">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$criteria$criteria$status"/>
+          </CONNECT>
+        </FIELD>
+        
+        <FIELD LABEL="Field.Label.Priority" USE_BLANK="true" USE_DEFAULT="false" WIDTH="35">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$criteria$criteria$priority"/>
+          </CONNECT>
+        </FIELD>  
+        
+        <FIELD LABEL="Field.Label.UrgentFlags" USE_BLANK="true" USE_DEFAULT="false" WIDTH="35">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$criteria$caseUrgentFlagTypeCode"/>
+          </CONNECT>
+        </FIELD>  
+  
+        <FIELD LABEL="Field.Label.EscalationLevel" USE_BLANK="true" USE_DEFAULT="false" WIDTH="35">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$criteria$escalationLevel"/>
+          </CONNECT>
+        </FIELD>        
+      
+      </CLUSTER>
+      
+      <CLUSTER>
+      
+        <FIELD LABEL="Field.Label.TaskType" USE_BLANK="true" USE_DEFAULT="false" WIDTH="90">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$criteria$taskType"/>
+          </CONNECT>
+        </FIELD>
+        
+      </CLUSTER>
+
+      <CLUSTER LABEL_WIDTH="50" NUM_COLS="2" STYLE="cluster-cpr-no-border" TITLE="Cluster.Title.Deadline">
+
+        <FIELD LABEL="Field.Label.DeadlineFromDate" USE_DEFAULT="false">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$criteria$criteria$deadlineFromDate"/>
+          </CONNECT>
+        </FIELD>
+
+
+        <FIELD LABEL="Field.Label.DeadlineDue" USE_BLANK="true" USE_DEFAULT="false" WIDTH="90">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$criteria$criteria$deadlineDue"/>
+          </CONNECT>
+        </FIELD>
+
+
+        <FIELD LABEL="Field.Label.DeadlineToDate" USE_DEFAULT="false">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$criteria$criteria$deadlineToDate"/>
+          </CONNECT>
+        </FIELD>
+      </CLUSTER>
+
+
+      <CLUSTER LABEL_WIDTH="50" NUM_COLS="2" STYLE="cluster-cpr-no-border" TITLE="Cluster.Title.CreationTime">
+
+
+        <FIELD LABEL="Field.Label.CreationFromDate" USE_DEFAULT="false">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$criteria$criteria$creationFromDate"/>
+          </CONNECT>
+        </FIELD>
+
+
+        <FIELD LABEL="Field.Label.CreationLastNumberOfDays" USE_DEFAULT="false" WIDTH="40">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$criteria$criteria$creationLastNumberOfDays"/>
+          </CONNECT>
+        </FIELD>
+
+
+        <FIELD LABEL="Field.Label.CreationToDate" USE_DEFAULT="false">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$criteria$criteria$creationToDate"/>
+          </CONNECT>
+        </FIELD>
+
+
+        <FIELD LABEL="Field.Label.CreationLastNumberOfWeeks" USE_DEFAULT="false" WIDTH="40">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$criteria$criteria$creationLastNumberOfWeeks"/>
+          </CONNECT>
+        </FIELD>
+
+
+      </CLUSTER>
+      <CLUSTER LABEL_WIDTH="50" NUM_COLS="2" STYLE="cluster-cpr-no-border" TITLE="Cluster.Title.RestartTime">
+
+
+        <FIELD LABEL="Field.Label.RestartFromDate" USE_DEFAULT="false">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$criteria$criteria$restartFromDate"/>
+          </CONNECT>
+        </FIELD>
+
+
+        <FIELD LABEL="Field.Label.RestartToDate" USE_DEFAULT="false">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="details$criteria$criteria$restartToDate"/>
+          </CONNECT>
+        </FIELD>
+
+
+      </CLUSTER>
+
+
+      <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+        <ACTION_CONTROL ACTION_ID="RUN_QUERY" DEFAULT="true" IMAGE="RunButton" LABEL="ActionControl.Label.Run" TYPE="SUBMIT">
+          <LINK PAGE_ID="THIS"/>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL IMAGE="ResetButton" LABEL="ActionControl.Label.Reset">
+          <LINK PAGE_ID="TaskQuery_createQuery" SAVE_LINK="false"/>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+
+
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.QueryResult">
+
+
+    <FIELD WIDTH="5">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="result$resultList$taskDetailsList$isOverdue"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Subject" WIDTH="35">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="result$resultList$taskDetailsList$subject"/>
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD
+      LABEL="Field.Label.UrgentFlags"
+      WIDTH="12"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="caseUrgentFlagStr"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD
+      LABEL="Field.Label.EscalationLevel"
+      WIDTH="12"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="escalationLevelDesc"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Priority" WIDTH="10">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="result$resultList$taskDetailsList$priority"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Deadline" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="result$resultList$taskDetailsList$deadlineDateTime"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

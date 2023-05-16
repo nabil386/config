@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2015. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to record the third answers.                 -->
+<PAGE
+  PAGE_ID="DecisionAssistApplication_recordThirdPartyAnswer"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_PARAMETER NAME="thirdPartyRequestID"/>
+  <PAGE_PARAMETER NAME="determinationDeliveryID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <SERVER_INTERFACE
+    CLASS="DeterminationDelivery"
+    NAME="ASSESSMENTCONTEXT"
+    OPERATION="viewAssessmentContextDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="ASSESSMENTCONTEXT"
+      PROPERTY="key$dtls$dtls$determinationDeliveryID"
+    />
+  </CONNECT>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="ThirdPartyRequest"
+    NAME="DISPLAY_TPR_QUESTION"
+    OPERATION="getThirdPartyQuestionDetails"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="thirdPartyRequestID"
+    />
+    <TARGET
+      NAME="DISPLAY_TPR_QUESTION"
+      PROPERTY="key$key$key$thirdPartyRequestID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="ThirdPartyRequest"
+    NAME="LOAD_THIRD_PARTY_REQUEST"
+    OPERATION="readThirdPartyRequest"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="thirdPartyRequestID"
+    />
+    <TARGET
+      NAME="LOAD_THIRD_PARTY_REQUEST"
+      PROPERTY="key$key$key$thirdPartyRequestID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="LOAD_THIRD_PARTY_REQUEST"
+      PROPERTY="key$key$key$determinationDeliveryID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="ThirdPartyRequest"
+    NAME="RECORD_TPR"
+    OPERATION="recordThirdPartyAnswers"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="thirdPartyRequestID"
+    />
+    <TARGET
+      NAME="RECORD_TPR"
+      PROPERTY="dtls$dtls$thirdPartyRequestDtls$dtls$thirdPartyRequestID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="RECORD_TPR"
+      PROPERTY="dtls$dtls$thirdPartyRequestDtls$dtls$determinationDeliveryID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY_TPR_QUESTION"
+      PROPERTY="result$dtls$thirdPartyRequestDtls$dtls$requestedDateTime"
+    />
+    <TARGET
+      NAME="RECORD_TPR"
+      PROPERTY="dtls$dtls$thirdPartyRequestDtls$dtls$requestedDateTime"
+    />
+  </CONNECT>
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+  <!-- BEGIN, CR00217013, PS -->
+  <CLUSTER>
+    <!-- END, CR00217013 -->
+    <FIELD LABEL="Field.Label.DateReceived">
+      <CONNECT>
+        <TARGET
+          NAME="RECORD_TPR"
+          PROPERTY="dtls$dtls$thirdPartyRequestDtls$dtls$dateReceived"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.QuestionAnswer"
+  >
+    <!--BEGIN, CR00454503, KK-->
+    <FIELD LABEL="Field.Label.Dummy">
+      <!--END, CR00454503 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_TPR_QUESTION"
+          PROPERTY="result$dtls$thirdPartyXML$thirdPartyXML"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="RECORD_TPR"
+          PROPERTY="dtls$dtls$thirdPartyXML$thirdPartyXML"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.AdditionalInfo"
+  >
+    <!-- BEGIN, CR00214223, PS -->
+    <!--BEGIN, CR00454503, KK-->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Dummy"
+      WIDTH="100"
+    >
+      <!--END, CR00454503 -->
+
+
+      <!-- END, CR00214223 -->
+      <CONNECT>
+        <TARGET
+          NAME="RECORD_TPR"
+          PROPERTY="dtls$dtls$thirdPartyRequestDtls$dtls$additionalInfo"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

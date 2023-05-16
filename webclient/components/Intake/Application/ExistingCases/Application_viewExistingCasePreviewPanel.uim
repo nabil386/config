@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                             -->
+<!-- Display the application existing case preview panel.                   -->
+<PAGE
+  PAGE_ID="Application_viewExistingCasePreviewPanel"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseIDKey$caseID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationExistingCases"
+    NAME="DISPLAY"
+    OPERATION="getApplicationExistingCasePreviewPanelDetails"
+  />
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.CaseDetails"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="Application_viewExistingCasePreviewPanel"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Programs"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="Application_listExistingCasePrograms"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.CaseMembers"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="Application_listExistingCaseMembers"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+  >
+    <FIELD LABEL="Field.Label.PrimaryClient">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$primaryClientName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Individual_resolveConcernRoleTypeHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="primaryClientConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ExpectedEndDate"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$expectedEndDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <FIELD
+      LABEL="Field.Label.Comments"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$comments"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+  </CLUSTER>
+</PAGE>

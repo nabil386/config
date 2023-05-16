@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:curam="http://www.curamsoftware.com/curam" xmlns:cing="http://www.curamsoftware.com/curam/jde/client/curam-ng" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+  <jsp:directive.page isErrorPage="false" pageEncoding="UTF-8" contentType="text/html;charset=UTF-8" isELIgnored="false" language="java" buffer="32kb" errorPage="/cw/ErrorPage.do" />
+  <jsp:output omit-xml-declaration="yes" />
+  <jsp:text><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></jsp:text>
+  <jsp:scriptlet>
+    pageContext.setAttribute("pageLocale", 
+    curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+    pageContext.getSession()).getLocale().toString());
+  </jsp:scriptlet>
+  <curam:userPreferences localeCode="${pageScope.pageLocale}"/>
+  <jsp:scriptlet>
+    <![CDATA[
+
+      javax.servlet.http.HttpServletRequest hsRequest;
+      javax.servlet.http.HttpSession httpSession;
+      hsRequest = (javax.servlet.http.HttpServletRequest) request;
+      httpSession = hsRequest.getSession();
+      String url = request.getContextPath() + "/cw/";
+
+      String iegExecutionID = request.getParameter("iegExecutionID");
+
+      // Call the server to start a new session
+      curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_viewScreeningResults_TH th = 
+        new curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_viewScreeningResults_TH(); 
+      th.setFieldValue(th.key$iegExecutionID_idx, iegExecutionID);
+
+      th.callServer();
+
+      String nextPage = th.getFieldValue(th.result$nextPage_idx);
+      String pageParams = th.getFieldValue(th.result$pageParams_idx); 
+
+      url += "PlayerPage.do?";
+
+      if (!citizenworkspace.util.StringHelper.isEmpty(nextPage)) {
+       url += "page=" + curam.omega3.request.RequestUtils.escapeURL(nextPage) + "&";
+      }
+
+      if (!citizenworkspace.util.StringHelper.isEmpty(iegExecutionID)) {
+       url += "iegExecutionID=" + curam.omega3.request.RequestUtils.escapeURL(iegExecutionID) + "&";
+      }
+
+      // Session ID comes from pageParams
+      if (!citizenworkspace.util.StringHelper.isEmpty(pageParams)) {
+       url += citizenworkspace.util.ParameterEncodingHelper.getEncodedPageParms(pageParams);
+      }
+
+      response.sendRedirect(response.encodeRedirectURL(url));
+
+      ]]>
+  </jsp:scriptlet>
+</jsp:root>

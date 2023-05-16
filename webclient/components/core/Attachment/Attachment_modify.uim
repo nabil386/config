@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012,2021. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->                                                         
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- The client page for modifying attachment details.                      -->
+<PAGE
+  PAGE_ID="Attachment_modify"
+  WINDOW_OPTIONS="width=715"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Attachment"
+    NAME="DISPLAY"
+    OPERATION="readAttachment"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Attachment"
+    NAME="ACTION"
+    OPERATION="modifyAttachment"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="attachmentLinkID"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="attachmentLinkID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$attachmentLinkID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$attachmentDtls$attachmentID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="attachmentDtls$attachmentID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$attachmentLinkDtls$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="attachmentLinkDtls$versionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$attachmentDtls$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="attachmentDtls$versionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="statusCode"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="statusCode"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="recordStatus"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="recordStatus"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="sensitivityCode"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="sensitivityCode"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="relatedObjectID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="relatedObjectID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="relatedObjectType"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="relatedObjectType"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="attachmentStatus"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="attachmentStatus"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="participantRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="attachmentLinkDtls$participantRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$attachmentLinkDtls$attachmentLinkID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="attachmentLinkDtls$attachmentLinkID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="42"
+    NUM_COLS="2"
+  >
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="cancelledInd"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.AttachedFile">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="attachmentName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.FileLocation">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileLocation"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fileLocation"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ReceiptDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="receiptDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="receiptDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DocumentType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="documentType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="documentType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.FileReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileReference"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fileReference"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <WIDGET
+      LABEL="Field.Label.NewFile"
+      TYPE="FILE_UPLOAD"
+    >
+      <WIDGET_PARAMETER NAME="CONTENT">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="attachmentContents"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+
+
+      <WIDGET_PARAMETER NAME="FILE_NAME">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="attachmentName"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+    </WIDGET>
+  </CLUSTER>
+    <CLUSTER
+    LABEL_WIDTH="42"
+    NUM_COLS="2"
+  >
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="cancelledInd"
+      />
+    </CONDITION>
+    <CONTAINER LABEL="Field.Label.AttachedFile">
+      <WIDGET TYPE="FILE_DOWNLOAD">
+        <WIDGET_PARAMETER NAME="LINK_TEXT">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="attachmentName"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="PARAMS">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$attachmentLinkDtls$attachmentLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="attachmentLinkID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.FileLocation">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileLocation"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fileLocation"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ReceiptDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="receiptDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="receiptDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DocumentType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="documentType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="documentType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.FileReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileReference"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fileReference"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <WIDGET
+      LABEL="Field.Label.NewFile"
+      TYPE="FILE_UPLOAD"
+    >
+      <WIDGET_PARAMETER NAME="CONTENT">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="attachmentContents"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+
+
+      <WIDGET_PARAMETER NAME="FILE_NAME">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="attachmentName"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+    </WIDGET>
+  </CLUSTER>
+
+
+  <CLUSTER LABEL_WIDTH="20.5">
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Description"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="description"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

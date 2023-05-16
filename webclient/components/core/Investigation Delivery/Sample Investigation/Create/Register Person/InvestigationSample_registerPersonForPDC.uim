@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to search for the client for whom the        -->
+<!-- integrated case is being created.                                      -->
+<PAGE
+  PAGE_ID="InvestigationSample_registerPersonForPDC"
+  WINDOW_OPTIONS="width=850"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="PDCPerson"
+    NAME="ACTION"
+    OPERATION="registerPerson"
+    PHASE="ACTION"
+  />
+  
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="msg"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+
+    <ACTION_CONTROL
+      IMAGE="PreviousButton"
+      LABEL="ActionControl.Label.Previous"
+    >
+      <LINK
+        OPEN_MODAL="false"
+        DISMISS_MODAL="false"
+        SAVE_LINK="false"
+        PAGE_ID="InvestigationSample_duplicateRegistrationCheck"
+      />
+    </ACTION_CONTROL>
+
+    <ACTION_CONTROL
+      IMAGE="RegisterButton"
+      LABEL="ActionControl.Label.Register"
+      TYPE="SUBMIT"
+    >
+      <!-- BEGIN, CR00252390, MC -->
+      <LINK
+        OPEN_MODAL="false"
+        DISMISS_MODAL="false"
+        SAVE_LINK="false"
+        PAGE_ID="InvestigationSample_selectTypeFromNonRegisteredPerson"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00252390 -->
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <INCLUDE FILE_NAME="Person_registerViewForPDC.vim"/>
+
+
+</PAGE>

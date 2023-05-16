@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2004 - 2008 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===============                                                        -->
+<!-- Resolves a communication participant Home Page                         -->
+<PAGE
+  PAGE_ID="Participant_resolveHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+   //BEGIN, CR00096148 DJ
+     
+   //END, CR00096148 
+    
+
+      curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String caseParticipantRoleID = request.getParameter("caseParticipantRoleID");
+      String concernRoleID = request.getParameter("concernRoleID");
+      String participantType = request.getParameter("participantType");
+      String integratedCaseID = "";
+      String integratedCaseType = "";
+
+      String url = "";
+      
+   // BEGIN, CR00096148 DJ
+      if (caseParticipantRoleID.length() != 0 &amp;&amp; caseParticipantRoleID.equals("0") == false) {
+   // END, CR00096148
+
+	try{
+        curam.interfaces.CommunicationPkg.Communication_resolveCorrespondentHome_TH 
+          th = new curam.interfaces.CommunicationPkg.Communication_resolveCorrespondentHome_TH();
+  
+        th.setFieldValue(th.resolveCorrespondentHomeKey$caseParticipantRoleIDKey$caseParticipantRoleID_idx,caseParticipantRoleID);
+           
+        th.callServer(); 
+
+        integratedCaseID = th.getFieldValue(th.result$integratedCaseIDAndtypeDetails$intCaseIDAndCaseType$integratedCaseID_idx);
+        integratedCaseType = th.getFieldValue(th.result$integratedCaseIDAndtypeDetails$intCaseIDAndCaseType$caseType_idx);
+        } catch(java.lang.Exception e){}
+        
+        if(integratedCaseID.equals("0") == false || integratedCaseType.length() != 0){
+        
+          // go to the integrated case home page
+         // BEGIN, CR00096148 DJ
+         url = context + "IntegratedCase_resolveParticipantHomePage.do?caseParticipantRoleID=" + curam.omega3.request.RequestUtils.escapeURL(caseParticipantRoleID);
+         // END, CR00096148        
+        }else{
+  
+          // Go to the participant home page
+        // BEGIN, CR00096148 DJ
+        url = context + "Participant_resolveRoleHomePage.do?concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID) + "&amp;participantType=" + curam.omega3.request.RequestUtils.escapeURL(participantType);
+        // END, CR00096148
+        }
+      }else{
+
+         // BEGIN, CR00096148 DJ
+         url = context + "Participant_resolveRoleHomePage.do?concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID) + "&amp;participantType=" + curam.omega3.request.RequestUtils.escapeURL(participantType);
+        // END, CR00096148 
+      }    
+  
+      url += "&amp;amp;" + rh.getSystemParameters();
+      response.sendRedirect(response.encodeRedirectURL(url));
+        
+         //BEGIN, CR00096148 DJ
+         
+        // END, CR00096148 
+  </JSP_SCRIPTLET>
+</PAGE>

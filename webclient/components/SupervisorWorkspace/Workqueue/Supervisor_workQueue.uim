@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- Copyright (c) 2003,2009, 2011 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify a Dependant Data Item record.      -->
+<PAGE
+  PAGE_ID="Supervisor_workQueue"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorWorkQueues"
+    NAME="DISPLAY"
+    OPERATION="listSupervisorAndOrgObjectWorkQueues"
+    PHASE="DISPLAY"
+  />
+
+
+  <LIST TITLE="List.UserWQ.Title.Name">
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="WorkAllocation_viewWorkQueueDetails">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$detailsList$dtls$workQueueID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="workQueueID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Subscribe">
+        <!-- BEGIN, CR00247543, AK -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Supervisor_createWorkQueueSubscription"
+        >
+          <!-- END, CR00247543 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$detailsList$dtls$workQueueID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="workQueueID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$detailsList$dtls$workQueueName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Supervisor_workQueueWorkspace">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$detailsList$dtls$workQueueID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="workQueueID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="supervisor.viewTaskOption"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskOptionCode"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.TaskCount"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$detailsList$dtls$tasksInWorkQueueCount"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- BEGIN, CR00161962, BK -->
+  <!-- Display workqueues subscribed by the supervisor org units -->
+  <LIST TITLE="List.UserOrgObjectWQ.Title.Name">
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.ViewWorkQueueWorkspace">
+        <LINK PAGE_ID="Supervisor_workQueueWorkspace">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="userOrgObjectWQList$dtls$workQueueID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="workQueueID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="supervisor.viewTaskOption"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskOptionCode"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.ViewWorkQueueSummary">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="WorkAllocation_viewWorkQueueDetails"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="userOrgObjectWQList$dtls$workQueueID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="workQueueID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.SubscribeUser">
+        <!-- BEGIN, CR00247543, AK -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Supervisor_createWorkQueueSubscription"
+        >
+          <!-- END, CR00247543 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="userOrgObjectWQList$dtls$workQueueID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="workQueueID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.SubscribeOrgObject">
+        <!-- BEGIN, CR00247543, AK -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Supervisor_createWorkQueueSubscription"
+        >
+          <!-- END, CR00247543 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="userOrgObjectWQList$dtls$workQueueID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="workQueueID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$detailsList$userOrgObjectWQList$dtls$workQueueName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Supervisor_workQueueWorkspace">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="userOrgObjectWQList$dtls$workQueueID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="workQueueID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="supervisor.viewTaskOption"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskOptionCode"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Subscriber"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$detailsList$userOrgObjectWQList$dtls$subscriberName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$detailsList$userOrgObjectWQList$dtls$subscriberType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.TaskCount"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$detailsList$userOrgObjectWQList$dtls$taskCount"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- END, CR00161962 -->
+
+
+</PAGE>

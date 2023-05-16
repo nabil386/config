@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page lists all the active Workflow Allocation CER rule sets       -->
+<!-- on the system                                                          -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="WorkflowAllocation_listCERRuleSets"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="WorkflowCERAllocationAdmin"
+    NAME="DISPLAY"
+    OPERATION="listAllRuleSetsForCategory"
+  />
+
+
+  <LIST>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="WorkflowAllocation_listRuleSetVersionHistory">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="creoleRuleSetID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="creoleRuleSetID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="creoleRuleSetEditActionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="ruleSetEditActionID"
+          />
+        </CONNECT>
+
+
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="allowEdit"
+          />
+        </CONDITION>
+
+
+        <LINK PAGE_ID="CreoleAdmin_resolveOpenEditor">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="creoleRuleSetSnapShotID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="snapShotID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="name"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="ruleSetDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="ruleSetDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Description">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="editDescIndOpt"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="TRUE"
+          PAGE_ID="CreoleAdmin_confirmModifyDescription"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="descriptionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="descriptionID"
+            />
+          </CONNECT>
+          <!--<CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="creoleRuleSetID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="creoleRuleSetID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="creoleRuleSetEditActionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="creoleRuleSetEditActionID"
+            />
+          </CONNECT>-->
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddDescription">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="addDescIndOpt"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="TRUE"
+          PAGE_ID="CreoleAdmin_addRuleSetDescription"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="descriptionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="descriptionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="creoleRuleSetID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="creoleRuleSetID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="creoleRuleSetEditActionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="creoleRuleSetEditActionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="creoleRuleSetSnapShotID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="creoleRuleSetSnapShotID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <SEPARATOR/>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.ContinueEditing">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="allowContinueEditing"
+          />
+        </CONDITION>
+        <LINK PAGE_ID="Creole_editRuleSet">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="creoleRuleSetEditActionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="editActionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="name"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="ruleSetDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="ruleSetDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Validate">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="allowContinueEditing"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="TRUE"
+          PAGE_ID="WorkflowAllocation_validateRuleSet"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="creoleRuleSetEditActionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="creoleRuleSetEditActionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Publish">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="allowContinueEditing"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="TRUE"
+          PAGE_ID="WorkflowAllocation_publishRuleSet"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="creoleRuleSetEditActionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="creoleRuleSetEditActionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <SEPARATOR/>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="allowDelete"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="TRUE"
+          PAGE_ID="CreoleAdmin_deleteRuleSet"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="creoleRuleSetID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="creoleRuleSetID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <SEPARATOR/>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.DiscardChanges">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="allowDiscardChanges"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="TRUE"
+          PAGE_ID="CreoleAdmin_confirmForDiscard"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="creoleRuleSetEditActionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="ruleSetEditActionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <SEPARATOR/>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.DiscardDelete">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="allowDiscardDelete"
+          />
+        </CONDITION>
+        <!-- BEGIN, CR00232952, CW -->
+        <LINK
+          OPEN_MODAL="TRUE"
+          PAGE_ID="CreoleAdmin_confirmDiscardDelete"
+        >
+          <!-- End, CR00232952 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="creoleRuleSetEditActionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="ruleSetEditActionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.RuleSetName"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="ruleSetDescription"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.StatusType"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="displayStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ActionDateTime"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="actionDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Username"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="username"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

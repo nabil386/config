@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to register a prospect employer as employer. -->
+<PAGE
+  PAGE_ID="BDMIOProspectPerson_registerAsPersonForPDCWizard"
+  WINDOW_OPTIONS="width=900,height=700"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+  SCRIPT_FILE="BDMRegisterClientNCreateFEC.js"
+>
+
+  <SERVER_INTERFACE
+    CLASS="BDMPDCProspectPerson"
+    NAME="ACTION"
+    OPERATION="registerIOProspectPersonAsPerson"
+    PHASE="ACTION"
+  />
+  
+	<SERVER_INTERFACE CLASS="BDMPDCPerson" NAME="DISPLAYSIN"
+		OPERATION="readPersonIdentificationDetails" PHASE="DISPLAY" />  
+
+
+  <SERVER_INTERFACE
+    CLASS="ProspectPerson"
+    NAME="DISPLAY"
+    OPERATION="autoPopulateRegistrationFields"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ProspectPerson"
+    NAME="DISPLAYPROSPECTPERSON"
+    OPERATION="readProspectPerson"
+    PHASE="DISPLAY"
+  />
+  
+<SERVER_INTERFACE
+    CLASS="BDMPDCProspectPerson"
+    NAME="DISPLAYCONTACTPREFERENCES"
+    OPERATION="readContactPreferencesEvidence"
+    PHASE="DISPLAY"
+  />
+  
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="concernRoleID" />
+		<TARGET NAME="DISPLAYCONTACTPREFERENCES"
+			PROPERTY="key$concernRoleID" />
+	</CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProspectPerson"
+    NAME="DISPLAYRACE"
+    OPERATION="listRace"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="BDMParticipantRegistrationDetails"
+    NAME="DISPLAYWIZARD"
+    OPERATION="getBDMIOAddProspectPersonWizard"
+  />
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="msg"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="concernRoleID" />
+		<TARGET NAME="DISPLAY"
+			PROPERTY="maintainConcernRoleKey$concernRoleID" />
+	</CONNECT>
+
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="concernRoleID" />
+		<TARGET NAME="DISPLAYSIN"
+			PROPERTY="key$dtls$concernRoleID" />
+	</CONNECT>
+
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="concernRoleID" />
+		<TARGET NAME="ACTION" PROPERTY="relatedConcernRoleID" />
+	</CONNECT>
+	
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="concernRoleID" />
+		<TARGET NAME="DISPLAYPROSPECTPERSON"
+			PROPERTY="maintainConcernRoleKey$concernRoleID" />
+	</CONNECT>
+
+
+  <ACTION_SET>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Back">
+      <LINK
+        DISMISS_MODAL="false"
+        OPEN_MODAL="false"
+        PAGE_ID="BDMIOAddProspectPerson_duplicateCheckForPDCWizard"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="true"
+        PAGE_ID="Participant_resolveConcernRoleTypeHome"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$dtls$registrationIDDetails$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+  <INCLUDE FILE_NAME="BDMIOProspectPerson_registerAsPersonForPDCWizardView.vim"/>
+  
+  <CLUSTER  LABEL_WIDTH="50"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.DocumentDetails">
+
+	<FIELD LABEL="Field.Label.ReceivedFrom" CONTROL_REF="receivedFromRef">
+		<CONNECT>			
+			<TARGET NAME="ACTION" PROPERTY="bdmReceivedFrom"/>
+		</CONNECT>
+	</FIELD>
+    <FIELD LABEL="Field.Label.Country" USE_BLANK="true" CONTROL_REF="countryRef">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="countryCode" />
+      </CONNECT>
+    </FIELD>
+
+  </CLUSTER>
+
+
+</PAGE>

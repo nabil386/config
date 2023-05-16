@@ -1,0 +1,862 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007-2008, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Reads a person&apos;s home page details and further details            -->
+<PAGE
+  PAGE_ID="LegalAction_Personhome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <INFORMATIONAL>
+    <!-- BEGIN, CR00114322, PA -->
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYINFOMESSAGE"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+    <!-- END, CR00114322, PA -->
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="result$informationalMsgDtlsList$dtls$informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <SERVER_INTERFACE
+    CLASS="Person"
+    NAME="DISPLAY"
+    OPERATION="readHomePageDetails"
+  />
+
+
+  <!-- BEGIN, CR00114322, PA -->
+  <SERVER_INTERFACE
+    CLASS="Person"
+    NAME="DISPLAYINFOMESSAGE"
+    OPERATION="readInformationalMessage"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00114322, PA -->
+
+
+  <SCRIPT
+    ACTION="replaceDownloadLink()"
+    EVENT="ONLOAD"
+    SCRIPT_FILE="PersonPhoto.js"
+  />
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    >
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <!-- BEGIN, CR00110570, MR -->
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="evidenceType"/>
+  <!-- END, CR00110570 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="concernRoleHomePageKey$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00114322, PA -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAYINFOMESSAGE"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+  <!-- END, CR00114322, PA -->
+
+
+  <!-- BEGIN, CR00078989, AL -->
+  <SERVER_INTERFACE
+    CLASS="VerificationApplication"
+    NAME="DISPLAY1"
+    OPERATION="listPersonVerificationDetails"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="participantID"
+    />
+  </CONNECT>
+  <!-- END, CR00078989 -->
+
+
+  <CLUSTER
+    LABEL_WIDTH="87"
+    NUM_COLS="2"
+    SHOW_LABELS="FALSE"
+    STYLE="outer-cluster-borderless person-photo-cluster"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="result$personHomeDetails$concernRoleImagesEnabledAndImageExistsInd"
+      />
+    </CONDITION>
+    <CLUSTER
+      SHOW_LABELS="FALSE"
+      STYLE="Person-Photo-Cluster"
+    >
+      <CONTAINER
+        STYLE="PersonPhoto-Container"
+        WIDTH="100"
+      >
+        <WIDGET TYPE="FILE_DOWNLOAD">
+          <WIDGET_PARAMETER NAME="LINK_TEXT">
+            <CONNECT>
+              <SOURCE
+                NAME="TEXT"
+                PROPERTY="Text.LinkText"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="PARAMS">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="concernRoleHomePageKey$concernRoleID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="concernRoleID"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <CLUSTER
+      NUM_COLS="2"
+      TITLE="Cluster.Label.Name"
+    >
+      <FIELD LABEL="Field.Label.Title">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="title"
+          />
+        </CONNECT>
+      </FIELD>
+      <CONTAINER LABEL="Field.Label.FirstName">
+        <FIELD>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="firstForename"
+            />
+          </CONNECT>
+        </FIELD>
+        <!-- BEGIN CR00115696, PA -->
+        <ACTION_CONTROL
+          IMAGE="Alert"
+          LABEL="ActionControl.Label.SpecialCaution"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="specialCautionIndicator"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_NEW="TRUE"
+            PAGE_ID="SpecialCaution_list"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="concernRoleID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="concernRoleID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        <!-- END CR00115696, PA -->
+      </CONTAINER>
+
+
+      <FIELD LABEL="Field.Label.LastName">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="surname"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.MiddleName">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="otherForename"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Suffix">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="nameSuffix"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Initials">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="initials"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <!-- the alternative cluster -->
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Label.Name"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="result$personHomeDetails$concernRoleImagesEnabledAndImageNotExistsInd"
+      />
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.Title">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="title"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER LABEL="Field.Label.FirstName">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="firstForename"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN CR00115696, PA -->
+      <ACTION_CONTROL
+        IMAGE="Alert"
+        LABEL="ActionControl.Label.SpecialCaution"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="specialCautionIndicator"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_NEW="TRUE"
+          PAGE_ID="SpecialCaution_list"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END CR00115696, PA -->
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.LastName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="surname"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.MiddleName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="otherForename"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Suffix">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="nameSuffix"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Initials">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="initials"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <!-- another alternative cluster -->
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Label.Name"
+  >
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="result$personHomeDetails$concernRoleUsingImagesInd"
+      />
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.Title">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="title"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER LABEL="Field.Label.FirstName">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="firstForename"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN CR00115696, PA -->
+      <ACTION_CONTROL
+        IMAGE="Alert"
+        LABEL="ActionControl.Label.SpecialCaution"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="specialCautionIndicator"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="TRUE"
+          PAGE_ID="SpecialCaution_listForAlert"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END CR00115696, PA -->
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.LastName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="surname"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.MiddleName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="otherForename"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Suffix">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="nameSuffix"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Initials">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="initials"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Label.Contact"
+  >
+
+
+    <FIELD LABEL="Field.Label.Address">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="formattedAddressData"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER LABEL="Container.Label.Telephone">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="phoneCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="phoneAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="phoneNumber"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="phoneExtension"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Label.Details"
+  >
+
+
+    <FIELD LABEL="Field.Label.MaritalStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="maritalStatus"
+        />
+      </CONNECT>
+      <!--<LINK PAGE_ID="Person_listRelationship">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>-->
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.BirthLastName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="birthName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Gender">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sex"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DOB">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateOfBirth"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DOD">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateOfDeath"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.NumChildren">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="numberOfChildren"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.MothersBirthLastName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="motherBirthSurname"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PrefPublicOffice">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="preferredPublicOfficeName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.RegistrationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="registrationDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PlaceOfBirth">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="birthPlace"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PaymentFrequency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="paymentFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.NextPaymentDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="nextPaymentDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Nationality">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="nationality"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PrefLanguage">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="preferredLanguage"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Employer">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="employerName"
+        />
+      </CONNECT>
+      <!--<LINK PAGE_ID="Employer_home">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="employerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>-->
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.SpecialInterest">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="specialInterest"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DOBVerified">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateOfBirthVerified"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DODVerified">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateOfDeathVerified"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CountryOfBirth">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="birthCountry"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PrefCommunication">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="prefCommMethod"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EthnicOrigin">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="ethnicOriginCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00108252 PA -->
+    <FIELD LABEL="Field.Label.Race">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$personHomeDetails$race"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.IndigenousGroup">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$personHomeDetails$indigenousGroupCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00108252 - PA -->
+
+
+    <FIELD LABEL="Field.Label.Currency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="currencyType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.MethodOfPayment">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="methodOfPmtCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Sensitivity">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sensitivity"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

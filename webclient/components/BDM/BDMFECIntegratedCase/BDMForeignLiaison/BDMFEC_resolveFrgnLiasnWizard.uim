@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PAGE PAGE_ID="BDMFEC_resolveFrgnLiasnWizard"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+	<JSP_SCRIPTLET>
+
+		curam.omega3.request.RequestHandler rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+		String context = request.getContextPath() + "/";
+		context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+		
+		String caseID = request.getParameter("caseID");
+		String foreignLiaisonID = request.getParameter("foreignLiaisonID");
+		String wizardStateID="";
+		String url = "";
+
+		curam.interfaces.BDMForeignLiaisonPkg.BDMForeignLiaison_createAndPopulateFrgnLiasnWizard_TH
+		th = new
+		curam.interfaces.BDMForeignLiaisonPkg.BDMForeignLiaison_createAndPopulateFrgnLiasnWizard_TH();
+
+		th.setFieldValue(th.key$foreignLiaisonID_idx,foreignLiaisonID);
+
+		th.callServer();
+
+		wizardStateID=th.getFieldValue(th.result$wizardStateID_idx);
+
+		if ((foreignLiaisonID==null) ||(foreignLiaisonID.equals("")))
+		{
+
+		url = context + "BDMFEC_createFrgnLiasnDetailsPage.do?caseID=" +
+		curam.omega3.request.RequestUtils.escapeURL(caseID) +
+		"&amp;"+"wizardStateID=" +
+		curam.omega3.request.RequestUtils.escapeURL(wizardStateID);
+
+		} else {
+		url = context + "BDMFEC_editFrgnLiasnDetailsPage.do?caseID=" +
+		curam.omega3.request.RequestUtils.escapeURL(caseID) +
+		"&amp;"+"foreignLiaisonID=" +
+		curam.omega3.request.RequestUtils.escapeURL(foreignLiaisonID)+
+		"&amp;"+"wizardStateID=" +
+		curam.omega3.request.RequestUtils.escapeURL(wizardStateID);
+		}
+
+		url += "&amp;" + rh.getSystemParameters();
+
+		response.sendRedirect(response.encodeRedirectURL(url));
+
+	</JSP_SCRIPTLET>
+</PAGE>

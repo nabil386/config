@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PAGE
+  PAGE_ID="BDMThirdPartyEvidence_createThirdPartyWizardStep4"
+  WINDOW_OPTIONS="width=1045,height=700"
+  SCRIPT_FILE="MailingAddressSame.js"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT"  PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+  
+  <SERVER_INTERFACE CLASS="BDMThirdPartyWizard"  NAME="DISPLAY" OPERATION="getThirdParytEvidenceWizardDetails" PHASE="DISPLAY"/>
+  <SERVER_INTERFACE CLASS="BDMThirdPartyWizard"  NAME="ACTION" OPERATION="saveThirdPartyAdditionalDetails" PHASE="ACTION"/>
+
+
+  
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="wizardProperties$wizardMenu"/>
+    </CONNECT>
+  </MENU> 
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="wizardStateID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="wizardKey$wizardStateID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="wizardStateID"/>
+    <TARGET NAME="ACTION" PROPERTY="wizardKey$wizardStateID"/>
+  </CONNECT>
+
+
+  <ACTION_SET  BOTTOM="true" >
+    <ACTION_CONTROL ALIGNMENT="LEFT" LABEL="ActionControl.Label.Cancel" />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Back">
+      <LINK  DISMISS_MODAL="false" PAGE_ID="BDMThirdPartyEvidence_createThirdPartyWizardBackOrgPageResolver" SAVE_LINK="false" >
+      <CONNECT>
+          <SOURCE  NAME="DISPLAY" PROPERTY="result$thirdPartyDetails$roleType"   />
+          <TARGET NAME="PAGE"  PROPERTY="roleType"   />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE  NAME="PAGE" PROPERTY="wizardStateID"   />
+          <TARGET NAME="PAGE"  PROPERTY="wizardStateID"   />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE  NAME="PAGE" PROPERTY="caseID"   />
+          <TARGET NAME="PAGE"  PROPERTY="caseID"   /> 
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Save"  TYPE="SUBMIT" >
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  
+  <CLUSTER TITLE="Cluster.PageHeader.Representative.Title">
+  
+  	<CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="result$thirdPartyDetails$displayAdditionalInfoCluster"/>
+    </CONDITION>
+    
+	  <CLUSTER
+	    LABEL_WIDTH="50"
+	    NUM_COLS="2"
+	    TITLE="Cluster.Title.PrimaryAddress"
+	  >
+	    <!-- END, CR00378951 -->
+	
+	    <FIELD LABEL="Field.Label.PrimaryAddressData">
+	      <CONNECT>
+	        <TARGET
+	          NAME="ACTION"
+	          PROPERTY="residentialAddress"
+	        />
+	      </CONNECT>
+	    </FIELD>	    
+	  </CLUSTER>
+  
+    <CLUSTER
+	  	LABEL_WIDTH="50"
+	    NUM_COLS="2">
+  		<FIELD LABEL="Field.Label.MailingAdd" CONTROL_REF="mailBooleanRef">
+      		<CONNECT>
+        	<TARGET
+          	NAME="ACTION"
+          	PROPERTY="isMailingAddSame"
+        	/>
+      		</CONNECT>
+    	</FIELD>
+    </CLUSTER>
+
+    <!-- BEGIN, CR00378951, PS -->
+	  <CLUSTER
+	    BEHAVIOR="COLLAPSED"
+	    DESCRIPTION="Cluster.Description.MailingAddress"
+	    LABEL_WIDTH="50"
+	    NUM_COLS="2"
+	    TAB_ORDER="ROW"
+	    TITLE="Cluster.Title.MailingAddress"
+	  >
+	    <!-- END, CR00378951 -->
+			<CONDITION TYPE="DYNAMIC">
+		        <SCRIPT EXPRESSION="mailingAddressSame" />
+			</CONDITION>
+	
+	    <FIELD LABEL="Field.Label.MailingAddressData" >
+	      <CONNECT>
+	        <TARGET
+	          NAME="ACTION"
+	          PROPERTY="mailingAddress"
+	        />
+	      </CONNECT>
+	    </FIELD>	
+	
+	  </CLUSTER>
+  
+	  <!-- BEGIN, CR00378951, PS -->
+	  <CLUSTER NUM_COLS="2">
+	  
+		  <CLUSTER
+		    LABEL_WIDTH="50"
+		    NUM_COLS="1"
+		    TITLE="Cluster.Title.PhoneNumber"
+		  >
+		    <!-- END, CR00378951 -->
+
+		    <FIELD
+		      LABEL="Field.Label.CountryCode"
+		      USE_BLANK="true"
+		      USE_DEFAULT="false"
+		    >
+		      <CONNECT>
+		        <TARGET
+		          NAME="ACTION"
+		          PROPERTY="thirdPartyAdditionalDetails$phoneCountryCode"
+		        />
+		      </CONNECT>
+		    </FIELD>
+
+		    <FIELD
+		      LABEL="Field.Label.AreaCode"
+		    >
+		      <CONNECT>
+		        <TARGET
+		          NAME="ACTION"
+		          PROPERTY="phoneAreaCode"
+		        />
+		      </CONNECT>
+		    </FIELD>
+		    
+		    <FIELD LABEL="Field.Label.Phone">
+		      <CONNECT>
+		        <TARGET
+		          NAME="ACTION"
+		          PROPERTY="phoneNumber"
+		        />
+		      </CONNECT>
+		    </FIELD>		    
+		    		    	
+		    <FIELD
+		      LABEL="Field.Label.Extension"
+		    >
+		      <CONNECT>
+		        <TARGET
+		          NAME="ACTION"
+		          PROPERTY="phoneExtension"
+		        />
+		      </CONNECT>
+		    </FIELD>
+		    
+		    <FIELD
+		      LABEL="Field.Label.PhoneType"
+		      USE_BLANK="true"
+		      USE_DEFAULT="false"
+		    >
+		      <CONNECT>
+		        <TARGET
+		          NAME="ACTION"
+		          PROPERTY="phoneType"
+		        />
+		      </CONNECT>
+		    </FIELD>		    
+		    
+		    <FIELD LABEL="Field.Label.Phone.From.Date" USE_BLANK="TRUE"  USE_DEFAULT="FALSE">
+		      <CONNECT>
+		        <TARGET
+		          NAME="ACTION"
+		          PROPERTY="phoneFromDate"
+		        />
+		      </CONNECT>
+		    </FIELD>
+		    
+		    <FIELD LABEL="Field.Label.Phone.To.Date" USE_BLANK="TRUE"  USE_DEFAULT="FALSE">
+		      <CONNECT>
+		        <TARGET
+		          NAME="ACTION"
+		          PROPERTY="phoneToDate"
+		        />
+		      </CONNECT>
+		    </FIELD>
+    
+	     </CLUSTER>
+	
+	     <CLUSTER
+			    LABEL_WIDTH="50"
+			    NUM_COLS="1"
+			    TITLE="Cluster.Title.Alt.PhoneNumber"
+			  >
+			    <!-- END, CR00378951 -->
+
+			    <FIELD
+			      LABEL="Field.Label.CountryCode"
+			      USE_BLANK="true"
+			      USE_DEFAULT="false"
+			    >
+			      <CONNECT>
+			        <TARGET
+			          NAME="ACTION"
+			          PROPERTY="thirdPartyAdditionalDetails$altPhoneCountryCode"
+			        />
+			      </CONNECT>
+			    </FIELD>	
+			
+			    <FIELD
+			      LABEL="Field.Label.AreaCode"
+			    >
+			      <CONNECT>
+			        <TARGET
+			          NAME="ACTION"
+			          PROPERTY="altPhoneAreaCode"
+			        />
+			      </CONNECT>
+			    </FIELD>
+	
+			    <FIELD LABEL="Field.Label.Phone">
+			      <CONNECT>
+			        <TARGET
+			          NAME="ACTION"
+			          PROPERTY="altPhoneNumber"
+			        />
+			      </CONNECT>
+			    </FIELD>	
+		
+			    <FIELD
+			      LABEL="Field.Label.Extension"
+			    >
+			      <CONNECT>
+			        <TARGET
+			          NAME="ACTION"
+			          PROPERTY="altPhoneExtension"
+			        />
+			      </CONNECT>
+			    </FIELD>
+			    			    		    			    		
+			    <FIELD
+			      LABEL="Field.Label.PhoneType"
+			      USE_BLANK="true"
+			      USE_DEFAULT="false"
+			    >
+			      <CONNECT>
+			        <TARGET
+			          NAME="ACTION"
+			          PROPERTY="altPhoneType"
+			        />
+			      </CONNECT>
+			    </FIELD>
+  
+			    <FIELD LABEL="Field.Label.Phone.From.Date" USE_BLANK="TRUE"  USE_DEFAULT="FALSE">
+			      <CONNECT>
+			        <TARGET
+			          NAME="ACTION"
+			          PROPERTY="altPhoneFromDate"
+			        />
+			      </CONNECT>
+			    </FIELD>
+			    <FIELD LABEL="Field.Label.Phone.To.Date" USE_BLANK="TRUE"  USE_DEFAULT="FALSE">
+			      <CONNECT>
+			        <TARGET
+			          NAME="ACTION"
+			          PROPERTY="altPhoneToDate"
+			        />
+			      </CONNECT>
+			    </FIELD>
+			    
+				</CLUSTER>
+	
+	  </CLUSTER>
+	  
+	  <CLUSTER NUM_COLS="2" TITLE="Cluster.Title.EMailDetails">
+	  	<FIELD LABEL="Field.Label.EmailAddress">
+	  		<CONNECT>
+	  			<TARGET NAME="ACTION"  PROPERTY="thirdPartyAdditionalDetails$contactEmailAddress" />
+	  		</CONNECT>
+	  	</FIELD>
+	 		<FIELD LABEL="Field.Label.EmailType"  USE_DEFAULT="false" USE_BLANK="true">
+	 			<CONNECT>
+	 				<TARGET NAME="ACTION"  PROPERTY="thirdPartyAdditionalDetails$contactEmailType" />
+	 			</CONNECT>
+	 		</FIELD>
+	  </CLUSTER>
+  
+  </CLUSTER>
+  <!-- Bug Fix - 97310  Missing or Incorrect 'Step' text in New Third Party Contact wizard -->
+  <CLUSTER TITLE="Cluster.PageHeader.ThirdParty.Title" BEHAVIOR="NONE">
+  
+  	<CONDITION>
+      <IS_FALSE NAME="DISPLAY" PROPERTY="result$thirdPartyDetails$displayAdditionalInfoCluster"/>
+    </CONDITION>
+    	<FIELD CONTROL="SKIP"/>
+   </CLUSTER>
+	<CLUSTER NUM_COLS="2" TITLE="Cluster.Title.ReceiptDetailsView">
+		<CLUSTER NUM_COLS="1">
+	  	<FIELD LABEL="Field.Label.ReceivedFromView">
+	  		<CONNECT>
+	  			<TARGET NAME="ACTION"  PROPERTY="thirdPartyAdditionalDetails$receivedFrom" />
+	  		</CONNECT>
+	  	</FIELD>
+	  	 <FIELD CONTROL="SKIP"/>
+	  	 </CLUSTER>
+	  	 <CLUSTER NUM_COLS="1">
+  		<FIELD LABEL="Field.Label.ReceivedFromCountryView"  USE_DEFAULT="false" USE_BLANK="true">
+  			<CONNECT>
+  				<TARGET NAME="ACTION"  PROPERTY="thirdPartyAdditionalDetails$receivedFromCountry" />
+  			</CONNECT>
+  		</FIELD>
+	  	<FIELD LABEL="Field.Label.ModeOfReceiptView"  USE_DEFAULT="false" USE_BLANK="true">
+	  		<CONNECT>
+	  			<TARGET NAME="ACTION"  PROPERTY="thirdPartyAdditionalDetails$modeOfReceipt" />
+	  		</CONNECT>
+	  	</FIELD>
+    </CLUSTER>
+	</CLUSTER>
+		
+	<CLUSTER
+	    SHOW_LABELS="false"
+	    TITLE="Cluster.Title.Comments"
+	  >
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  
+</PAGE>

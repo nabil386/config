@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002-2003, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view decision details.                    -->
+<PAGE
+  PAGE_ID="IncomeScreening_scheduleAppointment"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="pageDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="IncomeScreening"
+    NAME="ACTION"
+    OPERATION="checkUserAvailability"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="pageDescription"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      IMAGE="SearchButton"
+      LABEL="ActionControl.Label.Search"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="THIS"/>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="ResetButton"
+      LABEL="ActionControl.Label.Reset"
+    >
+      <LINK PAGE_ID="IncomeScreening_scheduleAppointment">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+      <LINK PAGE_ID="IncomeScreening_checkEligibility">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.AppointmentDetails"
+  >
+
+
+    <FIELD LABEL="Field.Label.Date">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$appointmentDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.OrganizationUnit">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$organisationUnitID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER TITLE="Cluster.Title.SelectAvailableUser">
+
+
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="schedule"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="IncomeScreening_confirmAppointment"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="availDate$appointmentDate"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="date"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="userFullName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fullUserName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="userName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

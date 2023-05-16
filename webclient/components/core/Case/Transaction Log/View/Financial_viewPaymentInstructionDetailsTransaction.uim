@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010-2011 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page is used to display the details of a financial                -->
+<!-- instruction.                                                           -->
+<PAGE
+  PAGE_ID="Financial_viewPaymentInstructionDetailsTransaction"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Financial"
+    NAME="DISPLAY"
+    OPERATION="readPaymentInstruction1"
+  />
+
+
+  <PAGE_PARAMETER NAME="finInstructionID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="finInstructionID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$finInstructionID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER NUM_COLS="2">
+
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="processedFlag"
+      />
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="paymentHeaderDetails$concernRoleName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.NomineeName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="nomineeName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.NomineeAddress">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="nomineeAddress"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="datePosted"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EffectiveDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="effectiveDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.BankAccountNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="bankAccountNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.BankSortCode">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="bankAccountSortCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Invalidated">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="invalidatedInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$paymentHeaderDetails$statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER LABEL="Field.Label.Amount">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="currencyType"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="amount"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.ForeignCurrency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="foreignCurrency"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PaymentMethod">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="methodOfDelivery"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CheckNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="chequeNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.VoucherReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="voucherNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.LedgerReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="ledgerNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+
+
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="processedFlag"
+      />
+    </CONDITION>
+
+
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="infoMessage"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+  <!-- END CR00096336 -->
+
+
+  <LIST>
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="processedFlag"
+      />
+    </CONDITION>
+
+
+    <FIELD
+      LABEL="Field.Label.CaseReference"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseReference"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00119778, ELG -->
+    <FIELD
+      LABEL="Field.Label.ProductName"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="productName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="instructLineItemTypeDescription"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      ALIGNMENT="RIGHT"
+      LABEL="Field.Label.Amount"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="debitAmount"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      ALIGNMENT="RIGHT"
+      LABEL="Field.Label.Credit"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creditAmount"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00119778 -->
+
+
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This jsp redirects the user to a Case Home Page.-->
+<!-- Each case type value is matched to a Home Page name.-->
+<PAGE
+  PAGE_ID="Product_resolveListMilestone"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+  
+        curam.omega3.request.RequestHandler 
+          rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+  
+        String context = request.getContextPath() + "/";
+        context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+        
+        String productID = request.getParameter("productID");
+        String adminIntegratedCaseID = request.getParameter("adminIntegratedCaseID");
+        String screeningConfigID = request.getParameter("screeningConfigID");
+        String caseTypeID = "";
+        String caseType = "";
+        String url = "";
+        String pageName = "";
+        
+        
+        if(productID != null &amp;&amp; !(productID.equals(""))){          
+            caseTypeID = productID;
+            caseType = "CT2";     
+            pageName = "Product_listMilestoneForProductDelivery";             
+        } else if(adminIntegratedCaseID != null &amp;&amp; !(adminIntegratedCaseID.equals(""))){
+            caseTypeID = adminIntegratedCaseID;
+            caseType = "CT5"; 
+            pageName = "Product_listMilestoneForIntegratedCase";   
+        } else if(screeningConfigID != null &amp;&amp; !(screeningConfigID.equals(""))){
+            caseTypeID = screeningConfigID;
+            caseType = "CT6"; 
+            pageName = "Product_listMilestoneForScreeningCase";
+        }  
+        
+        url = context + pageName + "Page.do?caseTypeID=" + curam.omega3.request.RequestUtils.escapeURL(caseTypeID) + "&amp;caseType=" + curam.omega3.request.RequestUtils.escapeURL(caseType);
+        url += "&amp;" + rh.getSystemParameters();
+          
+        response.sendRedirect(response.encodeRedirectURL(url));
+      
+  </JSP_SCRIPTLET>
+</PAGE>

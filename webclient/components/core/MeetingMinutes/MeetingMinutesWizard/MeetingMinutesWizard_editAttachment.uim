@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2017. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+
+<PAGE
+  PAGE_ID="MeetingMinutesWizard_editAttachment"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <SERVER_INTERFACE
+    CLASS="MeetingMinutesWizard"
+    NAME="ACTION"
+    OPERATION="editAttachment"
+    PHASE="ACTION"
+  />
+  
+  <SERVER_INTERFACE
+    CLASS="MeetingMinutesWizard"
+    NAME="DISPLAY"
+    OPERATION="readMeetingAttachment"
+    PHASE="DISPLAY"
+  />
+
+
+<PAGE_PARAMETER NAME="tempAttachmentID"/>
+<PAGE_PARAMETER NAME="wizardStateID" />
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="tempAttachmentID" />
+    <TARGET NAME="DISPLAY" PROPERTY="arg1$tempStoreID" />
+  </CONNECT>
+   
+    <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="wizardStateID" />
+    <TARGET NAME="DISPLAY" PROPERTY="arg1$wizardStateID" />
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="tempAttachmentID" />
+    <TARGET NAME="ACTION" PROPERTY="tempStoreID" />
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="wizardStateID" />
+    <TARGET NAME="ACTION" PROPERTY="wizardStateID" />
+  </CONNECT>
+
+
+  <CLUSTER LABEL_WIDTH="22.5">
+    <WIDGET
+      LABEL="Field.Label.NewFile"
+      TYPE="FILE_UPLOAD"
+    >
+      <WIDGET_PARAMETER NAME="CONTENT">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="attachmentContents"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+      <WIDGET_PARAMETER NAME="FILE_NAME">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="attachmentName"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+    </WIDGET>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+    STYLE="cluster-no-top-margin-border"
+  >
+    <FIELD LABEL="Field.Label.FileLocation">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileLocation"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fileLocation"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.FileReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileReference"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fileReference"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+    <FIELD LABEL="Field.Label.DocumentType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="documentType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="documentType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ReceiptDate"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="receiptDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="receiptDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="18"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Description"
+  >
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Description"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="description"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      DEFAULT="true"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+    <LINK PAGE_ID="MeetingMinutesWizard_attachments" SAVE_LINK="false"
+        DISMISS_MODAL="true">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="wizardStateID" />
+          <TARGET NAME="PAGE" PROPERTY="wizardStateID" />
+        </CONNECT>
+        
+      </LINK>
+      </ACTION_CONTROL>  
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel">
+      <LINK PAGE_ID="MeetingMinutesWizard_attachments" SAVE_LINK="false"
+        DISMISS_MODAL="true">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="wizardStateID" />
+          <TARGET NAME="PAGE" PROPERTY="wizardStateID" />
+        </CONNECT>
+        
+      </LINK>
+      </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

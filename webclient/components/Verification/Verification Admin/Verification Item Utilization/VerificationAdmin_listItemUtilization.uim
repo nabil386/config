@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2004, 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Page to list Verification Categories .                                   -->
+<?curam-deprecated Since Curam 6.0, replaced by VerificationAdmin_listItemUtilization1.uim?>
+<PAGE
+  PAGE_ID="VerificationAdmin_listItemUtilization"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="VerificationAdministration"
+    NAME="DISPLAY"
+    OPERATION="listVerificationItemUtilization"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="verifiableDataItemID"/>
+  <PAGE_PARAMETER NAME="verifiableDataItemName"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="verifiableDataItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$verifiableDataItemID"
+    />
+  </CONNECT>
+  <ACTION_SET
+    ALIGNMENT="LEFT"
+    BOTTOM="false"
+    TOP="true"
+  >
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="VerificationAdmin_createItemUtilization"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="verifiableDataItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="verifiableDataItemID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="verifiableDataItemName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="verifiableDataItemName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="VerificationAdmin_modifyItemUtilization"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$listDtls$dtls$verificationItemUtilizationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="verificationItemUtilizationID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="Delete"
+        LABEL="ActionControl.Label.Delete"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="VerificationAdmin_deleteVerificationItemUtilization"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$listDtls$dtls$verificationItemUtilizationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="verificationItemUtilizationID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$listDtls$dtls$verificationItemUtilizationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="recordStatus"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD LABEL="Field.Title.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$listDtls$dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$listDtls$dtls$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="VerificationAdmin_viewVerificationItemUtilization">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$listDtls$dtls$verificationItemUtilizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="verificationItemUtilizationID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+  </LIST>
+</PAGE>

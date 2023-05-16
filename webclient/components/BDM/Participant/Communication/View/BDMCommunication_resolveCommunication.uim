@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+                                                     
+<!-- This jsp redirects the user to a Person List communication Page or Case list communication page -->
+
+<PAGE
+  PAGE_ID="BDMCommunication_resolveCommunication"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+
+
+	curam.omega3.request.RequestHandler
+	rh =curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+	String context = request.getContextPath() + "/";
+	context +=curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale()
+	+ "/";
+	
+	String caseID = request.getParameter("caseID");
+	String concernRoleID = request.getParameter("participantRoleID");
+	String communicationPageName="";
+	String caseType="";
+	String url = "";
+
+	curam.interfaces.CasePkg.Case_resolveCaseType_TH
+    th2 = new curam.interfaces.CasePkg.Case_resolveCaseType_TH();
+    
+	if(concernRoleID == null) {
+			core.ScriptletMissingParamException e = new
+			core.ScriptletMissingParamException(-20002, "concernRoleID");
+			throw e;
+	}
+
+
+	if(caseID != null){
+
+		th2.setFieldValue(th2.readCaseTypeDetails$caseID_idx,caseID);
+   		 th2.callServer();
+    
+   		  caseType = th2.getFieldValue(th2.result$caseTypeCode$caseTypeCode_idx);
+    
+
+		 if (caseType.equals("CT2")) {
+    		 communicationPageName = "DefaultICProduct_listCommunication";
+			
+   		 }  
+    	if (caseType.equals("CT5")) {
+    		 communicationPageName = "DefaultIC_listCommunication";
+			
+    	}
+    	url = context + communicationPageName + "Page.do?caseID=" +	curam.omega3.request.RequestUtils.escapeURL(caseID);
+
+	}
+	
+	if((caseID==null) &amp;&amp; (concernRoleID != null) ){
+			communicationPageName="Person_listCommunication";
+			url = context + communicationPageName + "Page.do?concernRoleID=" +curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+	}
+	
+	
+	url += "&amp;" + rh.getSystemParameters();
+	response.sendRedirect(response.encodeRedirectURL(url));
+    
+    
+    
+  </JSP_SCRIPTLET>
+</PAGE>

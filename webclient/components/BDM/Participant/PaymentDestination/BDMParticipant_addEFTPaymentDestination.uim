@@ -1,0 +1,119 @@
+<!-- CK - TASK 23927 - Payment Destination -->
+<PAGE 
+  PAGE_ID="BDMParticipant_addEFTPaymentDestination"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Static.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  
+  <SERVER_INTERFACE 
+    NAME="DISPLAYBANKACCTS" 
+    CLASS="BDMPaymentDestination" 
+    OPERATION="listBankAccountForSelection"/>
+  
+  <SERVER_INTERFACE 
+    NAME="DISPLAYPROGRAMTYPE" 
+    CLASS="BDMPaymentDestination" 
+    OPERATION="listProgramType"/>
+  
+  <SERVER_INTERFACE 
+    NAME="ACTION" 
+    CLASS="BDMPaymentDestination" 
+    OPERATION="addEFTDestination"
+    PHASE="ACTION"/>
+  
+
+  <CONNECT>
+    <SOURCE 
+      NAME="PAGE"
+      PROPERTY="concernRoleID"/>
+    <TARGET
+      NAME="DISPLAYBANKACCTS"
+      PROPERTY="concernRoleID"/> 
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE 
+      NAME="PAGE"
+      PROPERTY="concernRoleID"/>
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="concernRoleID"/> 
+  </CONNECT>
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL 
+      ALIGNMENT="LEFT" 
+      LABEL="ActionControl.Label.Cancel" 
+      TYPE="ACTION"
+    />
+    <ACTION_CONTROL 
+      LABEL="ActionControl.Label.Save" 
+      TYPE="SUBMIT"
+      />
+  </ACTION_SET>
+        
+  <CLUSTER NUM_COLS="2">
+    <FIELD 
+      LABEL="Field.Label.ProgramType"
+      USE_BLANK="true">
+      <CONNECT>
+        <INITIAL 
+          NAME="DISPLAYPROGRAMTYPE" 
+          HIDDEN_PROPERTY="code" 
+          PROPERTY="description"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET 
+          NAME="ACTION" 
+          PROPERTY="programType"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER>
+    <FIELD 
+      LABEL="Field.Label.BankAccount" 
+      USE_BLANK="true">
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAYBANKACCTS"
+          HIDDEN_PROPERTY="concernRoleBankAccountID"
+          PROPERTY="bankAccountDesc"
+          />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="concernRoleBankAccountID"
+          />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER NUM_COLS="2">
+    <FIELD
+      LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <TARGET 
+        NAME="ACTION"
+        PROPERTY="startDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      USE_DEFAULT="false">
+      <CONNECT>
+        <TARGET 
+        NAME="ACTION" 
+        PROPERTY="endDate"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+ </PAGE>

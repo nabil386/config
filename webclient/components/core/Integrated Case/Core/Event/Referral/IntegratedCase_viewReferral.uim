@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2002,2021 All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows a user to view details of a referral event. -->
+<PAGE
+  PAGE_ID="IntegratedCase_viewReferral"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Case"
+    NAME="DISPLAY"
+    OPERATION="readReferral"
+  />
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL
+      IMAGE="EditButton"
+      LABEL="ActionControl.Label.Edit"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Case_modifyReferralFromView"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="referralID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="referralID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    />
+
+
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="referralID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="referralID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseReferralID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+
+
+    <FIELD LABEL="Field.Label.ClientName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="concernRoleName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Person_resolveHomePage">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ExpectedEndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expectedCompleteDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Outcome">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="outcomeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ServiceSupplier">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="serviceSupplierName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="ServiceSupplier_homePage">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="serviceSupplierID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ReferralType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="typeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00416277, VT -->
+    <FIELD
+      HEIGHT="3"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00416277 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reasonText"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

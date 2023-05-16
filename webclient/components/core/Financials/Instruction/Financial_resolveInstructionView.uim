@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2008, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp redirects the user to the appropriate page to display the     -->
+<!-- details of a financial instruction, e.g. payment, bill, reversal etc.  -->
+<?curam-deprecated Since Curam 6.0, replaced by Financial_resolveInstructionView1.uim?>
+<PAGE
+  PAGE_ID="Financial_resolveInstructionView"
+  WINDOW_OPTIONS="width=650"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String instructionType = request.getParameter("instructionType");
+      String instructionID = request.getParameter("instructionID");
+      String contextName = request.getParameter("contextName");
+      String creditDebitType = request.getParameter("creditDebitType");
+      String instructionLineItemType = request.getParameter("instructionLineItemType");
+        
+      String url = "";
+  
+      if (instructionType == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "instructionType");
+       throw e;
+       // END, CR00110216
+      }
+      if (instructionID == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "instructionID");
+       throw e;
+       // END, CR00110216
+      }
+      if (instructionLineItemType == null) {
+        instructionLineItemType = "";
+      }
+      
+      
+      // handle deduction payments
+      if(creditDebitType!=null) {
+      
+        if (instructionType.equals("PMT")) {        
+          url = context + "Financial_viewPaymentInstructionPage.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(instructionID); 
+          
+        } else if (instructionType.equals("UTL") || (instructionType.equals("TAX"))) {
+          url = context + "Financial_viewNonClientPaymentInstructionPage.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(instructionID);
+      
+          if(contextName!=null) {
+            url += "&amp;contextName=" + curam.omega3.request.RequestUtils.escapeURL(contextName);
+          }
+
+        } else if (instructionType.equals("REV")) {
+          url = context + "Financial_viewReversalInstructionPage.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(instructionID); 
+        } else if (instructionType.equals("LBY")) {
+          url = context + "Financial_viewLiabilityInstructionPage.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(instructionID);
+        } else if (instructionType.equals("WRT")) {
+          url = context + "Financial_viewWriteOffInstructionPage.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(instructionID);
+        } else if (instructionType.equals("ADJ")) {
+          url = context + "Financial_viewAdjustmentInstructionPage.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(instructionID);
+        }
+             
+        if (creditDebitType.equals("DBT")) {
+        
+          if (instructionType.equals("DED"))  {               
+           url = context + "Financial_viewPaymentInstructionPage.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(instructionID);  
+          }
+        } 
+        
+        // creditDebitType is "CDT", therefore handle deduction payment received instructions
+        else {
+          if (instructionType.equals("DED"))  {
+            url = context + "Financial_viewPaymentReceivedInstructionPage.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(instructionID) + "&amp;instructionLineItemType=" + curam.omega3.request.RequestUtils.escapeURL(instructionLineItemType);  
+          }   
+          // BEGIN CR00096403, DJ  
+          else if(instructionType.equals("PRV")){
+          url = context + "Financial_viewPaymentReceivedInstructionPage.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(instructionID) + "&amp;instructionLineItemType=" + curam.omega3.request.RequestUtils.escapeURL(instructionLineItemType);  
+          }
+          // END CR00096403.   
+        }    
+      }
+      else {
+      // BEGIN, CR00110216, SK
+        if (instructionType.equals("PMT"))  {
+         url = context + "Financial_viewPaymentInstructionPage.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(instructionID);  
+        } else if (instructionType.equals("UTL") || (instructionType.equals("TAX")) || (instructionType.equals("DED"))) {
+          url = context + "Financial_viewNonClientPaymentInstructionPage.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(instructionID);
+      
+          if(contextName!=null) {
+            url += "&amp;contextName=" + curam.omega3.request.RequestUtils.escapeURL(contextName);
+          }
+        } else if (instructionType.equals("REV")) {
+          url = context + "Financial_viewReversalInstructionPage.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(instructionID); 
+        } 
+          else if (instructionType.equals("PRV")) {
+          url = context + "Financial_viewPaymentReceivedInstructionPage.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(instructionID) + "&amp;instructionLineItemType=" + curam.omega3.request.RequestUtils.escapeURL(instructionLineItemType);  
+        } 
+          else if (instructionType.equals("LBY")) {
+          url = context + "Financial_viewLiabilityInstructionPage.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(instructionID);
+        } else if (instructionType.equals("WRT")) {
+          url = context + "Financial_viewWriteOffInstructionPage.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(instructionID);
+        } else if (instructionType.equals("ADJ")) {
+          url = context + "Financial_viewAdjustmentInstructionPage.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(instructionID);
+        }
+      }
+
+      // END, CR00110216
+      url += "&amp;" + rh.getSystemParameters();  
+
+      response.sendRedirect(response.encodeRedirectURL(url));
+            
+  </JSP_SCRIPTLET>
+</PAGE>

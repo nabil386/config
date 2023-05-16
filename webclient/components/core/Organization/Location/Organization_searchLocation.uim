@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to search active locations by type.          -->
+<PAGE
+  PAGE_ID="Organization_searchLocation"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="ACTION"
+    OPERATION="listActiveLocations"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="locationID"/>
+  <PAGE_PARAMETER NAME="locationStructureID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="locationID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$key$locationID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="locationStructureID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$key$locationStructureID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      DEFAULT="true"
+      IMAGE="SearchButton"
+      LABEL="ActionControl.Label.Search"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="THIS"/>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="ResetButton"
+      LABEL="ActionControl.Label.Reset"
+    >
+      <LINK PAGE_ID="Organization_searchLocation">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="DISMISS"
+    />
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Filter.Title"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$locationType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <LIST
+    
+    TITLE="List.Title.SearchResults"
+  >
+
+
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="25"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$locationList$searchList$locationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="locationName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="locationName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$locationList$searchList$locationStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

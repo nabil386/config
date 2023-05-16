@@ -1,0 +1,224 @@
+<!-- Task 11053 - CK - page for editing external liabilities -->
+<PAGE
+  PAGE_ID="BDMPerson_modifyExternalLiability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+  >
+  
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Static.Title"/>    
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <PAGE_PARAMETER NAME="externalLiabilityID"/>
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="externalLiabilityID"/>
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="externalLiabilityID"/>  
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="externalLiabilityID"/>
+    <TARGET
+      NAME="DISPLAYBENEFITCASES"
+      PROPERTY="externalLiabilityID"/>  
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="externalLiabilityID"/>
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="externalLiabilityID"/>  
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"/>
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"/>  
+  </CONNECT>
+  
+  <SERVER_INTERFACE
+    CLASS="BDMExternalLiability"  
+    NAME="DISPLAY"
+    OPERATION="readLbyDetailsForEdit"
+  />
+  
+  <SERVER_INTERFACE
+    CLASS="BDMExternalLiability"  
+    NAME="DISPLAYBENEFITCASES"
+    OPERATION="listBenefitCasesForModify"
+  />
+    
+  <SERVER_INTERFACE
+    CLASS="BDMExternalLiability"  
+    NAME="ACTION"
+    OPERATION="modifyLiabilityDetails"
+    PHASE="ACTION"
+  />
+  
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL 
+      ALIGNMENT="LEFT" 
+      LABEL="ActionControl.Label.Cancel" 
+      TYPE="ACTION"/>
+    
+    <ACTION_CONTROL 
+      LABEL="ActionControl.Label.Modify"
+      TYPE="SUBMIT"
+      />
+  </ACTION_SET>  
+      
+  <CLUSTER TITLE="Cluster.Modify.Title">
+    <FIELD
+      LABEL="Field.Label.SequenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sysGenRefNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.LiabilityType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="liabilityTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.OutstandingBalance">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="outstandingAmount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.NewBalance">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="liabilityAmount"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="liabilityAmount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.RecoveryRate.Fixed">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="deductionAmount"        
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="deductionAmount"        
+        />
+      </CONNECT>    
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.RecoveryRate.Variable">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="deductionRate"        
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="deductionRate"        
+        />
+      </CONNECT>    
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"        
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDate"        
+        />
+      </CONNECT>    
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Comments"
+      HEIGHT="4"
+      >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  
+  <CLUSTER
+    TITLE="Cluster.ProductDeliveryCases.Title">
+    <FIELD
+      CONTROL="CHECKBOXED_LIST"
+      LABEL="Field.Label.ProductDeliveryCases"
+      HEIGHT="4">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="caseID"
+          NAME="DISPLAYBENEFITCASES"
+          PROPERTY="caseDisplay"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYBENEFITCASES"
+          PROPERTY="selBenefitIDs"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="selBenefitIDs"
+        />
+      </CONNECT>    
+    </FIELD>
+  </CLUSTER>  
+
+  
+  
+  
+</PAGE>

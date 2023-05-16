@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012-2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007-2008 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Resolver to find the evidence snapshot view page for the custom        -->
+<!-- evidence                                                               -->
+<PAGE
+  PAGE_ID="Evidence_resolveViewSnapshotEvidencePage"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String evID = request.getParameter("evidenceID");
+      String evType = request.getParameter("evidenceType");      
+      String caseID = request.getParameter("caseID");  
+      String contextDescription = request.getParameter("contextDescription");
+      
+      String pageName="";
+      String url = "";
+  
+      if (caseID == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "caseID");
+       System.out.println(e);
+       throw e;
+       // END, CR00110216
+      }  
+      
+      curam.interfaces.EvidencePkg.Evidence_readViewSnapshotPage_TH
+        th = new curam.interfaces.EvidencePkg.Evidence_readViewSnapshotPage_TH();
+      
+      th.setFieldValue(th.key$key$evidenceID_idx, evID);
+      th.setFieldValue(th.key$key$evidenceType_idx, evType);
+
+      th.callServer();
+     
+      pageName=th.getFieldValue(th.result$pageDetails$pageName$pageName_idx);
+      
+      // Get the evidence ID attribute name
+      String evidenceIDAttributeName = "evidenceID";
+      
+      if ((evType.equals("PET1"))||(evType.equals("PET2"))||(evType.equals("PET3"))||
+        (evType.equals("PET13"))||(evType.equals("PET14"))) {
+
+        evidenceIDAttributeName = "concernRoleID";         
+
+      } else if (evType.equals("PET4")) {
+
+        evidenceIDAttributeName = "citizenshipID";         
+
+      } else if (evType.equals("PET5")) {
+
+        evidenceIDAttributeName = "concernRoleAddressID";
+
+      } else if (evType.equals("PET6")) {
+
+        evidenceIDAttributeName = "alternateNameID";         
+
+      } else if (evType.equals("PET7")) {
+
+        evidenceIDAttributeName = "employmentID";         
+
+      } else if (evType.equals("PET8")) {
+
+        evidenceIDAttributeName = "employmentWorkingHourID";
+
+      } else if (evType.equals("PET9")) {
+
+        evidenceIDAttributeName = "educationID";         
+
+      } else if (evType.equals("PET10")) {
+
+        evidenceIDAttributeName = "concernRoleBankAccountID";
+
+      } else if (evType.equals("PET11")) {
+
+        evidenceIDAttributeName = "concernRoleRelationshipID";
+
+      } else if (evType.equals("PET12")) {
+
+        evidenceIDAttributeName = "foreignResidencyID";
+
+      } else if (evType.equals("PET15")) {
+
+        evidenceIDAttributeName = "concernRoleAlternateID";
+
+      }       
+      // BEGIN, CR00110216, SK
+      url = context + curam.omega3.request.RequestUtils.escapeURL(pageName) + "Page.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) + "&amp;" + 
+            curam.omega3.request.RequestUtils.escapeURL(evidenceIDAttributeName) + "=" + curam.omega3.request.RequestUtils.escapeURL(evID) + "&amp;evidenceType=" + 
+            curam.omega3.request.RequestUtils.escapeURL(evType) + "&amp;contextDescription=" + curam.omega3.request.RequestUtils.escapeURL(contextDescription); 
+       // END, CR00110216     
+      url += "&amp;" + rh.getSystemParameters();  
+      response.sendRedirect(response.encodeRedirectURL(url));       
+    
+  </JSP_SCRIPTLET>
+</PAGE>

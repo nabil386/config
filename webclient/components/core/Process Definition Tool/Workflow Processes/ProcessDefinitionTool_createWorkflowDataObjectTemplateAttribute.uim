@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE PAGE_ID="ProcessDefinitionTool_createWorkflowDataObjectTemplateAttribute" WINDOW_OPTIONS="width=500" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="templateID"/>
+  <PAGE_PARAMETER NAME="displayName"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <SERVER_INTERFACE CLASS="WorkflowDataObjectTemplateAdmin" NAME="DISPLAY" OPERATION="readWorkflowDataObjectTemplate" PHASE="DISPLAY"/>
+  <SERVER_INTERFACE CLASS="WorkflowDataObjectTemplateAdmin" NAME="ACTION" OPERATION="createWorkflowDataObjectTemplateAttribute" PHASE="ACTION"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="templateID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="wdoTemplateKey$templateID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="templateID"/>
+    <TARGET NAME="ACTION" PROPERTY="templateID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="versionNo"/>
+    <TARGET NAME="ACTION" PROPERTY="templateAttributeDetails$versionNo"/>
+  </CONNECT>
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.SaveAndNew" TYPE="SUBMIT">
+      <LINK PAGE_ID="ProcessDefinitionTool_createWorkflowDataObjectTemplateAttribute">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="templateID"/>
+          <TARGET NAME="PAGE" PROPERTY="templateID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="displayName"/>
+          <TARGET NAME="PAGE" PROPERTY="displayName"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="ACTION" PROPERTY="result$versionNo"/>
+          <TARGET NAME="PAGE" PROPERTY="versionNo"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Save" TYPE="SUBMIT">
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+  <CLUSTER LABEL_WIDTH="30%">
+    <FIELD LABEL="Field.Label.WDOAttributeName">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="name"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.WDOAttributeDisplayName">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="displayName"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.WDOAttributeType" USE_BLANK="true" WIDTH="60">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="type"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

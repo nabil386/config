@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2019. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Screen for listing child removal records -->
+<PAGE
+  PAGE_ID="LegalAction_listLegalActions"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Statement"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <ACTION_SET
+    ALIGNMENT="LEFT"
+    BOTTOM="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        SAVE_LINK="true"
+        PAGE_ID="LegalAction_selectLegalAction"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <SERVER_INTERFACE
+    CLASS="LegalAction"
+    NAME="DISPLAY"
+    OPERATION="listLegalActionsByCaseID"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="statusInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="LegalAction_resolveCaseEdit"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="legalActionCaseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="statusInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="LegalAction_cancelLegalAction"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="legalActionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="legalActionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pageDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="legalActionCaseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    
+    <FIELD
+      LABEL="Field.Label.Participants"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="participants"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

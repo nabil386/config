@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2004-2008, 2010, 2011 Curam Software Ltd.                    -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- This page allows user to manage hearing case decision for integrated   -->
+<!-- case.                                                                  -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="Appeal_manageHearingCaseDecisionForIC"
+  WINDOW_OPTIONS="width=850"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="BDMAppeal"
+    NAME="DISPLAY"
+    OPERATION="readDecisionAndAttachmentListForIC"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="appealCaseKey$caseID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="RIGHT">
+    <ACTION_CONTROL LABEL="Field.Label.CreateAttachment">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAYITEMS"
+          PROPERTY="appealStatusIndicator"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Appeal_createDecisionAttachment"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="appealCaseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CreateMSWordButton"
+      LABEL="ActionControl.Label.CreateMSWord"
+      TYPE="ACTION"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAYITEMS"
+          PROPERTY="appealStatusIndicator"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Appeal_createMSWord"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="appealCaseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <SEPARATOR/>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.AddOverallResolution"
+      TYPE="ACTION"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAYITEMS"
+          PROPERTY="hearingStatusIndicator"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Appeal_addResolutionToAppealedItems"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="decisionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="hearingDecisionID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <SEPARATOR/>
+
+
+    <ACTION_CONTROL LABEL="Field.Label.Submit">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAYITEMS"
+          PROPERTY="hearingStatusIndicator"
+        />
+      </CONDITION>
+      <!-- BEGIN, CR00198210, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Appeal_submitDecision"
+      >
+        <!-- END, CR00198210 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="decisionVersionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="decisionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="hearingDecisionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="Field.Label.Approve">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAYITEMS"
+          PROPERTY="submittedIndicator"
+        />
+      </CONDITION>
+      <!-- BEGIN, CR00198210, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Appeal_approveDecision"
+      >
+        <!-- END, CR00198210 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="decisionVersionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="decisionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="hearingDecisionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="Field.Label.Reject">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAYITEMS"
+          PROPERTY="submittedIndicator"
+        />
+      </CONDITION>
+      <!-- BEGIN, CR00198210, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Appeal_rejectDecision"
+      >
+        <!-- END, CR00198210 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="decisionVersionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="decisionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="hearingDecisionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <INCLUDE FILE_NAME="Appeal_manageDecisionView.vim"/>
+
+
+</PAGE>

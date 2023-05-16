@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- All rights reserved. -->
+<!-- This software is the confidential and proprietary information of Curam       -->
+<!-- Software. ("Confidential Information").  You shall not                       -->
+<!-- disclose such Confidential Information and shall use it only in accordance   -->
+<!-- with the terms of the license agreement you entered into with Curam Software.-->
+<!-- Description -->
+<!-- This jsp redirects the user to the create/modify page depending on the  -->
+<!-- status of the appeal decision.                                          -->
+<PAGE
+  PAGE_ID="Appeal_resolveDecision"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+
+      String decisionStatus = request.getParameter("decisionStatus");
+      String versionNo = request.getParameter("versionNo");
+      String hearingDecisionID = request.getParameter("hearingDecisionID");
+      String caseID = request.getParameter("caseID");
+      String pageDescription = request.getParameter("pageDescription");
+      String url = "";
+      
+      if(decisionStatus == null) {
+        // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "decisionStatus");
+       System.out.println(e);
+       throw e;
+       // END, CR00126196
+      }
+
+      if(versionNo == null) {
+        // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "versionNo");
+       System.out.println(e);
+       throw e;
+       // END, CR00126196
+      }
+     
+      if(hearingDecisionID == null) {
+        // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "hearingDecisionID");
+       System.out.println(e);
+       throw e;
+       // END, CR00126196
+      }
+
+      if(caseID == null) {
+        // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "caseID");
+       System.out.println(e);
+       throw e;
+       // END, CR00126196
+      }
+
+      if(pageDescription == null) {
+        // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "pageDescription");
+       System.out.println(e);
+       throw e;
+       // END, CR00126196
+      }
+      
+      // -- not started decision --
+      if(decisionStatus.equals("HD1")) {
+        
+        url = context + "Appeal_createHearingCaseDecisionPage.do?caseID="
+          + curam.omega3.request.RequestUtils.escapeURL(caseID) + "&amp;description=" + curam.omega3.request.RequestUtils.escapeURL(pageDescription);   
+
+      } else {
+
+        url = context + "Appeal_modifyHearingCaseDecisionFromViewPage.do?hearingDecisionID="
+          + curam.omega3.request.RequestUtils.escapeURL(hearingDecisionID) + "&amp;versionNo=" + curam.omega3.request.RequestUtils.escapeURL(versionNo) + "&amp;description=" 
+          + curam.omega3.request.RequestUtils.escapeURL(pageDescription); 
+      }
+
+      url += "&amp;" + rh.getSystemParameters();
+      response.sendRedirect(response.encodeRedirectURL(url));
+
+    
+  </JSP_SCRIPTLET>
+</PAGE>

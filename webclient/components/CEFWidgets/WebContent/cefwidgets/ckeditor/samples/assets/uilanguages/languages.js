@@ -1,0 +1,5 @@
+/**
+ * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or http://ckeditor.com/license
+ */
+var CKEDITOR_LANGS=function(){var a={ar:"Arabic",eu:"Basque",bg:"Bulgarian",ca:"Catalan",zh:"Chinese Simplified","zh-tw":"Chinese Traditional",hr:"Croatian",cs:"Czech",da:"Danish",nl:"Dutch",en:"English",fi:"Finnish",fr:"French",de:"German",el:"Greek",iw:"Hebrew",hu:"Hungarian",id:"Indonesian",it:"Italian",ja:"Japanese",kk:"Kazakh",ko:"Korean",no:"Norwegian Bokmal",pl:"Polish",pt:"Portuguese","pt-br":"Portuguese Brazilian",ro:"Romanian",ru:"Russian",sk:"Slovak",sl:"Slovenian",es:"Spanish",sr:"Serbian",sv:"Swedish",th:"Thai",tr:"Turkish"};a.he="Hebrew (HE)",a.no="Norwegian",a.nb="Norwegian Bokmal",a.uk="Ukrainian",a["zh-cn"]="Chinese Simplified (ZH-CN)";var n=[];for(var e in CKEDITOR.lang.languages)n.push({code:e,name:a[e]||e});return n.sort(function(a,n){return a.name<n.name?-1:1}),n}();

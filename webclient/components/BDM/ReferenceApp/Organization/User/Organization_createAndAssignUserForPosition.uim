@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Create a new user for an organization                                  -->
+<PAGE
+  PAGE_ID="Organization_createAndAssignUserForPosition"
+  WINDOW_OPTIONS="width=800"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="BDMOrganization"
+    NAME="ACTION"
+    OPERATION="createAndAssignUserForPosition"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="BDMOrganization"
+    NAME="DISPLAY"
+    OPERATION="readUserLangList"
+    PHASE="DISPLAY"
+  />
+
+  <SERVER_INTERFACE
+    CLASS="BDMOrganization"
+    NAME="DISPLAYSSO"
+    OPERATION="readBDMAlternateLoginEnabled"
+  />
+
+
+  <PAGE_PARAMETER NAME="positionID"/>
+  <PAGE_PARAMETER NAME="organisationStructureID"/>
+  <PAGE_PARAMETER NAME="organisationUnitID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="positionID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="positionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="organisationUnitID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="organisationID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="organisationStructureID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="organisationStructureID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+  >
+    <FIELD
+      LABEL="Field.Label.Title"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="title"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.FirstName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$createUserDtls$createUserDetails$firstname"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Location">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$createUserDtls$createUserDetails$locationID"
+        />
+      </CONNECT>
+    </FIELD>
+	<!-- BEGIN Task-17776 field layout  -->
+	<FIELD        
+        HEIGHT="2"
+        LABEL="Field.Label.userLanguage"
+        USE_BLANK="false"
+        WIDTH="100"
+      >
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="langCode"
+            NAME="DISPLAY"
+            PROPERTY="langDesc"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="userLangList"
+          />
+        </CONNECT>
+      </FIELD>
+	<!-- END Task-17776 -->
+	
+    <FIELD
+      LABEL="Field.Label.Sensitivity"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="sensitivity"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LastName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$createUserDtls$createUserDetails$surname"
+        />
+      </CONNECT>
+    </FIELD>
+
+	<!-- BEGIN Task-17776 field layout -->
+	<FIELD LABEL="Field.Label.DefaultLocale">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$createUserDtls$createUserDetails$defaultLocale"
+        />
+      </CONNECT>
+    </FIELD>
+	<!-- END Task-17776 -->
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="25"
+    NUM_COLS="1"
+    TITLE="Cluster.Title.Contact"
+  >
+
+
+    <CONTAINER LABEL="Container.Label.BusinessPhone">
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD
+        LABEL="Field.Label.BusinessCountryCode"
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$createUserDtls$createUserDetails$businessCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD
+        LABEL="Field.Label.BusinessAreaCode"
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$createUserDtls$createUserDetails$businessAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD
+        LABEL="Field.Label.BusinessNumber"
+        WIDTH="7"
+        WIDTH_UNITS="CHARS"
+      >
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$createUserDtls$createUserDetails$businessNumber"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD
+        LABEL="Field.Label.BusinessPhoneExtn"
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$createUserDtls$createUserDetails$businessPhoneExtn"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+    <CONTAINER LABEL="Container.Label.PersonalPhone">
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD
+        LABEL="Field.Label.PersonalCountryCode"
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$createUserDtls$createUserDetails$personalCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD
+        LABEL="Field.Label.PersonalAreaCode"
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$createUserDtls$createUserDetails$personalAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD
+        LABEL="Field.Label.PersonalNumber"
+        WIDTH="7"
+        WIDTH_UNITS="CHARS"
+      >
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$createUserDtls$createUserDetails$personalNumber"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.BusinessEmail"
+      WIDTH="70"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$createUserDtls$createUserDetails$businessEMail"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.PersonalEmail"
+      WIDTH="70"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$createUserDtls$createUserDetails$personalEMail"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER LABEL="Container.Label.Fax">
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD
+        LABEL="Field.Label.FaxCountryCode"
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$createUserDtls$createUserDetails$faxCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD
+        LABEL="Field.Label.FaxAreaCode"
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$createUserDtls$createUserDetails$faxAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD
+        LABEL="Field.Label.FaxNumber"
+        WIDTH="7"
+        WIDTH_UNITS="CHARS"
+      >
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$createUserDtls$createUserDetails$faxNumber"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+    <CONTAINER LABEL="Container.Label.Mobile">
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD
+        LABEL="Field.Label.MobileCountryCode"
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$createUserDtls$createUserDetails$mobileCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD
+        LABEL="Field.Label.MobileAreaCode"
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$createUserDtls$createUserDetails$mobileAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD
+        LABEL="Field.Label.MobileNumber"
+        WIDTH="7"
+        WIDTH_UNITS="CHARS"
+      >
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$createUserDtls$createUserDetails$mobileNumber"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+    <CONTAINER LABEL="Container.Label.Pager">
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD
+        LABEL="Field.Label.PagerCountryCode"
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$createUserDtls$createUserDetails$pagerCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD
+        LABEL="Field.Label.PagerAreaCode"
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$createUserDtls$createUserDetails$pagerAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD
+        LABEL="Field.Label.PagerNumber"
+        WIDTH="7"
+        WIDTH_UNITS="CHARS"
+      >
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$createUserDtls$createUserDetails$pagerNumber"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER LABEL_WIDTH="50" NUM_COLS="2"
+	TITLE="Cluster.Title.Security">
+
+	<CONDITION>
+		<IS_FALSE NAME="DISPLAYSSO"
+			PROPERTY="result$dtls$alternateLoginEnabled" />
+	</CONDITION>
+
+	<FIELD LABEL="Field.Label.UserName">
+		<CONNECT>
+			<TARGET NAME="ACTION"
+				PROPERTY="details$createUserDtls$createUserDetails$userName" />
+		</CONNECT>
+	</FIELD>
+	<FIELD LABEL="Field.Label.Password">
+		<CONNECT>
+			<TARGET NAME="ACTION"
+				PROPERTY="details$createUserDtls$createUserDetails$password" />
+		</CONNECT>
+	</FIELD>
+	<FIELD LABEL="Field.Label.PasswordExpiryDays" USE_DEFAULT="false">
+		<CONNECT>
+			<TARGET NAME="ACTION"
+				PROPERTY="details$createUserDtls$createUserDetails$passwordExpiry" />
+		</CONNECT>
+	</FIELD>
+	<FIELD LABEL="Field.Label.Application" USE_BLANK="true"
+		USE_DEFAULT="false">
+		<CONNECT>
+			<TARGET NAME="ACTION"
+				PROPERTY="details$createUserDtls$createUserDetails$applicationCode" />
+		</CONNECT>
+	</FIELD>
+	<FIELD LABEL="Field.Label.CallCentreUser">
+		<CONNECT>
+			<TARGET NAME="ACTION"
+				PROPERTY="details$createUserDtls$createUserDetails$ctiEnabled" />
+		</CONNECT>
+	</FIELD>
+
+
+	<FIELD LABEL="Field.Label.RoleName">
+		<CONNECT>
+			<TARGET NAME="ACTION"
+				PROPERTY="details$createUserDtls$createUserDetails$roleName" />
+		</CONNECT>
+	</FIELD>
+	<FIELD LABEL="Field.Label.PasswordConfirm">
+		<CONNECT>
+			<TARGET NAME="ACTION"
+				PROPERTY="details$createUserDtls$createUserDetails$passwordConfirm" />
+		</CONNECT>
+	</FIELD>
+	<FIELD LABEL="Field.Label.PasswordExpiryLogin"
+		USE_DEFAULT="false">
+		<CONNECT>
+			<TARGET NAME="ACTION"
+				PROPERTY="details$createUserDtls$createUserDetails$pwdChangeAfterXLog" />
+		</CONNECT>
+	</FIELD>
+	<FIELD LABEL="Field.Label.AccountExpiry" USE_DEFAULT="false">
+		<CONNECT>
+			<TARGET NAME="ACTION"
+				PROPERTY="details$createUserDtls$createUserDetails$passwordExpiresOn" />
+		</CONNECT>
+	</FIELD>
+	<FIELD LABEL="Field.Label.AccountEnabled">
+		<CONNECT>
+			<TARGET NAME="ACTION"
+				PROPERTY="details$createUserDtls$createUserDetails$accountEnabled" />
+		</CONNECT>
+	</FIELD>
+</CLUSTER>
+
+<CLUSTER LABEL_WIDTH="50" NUM_COLS="2"
+	TITLE="Cluster.Title.Security">
+
+	<CONDITION>
+		<IS_TRUE NAME="DISPLAYSSO"
+			PROPERTY="result$dtls$alternateLoginEnabled" />
+	</CONDITION>
+
+	<FIELD LABEL="Field.Label.LoginID">
+		<CONNECT>
+			<TARGET NAME="ACTION" PROPERTY="details$createUserDtls$createUserDetails$loginID" />
+		</CONNECT>
+	</FIELD>
+	
+	<FIELD LABEL="Field.Label.Application" USE_BLANK="true"
+		USE_DEFAULT="false">
+		<CONNECT>
+			<TARGET NAME="ACTION"
+				PROPERTY="details$createUserDtls$createUserDetails$applicationCode" />
+		</CONNECT>
+	</FIELD>
+	<FIELD LABEL="Field.Label.CallCentreUser">
+		<CONNECT>
+			<TARGET NAME="ACTION"
+				PROPERTY="details$createUserDtls$createUserDetails$ctiEnabled" />
+		</CONNECT>
+	</FIELD>
+		<FIELD CONTROL="SKIP"></FIELD>
+	
+	
+	<FIELD LABEL="Field.Label.SamAccountName">
+		<CONNECT>
+			<TARGET NAME="ACTION" PROPERTY="details$samAccountName" />
+		</CONNECT>
+	</FIELD>
+
+	<FIELD LABEL="Field.Label.RoleName">
+		<CONNECT>
+			<TARGET NAME="ACTION"
+				PROPERTY="details$createUserDtls$createUserDetails$roleName" />
+		</CONNECT>
+	</FIELD>
+	
+	<FIELD LABEL="Field.Label.AccountExpiry" USE_DEFAULT="false">
+		<CONNECT>
+			<TARGET NAME="ACTION"
+				PROPERTY="details$createUserDtls$createUserDetails$passwordExpiresOn" />
+		</CONNECT>
+	</FIELD>
+	<FIELD LABEL="Field.Label.AccountEnabled">
+		<CONNECT>
+			<TARGET NAME="ACTION"
+				PROPERTY="details$createUserDtls$createUserDetails$accountEnabled" />
+		</CONNECT>
+	</FIELD>
+</CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.PositionAssignment"
+  >
+    <FIELD LABEL="Field.Label.FromDate">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00155490, DJ -->
+    <FIELD
+      LABEL="Field.Label.ToDate"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="toDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00155490 -->
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.AccessPeriods"
+  >
+    <FIELD LABEL="Field.Label.SetAccess">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$createUserDtls$createUserDetails$loginRestrictions"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LoginDayMon">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$createUserDtls$createUserDetails$loginDayMon"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LoginDayWed">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$createUserDtls$createUserDetails$loginDayWed"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LoginDayFri">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$createUserDtls$createUserDetails$loginDayFri"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LoginTimeFrom">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$createUserDtls$createUserDetails$loginTimeFrom"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LoginDaySun">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$createUserDtls$createUserDetails$loginDaySun"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LoginDayTues">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$createUserDtls$createUserDetails$loginDayTues"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LoginDayThurs">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$createUserDtls$createUserDetails$loginDayThurs"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LoginDaySat">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$createUserDtls$createUserDetails$loginDaySat"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.LoginTimeTo"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$createUserDtls$createUserDetails$loginTimeTo"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2022. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Modify all the time constraints for an appeal process.                 -->
+<PAGE PAGE_ID="AppealProcessAdmin_modifyAllTimeConstraints" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE CLASS="AppealProcessAdmin" NAME="DISPLAY" OPERATION="listTimeConstraintsForModify" PHASE="DISPLAY"/>
+  <SERVER_INTERFACE CLASS="AppealProcessAdmin" NAME="ACTION" OPERATION="modifyAllTimeConstraints" PHASE="ACTION"/>
+  <PAGE_PARAMETER NAME="appealProcessID"/>
+  <PAGE_PARAMETER NAME="caseType"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="appealProcessID"/>
+    <TARGET NAME="ACTION" PROPERTY="details$appealProcessID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseType"/>
+    <TARGET NAME="ACTION" PROPERTY="details$caseType"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="appealProcessID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$appealProcessID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseType"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$caseType"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="appealStageConfID"/>
+    <TARGET NAME="ACTION" PROPERTY="appealStageConfID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="appealStageTimeConstraintID"/>
+    <TARGET NAME="ACTION" PROPERTY="appealStageTimeConstraintID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="constraintTypeCode"/>
+    <TARGET NAME="ACTION" PROPERTY="constraintTypeCode"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="fromDate"/>
+    <TARGET NAME="ACTION" PROPERTY="fromDate"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="numberOfDays"/>
+    <TARGET NAME="ACTION" PROPERTY="numberOfDays"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="preExistingInd"/>
+    <TARGET NAME="ACTION" PROPERTY="preExistingInd"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="relatedAppealStage"/>
+    <TARGET NAME="ACTION" PROPERTY="relatedAppealStage"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="selectedInd"/>
+    <TARGET NAME="ACTION" PROPERTY="selectedInd"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="dtls$versionNo"/>
+    <TARGET NAME="ACTION" PROPERTY="versionNo"/>
+  </CONNECT>
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+    <ACTION_CONTROL IMAGE="RemoveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel" TYPE="ACTION"/>
+  </ACTION_SET>
+  <LIST PAGINATED="false" TITLE="Cluster.Title.AddRemoveTimeConstraints">
+    <FIELD LABEL="Field.Label.Select" WIDTH="10">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="selectedInd"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="selectedInd"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ConstraintType" WIDTH="45">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="constraintTypeCode"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RelatedStage" WIDTH="25">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="relatedAppealStage"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Days" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="numberOfDays"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="numberOfDays"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <CLUSTER LABEL_WIDTH="50" NUM_COLS="1">
+    <FIELD LABEL="Field.Label.FromDate" WIDTH="7" WIDTH_UNITS="CHARS">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="updatedFromDate"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Resolver to navigate on create address evidence wizard  -->
+<PAGE
+  PAGE_ID="BDMAddressEvidence_resolveEditAddressStepWizardPage"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+
+      curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String wizardStateID = request.getParameter("wizardStateID");
+      String sourcePageAction = request.getParameter("sourcePageAction");
+      
+       String pageName="";
+      String url = "";
+      
+      
+      if (wizardStateID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "wizardStateID");
+       throw e;
+      }
+      
+      if (sourcePageAction == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "sourcePageAction");
+       throw e;
+      }
+
+	  if (sourcePageAction.equals("EditAddressEvidence")){
+	      curam.interfaces.BDMAddressEvidenceWizardPkg.BDMAddressEvidenceWizard_getAddressEvidenceWizardDetails_TH
+			getTh = new curam.interfaces.BDMAddressEvidenceWizardPkg.BDMAddressEvidenceWizard_getAddressEvidenceWizardDetails_TH();
+			getTh.setFieldValue(getTh.wizardStateID$wizardStateID_idx,wizardStateID);
+			getTh.callServer();
+			
+			String editInd = getTh.getFieldValue(getTh.result$dtls$step1DataDtls$editInd_idx);
+	      if(editInd.equals("YN1") ){
+	     	 pageName="BDMAddressEvidence_editAddressWizardStep2";
+	     	 url = context + curam.omega3.request.RequestUtils.escapeURL(pageName) + "Page.do?wizardStateID=" + curam.omega3.request.RequestUtils.escapeURL(wizardStateID);
+	         url += "&amp;" + rh.getSystemParameters();
+	         response.sendRedirect(response.encodeRedirectURL(url));
+	      }else{
+	      	response.sendRedirect(response.encodeURL(request.getContextPath() + "/ieg/CloseAndRedirect.jspx"));
+	      }
+      }
+      
+
+  </JSP_SCRIPTLET>
+</PAGE>

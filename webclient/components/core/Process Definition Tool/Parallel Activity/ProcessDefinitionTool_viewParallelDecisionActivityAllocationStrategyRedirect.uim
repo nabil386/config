@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012,2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- ================                                                       -->
+<!-- This jsp redirects the user to the appropriate allocation strategy     -->
+<!-- page for a parallel decision activity based on the specified           -->
+<!-- allocation type. The types include function, rule or direct.           -->
+<PAGE
+  PAGE_ID="ProcessDefinitionTool_viewParallelDecisionActivityAllocationStrategyRedirect"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+     
+      String processID = request.getParameter("processID");
+      String processVersionNo = request.getParameter("processVersionNo");
+      String activityID = request.getParameter("activityID");
+      String strategyParent = "DECISION_ACTIVITY_ALLOCATION_STRATEGY";      
+      
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.
+          RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory
+        .getUserPreferences(pageContext.getSession()).getLocale() + "/";
+       
+      String pageID = null;
+      String url = null;
+          
+      curam.interfaces.AllocationStrategyAdminPkg.
+        AllocationStrategyAdmin_readAllocationStrategy_TH allocationStrategy
+          = new curam.interfaces.AllocationStrategyAdminPkg.
+              AllocationStrategyAdmin_readAllocationStrategy_TH();
+     
+      allocationStrategy.setFieldValue(
+        allocationStrategy.allocationStrategyReadKey$processID_idx, processID);
+      allocationStrategy.setFieldValue(
+        allocationStrategy.allocationStrategyReadKey$processVersionNo_idx, processVersionNo);
+      allocationStrategy.setFieldValue(
+        allocationStrategy.allocationStrategyReadKey$activityID_idx, activityID);
+      allocationStrategy.setFieldValue(
+        allocationStrategy.allocationStrategyReadKey$strategyParent_idx, strategyParent);        
+      //Call the method.
+      allocationStrategy.callServer();
+
+      String allocationType = allocationStrategy.getFieldValue(
+        allocationStrategy.result$allocationStrategyType_idx);
+
+      if (allocationType.equals("AS1")) {      
+        pageID = "ProcessDefinitionTool_viewParallelDecisionActivityTargetAllocationStrategyPage.do";
+      } else if (allocationType.equals("AS2")) {      
+        pageID = "ProcessDefinitionTool_viewParallelDecisionActivityFunctionAllocationStrategyPage.do";
+      } else if (allocationType.equals("AS3")) {      
+        pageID = "ProcessDefinitionTool_viewParallelDecisionActivityRuleAllocationStrategyPage.do";
+      } else if (allocationType.equals("AS4")) {      
+        pageID = "ProcessDefinitionTool_viewParallelDecisionActivityCERSetAllocationStrategyPage.do"; 
+      } else {
+        pageID = "ProcessDefinitionTool_viewUnsetParallelDecisionActivityAllocationStrategyPage.do";
+      }
+
+      url = context + pageID + "?processID=" + curam.omega3.request.RequestUtils.escapeURL(processID) 
+        + "&amp;processVersionNo=" + curam.omega3.request.RequestUtils.escapeURL(processVersionNo)
+        + "&amp;activityID=" + curam.omega3.request.RequestUtils.escapeURL(activityID)
+        + "&amp;strategyParent=" + strategyParent; 
+       
+      url += "&amp;" + rh.getSystemParameters();  
+      response.sendRedirect(response.encodeRedirectURL(url));
+    
+    
+  </JSP_SCRIPTLET>
+</PAGE>

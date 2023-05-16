@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2006, 2008-2010 Curam Software Ltd.                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to redirect the tasks assigned to him/her.   -->
+<PAGE
+  PAGE_ID="User_taskRedirection"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="UserTaskRedirection"
+    NAME="DISPLAY"
+    OPERATION="listTaskRedirectionHistoryForUser"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="Inbox"
+    NAME="DISPLAYSECURITY"
+    OPERATION="getTaskRedirectionAndBlockingSecurity"
+    PHASE="DISPLAY"
+  />
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.NewTaskRedirection"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAYSECURITY"
+          PROPERTY="allowCreateTaskRedirection"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="User_createTaskRedirection"
+      >
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST TITLE="List.Title.ActiveAndPendingRedirections">
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Clear">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAYSECURITY"
+            PROPERTY="allowClearTaskRedirection"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="User_clearTaskRedirection"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="activeAndPendingDetails$taskRedirectionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="redirectedTaskID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="activeAndPendingDetails$startDateTime"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="startDateTime"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="activeAndPendingDetails$endDateTime"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="endDateTime"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="activeAndPendingDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNum"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="userFullName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userFullName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Label.ActivePendingRedirectTo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="activeAndPendingDetails$targetObjectName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.RedirectType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$activeAndPendingTaskRedirectionDetails$activeAndPendingDetails$toRedirectType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ActivePendingStartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="activeAndPendingDetails$startDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ActivePendingEndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="activeAndPendingDetails$endDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ActivePendingStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="activeAndPendingDetails$redirectionStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <LIST TITLE="List.Title.ExpiredRedirections">
+    <FIELD LABEL="Field.Label.ExpiredRedirectedTo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expiredTaskRedirectionDetails$expiredDetails$targetObjectName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ExpiredRedirectedType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expiredTaskRedirectionDetails$expiredDetails$toRedirectType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ExpiredStartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expiredTaskRedirectionDetails$expiredDetails$startDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ExpiredEndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expiredTaskRedirectionDetails$expiredDetails$endDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

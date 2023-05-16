@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<VIEW
+  PAGE_ID="ProcessDefinitionTool_reorderNotificationBodyTextParam"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <ACTION_SET>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel">
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="processID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processVersionNo"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="processVersionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="activityID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="activityID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="workflowDataObjectAttributeID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="workflowDataObjectAttributeID"
+    />
+  </CONNECT>
+  <CLUSTER
+    DESCRIPTION="Cluster.Description"
+    LABEL_WIDTH="35"
+  >
+    <FIELD
+      LABEL="Field.Label.InsertBeforeParameter"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$dtls$dtls$attributeID"
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$dtls$attributeID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="insertBeforeWorkflowDataObjectAttributeID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="processID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processVersionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="processVersionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="activityID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="activityID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="CONSTANT"
+      PROPERTY="Parameter.Type.NotificationBody"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="textParameterType"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="workflowDataObjectAttributeID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="workflowDataObjectAttributeID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+</VIEW>

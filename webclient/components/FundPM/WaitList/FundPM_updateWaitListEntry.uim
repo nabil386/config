@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2008, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- This  updates Wait List Entry for the fund  -->
+<PAGE
+  PAGE_ID="FundPM_updateWaitListEntry"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="waitListEntryID"/>
+  <PAGE_PARAMETER NAME="fundName"/>
+  <PAGE_PARAMETER NAME="caseRefernceNo"/>
+  <PAGE_PARAMETER NAME="createDate"/>
+  <PAGE_PARAMETER NAME="participantName"/>
+  <!-- BEGIN, CR00200567, AS -->
+  <PAGE_PARAMETER NAME="fundFiscalYearID"/>
+  <!-- END, CR00200567 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainFundWaitList"
+    NAME="DISPLAY"
+    OPERATION="viewWaitListEntry"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainFundWaitList"
+    NAME="ACTION"
+    OPERATION="updateWaitListEntry"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="waitListEntryID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$waitListEntryID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="waitListEntryID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="waitListEntryID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00207190, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00207190 -->
+    <FIELD LABEL="Field.Label.WaitListEntry.WaitListPosition">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="position"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="position"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00200567, AS -->
+    <FIELD LABEL="Field.Label.WaitListEntry.ExpiryDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expiryDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="expiryDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+
+
+    <!-- BEGIN, CR00426143, GK -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+      WIDTH="100"
+      WIDTH_UNITS="PERCENT"
+    >
+      <!-- END, CR00426143 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00200567 -->
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <!-- BEGIN, CR00200567, AS -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+
+
+    <!-- END, CR00200567 -->
+  </ACTION_SET>
+</PAGE>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007-2008, 2010 Curam Software Ltd.                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This pop-up modifies the children codes.                               -->
+<PAGE PAGE_ID="System_modifyChildrenCodePopup" POPUP_PAGE="true" WINDOW_OPTIONS="width=500" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE CLASS="System" NAME="DISPLAY" OPERATION="listChildrenCodesForModification"/>
+  <SERVER_INTERFACE CLASS="System" NAME="SAVE" OPERATION="modifyChildrenCodes" PHASE="ACTION"/>
+  <PAGE_PARAMETER NAME="hierarchyName"/>
+  <PAGE_PARAMETER NAME="codetableName"/>
+  <PAGE_PARAMETER NAME="code"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="codetableName"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$name"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="code"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$code"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="codetableName"/>
+    <TARGET NAME="SAVE" PROPERTY="key$name"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="code"/>
+    <TARGET NAME="SAVE" PROPERTY="key$code"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="initialString"/>
+    <TARGET NAME="SAVE" PROPERTY="initialStr$string"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="hierarchyName"/>
+    <TARGET NAME="SAVE" PROPERTY="popupParams$hierarchyName"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="codetableName"/>
+    <TARGET NAME="SAVE" PROPERTY="popupParams$codetableName"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="code"/>
+    <TARGET NAME="SAVE" PROPERTY="popupParams$code"/>
+  </CONNECT>
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="control.SaveButton.label" TYPE="SUBMIT"/>
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="control.CancelButton.label" TYPE="DISMISS"/>
+  </ACTION_SET>
+
+
+  <LIST>
+    <WIDGET TYPE="MULTISELECT" WIDTH="10">
+      <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$codeDetails$code"/>
+        </CONNECT>
+      </WIDGET_PARAMETER>
+      <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+        <CONNECT>
+          <TARGET NAME="SAVE" PROPERTY="newStr$string"/>
+        </CONNECT>
+      </WIDGET_PARAMETER>
+      <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="initialString"/>
+        </CONNECT>
+      </WIDGET_PARAMETER>
+    </WIDGET>
+    <FIELD LABEL="Field.Label.Description" WIDTH="50">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="description"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Value" WIDTH="40">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$codeDetails$code"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Views a list of Recommendations after execution of a triage.           -->
+<PAGE
+  PAGE_ID="Intake_TriageRecommendations"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="IntakeTriage"
+    NAME="DISPLAY"
+    OPERATION="listRecommendations"
+  />
+
+
+  <PAGE_PARAMETER NAME="participantTriageID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="participantTriageID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="participantTriageID"
+    />
+  </CONNECT>
+
+
+  <CONTAINER>
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="alertMessagesXml"
+        />
+      </CONNECT>
+    </FIELD>
+  </CONTAINER>
+
+
+  <CLUSTER TITLE="Cluster.Title.Programs">
+    <LIST>
+      <FIELD LABEL="Field.Title.Program.Name">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="programDtls$dtls$list$name"
+          />
+        </CONNECT>
+      </FIELD>
+      <DETAILS_ROW>
+        <INLINE_PAGE PAGE_ID="Intake_TriageRecommendationsDescription">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="programDtls$dtls$list$description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </INLINE_PAGE>
+      </DETAILS_ROW>
+    </LIST>
+  </CLUSTER>
+
+
+  <CLUSTER TITLE="Cluster.Title.CommunityServices">
+    <LIST>
+      <FIELD LABEL="Field.Title.Service.Name">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="serviceDtls$dtls$list$name"
+          />
+        </CONNECT>
+      </FIELD>
+      <DETAILS_ROW>
+        <INLINE_PAGE PAGE_ID="Intake_TriageRecommendationsDescription">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="serviceDtls$dtls$list$description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </INLINE_PAGE>
+      </DETAILS_ROW>
+    </LIST>
+  </CLUSTER>
+</PAGE>

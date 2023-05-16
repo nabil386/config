@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2015. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to modify the decision matrix widget data.   -->
+<!-- BEGIN, CR00246242, AK -->
+<PAGE
+  PAGE_ID="DecisionAssistAdmin_editDecisionMatrixData"
+  WINDOW_OPTIONS="width=1000,height=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00246242 -->
+  <SERVER_INTERFACE
+    CLASS="DecisionMatrix"
+    NAME="MENUCONTEXT"
+    OPERATION="viewDecisionMatrixMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="decisionMatrixVersionID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="key$dtls$dtls$decisionMatrixVersionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationPackageVersionID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="key$dtls$dtls$determinationPackageVersionID"
+    />
+  </CONNECT>
+  <PAGE_PARAMETER NAME="decisionMatrixVersionID"/>
+  <PAGE_PARAMETER NAME="decisionMatrixName"/>
+  <PAGE_PARAMETER NAME="decisionMatrixVersionNumber"/>
+  <PAGE_PARAMETER NAME="determinationPackageVersionID"/>
+  <PAGE_PARAMETER NAME="determinationConfigID"/>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="DecisionMatrix"
+    NAME="EDIT_MATRIX_DATA"
+    OPERATION="readDecisionMatrixData"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="decisionMatrixVersionID"
+    />
+    <TARGET
+      NAME="EDIT_MATRIX_DATA"
+      PROPERTY="key$key$key$decisionMatrixVersionID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="DecisionMatrix"
+    NAME="UPDATE_MATRIX_DATA"
+    OPERATION="saveDecisionMatrixData"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="decisionMatrixVersionID"
+    />
+    <TARGET
+      NAME="UPDATE_MATRIX_DATA"
+      PROPERTY="key$key$key$decisionMatrixVersionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="decisionMatrixVersionID"
+    />
+    <TARGET
+      NAME="UPDATE_MATRIX_DATA"
+      PROPERTY="decisionMatrixData$inputDataDtls$dtls$decisionMatrixVersionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="EDIT_MATRIX_DATA"
+      PROPERTY="result$dtls$dtls$versionNo"
+    />
+    <TARGET
+      NAME="UPDATE_MATRIX_DATA"
+      PROPERTY="decisionMatrixData$inputDataDtls$dtls$versionNo"
+    />
+  </CONNECT>
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="EDIT_MATRIX_DATA"
+        PROPERTY="result$informationalMessage$dtls$message"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <CLUSTER SHOW_LABELS="false">
+    <!--BEGIN, CR00454503, KK-->
+    <FIELD
+      CONFIG="Matrix.Config.Core"
+      LABEL="Field.Label.Dummy"
+    >
+      <!--END, CR00454503 -->
+      <CONNECT>
+        <SOURCE
+          NAME="EDIT_MATRIX_DATA"
+          PROPERTY="result$dtls$dtls$matrixData"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="UPDATE_MATRIX_DATA"
+          PROPERTY="decisionMatrixData$inputDataDtls$dtls$matrixData"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- BEGIN, CR00187368, AK -->
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="EDIT_MATRIX_DATA"
+          PROPERTY="result$inEditStatusInd"
+        />
+      </CONDITION>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close"/>
+  </ACTION_SET>
+  <!-- END, CR00187368 -->
+</PAGE>

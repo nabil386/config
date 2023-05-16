@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view all the milestone associated with    -->
+<!-- the service plan delivery.                                             -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_listAllSPGMilestone"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServicePlanGroupDelivery"
+    NAME="DISPLAY"
+    OPERATION="viewMilestone"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY_DESC"
+    OPERATION="getServicePlanGroupContextDescription"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY_MENU"
+    OPERATION="getICServicePlanGroupMenuData"
+  />
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="servicePlanGroupDeliveryId"
+    />
+    <TARGET
+      NAME="DISPLAY_MENU"
+      PROPERTY="servicePlanGroupDeliveryID"
+    />
+  </CONNECT>
+  <PAGE_PARAMETER NAME="servicePlanGroupDeliveryId"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="servicePlanGroupDeliveryId"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="CONSTANT"
+      PROPERTY="Constant.True"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="allMileStones"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="servicePlanGroupDeliveryId"
+    />
+    <TARGET
+      NAME="DISPLAY_DESC"
+      PROPERTY="servicePlanGroupDeliveryID"
+    />
+  </CONNECT>
+  
+  <!-- BEGIN, CR00246725, MR -->
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.IncompletedMilestones"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+      >
+      <LINK
+        PAGE_ID="ServicePlanDelivery_listSPGMilestone"
+        SAVE_LINK="false"
+        >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="servicePlanGroupDeliveryId"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="servicePlanGroupDeliveryId"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    
+    
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.AllMilestones"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+      >
+      <LINK
+        PAGE_ID="ServicePlanDelivery_listAllSPGMilestone"
+        SAVE_LINK="false"
+        >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="servicePlanGroupDeliveryId"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="servicePlanGroupDeliveryId"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <!-- END, CR00246725 -->
+
+
+  <INCLUDE FILE_NAME="ServicePlanDelivery_listMileStone.vim"/>
+</PAGE>

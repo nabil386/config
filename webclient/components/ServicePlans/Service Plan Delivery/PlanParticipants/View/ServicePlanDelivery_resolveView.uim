@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2005 - 2008, 2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This script redirects the user from a Plan Participant list page to a  -->
+<!-- view plan participant page or view nominated representative page,      -->
+<!-- depending on the participant type.                                     -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_resolveView"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler rh 
+        = curam
+          .omega3
+          .request
+          .RequestHandlerFactory
+          .getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences
+        (pageContext.getSession()).getLocale() + "/";
+      String typeCode = request.getParameter("typeCode");
+      String caseParticipantRoleID = request.getParameter("caseParticipantRoleID");
+      String caseID = request.getParameter("caseID");
+      String description = request.getParameter("description");
+      String url = "";
+	 
+      if (typeCode == null) {
+        
+            // BEGIN, CR00124523, SK
+                 core.ScriptletMissingParamException e = new
+                    core.ScriptletMissingParamException(-20002, "typeCode");
+                System.out.println(e);
+                throw e;
+          // END, CR00124523
+          
+      }
+          
+      // If the type is Nominated Representative - SPN
+      if (typeCode.equals("SPN")) {
+        
+        url = context 
+          + "ServicePlanDelivery_viewNominatedRepresentativeFromParticipantListPage.do?caseParticipantRoleID=" 
+          + curam.omega3.request.RequestUtils.escapeURL(caseParticipantRoleID) + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+      // BEGIN CR00118962, PP
+      // BEGIN, CR00234619, SS
+      } else if ( (typeCode.equals("PPR")) || (typeCode.equals("PRPP")) ||(typeCode.equals("COR")) ) {
+      // END, CR00234619
+      // END CR00118962
+        // If the type is Plan Participant - PPR
+        url = context + "ServicePlanDelivery_viewPlanParticipantPage.do?concernCaseRoleID=" 
+         + curam.omega3.request.RequestUtils.escapeURL(caseParticipantRoleID) + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(description) + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+      
+      }
+       // BEGIN, CR00234428, SS
+       url += "&amp;" + rh.getSystemParameters();
+       // END, CR00234428 
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+    
+  </JSP_SCRIPTLET>
+</PAGE>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to to view all versions of a questionnaire.  -->
+<PAGE
+  PAGE_ID="DecisionAssistAdmin_questionnaireVersionHistoryForDP"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="Questionnaire"
+    NAME="MENUCONTEXT"
+    OPERATION="viewQuestionnaireMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationPackageVersionID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="key$dtls$dtls$determinationPackageVersionID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionnaireVersionID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="key$dtls$dtls$questionnaireVersionID"
+    />
+  </CONNECT>
+  <PAGE_PARAMETER NAME="pageID"/>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00246866, AK -->
+  <SERVER_INTERFACE
+    CLASS="Questionnaire"
+    NAME="QUESTIONNAIRE_VERSION_HISTORY"
+    OPERATION="readAllQuestionnaireVersionsHistoryDetails"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="Questionnaire"
+    NAME="LATEST_VERSION"
+    OPERATION="readLatestQuestionnaireVersionDescription"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="questionnaireVersionID"/>
+  <PAGE_PARAMETER NAME="questionnaireID"/>
+  <PAGE_PARAMETER NAME="determinationPackageVersionID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionnaireVersionID"
+    />
+    <TARGET
+      NAME="LATEST_VERSION"
+      PROPERTY="key$dtls$questionnaireVersionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionnaireVersionID"
+    />
+    <TARGET
+      NAME="QUESTIONNAIRE_VERSION_HISTORY"
+      PROPERTY="key$dtls$questionnaireVersionID"
+    />
+  </CONNECT>
+  <LIST>
+    <FIELD LABEL="Field.Label.QuestionnaireVersion">
+      <CONNECT>
+        <SOURCE
+          NAME="QUESTIONNAIRE_VERSION_HISTORY"
+          PROPERTY="result$versionHistoryList$dtls$questionnaireVersionNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="QUESTIONNAIRE_VERSION_HISTORY"
+          PROPERTY="result$versionHistoryList$dtls$versionStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireFrom">
+      <CONNECT>
+        <SOURCE
+          NAME="QUESTIONNAIRE_VERSION_HISTORY"
+          PROPERTY="result$versionHistoryList$dtls$fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireTo">
+      <CONNECT>
+        <SOURCE
+          NAME="QUESTIONNAIRE_VERSION_HISTORY"
+          PROPERTY="result$versionHistoryList$dtls$toDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireCreated">
+      <CONNECT>
+        <SOURCE
+          NAME="QUESTIONNAIRE_VERSION_HISTORY"
+          PROPERTY="result$versionHistoryList$dtls$dateCreated"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireCreatedBy">
+      <CONNECT>
+        <SOURCE
+          NAME="QUESTIONNAIRE_VERSION_HISTORY"
+          PROPERTY="result$versionHistoryList$createdUserFullName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+        WINDOW_OPTIONS="width=625"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="QUESTIONNAIRE_VERSION_HISTORY"
+            PROPERTY="result$versionHistoryList$dtls$createdBy"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00213213, PS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="DecisionAssistAdmin_viewQuestionnaireVersionHistoryForDP">
+        <CONNECT>
+          <SOURCE
+            NAME="QUESTIONNAIRE_VERSION_HISTORY"
+            PROPERTY="result$versionHistoryList$dtls$questionnaireVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="questionnaireVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00213213 -->
+    <!-- END, CR00246866 -->
+  </LIST>
+</PAGE>

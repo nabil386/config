@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- BDM Foreign Applications List page. -->
+
+<PAGE PAGE_ID="BDMFEC_listForeignApplication"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <SERVER_INTERFACE CLASS="BDMForeignEngagementCase"
+    NAME="DISPLAY" OPERATION="listForeignApplications" />
+
+  <PAGE_PARAMETER NAME="caseID" />
+
+  <CONNECT>
+    <SOURCE PROPERTY="caseID" NAME="PAGE" />
+    <TARGET PROPERTY="key$caseID" NAME="DISPLAY" />
+  </CONNECT>
+
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL IMAGE="NewButton"
+      LABEL="ActionControl.Label.New">
+      <LINK OPEN_MODAL="true"
+        PAGE_ID="BDMFEC_createForeignApplication">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="caseID" />
+          <TARGET NAME="PAGE" PROPERTY="caseID" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$concernroleID" />
+          <TARGET NAME="PAGE" PROPERTY="concernroleID" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$countryCode" />
+          <TARGET NAME="PAGE" PROPERTY="countryCode" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+  <LIST TITLE="List.Title.ForeignApplications">
+
+    <DETAILS_ROW>
+      <INLINE_PAGE
+        PAGE_ID="BDMFEC_detailsForeignApplication">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY"
+            PROPERTY="result$bdmFADetails$fApplicationID" />
+          <TARGET NAME="PAGE" PROPERTY="fApplicationID" />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK OPEN_MODAL="true"
+          PAGE_ID="BDMFEC_modifyForeignApplication">
+          <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="caseID" />
+            <TARGET NAME="PAGE" PROPERTY="caseID" />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY"
+              PROPERTY="result$concernroleID" />
+            <TARGET NAME="PAGE" PROPERTY="concernroleID" />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$countryCode" />
+            <TARGET NAME="PAGE" PROPERTY="countryCode" />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY"
+              PROPERTY="result$bdmFADetails$fApplicationID" />
+            <TARGET NAME="PAGE" PROPERTY="fApplicationID" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK OPEN_MODAL="true"
+          PAGE_ID="BDMFEC_deleteForeignApplication">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY"
+              PROPERTY="result$bdmFADetails$fApplicationID" />
+            <TARGET NAME="PAGE" PROPERTY="fApplicationID" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+    </ACTION_SET>
+
+    <FIELD LABEL="Field.List.Label.ApplicationType">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmFADetails$faApplTypeAndRefNumStr" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.List.Label.ReceivedDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmFADetails$receiveDate" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.List.Label.ApplicationStatus">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmFADetails$status" />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.List.Label.RecordStatus">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmFADetails$recordStatus" />
+      </CONNECT>
+    </FIELD>
+
+  </LIST>
+
+</PAGE>
+  

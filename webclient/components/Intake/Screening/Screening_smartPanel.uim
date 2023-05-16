@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Screening Smart panel page -->
+<PAGE PAGE_ID="Screening_smartPanel">
+
+
+  <SERVER_INTERFACE
+    CLASS="Advisor"
+    NAME="ADVISOR"
+    OPERATION="getAdvice"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="QuickNotes"
+    NAME="QUICKNOTESDIS"
+    OPERATION="readForInitialDisplay"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="QuickNotes"
+    NAME="QUICKNOTESSUB"
+    OPERATION="createQuickNotes"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="screeningExecutionID"/>
+  <PAGE_PARAMETER NAME="executionID"/>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="smart-panel-cluster"
+    TITLE="Cluster.Label.AdviceList"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="ADVISOR"
+          PROPERTY="result$adviceXML"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="smart-panel-cluster"
+    TITLE="Cluster.Label.QuickNotes"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="QUICKNOTESDIS"
+          PROPERTY="QuickNotesInitialDisplay"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER SHOW_LABELS="false">
+    <CONDITION>
+      <IS_TRUE
+        NAME="QUICKNOTESDIS"
+        PROPERTY="showSubmitButton"
+      />
+    </CONDITION>
+
+
+    <ACTION_SET>
+      <ACTION_CONTROL TYPE="SUBMIT">
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+</PAGE>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:curam="http://www.curamsoftware.com/curam"
+    xmlns:cw="http://www.curamsoftware.com/curam/jde/client/curam-cw"
+    xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page import="curam.omega3.texthelper.TextHelper"/>
+    <jsp:directive.page import="java.util.logging.Logger"/>
+    <jsp:directive.page isErrorPage="false" pageEncoding="UTF-8"
+        contentType="text/html;charset=UTF-8" isELIgnored="false" language="java" buffer="32kb"
+        errorPage="/cw/ErrorPage.do"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <jsp:text><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></jsp:text>
+    
+    <jsp:scriptlet>
+        <![CDATA[       
+            String url;
+            curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_getHomePage_TH getHomePage_TH =
+                new curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_getHomePage_TH();
+            String playerID = request.getParameter("id");
+
+            getHomePage_TH.callServer();
+            url = getHomePage_TH.getFieldValue(getHomePage_TH.result$homeURL_idx);
+            url = curam.omega3.request.RequestUtils.escapeURL(url);
+            final Logger logger = Logger.getLogger(this.getClass().getName());
+
+            if ("true".equalsIgnoreCase(getHomePage_TH.getFieldValue(getHomePage_TH.result$isEndSession_idx))) {
+              javax.servlet.http.HttpServletRequest hsRequest;
+              javax.servlet.http.HttpSession httpSession;
+              hsRequest = (javax.servlet.http.HttpServletRequest) request;
+              httpSession = hsRequest.getSession();
+            
+              // invalidate the session and create a new one
+              httpSession.invalidate(); 
+              httpSession = hsRequest.getSession(true);
+
+              playerID = null;
+              logger.log(java.util.logging.Level.WARNING, "<script type='text/javascript'>window.parent.location = window.parent.location.toString();</script>" );
+              out.print("<script type='text/javascript'>window.parent.location = window.parent.location.toString();</script>");
+            }
+            else {
+                if (playerID != null) {
+                    url += "&id=" + curam.omega3.request.RequestUtils.escapeURL(playerID);
+                }
+    
+                response.sendRedirect(response.encodeRedirectURL(url));
+           }
+        ]]>
+    </jsp:scriptlet>
+    
+</jsp:root>

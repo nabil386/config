@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page displays the list of household expenses. -->
+<PAGE PAGE_ID="IncomeScreening_viewHouseholdMember" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+    <CONNECT>
+      <SOURCE NAME="PAGE" PROPERTY="pageDescription"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="IncomeScreening" NAME="DISPLAY" OPERATION="viewHouseholdEvidence"/>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL IMAGE="EditButton" LABEL="ActionControl.Label.Edit">
+      <LINK OPEN_MODAL="true" PAGE_ID="IncomeScreening_modifyHouseholdMemberFromView" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="householdEvidenceID"/>
+          <TARGET NAME="PAGE" PROPERTY="householdEvidenceID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="pageDescription"/>
+          <TARGET NAME="PAGE" PROPERTY="pageDescription"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="caseEvidenceTypeID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseEvidenceTypeID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="DeleteButton" LABEL="ActionControl.Label.Delete">
+      <LINK OPEN_MODAL="true" PAGE_ID="IncomeScreening_cancelHouseholdMember" SAVE_LINK="false" WINDOW_OPTIONS="width=400,height=150">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="householdEvidenceID"/>
+          <TARGET NAME="PAGE" PROPERTY="householdEvidenceID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="versionNo"/>
+          <TARGET NAME="PAGE" PROPERTY="versionNo"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="pageDescription"/>
+          <TARGET NAME="PAGE" PROPERTY="pageDescription"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="caseEvidenceTypeID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseEvidenceTypeID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="CloseButton" LABEL="ActionControl.Label.Close"/>
+
+
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="householdEvidenceID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+  <PAGE_PARAMETER NAME="caseEvidenceTypeID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="householdEvidenceID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="fsHouseholdEvidenceID"/>
+  </CONNECT>
+
+
+  <CLUSTER LABEL_WIDTH="55" NUM_COLS="2" TITLE="Cluster.Title.Details">
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="concernRoleName"/>
+      </CONNECT>
+      <LINK PAGE_ID="Participant_resolveRoleHome" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="concernRoleID"/>
+          <TARGET NAME="PAGE" PROPERTY="concernRoleID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="concernRoleType"/>
+          <TARGET NAME="PAGE" PROPERTY="participantType"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PrepareMeals">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="prepareMealsInd"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Disabled">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="disabledInd"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Relationship">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="rshipToHOH"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Citizen">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="citizenshipCode"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Striker">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="strikerInd"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

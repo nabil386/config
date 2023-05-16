@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012, 2015. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2009, 2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information"). You                 -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Allows the user to type in various criteria so that a list of -->
+<!-- selectable Organization units can be obtained with reference to a case.-->
+<PAGE
+  PAGE_ID="BDMTaskSkillTypeSearchPopup"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="BDMWorkAllocation"
+    NAME="ACTION"
+    OPERATION="searchBDMTaskSkillType"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="DISMISS"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="21"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <CONTAINER LABEL="Field.Title.SkillType">
+      <FIELD
+        LABEL="Field.Title.SkillType"
+        WIDTH="50"
+        USE_BLANK="TRUE"
+      >
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$skillType"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <!-- BEGIN, CR00156965, DJ -->
+        <LINK PAGE_ID="BDMTaskSkillTypeSearchPopup">
+          
+          <!-- END, CR00156965 -->
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST
+    
+    TITLE="List.Title.SearchResults"
+  >
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$dtls$bdmTaskClassificationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$dtls$skillType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Title.SkillType"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$skillType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+</PAGE>

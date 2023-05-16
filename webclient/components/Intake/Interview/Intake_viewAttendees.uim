@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- ====================================================================== -->
+<!-- Copyright  2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ====================================================================== -->
+<!-- This page allows you to list the Interviews.    -->
+<!-- Intervuew is used to schedule meeting with      -->
+<!-- social agency.   -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="Intake_viewAttendees"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="interviewID"/>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.DetailView"
+      STYLE="in-page-link"
+    >
+
+
+      <LINK
+        PAGE_ID="Intake_viewInterviewDetails"
+        SAVE_LINK="true"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="interviewID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="interviewID"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.viewNotes"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="Intake_viewInterviewNotes"
+        SAVE_LINK="true"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="interviewID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="interviewID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.viewAttendees"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="Intake_viewAttendees"
+        SAVE_LINK="true"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="interviewID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="interviewID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <SERVER_INTERFACE
+    CLASS="Application"
+    NAME="DISPLAY"
+    OPERATION="viewInterviewAttendees"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="interviewID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="interviewID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    BEHAVIOR="NONE"
+    TITLE="Attendee.Title"
+  >
+    <LIST>
+      <FIELD LABEL="Field.Label.Attendee">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="name"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Status">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="invitationStatus"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN,CR00280612,AM-->
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+        <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="Intake_deleteAttendee"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="interviewID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="interviewID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="attendeeID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="attendeeID"
+              />
+            </CONNECT>
+
+
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+      <!-- END,CR00280612-->
+
+
+    </LIST>
+  </CLUSTER>
+</PAGE>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd" PAGE_ID="DecisionAssistAdmin_viewICDCodeAssociation">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+    </CONNECT>
+    <CONNECT>
+      <SOURCE NAME="PAGE" PROPERTY="conditionName"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="conditionName"/>
+  <PAGE_PARAMETER NAME="iCDCodeConditionLinkID"/>
+  <PAGE_PARAMETER NAME="iCDCodeID"/>
+  <SERVER_INTERFACE CLASS="Condition" NAME="VIEW_ICD_CODE_ASSOCIATION"
+    OPERATION="viewICDCodeConditionAssociation" PHASE="DISPLAY"/>
+  <SERVER_INTERFACE CLASS="ICDCodes" NAME="VIEW_ICD_CODE_DETAILS" OPERATION="viewICDCodeDetails"
+    PHASE="DISPLAY"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="iCDCodeID"/>
+    <TARGET NAME="VIEW_ICD_CODE_DETAILS" PROPERTY="key$keyDtls$ICDCodeID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="iCDCodeConditionLinkID"/>
+    <TARGET NAME="VIEW_ICD_CODE_ASSOCIATION" PROPERTY="key$dtls$dtls$iCDCodeConditionLinkID"/>
+  </CONNECT>
+  <CLUSTER NUM_COLS="2" TITLE="Cluster.Title.ICDCodeCondDetails">
+    <FIELD LABEL="Field.Label.ICDCode">
+      <CONNECT>
+        <SOURCE NAME="VIEW_ICD_CODE_DETAILS" PROPERTY="result$viewCodeDtls$viewDtls$ICDCode"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE NAME="VIEW_ICD_CODE_ASSOCIATION" PROPERTY="result$dtls$dtls$startDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ICDText">
+      <CONNECT>
+        <SOURCE NAME="VIEW_ICD_CODE_DETAILS" PROPERTY="result$viewCodeDtls$viewDtls$ICDText"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ICDCodeVersion">
+      <CONNECT>
+        <SOURCE NAME="VIEW_ICD_CODE_DETAILS"
+          PROPERTY="result$viewVersionDtls$viewVersionDtls$versionNumber"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE NAME="VIEW_ICD_CODE_ASSOCIATION" PROPERTY="result$dtls$dtls$endDate"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+    <ACTION_CONTROL  LABEL="ActionControl.Label.Close" TYPE="ACTION"
+    > </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

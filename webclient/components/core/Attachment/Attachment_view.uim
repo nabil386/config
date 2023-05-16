@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2012-2018. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- ===========                                                            -->
+<!-- The client page for modifying attachment details.                      -->
+<PAGE
+  PAGE_ID="Attachment_view"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Attachment"
+    NAME="DISPLAY"
+    OPERATION="readAttachment"
+  />
+
+
+  <PAGE_PARAMETER NAME="attachmentLinkID"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="attachmentLinkID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$attachmentLinkID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+  >
+  <!-- BEGIN, 213970, MD -->
+   	<CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="cancelledInd"
+        />
+      </CONDITION>
+  <!-- END, 213970 -->
+    <CONTAINER LABEL="Field.Label.AttachedFile">
+      <WIDGET TYPE="FILE_DOWNLOAD">
+        <WIDGET_PARAMETER NAME="LINK_TEXT">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="attachmentName"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="PARAMS">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$attachmentLinkDtls$attachmentLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="attachmentLinkID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.FileLocation">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileLocation"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DocumentType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="documentType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.FileReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileReference"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+<!-- BEGIN, 213970, MD -->
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+  >
+     <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="cancelledInd"
+        />
+      </CONDITION>
+    <FIELD LABEL="Field.Label.AttachedFile">   
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="attachmentName"
+            />
+          </CONNECT>
+    </FIELD>      
+    <FIELD LABEL="Field.Label.FileLocation">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileLocation"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DocumentType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="documentType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.FileReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileReference"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+ <!-- END, 213970 -->
+  
+
+</PAGE>

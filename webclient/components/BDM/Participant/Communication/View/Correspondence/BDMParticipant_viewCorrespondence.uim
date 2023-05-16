@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view the details of a correspondence      -->
+<!-- communication                                                          -->
+<PAGE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+PAGE_ID="BDMParticipant_viewCorrespondence" 
+xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+   <PAGE_TITLE>
+      <CONNECT>
+         <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+      </CONNECT>
+   </PAGE_TITLE>
+   
+   <PAGE_PARAMETER NAME="communicationID" />
+   
+   <MENU MODE="IN_PAGE_NAVIGATION">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Detail" STYLE="in-page-current-link">
+         <LINK PAGE_ID="BDMParticipant_viewCorrespondence" SAVE_LINK="false">
+            <CONNECT>
+               <SOURCE NAME="PAGE" PROPERTY="communicationID" />
+               <TARGET NAME="PAGE" PROPERTY="communicationID" />
+            </CONNECT>
+         </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.StatusHistory" STYLE="in-page-link">
+         <LINK PAGE_ID="BDMParticipant_viewStatusHistory" SAVE_LINK="false">
+            <CONNECT>
+               <SOURCE NAME="PAGE" PROPERTY="communicationID" />
+               <TARGET NAME="PAGE" PROPERTY="communicationID" />
+            </CONNECT>
+         </LINK>
+      </ACTION_CONTROL>
+   </MENU>
+   
+   <SERVER_INTERFACE CLASS="BDMCommunication" NAME="DISPLAY" OPERATION="getViewCorrespondence" />
+   
+   <CONNECT>
+      <SOURCE NAME="PAGE" PROPERTY="communicationID" />
+      <TARGET NAME="DISPLAY" PROPERTY="key$communicationID" />
+   </CONNECT>
+   
+   <CLUSTER LABEL_WIDTH="50" NUM_COLS="2" TITLE="Cluster.Title.Details">
+      <FIELD LABEL="Field.Label.CaseMember">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="clientName" />
+         </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Method">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="methodTypeCode" />
+         </CONNECT>
+      </FIELD>
+      <FIELD CONTROL="SKIP" />
+   </CLUSTER>
+   
+   <CLUSTER LABEL_WIDTH="50" NUM_COLS="2" TITLE="Cluster.Title.TOCorrespondent">
+      <FIELD LABEL="Field.Label.CorrespondentName">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="correspondentName" />
+         </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Address">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="toAddressDataStr" />
+         </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.CorrespondentType">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="correspondentType" />
+         </CONNECT>
+      </FIELD>
+      <FIELD CONTROL="SKIP" />
+   </CLUSTER>
+   
+   <CLUSTER LABEL_WIDTH="50" NUM_COLS="2" TITLE="Cluster.Title.CCCorrespondent">
+      <CONDITION>
+         <IS_TRUE NAME="DISPLAY" PROPERTY="isCCClientInd" />
+      </CONDITION>
+      <FIELD LABEL="Field.Label.CorrespondentName">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="clientName" />
+         </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Address">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="ccAddressDataStr" />
+         </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.CorrespondentType">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="ccClientCorrespondentType" />
+         </CONNECT>
+      </FIELD>
+      <FIELD CONTROL="SKIP" />
+   </CLUSTER>
+   
+   <CLUSTER LABEL_WIDTH="50" NUM_COLS="2" TITLE="Cluster.Title.CCCorrespondent">
+      <CONDITION>
+         <IS_TRUE NAME="DISPLAY" PROPERTY="isCCContactInd" />
+      </CONDITION>
+      <FIELD LABEL="Field.Label.CorrespondentName">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="ccContactName" />
+         </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Address">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="ccAddressDataStr" />
+         </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.CorrespondentType">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="ccContactCorrespondentType" />
+         </CONNECT>
+      </FIELD>
+      <FIELD CONTROL="SKIP" />
+   </CLUSTER>
+   
+   <CLUSTER LABEL_WIDTH="50" NUM_COLS="2" TITLE="Cluster.Title.CCCorrespondent">
+      <CONDITION>
+         <IS_TRUE NAME="DISPLAY" PROPERTY="isCCParticipantInd" />
+      </CONDITION>
+      <FIELD LABEL="Field.Label.CorrespondentName">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="ccParticipantName" />
+         </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Address">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="ccAddressDataStr" />
+         </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.CorrespondentType">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="ccParticipantCorrespondentType" />
+         </CONNECT>
+      </FIELD>
+      <FIELD CONTROL="SKIP" />
+   </CLUSTER>
+   
+   <CLUSTER LABEL_WIDTH="50" NUM_COLS="2" TITLE="Cluster.Title.CCCorrespondent">
+      <CONDITION>
+         <IS_TRUE NAME="DISPLAY" PROPERTY="isCCThirdPartyContactInd" />
+      </CONDITION>
+      <FIELD LABEL="Field.Label.CorrespondentName">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="ccThirdPartyContactName" />
+         </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Address">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="ccAddressDataStr" />
+         </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.CorrespondentType">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="ccThirdPartyContactCorrespondentType" />
+         </CONNECT>
+      </FIELD>
+      <FIELD CONTROL="SKIP" />
+   </CLUSTER>
+   
+   <CLUSTER LABEL_WIDTH="50" NUM_COLS="2" TITLE="Cluster.Title.CommunicationType">
+      <CONTAINER LABEL="Field.Label.Name">
+         <WIDGET TYPE="FILE_DOWNLOAD">
+            <WIDGET_PARAMETER NAME="LINK_TEXT">
+               <CONNECT>
+                  <SOURCE NAME="DISPLAY" PROPERTY="fileName" />
+               </CONNECT>
+            </WIDGET_PARAMETER>
+            <WIDGET_PARAMETER NAME="PARAMS">
+               <CONNECT>
+                  <SOURCE NAME="DISPLAY" PROPERTY="attachmentID" />
+                  <TARGET NAME="PAGE" PROPERTY="attachmentID" />
+               </CONNECT>
+            </WIDGET_PARAMETER>
+         </WIDGET>
+      </CONTAINER>
+      <FIELD LABEL="Field.Label.FileLocation">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="fileLocation" />
+         </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.DocumentLocation">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="documentLocation" />
+         </CONNECT>
+      </FIELD>
+      <FIELD CONTROL="SKIP" />
+      <FIELD LABEL="Field.Label.FileReference">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="fileReference" />
+         </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.DocumentReference">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="documentReference" />
+         </CONNECT>
+      </FIELD>
+   </CLUSTER>
+   
+   <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Title.Comments">
+      <FIELD HEIGHT="4" LABEL="Field.Label.Comments">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="comments" />
+         </CONNECT>
+      </FIELD>
+   </CLUSTER>
+</PAGE>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+    * Copyright 2008, 2010-2011 Curam Software Ltd.
+    * All rights reserved.
+    *
+    * This software is the confidential and proprietary information of Curam
+    * Software, Ltd. ("Confidential Information"). You shall not disclose
+    * such Confidential Information and shall use it only in accordance with
+    * the terms of the license agreement you entered into with Curam
+    * Software.
+    *
+    * Description
+    * ===========
+    * This page is used to modify a legal category
+    *
+-->
+<PAGE
+  PAGE_ID="AdminLegalAction_modifyLegalCategory"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file:\\Curam\CuramUIMSchema"
+>
+
+
+  <!-- The page title for this page -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- Page parameter required for this page -->
+  <PAGE_PARAMETER NAME="legalCategoryNameCode"/>
+  <PAGE_PARAMETER NAME="legalCategoryId"/>
+
+
+  <!-- Declare the 'action' server bean -->
+  <SERVER_INTERFACE
+    CLASS="AdminLegalAction"
+    NAME="ACTION"
+    OPERATION="modifyAdminLegalCategory"
+    PHASE="ACTION"
+  />
+
+
+  <!-- Declare the 'display' server bean -->
+  <SERVER_INTERFACE
+    CLASS="AdminLegalAction"
+    NAME="DISPLAY"
+    OPERATION="getAdminLegalActionCategoryDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- connection parameters required for display and action bean -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="legalCategoryId"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$legalActionCategoryID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="legalCategoryNameCode"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$legalStatusDtls$dtls$code"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="creationDate"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="creationDate"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="legalCategoryId"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="legalActionCategoryID"
+    />
+  </CONNECT>
+
+
+  <!-- Actionset contains save and cancel link -->
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    BOTTOM="true"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <!-- Cluster to get legal category details -->
+  <!-- BEGIN, CR00169111, SS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00169111 -->
+    <FIELD
+      LABEL="Field.Label.Name"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="legalCategoryNameCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- Cluster to get description -->
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Titile.Description"
+  >
+    <!-- BEGIN, CR00169111, SS -->
+    <FIELD>
+      <!-- END, CR00169111 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

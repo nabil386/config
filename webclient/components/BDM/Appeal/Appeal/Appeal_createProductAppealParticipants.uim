@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed Materials - Property of IBM
+    
+    PID 5725-H26
+    
+    Copyright IBM Corporation 2014. All Rights Reserved.
+    
+    US Government Users Restricted Rights - Use, duplication or disclosure 
+    restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="Appeal_createProductAppealParticipants"
+  WINDOW_OPTIONS="width=900,height=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="BDMCaseAppealWizard"
+    NAME="DISPLAY"
+    OPERATION="getWizParticipantOptions"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="BDMCaseAppealWizard"
+    NAME="DISPLAYWIZARD"
+    OPERATION="getWizParticipantDetails"
+  />
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionIDProperty"
+    CLASS="BDMCaseAppealWizard"
+    NAME="ACTION"
+    OPERATION="setWizParticipantDetails"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+    TOP="true"
+  >
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+    <ACTION_CONTROL
+      ACTION_ID="NEXTPAGE"
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="Appeal_createProductAppeal"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+  <PAGE_PARAMETER NAME="appealObjectsDelimitedList"/>
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardProperties$wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="wizardStateID$wizardStateID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAYWIZARD"
+      PROPERTY="wizardStateID$wizardStateID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAYWIZARD"
+      PROPERTY="stateID$wizardStateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="wizardStateID$wizardStateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="appealType"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="appealType"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+  >
+
+
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="anyIndicator"
+      />
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.AppealType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="appealStageNumber"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+  >
+
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="anyIndicator"
+      />
+    </CONDITION>
+
+
+    <FIELD
+      LABEL="Field.Label.AppealType"
+      WIDTH="100"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="appealType"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="1"
+    TITLE="Cluster.Title.Appellant"
+  >
+
+
+    <CLUSTER
+      DESCRIPTION="Cluster.Appellant.Description"
+      NUM_COLS="2"
+    >
+      <FIELD
+        LABEL="Field.Label.Appellant"
+        USE_BLANK="TRUE"
+        USE_DEFAULT="TRUE"
+        WIDTH="100"
+      >
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="listDetails$appellantList$appealParticipantDetails$caseParticipantRoleID"
+            NAME="DISPLAY"
+            PROPERTY="listDetails$appellantList$appealParticipantDetails$nameAndAgeOpt"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAYWIZARD"
+            PROPERTY="appellantCaseParticipantRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="participantDetails$appellantCaseParticipantRoleID"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Organization">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAYWIZARD"
+            PROPERTY="appellantOrganizationInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="participantDetails$appellantOrganizationInd"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+
+
+    <CLUSTER
+      DESCRIPTION="Cluster.Respondent.Description"
+      NUM_COLS="2"
+    >
+      <FIELD
+        LABEL="Field.Label.Respondent"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+        WIDTH="100"
+      >
+
+
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="respondentList$appealParticipantDetails$caseParticipantRoleID"
+            NAME="DISPLAY"
+            PROPERTY="respondentList$appealParticipantDetails$nameAndAgeOpt"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAYWIZARD"
+            PROPERTY="respondentCaseParticipantRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="respondentCaseParticipantRoleID"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Organization">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAYWIZARD"
+            PROPERTY="respondentOrganizationInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="respondentOrganizationInd"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+</PAGE>

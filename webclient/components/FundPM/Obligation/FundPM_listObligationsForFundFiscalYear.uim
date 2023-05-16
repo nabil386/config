@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                      	    -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 															-->
+<!-- =========== 															-->
+<!-- This page allows the user to list  the obligations for particular fund fiscal year.    					-->
+<PAGE
+  PAGE_ID="FundPM_listObligationsForFundFiscalYear"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainObligateFund"
+    NAME="DISPLAY"
+    OPERATION="readAllObligationsForFundFiscalYear"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="fundFiscalYearID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$fundFiscalYearID"
+    />
+  </CONNECT>
+
+
+  <PAGE_PARAMETER NAME="fundFiscalYearID"/>
+  <PAGE_PARAMETER NAME="fundName"/>
+  <PAGE_PARAMETER NAME="fiscalYearName"/>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.FundFiscalYear"
+      STYLE="in-page-link"
+    >
+      <!-- BEGIN, CR00292629, PS -->
+      <LINK PAGE_ID="FundPM_viewFiscalYearFundFromList">
+        <!-- END, CR00292629 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fundFiscalYearID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fiscalYearFundID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fundName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fundName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fiscalYearName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fiscalYearName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ListObligations"
+      STYLE="in-page-current-link"
+    >
+      <LINK PAGE_ID="FundPM_listObligationsForFundFiscalYear">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fundFiscalYearID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fundFiscalYearID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fundName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fundName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fiscalYearName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fiscalYearName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </MENU>
+
+
+  <LIST>
+    <FIELD LABEL="Field.CreationDate.Label">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00200567, AS -->
+    <FIELD LABEL="Field.Amount.Label">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="amount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.StartDate.Label">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.EndDate.Label">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00200567 -->
+    <!-- BEGIN, CR00200008, AK -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="FundPM_listObligationHistory">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$detailsList$dtls$obligationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="obligationID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00200008 -->
+  </LIST>
+</PAGE>

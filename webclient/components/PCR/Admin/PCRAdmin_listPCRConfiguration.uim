@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- ====================================================================== -->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 			                         			      	    -->
+<!-- ====================================================================== -->
+<!-- Lists PCR configuration records.                                       -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="PCRAdmin_listPCRConfiguration"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="PCRAdmin"
+    NAME="DISPLAY"
+    OPERATION="listPCRConfiguration"
+  />
+
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="PCRAdmin_newPCRConfiguration"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST PAGINATED="false">
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="PCRAdmin_modifyPCRConfiguration"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pcrConfigurationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pcrConfigurationID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.PCRRangeMapping">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="PCRAdmin_newPCRRangeMapping"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pcrConfigurationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pcrConfigurationID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Publish">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isUnpublished"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="PCRAdmin_publishPCRConfiguration"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pcrConfigurationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pcrConfigurationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="PCRAdmin_deletePCRConfiguration"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pcrConfigurationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pcrConfigurationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.DateCreated"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.CreatedBy"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="createdBy"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Status"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="pcrConfigurationStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="PCRAdmin_viewPCRConfiguration">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="pcrConfigurationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pcrConfigurationID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+  </LIST>
+
+
+</PAGE>

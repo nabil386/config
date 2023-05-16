@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PAGE
+  PAGE_ID="BDMThirdPartyEvidence_createThirdPartyWizardStep3"
+  WINDOW_OPTIONS="width=1045,height=700"
+  SCRIPT_FILE="BDMDynamicCluster.js"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT"  PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+  </PAGE_TITLE>
+
+	<SERVER_INTERFACE CLASS="BDMThirdPartyWizard"  NAME="DISPLAY" OPERATION="getThirdParytEvidenceWizardDetails" PHASE="DISPLAY"/>
+	<SERVER_INTERFACE CLASS="BDMThirdPartyWizard"  NAME="ACTION" OPERATION="saveIndividualDetails" PHASE="ACTION"/>
+
+	<MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="wizardProperties$wizardMenu"/>
+    </CONNECT>
+  </MENU> 
+  
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+  
+ <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="wizardStateID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="wizardKey$wizardStateID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="wizardStateID"/>
+    <TARGET NAME="ACTION" PROPERTY="wizardKey$wizardStateID"/>
+  </CONNECT>
+  
+   <ACTION_SET  BOTTOM="true" >
+    <ACTION_CONTROL ALIGNMENT="LEFT" LABEL="ActionControl.Label.Cancel" />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Back">
+      <LINK  DISMISS_MODAL="false" PAGE_ID="BDMThirdPartyEvidence_createThirdPartyWizardStep2" SAVE_LINK="false" >
+        <CONNECT>
+          <SOURCE  NAME="PAGE" PROPERTY="wizardStateID"   />
+          <TARGET NAME="PAGE"  PROPERTY="wizardStateID"   />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE  NAME="PAGE" PROPERTY="caseID"   />
+          <TARGET NAME="PAGE"  PROPERTY="caseID"   />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Next"  TYPE="SUBMIT" >
+      <LINK DISMISS_MODAL="false" PAGE_ID="BDMThirdPartyEvidence_createThirdPartyWizardStep4" SAVE_LINK="false" >
+        <CONNECT>
+          <SOURCE NAME="ACTION" PROPERTY="wizardKey$wizardStateID" />
+          <TARGET NAME="PAGE" PROPERTY="wizardStateID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE  NAME="PAGE" PROPERTY="caseID"   />
+          <TARGET NAME="PAGE"  PROPERTY="caseID"   />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <CLUSTER TITLE="List.Title.Individuals.Organization">
+  <LIST DEFAULT_PAGE_SIZE="15"
+    PAGINATION_THRESHOLD="15">
+    <CONTAINER LABEL="List.Title.Individuals.Organization">
+      <WIDGET TYPE="SINGLESELECT">
+        <WIDGET_PARAMETER NAME="SELECT_SOURCE">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="result$individuallList$concernRoleName" />
+            </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="SELECT_TARGET">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="individuals$concernRoleName" />
+            </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.Individual">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$individuallList$concernRoleName"/>
+      </CONNECT>
+    </FIELD>
+    <CONTAINER LABEL="Field.Label.OfficeAddress">
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$individuallList$officeAddress"/>
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </LIST>
+  </CLUSTER>
+</PAGE>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<PAGE
+  PAGE_ID="CitizenWorkspace_secondFactorResolver"
+  COMPONENT_STYLE="PAGE_FRAGMENT"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    <![CDATA[
+    
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String url = "";
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String nextPage = request.getParameter("nextPage");
+      String pageType = request.getParameter("pageType");
+      String pageParams = request.getParameter("pageParams");
+
+      // GUM 3667 - Encode the id before passing it onto the next page
+      String newPageParams = "";
+       
+      if(pageParams != null) {
+      
+        newPageParams = new citizenworkspace.util.ParameterEncodingHelper().getEncodedPageParms(pageParams);
+      
+       
+      }
+      if(nextPage.equals("AuthenticationFailed") || nextPage.equals("LoginFactors")) {
+      
+      out.print("<script>displayContent({pageID:'PagePlayerWrapper', param: [{paramKey: \"page\", paramValue: \"" + curam.omega3.request.RequestUtils.escapeURL(nextPage) + "\"}, {paramKey: \"pageParams\", paramValue: \"" + newPageParams + "\"}]})</script> ");
+
+      } else {      
+      //GUM-5761 - update client locale global var before invoking displayContent()
+      out.print("<script>jsL='" +  curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "';</script>");
+      out.print("<script>displayContent({pageID:'CitizenWorkspace_userLogon', param: [{paramKey: \"pageParams\", paramValue: \"" + newPageParams + "\"}]})</script> ");
+      }
+  ]]>
+  </JSP_SCRIPTLET>
+</PAGE>

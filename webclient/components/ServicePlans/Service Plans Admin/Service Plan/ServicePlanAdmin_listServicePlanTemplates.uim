@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2004, 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright  2004, 2006, 2008, 2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to list integrated cases for a Service Plan. -->
+<PAGE
+  PAGE_ID="ServicePlanAdmin_listServicePlanTemplates"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="ServicePlan"
+    NAME="DISPLAY"
+    OPERATION="listTemplatesForServicePlan"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="servicePlanID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="servicePlanID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="servicePlanID"
+    />
+  </CONNECT>
+  <ACTION_SET
+    ALIGNMENT="LEFT"
+    BOTTOM="false"
+    TOP="true"
+  >
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ServicePlanAdmin_createServicePlanTemplate"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="servicePlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="servicePlanID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="contextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="AddExisting"
+      LABEL="ActionControl.Label.AddExisting"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ServicePlanAdmin_addExistingTemplateToServicePlan"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="servicePlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="servicePlanID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="contextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ServicePlanAdmin_removeTemplateFromServicePlan"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="planTemplateID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="planTemplateID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="servicePlanID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="servicePlanID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="60"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="planTemplateName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00358272, AC-->
+      <LINK PAGE_ID="ServicePlanAdmin_templateTreeWindow">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="planTemplateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="planTemplateID"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00358272-->
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.DateCreated"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateCreated"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

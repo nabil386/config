@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2013. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description
+     =========== 
+ This page allows the Supervisor to reassign some or all of the cases from one owner to another. 
+-->
+<PAGE
+  PAGE_ID="Supervisor_reassignCasesForUserWithSearch"
+  WINDOW_OPTIONS="width=775"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionIDProperty"
+    CLASS="MaintainSupervisorUsers"
+    NAME="ACTION"
+    OPERATION="reassignCasesForOrgObjectWithSearch"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Case"
+    NAME="DISPLAY"
+    OPERATION="getCaseSearchCriteria"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorUsers"
+    NAME="DISPLAYMSG"
+    OPERATION="displayCaseReassignmentInformation"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00386315, SG -->
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorUsers"
+    NAME="DISPLAYCASE"
+    OPERATION="getCaseSearchCriteria"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00386315 -->
+
+
+  <PAGE_PARAMETER NAME="userName"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="userName"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="currentUserID"
+    />
+  </CONNECT>
+
+
+  <INFORMATIONAL>
+
+
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYMSG"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+
+
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+
+
+  </INFORMATIONAL>
+
+
+  <CLUSTER
+    LABEL_WIDTH="17.5"
+    TITLE="Cluster.Title.Reassign"
+  >
+
+
+    <CONTAINER LABEL="Container.Label.Owner">
+
+
+      <FIELD WIDTH="30">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="organisationObject"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD WIDTH="50">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="newUserID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.Autoreassign">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="autoReassign"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+    SHOW_LABELS="true"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+
+
+    <FIELD
+      CONTROL="CHECKBOXED_LIST"
+      HEIGHT="4"
+      LABEL="Field.Label.CriteriaType"
+      USE_BLANK="false"
+      WIDTH="100"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00386315, SG -->
+        <INITIAL
+          HIDDEN_PROPERTY="categoryType"
+          NAME="DISPLAYCASE"
+          PROPERTY="typeDescription"
+        />
+        <!-- END, CR00386315 -->
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="categoryTypeList"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.StartDateFrom"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDateFrom"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.AllCases">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="allCasesAssignedToUser"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      CONTROL="CHECKBOXED_LIST"
+      HEIGHT="4"
+      LABEL="Field.Label.CaseStatus"
+      USE_BLANK="false"
+      WIDTH="70"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00386315, SG -->
+        <INITIAL
+          HIDDEN_PROPERTY="statusCode"
+          NAME="DISPLAYCASE"
+          PROPERTY="statusDescription"
+        />
+        <!-- END, CR00386315 -->
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="statusList"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.StartDateTo"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDateTo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      BOTTOM="false"
+    >
+      <ACTION_CONTROL
+        ACTION_ID="SEARCH_USERS"
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="Supervisor_reassignCasesForUserWithSearch">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST
+    
+    TITLE="List.Title.SearchResult"
+  >
+
+
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      WIDTH="5"
+    >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="reassignCasesList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.CaseReference"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$listDtls$searchDtls$caseReference"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.CaseType"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="caseCatTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.PrimaryClient"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="concernRoleName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      ACTION_ID="REASSIGN_CASES"
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

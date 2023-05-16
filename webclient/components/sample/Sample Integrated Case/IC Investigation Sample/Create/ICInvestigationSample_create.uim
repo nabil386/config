@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to create an investigation case for an       -->
+<!-- integrated case.                                                       -->
+<PAGE
+  PAGE_ID="ICInvestigationSample_create"
+  WINDOW_OPTIONS="width=550"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Product"
+    NAME="DISPLAY"
+    OPERATION="listActiveInvestigationTypes"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="IntegratedCase"
+    NAME="DISPLAY_CASEMEMBERS"
+    OPERATION="listCaseMembers1"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="relatedCaseID"
+    />
+    <TARGET
+      NAME="DISPLAY_CASEMEMBERS"
+      PROPERTY="key$caseID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="InvestigationDelivery"
+    NAME="ACTION"
+    OPERATION="create"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      IMAGE="CreateCase"
+      LABEL="ActionControl.Label.CreateCase"
+      TYPE="SUBMIT"
+    >
+      <!-- BEGIN, CR00239384, MC -->
+      <LINK PAGE_ID="InvestigationSample_home">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00239384 -->
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="relatedCaseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="relatedCaseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="relatedCaseID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="37"
+    TAB_ORDER="ROW"
+  >
+    <FIELD
+      LABEL="Field.Label.CaseMember"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="participantRoleID"
+          NAME="DISPLAY_CASEMEMBERS"
+          PROPERTY="result$participantList$nameAndAgeOpt"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="concernRoleID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="investigationConfigID"
+          NAME="DISPLAY"
+          PROPERTY="type"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="investigationConfigID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Subtype"
+      USE_BLANK="true"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="investigationSubtype"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Priority"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="priorityCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

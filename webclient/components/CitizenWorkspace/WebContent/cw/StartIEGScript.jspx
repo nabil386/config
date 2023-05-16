@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns="http://www.w3.org/1999/xhtml" xmlns:curam="http://www.curamsoftware.com/curam" version="2.0">
+  <jsp:directive.page isErrorPage="false" pageEncoding="UTF-8" contentType="text/html;charset=UTF-8" isELIgnored="false" language="java" buffer="32kb" errorPage="/cw/ErrorPage.do"/>
+  <jsp:output omit-xml-declaration="yes"/>
+  <jsp:text><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></jsp:text>
+  <jsp:scriptlet>
+    pageContext.setAttribute("pageLocale", 
+      curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+        pageContext.getSession()).getLocale().toString());
+  </jsp:scriptlet>
+  <curam:userPreferences localeCode="${pageScope.pageLocale}"/>
+  <jsp:scriptlet>
+    <![CDATA[
+    
+      String executionID = request.getParameter("executionID");
+      String playerID = request.getParameter("playerID");
+      String readOnly = request.getParameter("readOnly");
+      if(playerID == null) {
+        playerID = request.getParameter("id");
+      }
+      
+      // Set the screen context parameter that will ensure that the 
+      // IEG player will execute in external styling mode.
+	    final curam.omega3.taglib.ScreenContext externalScreenContext = 
+          new curam.omega3.taglib.ScreenContext();
+      externalScreenContext.addContextBits(curam.omega3.taglib.ScreenContext.EXTAPP);
+      final String externalScreenContextValue = externalScreenContext.getValue();          
+			String url = "";
+      String context = request.getContextPath() + "/";
+      if(curam.omega3.request.RequestUtils.escapeURL(playerID) == null){
+     			url = context + "ieg/Screening.do?" + "executionID=" + curam.omega3.request.RequestUtils.escapeURL(executionID) + "&o3ctx=" + curam.omega3.request.RequestUtils.escapeURL(externalScreenContextValue);
+			}else{
+				  url = context + "ieg/Screening.do?" + "executionID=" + curam.omega3.request.RequestUtils.escapeURL(executionID) + "&id=" + curam.omega3.request.RequestUtils.escapeURL(playerID) + "&o3ctx=" + curam.omega3.request.RequestUtils.escapeURL(externalScreenContextValue);
+			}
+			
+			if(null != readOnly && readOnly.length() > 0) {
+			  url += "&readOnly=" + curam.omega3.request.RequestUtils.escapeURL(readOnly);
+			}
+			
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+      ]]>
+  </jsp:scriptlet> 
+   
+</jsp:root>

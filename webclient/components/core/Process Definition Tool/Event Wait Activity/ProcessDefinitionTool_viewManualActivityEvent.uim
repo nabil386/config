@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="ProcessDefinitionTool_viewManualActivityEvent"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="result$message$dtls$message"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <PAGE_PARAMETER NAME="processID"/>
+  <PAGE_PARAMETER NAME="processVersionNo"/>
+  <PAGE_PARAMETER NAME="activityID"/>
+  <PAGE_PARAMETER NAME="eventID"/>
+  <PAGE_PARAMETER NAME="wdoFilterType"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="eventIdentifier$processID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processVersionNo"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="eventIdentifier$processVersionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="activityID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="eventIdentifier$activityID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="eventID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="eventIdentifier$eventID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="EventWaitActivityAdmin"
+    NAME="DISPLAY"
+    OPERATION="readEvent"
+    PHASE="DISPLAY"
+  />
+  <CLUSTER
+    LABEL_WIDTH="40%"
+    NUM_COLS="1"
+    TITLE="Cluster.EventDetails"
+  >
+    <CONTAINER LABEL="Field.Label.Event">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$fullyQualifiedEventTypeName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Valid">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="eventIsValid"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <CONTAINER LABEL="Container.Label.EventMatchData">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$eventMatchData"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.EventMatchDataIsValid">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="eventMatchDataIsValid"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+  <CLUSTER
+    DESCRIPTION="Cluster.MultipleOccurringEvent.Description"
+    LABEL_WIDTH="40%"
+    NUM_COLS="1"
+    TITLE="Cluster.MultipleOccurringEvent"
+  >
+    <CONTAINER LABEL="Container.Label.ListWDOToUse">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$multipleOccurringEventListWDOName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.ListWDOToUseIsValid">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$multipleOccurringEventListWDOIsValid"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+</PAGE>

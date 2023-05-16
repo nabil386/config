@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This Page allows users to modify association of participants with      -->
+<!-- legal action.                                                          -->
+<PAGE
+  PAGE_ID="LegalAction_addParticipant"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+
+
+  <PAGE_TITLE DESCRIPTION="PageTitle.Description">
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Statement"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="LegalAction"
+    NAME="ACTION"
+    OPERATION="modifyParticipantDetails"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="LegalAction"
+    NAME="DISPLAY"
+    OPERATION="readParticipantDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+<!-- BEGIN, CR00186980, SS -->
+  <CLUSTER STYLE="outer-cluster-borderless">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="basicLAInd"
+      />
+    </CONDITION>
+
+    <LIST TITLE="List.Title.Respondent">
+      <CONTAINER
+        ALIGNMENT="CENTER"
+        WIDTH="5"
+      >
+        <WIDGET TYPE="MULTISELECT">
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="concernRoleID"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="respondentMultiselect"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="respondentMultiselect"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+      <FIELD
+        LABEL="Field.Label.Name"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="name"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.Age"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="age"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.Gender"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="gender"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+    
+    <LIST TITLE="List.Title.Participant">
+      <CONTAINER
+        ALIGNMENT="CENTER"
+        WIDTH="5"
+        >
+        <WIDGET TYPE="MULTISELECT">
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="concernRoleID"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="caseParticipantMultiselect"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="caseParticipantMultiselect"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+      <FIELD
+        LABEL="Field.Label.Name"
+        WIDTH="30"
+        >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="name"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.Age"
+        WIDTH="30"
+        >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="age"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.Gender"
+        WIDTH="30"
+        >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="gender"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+    
+  </CLUSTER>
+
+
+  <CLUSTER STYLE="outer-cluster-borderless">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="petitionInd"
+      />
+    </CONDITION>
+    <CLUSTER
+      DESCRIPTION="Cluster.Petitioner.Description"
+      TITLE="Cluster.Title.Petitioner"
+    >
+      <FIELD
+        ALIGNMENT="LEFT"
+        LABEL="Field.Label.Organization"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="petitionerInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="petitionerInd"
+          />
+        </CONNECT>
+      </FIELD>
+      <LIST>
+        <CONTAINER
+          ALIGNMENT="CENTER"
+          WIDTH="5"
+        >
+          <WIDGET TYPE="MULTISELECT">
+            <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="concernRoleID"
+                />
+              </CONNECT>
+            </WIDGET_PARAMETER>
+            <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+              <CONNECT>
+                <TARGET
+                  NAME="ACTION"
+                  PROPERTY="petitionerMultiselect"
+                />
+              </CONNECT>
+            </WIDGET_PARAMETER>
+            <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="petitionerMultiselect"
+                />
+              </CONNECT>
+            </WIDGET_PARAMETER>
+          </WIDGET>
+        </CONTAINER>
+        <FIELD
+          LABEL="Field.Label.Name"
+          WIDTH="30"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="name"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD
+          LABEL="Field.Label.Age"
+          WIDTH="30"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="age"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD
+          LABEL="Field.Label.Gender"
+          WIDTH="30"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="gender"
+            />
+          </CONNECT>
+        </FIELD>
+      </LIST>
+    </CLUSTER>
+   
+    <CLUSTER
+      DESCRIPTION="Cluster.Respondent.Description"
+      TITLE="Cluster.Title.Respondent"
+    >
+      <FIELD
+        ALIGNMENT="LEFT"
+        LABEL="Field.Label.Organization"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="respondentInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="respondentInd"
+          />
+        </CONNECT>
+      </FIELD>
+      <LIST>
+        <CONTAINER
+          ALIGNMENT="CENTER"
+          WIDTH="5"
+        >
+          <WIDGET TYPE="MULTISELECT">
+            <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="concernRoleID"
+                />
+              </CONNECT>
+            </WIDGET_PARAMETER>
+            <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+              <CONNECT>
+                <TARGET
+                  NAME="ACTION"
+                  PROPERTY="respondentMultiselect"
+                />
+              </CONNECT>
+            </WIDGET_PARAMETER>
+            <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="respondentMultiselect"
+                />
+              </CONNECT>
+            </WIDGET_PARAMETER>
+          </WIDGET>
+        </CONTAINER>
+        <FIELD
+          LABEL="Field.Label.Name"
+          WIDTH="30"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="name"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD
+          LABEL="Field.Label.Age"
+          WIDTH="30"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="age"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD
+          LABEL="Field.Label.Gender"
+          WIDTH="30"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="gender"
+            />
+          </CONNECT>
+        </FIELD>
+      </LIST>
+    </CLUSTER>
+    
+    <CLUSTER
+      DESCRIPTION="Cluster.Participant.Description"
+      TITLE="Cluster.Title.Participant"
+      >
+      <FIELD
+        ALIGNMENT="LEFT"
+        LABEL="Field.Label.Organization"
+        >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="participantInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="participantInd"
+          />
+        </CONNECT>
+      </FIELD>
+      <LIST>
+        <CONTAINER
+          ALIGNMENT="CENTER"
+          WIDTH="5"
+          >
+          <WIDGET TYPE="MULTISELECT">
+            <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="concernRoleID"
+                />
+              </CONNECT>
+            </WIDGET_PARAMETER>
+            <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+              <CONNECT>
+                <TARGET
+                  NAME="ACTION"
+                  PROPERTY="caseParticipantMultiselect"
+                />
+              </CONNECT>
+            </WIDGET_PARAMETER>
+            <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="caseParticipantMultiselect"
+                />
+              </CONNECT>
+            </WIDGET_PARAMETER>
+          </WIDGET>
+        </CONTAINER>
+        <FIELD
+          LABEL="Field.Label.Name"
+          WIDTH="30"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="name"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD
+          LABEL="Field.Label.Age"
+          WIDTH="30"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="age"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD
+          LABEL="Field.Label.Gender"
+          WIDTH="30"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="gender"
+            />
+          </CONNECT>
+        </FIELD>
+        
+      </LIST>
+    </CLUSTER>
+  </CLUSTER>
+  <CLUSTER STYLE="outer-cluster-borderless">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="orderInd"
+      />
+    </CONDITION>
+    <LIST TITLE="List.Title.Participant">
+      <CONTAINER
+        ALIGNMENT="CENTER"
+        WIDTH="5"
+      >
+        <WIDGET TYPE="MULTISELECT">
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="concernRoleID"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="caseParticipantMultiselect"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="caseParticipantMultiselect"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+      <FIELD
+        LABEL="Field.Label.Name"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="name"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.Age"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="age"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.Gender"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="gender"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+  <CLUSTER STYLE="outer-cluster-borderless">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="hearingInd"
+      />
+    </CONDITION>
+    <LIST TITLE="List.Title.Participant">
+      <CONTAINER
+        ALIGNMENT="CENTER"
+        WIDTH="5"
+      >
+        <WIDGET TYPE="MULTISELECT">
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="concernRoleID"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="caseParticipantMultiselect"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="caseParticipantMultiselect"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+      <FIELD
+        LABEL="Field.Label.Name"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="name"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.Age"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="age"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.Gender"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="gender"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+    <!-- END, CR00186980 -->
+  </CLUSTER>
+</PAGE>

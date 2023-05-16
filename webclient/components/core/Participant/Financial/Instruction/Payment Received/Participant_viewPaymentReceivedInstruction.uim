@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page is used to display the details of a payment received         -->
+<!-- instruction.                                                           -->
+<?curam-deprecated Since Curam 6.0, replaced with Financial_viewPaymentReceivedInstruction1.uim?>
+<PAGE
+  PAGE_ID="Participant_viewPaymentReceivedInstruction"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <INCLUDE FILE_NAME="Participant_viewPaymentReceivedInstructionView.vim"/>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="processedFlag"
+      />
+    </CONDITION>
+
+
+    <ACTION_CONTROL
+      IMAGE="AllocateButton"
+      LABEL="ActionControl.Label.Allocate"
+    >
+
+
+      <LINK
+        PAGE_ID="Financial_allocatePaymentReceivedSelectLiability"
+        SAVE_LINK="false"
+      >
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="unAllocatedILIid"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="lineItemID"
+          />
+
+
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="key$finInstructionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="finInstructionID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+
+
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="ReverseButton"
+      LABEL="ActionControl.Label.Reverse"
+    >
+
+
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Financial_createInstructionReversal"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="finInstructionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="finInstructionID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+
+
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    />
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="FALSE"
+    >
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="processedFlag"
+        />
+      </CONDITION>
+      <ACTION_CONTROL
+        IMAGE="CloseButton"
+        LABEL="ActionControl.Label.Close"
+      />
+    </ACTION_SET>
+
+
+  </CLUSTER>
+
+
+</PAGE>

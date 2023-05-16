@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2009, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows a user to modify an existing audit plan record. 	    -->
+<PAGE
+  PAGE_ID="CaseAudit_modifyAuditPlan"
+  WINDOW_OPTIONS="width=550"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="AuditPlan"
+    NAME="DISPLAY"
+    OPERATION="viewAuditPlan"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="AuditPlan"
+    NAME="ACTION"
+    OPERATION="modifyAuditPlan"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="auditPlanID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="auditPlanID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$auditPlanID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="auditPlanID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="auditPlanID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$auditPlanDtls$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$auditPlanDtls$versionNo"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+ 
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="1"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.Purpose"
+      USE_BLANK="true"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="purpose"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="purpose"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Priority"
+      USE_BLANK="true"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="priority"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="priority"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.UserInvolvement.Description"
+    LABEL_WIDTH="35"
+    NUM_COLS="1"
+  >
+    <FIELD
+      LABEL="Field.Label.UserInvolvement"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="100"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="userAccess"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="userAccess"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00408407, VT -->
+    <FIELD HEIGHT="4" LABEL="Field.Label.Comments">
+      <!-- END, CR00408407 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

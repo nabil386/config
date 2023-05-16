@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010  Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to see the goal details.                     -->
+<PAGE
+  PAGE_ID="ServicePlanAdmin_goalHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.GoalHome"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="ServicePlanAdmin_goalHome"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="goalID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="goalID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ContractText"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ServicePlanAdmin_listContractTextForGoal"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="goalID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="goalID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.SubGoals"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ServicePlanAdmin_listSubGoalsForGoal"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="goalID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="goalID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="contextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- BEGIN, CR00071552, GBA -->
+  <!-- END, CR00071552 -->
+  <SERVER_INTERFACE
+    CLASS="ServicePlan"
+    NAME="DISPLAY"
+    OPERATION="readGoal"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="goalID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="goalID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$goalKey$goalKey$goalID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+  >
+    <FIELD LABEL="Field.Label.GoalReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="goalReference"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Description"
+  >
+    <!-- BEGIN, CR00228110, GP -->
+    <CONTAINER>
+      <FIELD HEIGHT="4">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL
+        IMAGE="LocalizableTextTranslation"
+        LABEL="ActionControl.Label.TextTranslation"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ServicePlanAdmin_listLocalizableServicePlanGoalDescriptionText"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="descriptionTextID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localizableTextID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="key$goalKey$goalKey$goalID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="goalID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <!-- END, CR00228110  -->
+  </CLUSTER>
+</PAGE>

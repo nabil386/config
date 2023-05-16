@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify a Dependant Data Item record.        -->
+<PAGE
+  PAGE_ID="BDMSupervisor_manageUserSkillPriorityList"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <SERVER_INTERFACE
+    CLASS="BDMOrganization"
+    NAME="DISPLAY"
+    OPERATION="getActiveUserSkills"
+    PHASE="DISPLAY"
+  />
+  
+  
+  
+  <SERVER_INTERFACE
+    CLASS="BDMOrganization"
+    NAME="ACTION"
+    OPERATION="modifyListUserSkills"
+    PHASE="ACTION"
+  />
+
+  <PAGE_PARAMETER NAME="userName"/>
+  <PAGE_PARAMETER NAME="isResetInd"/>
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="userSkillList$userName"
+    />
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="isResetInd"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="isResetInd"
+    />
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="userSkillList$userName"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="userName"
+    />
+  </CONNECT>
+
+  <ACTION_SET BOTTOM="false">
+
+    <ACTION_CONTROL
+      DEFAULT="true"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+	
+	<ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+  </ACTION_SET>
+  
+  <CLUSTER>
+    <CLUSTER>
+      <ACTION_SET TOP="false" ALIGNMENT="RIGHT">
+	    <ACTION_CONTROL
+		  IMAGE="ResetButton"
+	      LABEL="ActionControl.Label.Reset"
+	      ALIGNMENT="RIGHT"
+	    >
+	    	<LINK PAGE_ID="BDMSupervisor_manageUserSkillPriorityList"
+	    		SAVE_LINK="false" DISMISS_MODAL="false"
+	    	>
+	    		<CONNECT>
+		          <SOURCE
+		            NAME="PAGE"
+		            PROPERTY="userName"
+		          />
+		          <TARGET
+		            NAME="PAGE"
+		            PROPERTY="userName"
+		          />
+		        </CONNECT>
+	    	  	<CONNECT>
+		          <SOURCE
+		            NAME="CONSTANT"
+		            PROPERTY="Constant.Boolean.True"
+		          />
+		          <TARGET
+		            NAME="PAGE"
+		            PROPERTY="isResetInd"
+		          />
+		        </CONNECT>
+	    	</LINK>
+	    </ACTION_CONTROL>
+	  </ACTION_SET>
+    </CLUSTER>
+	  <LIST>
+	    
+	    <!--FIELD
+	      LABEL="Field.Title.SkillType"
+	      WIDTH="20"
+	    >
+	      <CONNECT>
+	        <SOURCE
+	          NAME="DISPLAY"
+	          PROPERTY="userSkillID"
+	        />
+	      </CONNECT>
+	      <CONNECT>
+	        <TARGET
+	          NAME="ACTION"
+	          PROPERTY="userSkillID"
+	        />
+	      </CONNECT>
+	    </FIELD-->
+	    <FIELD
+	      LABEL="Field.Title.SkillType"
+	      WIDTH="50"
+	    >
+	      <CONNECT>
+	        <SOURCE
+	          NAME="DISPLAY"
+	          PROPERTY="skillType"
+	        />
+	      </CONNECT>
+	    </FIELD>
+	    <FIELD
+	      LABEL="Field.Title.Priority"
+	      WIDTH="50"
+	    >
+	      <CONNECT>
+	        <SOURCE
+	          NAME="DISPLAY"
+	          PROPERTY="skillLevel"
+	        />
+	      </CONNECT>
+	      <CONNECT>
+	        <TARGET
+	          NAME="ACTION"
+	          PROPERTY="skillPriority"
+	        />
+	      </CONNECT>
+	    </FIELD>
+	    
+	    <LIST_CONNECT>
+<!--BEGIN Task 20450: DEV - implement fix -->
+	        <SOURCE
+	          NAME="DISPLAY"
+	          PROPERTY="userSkillID"
+	        />
+
+	        <TARGET
+	          NAME="ACTION"
+	          PROPERTY="userskillID"
+	        />	
+		<!-- 
+	    	<SOURCE
+	          NAME="DISPLAY"
+	          PROPERTY="result$dtls$skillType"
+	        />
+	        <TARGET
+	          NAME="ACTION"
+	          PROPERTY="skillPriorityList$dtls$skillType"
+	        />
+	         -->
+<!--END Task 20450: DEV - implement fix -->
+	    </LIST_CONNECT>
+	    
+	  </LIST>
+  </CLUSTER>
+</PAGE>

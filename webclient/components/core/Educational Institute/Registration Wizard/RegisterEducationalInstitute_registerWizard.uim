@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c)  2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Register the details for an Educational Institute                      -->
+<PAGE
+  PAGE_ID="RegisterEducationalInstitute_registerWizard"
+  WINDOW_OPTIONS="width=900,height=700"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionIDProperty"
+    CLASS="ParticipantRegistration"
+    NAME="ACTION"
+    OPERATION="setRegisterEducationalInstituteDetails"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ParticipantRegistration"
+    NAME="DISPLAYWIZARD"
+    OPERATION="getRegisterEducationalInstituteWizard"
+  />
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <SERVER_INTERFACE
+    CLASS="ParticipantRegistration"
+    NAME="DISPLAY"
+    OPERATION="getRegisterEducationalInstituteDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ParticipantRegistration"
+    NAME="DISPLAY_SEARCH_CRITERIA"
+    OPERATION="getRegisterEducationalInstituteSearchCriteria"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="stateID$wizardStateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="wizardStateID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAY_SEARCH_CRITERIA"
+      PROPERTY="wizardStateID$wizardStateID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_SEARCH_CRITERIA"
+          PROPERTY="referenceNumber"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="socialSecurityNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_SEARCH_CRITERIA"
+          PROPERTY="concernRoleName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Type">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_SEARCH_CRITERIA"
+          PROPERTY="type"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="schoolType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.PublicPrivate"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="publicPrivateType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.SchoolDistrict">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="schoolDistrictID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+    <FIELD
+      LABEL="Field.Label.PrefCommMethod"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="prefCommMethod"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.PreferredLanguage"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="preferredLanguage"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.RegistrationDate"
+      WIDTH="60"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="registrationDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TAB_ORDER="ROW"
+    TITLE="Cluster.Title.Address"
+  >
+    <FIELD LABEL="Field.Label.Address">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_SEARCH_CRITERIA"
+          PROPERTY="addressData"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="addressData"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Phone"
+  >
+    <FIELD
+      LABEL="Field.Label.PhoneType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="phoneType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.PhoneAreaCode"
+      WIDTH="5"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="phoneAreaCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.PhoneExtension"
+      WIDTH="5"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="phoneExtension"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.PhoneCountryCode"
+      WIDTH="5"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="phoneCountryCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PhoneNumber">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="phoneNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.ContactDetails"
+  >
+    <FIELD
+      LABEL="Field.Label.ContactTitle"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="contactTitle"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ContactPhoneCountryCode"
+      WIDTH="5"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="contactPhoneCountryCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ContactPhoneNumber">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="contactPhoneNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PrefPublicOffice">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="prefPublicOfficeID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ContactName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="contactName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ContactPhoneAreaCode"
+      WIDTH="5"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="contactPhoneAreaCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ContactPhoneExtension"
+      WIDTH="5"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="contactPhoneExtension"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Back">
+      <LINK
+        DISMISS_MODAL="false"
+        OPEN_MODAL="false"
+        PAGE_ID="RegisterEducationalInstitute_duplicateCheckWizard"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ACTION_ID="SAVE"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="true"
+        PAGE_ID="EducationalInstitute_home"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="registrationResult$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+  </ACTION_SET>
+
+
+</PAGE>

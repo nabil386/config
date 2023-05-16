@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2003, 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2005, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software Ltd. ("Confidential Information"). You                  -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows a user to view a Slot                                 -->
+<PAGE
+  PAGE_ID="Organization_viewSlot"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAY"
+    OPERATION="readSlot"
+  />
+
+
+  <PAGE_PARAMETER NAME="slotID"/>
+  <PAGE_PARAMETER NAME="locationID"/>
+  <PAGE_PARAMETER NAME="locationStructureID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="slotID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="slotKey$slotID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00407564, SG -->
+  <CLUSTER NUM_COLS="2">
+
+
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Frequency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="details$frequencyPattern"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00407564 -->
+
+
+  <LIST TITLE="List.Title.PositionAvailability">
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_modifyPositionSlotAvailabilityFromList"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="positionSlotAvailabilityID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="positionSlotAvailabilityID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_cancelPositionSlotAvailability"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="positionSlotAvailabilityID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="positionSlotAvailabilityID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.PSAName"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$positionName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.PSAFrequency"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$frequencyPattern"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.PSAStartDate"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Organization_viewPositionSlotAvailability">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="positionSlotAvailabilityID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="positionSlotAvailabilityID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <FIELD LABEL="Field.Label.Comments">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="details$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <MENU MODE="NAVIGATION">
+    <ACTION_CONTROL LABEL="Field.Label.Browse">
+      <LINK PAGE_ID="Organization_resolveLocationTree">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+</PAGE>

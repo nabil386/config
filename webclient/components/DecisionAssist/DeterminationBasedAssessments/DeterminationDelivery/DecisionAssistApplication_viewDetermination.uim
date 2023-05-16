@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows you to view determination details for a               -->
+<!-- determination-based assessment.                                        -->
+<PAGE
+  PAGE_ID="DecisionAssistApplication_viewDetermination"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <SERVER_INTERFACE
+    CLASS="DeterminationDelivery"
+    NAME="ASSESSMENTCONTEXT"
+    OPERATION="viewAssessmentContextDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="ASSESSMENTCONTEXT"
+      PROPERTY="key$dtls$dtls$determinationDeliveryID"
+    />
+  </CONNECT>
+  <PAGE_PARAMETER NAME="determinationDeliveryID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <SERVER_INTERFACE
+    CLASS="DeterminationDelivery"
+    NAME="COMMON_VIEW"
+    OPERATION="viewDeterminationDelivery"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="COMMON_VIEW"
+      PROPERTY="key$dtls$dtls$determinationDeliveryID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00292949, PS -->
+  <JSP_SCRIPTLET>
+        
+        curam.omega3.request.RequestHandler rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+        
+        String context = request.getContextPath() + "/";
+        
+        String url = "";
+        
+        String determinationDeliveryID = request.getParameter("determinationDeliveryID");
+        
+        String caseID = request.getParameter("caseID");
+        
+        context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+        
+        curam.interfaces.DeterminationDeliveryPkg.DeterminationDelivery_readDeterminationDelivery_TH 
+        th1= new curam.interfaces.DeterminationDeliveryPkg.DeterminationDelivery_readDeterminationDelivery_TH ();
+        
+        th1.setFieldValue(th1.key$dtls$dtls$determinationDeliveryID_idx, determinationDeliveryID);
+        
+        th1.callServer();
+        
+        String determinationConfigurationID = th1.getFieldValue(th1.result$dtls$dtls$determinationConfigID_idx);
+        
+        curam.interfaces.DeterminationConfigPkg.DeterminationConfig_readDeterminationConfigIndicatorDetails_TH 
+        th= new curam.interfaces.DeterminationConfigPkg.DeterminationConfig_readDeterminationConfigIndicatorDetails_TH ();
+        
+        th.setFieldValue( th.key$key$key$determinationConfigID_idx,determinationConfigurationID);
+        
+        th.callServer();
+        
+        String standAlone = th.getFieldValue(th.result$standAlone_idx);
+        
+        String supportCocProcessing = th.getFieldValue(th.result$supportCocProcessing_idx);
+        
+        String multipleSourceInd = th.getFieldValue(th.result$multipleSourceInd_idx);
+        
+        String automaticConsolidation = th.getFieldValue(th.result$automaticConsolidation_idx);
+        
+        if(multipleSourceInd.equalsIgnoreCase("true"))
+        {
+        
+        if (automaticConsolidation.equalsIgnoreCase("true")){
+        
+        url= context+"DecisionAssistApplication_viewDeterminationMultiSourceACPage.do?determinationDeliveryID="+curam.omega3.request.RequestUtils.escapeURL(determinationDeliveryID)+"&amp;caseID="+curam.omega3.request.RequestUtils.escapeURL(caseID);
+        
+        } else {
+        
+        url= context+"CDAApplication_viewDeterminationMultiSourceMCPage.do?determinationDeliveryID="+curam.omega3.request.RequestUtils.escapeURL(determinationDeliveryID)+"&amp;caseID="+curam.omega3.request.RequestUtils.escapeURL(caseID);
+        
+        } 
+        
+        } else {
+        
+        url= context+"DecisionAssistApplication_viewDeterminationSingleSourcePage.do?determinationDeliveryID="+curam.omega3.request.RequestUtils.escapeURL(determinationDeliveryID)+"&amp;caseID="+curam.omega3.request.RequestUtils.escapeURL(caseID);
+        
+        }
+        
+        url += "&amp;" + rh.getSystemParameters();
+        response.sendRedirect(response.encodeRedirectURL(url));
+        
+    </JSP_SCRIPTLET>
+  <!-- END, CR00292949 -->
+</PAGE>

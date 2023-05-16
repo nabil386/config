@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2010 Curam Software Ltd.                       	    -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 															-->
+<!-- =========== 															-->
+<!-- This page allows user to view fiscal year.								-->
+<PAGE
+  PAGE_ID="FundPM_viewFiscalYear"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+    <!-- BEGIN, CR00176397, ABS -->
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="yearName"
+      />
+    </CONNECT>
+    <!-- END, CR00176397 -->
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="fiscalYearIDParam"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="fiscalYearIDParam"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$fiscalYearID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainFiscalYear"
+    NAME="DISPLAY"
+    OPERATION="readFiscalYear"
+    PHASE="DISPLAY"
+  />
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title"
+  >
+    <FIELD LABEL="Field.Label.YearName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="yearName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00176397, ABS -->
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Category">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="category"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00176397 -->
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Edit"
+      TYPE="ACTION"
+    >
+      <!--  BEGIN, CR00198414, AS  -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="FundPM_modifyFiscalYear"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$fiscalYearID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fiscalYearIDParam"
+          />
+        </CONNECT>
+      </LINK>
+      <!--  END, CR00198414  -->
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Remove"
+      TYPE="ACTION"
+    >
+      <!--  BEGIN, CR00198414, AS  -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="FundPM_removeFiscalYear"
+        WINDOW_OPTIONS="width=500"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$fiscalYearID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fiscalYearIDParam"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNoParam"
+          />
+        </CONNECT>
+      </LINK>
+      <!--  END, CR00198414  -->
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="FundPM_listFiscalYear"/>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+</PAGE>

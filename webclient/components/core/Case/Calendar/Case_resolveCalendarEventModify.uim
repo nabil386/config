@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2003, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2005, 2008 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp redirects the user to the appropriate page                    -->
+<!-- to modify details of an event or activity from a case calendar.        -->
+<PAGE
+  PAGE_ID="Case_resolveCalendarEventModify"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String eventType = request.getParameter("TYPE");
+      String eventID = request.getParameter("ID");
+      String caseID = request.getParameter("caseID");
+      String isRecurring = request.getParameter("RE");
+      String isReadOnly = request.getParameter("RO");
+      String url = "";
+
+      //Read the case description and pass it to activity pages.
+      if (eventID == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "eventID");
+       System.out.println(e);
+       throw e;
+       // END, CR00110216
+      }
+
+      String description = "";
+      //if event has not passed the case description, set the description here
+      if (caseID == null) {
+
+        if (eventType == null) {
+
+          curam.interfaces.ActivityPkg.Activity_readContextDescription_TH 
+          th = new curam.interfaces.ActivityPkg.Activity_readContextDescription_TH();
+
+          th.setFieldValue(th.key$activityContextDescriptionKey$activityID_idx,eventID);
+          th.callServer(); 
+          description = th.getFieldValue(th.result$activityContextDescriptionDetails$description_idx);
+
+        }
+      }
+
+      // BEGIN, CR00110216, SK
+      if (eventType == null) {
+        if (isRecurring.equals("false")) {
+          
+          // BEGIN, CR00321993, SG
+          url = context + "Activity_modifyStandardUserActivity1Page.do?activityID=" + 
+            curam.omega3.request.RequestUtils.escapeURL(eventID) +
+            "&amp;description=" + curam.omega3.request.RequestUtils.escapeURL(description) +
+            "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+          // END, CR00321993
+            
+        } else if (isRecurring.equals("true")) {
+          url = context + "Activity_modifyRecurringUserActivityPage.do?activityID="
+            + curam.omega3.request.RequestUtils.escapeURL(eventID) + 
+            "&amp;description=" + curam.omega3.request.RequestUtils.escapeURL(description);   
+        }
+
+      } else if (eventType.equals("ET2")) {
+        url = context + "Case_viewAppealPage.do?appealID=" + curam.omega3.request.RequestUtils.escapeURL(eventID);
+
+      } else if (eventType.equals("ET3")) {
+        url = context + "Case_viewReviewPage.do?reviewID=" + curam.omega3.request.RequestUtils.escapeURL(eventID);
+
+      } else if (eventType.equals("ET4")) {
+        url = context + "Case_viewReferralPage.do?referralID=" + curam.omega3.request.RequestUtils.escapeURL(eventID);
+
+      } else if (eventType.equals("ET12")) {
+        url = context + "ProductDelivery_viewClosePage.do?closureID=" 
+                + curam.omega3.request.RequestUtils.escapeURL(eventID) + 
+                "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+
+      } else if (eventType.equals("ET1")) {
+        url = context + "ProductDelivery_viewDecisionPage.do?decisionID=" 
+                + curam.omega3.request.RequestUtils.escapeURL(eventID) ;
+
+      } else if (eventType.equals("ET11")) {
+        url = context + "Case_noEventDetailsPage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID); 
+
+      } else if (eventType.equals("ET5")) {
+        url = context + "Case_viewApprovalPage.do?approvalID=" + curam.omega3.request.RequestUtils.escapeURL(eventID);
+
+      } else if (eventType.equals("ET7")) {
+        url = context + "Case_viewSubmitForApprovalPage.do?approvalID=" + curam.omega3.request.RequestUtils.escapeURL(eventID);
+
+      } else if (eventType.equals("ET10")) {
+        url = context + "Financial_viewPaymentInstruction1Page.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(eventID);
+
+      } else {
+        url = context + "Case_noEventDetailsPage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID); 
+
+      }
+      // END, CR00110216
+      url += "&amp;" + rh.getSystemParameters();
+      response.sendRedirect(response.encodeRedirectURL(url));
+
+    
+  </JSP_SCRIPTLET>
+</PAGE>

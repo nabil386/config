@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright 2005 Curam Software Ltd.
+All rights reserved.
+
+This software is the confidential and proprietary information of Curam
+Software, Ltd. ("Confidential Information"). You shall not disclose
+such Confidential Information and shall use it only in accordance with the
+terms of the license agreement you entered into with Curam Software.
+-->
+<xs:schema targetNamespace="http://www.curamsoftware.com/curam/jde/client/widget/nd" xmlns="http://www.curamsoftware.com/curam/jde/client/widget/nd" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:annotation>
+        <xs:documentation>XML Schema for Tree Control Data</xs:documentation>
+    </xs:annotation>
+    <xs:element name="node-info">
+        <xs:annotation>
+            <xs:documentation>Details about a tree control structure.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="node-types"/>
+                <xs:element ref="node-set"/>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation>name for the node set describing particular tree structure. Should match node-info element name attribute value in the appropriate configuration file.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="node-types">
+        <xs:annotation>
+            <xs:documentation>A group of node type elements with unique names.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType mixed="false">
+            <xs:sequence maxOccurs="unbounded">
+                <xs:element ref="node-type"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="node-type">
+        <xs:annotation>
+            <xs:documentation>A node type description.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType mixed="false">
+            <xs:sequence>
+                <xs:element ref="actions"/>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation>name for the node type, unique per node-types set.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="inherit-keys-from-parent" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:documentation>Optional parameter designating parent type to inherit its keys from. Must match one of the types declared per node-types element for the particular node-info.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="actions">
+        <xs:annotation>
+            <xs:documentation>A node type description.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType mixed="false">
+            <xs:sequence maxOccurs="unbounded">
+                <xs:element ref="action" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="default" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation>names default action for this element, must match one of the names of the action elements contained within it.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="action">
+        <xs:annotation>
+            <xs:documentation>A single uniquely named action item.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType mixed="false">
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="key"/>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation>The name distinquishing action item and specifying action essense.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="key">
+        <xs:annotation>
+            <xs:documentation>An optional parameter to an action</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation>Action parameter name, must be unique per every similarly named action encountered within node-types chain.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="node-set">
+        <xs:annotation>
+            <xs:documentation>A hierarchy of node elements.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType mixed="false">
+            <xs:sequence maxOccurs="unbounded">
+                <xs:element ref="node"/>
+            </xs:sequence>
+            <xs:attribute name="start-node-id" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation>One of contained nodes id designated the node to start displaying/processing from.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="param-value">
+        <xs:annotation>
+            <xs:documentation>supplies in its body value for the parameter declared by an appropriate type and action. The parameter is named by 'name' attribute </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation>name for the parameter this node supplies value for. Must match one of the names declared within node-type elements</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="node">
+        <xs:annotation>
+            <xs:documentation>Node element</xs:documentation>
+        </xs:annotation>
+        <xs:complexType mixed="false">
+            <xs:sequence maxOccurs="unbounded">
+                <xs:element name="title">
+                    <xs:annotation>
+                        <xs:documentation>Visible title text for the current node</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="description" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>node description text</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="param-value" minOccurs="0" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>parameter value associated with tha node</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType mixed="true">
+                        <xs:attribute name="name" type="xs:string" use="required">
+                            <xs:annotation>
+                                <xs:documentation>name for the parameter to supply value from its body to. Must match parameter name specific for the node type this node is declared within.</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="node" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="type" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation>node type. Must match one of types declared within node-types element. The name also imples all the parameters, specific for that node type (declared within node-type of that name as keys) get their appropraite values by the approprate param-value sub-elements.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="id" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation>id for the current node, unique per node set.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="default-action" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:documentation>name of action which is invoked by default.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

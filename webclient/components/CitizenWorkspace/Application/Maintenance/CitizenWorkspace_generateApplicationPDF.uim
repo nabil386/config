@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+
+<!-- Copyright (c) 2003 - 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information").  You shall not      -->
+<!-- disclose such Confidential Information and shall use it only in        -->
+<!-- accordance with the terms of the license agreement you entered into    -->
+<!-- with Curam Software.                                                   -->
+
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!--          -->
+
+<PAGE PAGE_ID="CitizenWorkspace_generateApplicationPDF" POPUP_PAGE="true">
+
+  <PAGE_PARAMETER NAME="intakeApplicationID" />
+
+  <CONNECT>
+    <SOURCE PROPERTY="intakeApplicationID" NAME="PAGE" />
+    <TARGET PROPERTY="intakeApplicationID" NAME="DISPLAY" />
+  </CONNECT>
+
+  <SERVER_INTERFACE CLASS="CitizenWorkspace" NAME="DISPLAY" OPERATION="getCompletedForm" PHASE="DISPLAY" />
+
+  <JSP_SCRIPTLET>
+    <![CDATA[
+
+      curam.omega3.texthelper.TextHelper textHelper = (curam.omega3.texthelper.TextHelper)pageContext.findAttribute("DISPLAY");
+
+    String fileName = textHelper.getFieldValue("result$formFilename");
+      String contentType = "application\\pdf";
+
+      int propertyIndex = textHelper.getFieldIndex("result$formContent");
+
+      curam.util.type.Blob documentBlob = (curam.util.type.Blob)textHelper.getRawProperty(propertyIndex);
+
+      byte[] documentByteArray = documentBlob.copyBytes();
+
+      response.setHeader("Content-disposition","inline; filename=\"" + fileName + "\"");
+      response.setContentType(contentType);
+      response.getOutputStream().write(documentByteArray);
+
+    ]]>
+  </JSP_SCRIPTLET>
+</PAGE>

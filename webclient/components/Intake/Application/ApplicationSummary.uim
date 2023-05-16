@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 							                                              -->
+<!-- =========== 							                                              -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ApplicationSummary"
+  SCRIPT_FILE="toggleListBody.js"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationSummary"
+    NAME="TIMERDETAILS"
+    OPERATION="readTimerDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationSummary"
+    NAME="APPLICATIONSUMMARY"
+    OPERATION="readApplicationSummaryDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="CREOLEProgramRecommendation"
+    NAME="RECENTELIGIBILITYCHECK"
+    OPERATION="listProgramRecommendationsForApplication1"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="applicationID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="APPLICATIONSUMMARY"
+      PROPERTY="applicationID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="TIMERDETAILS"
+      PROPERTY="applicationID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="applicationID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="RECENTELIGIBILITYCHECK"
+      PROPERTY="key$applicationID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationSummary"
+    NAME="DISPLAY"
+    OPERATION="getApplicationTODOList"
+    PHASE="DISPLAY"
+  />
+
+
+  <CLUSTER
+    SHOW_LABELS="FALSE"
+    STYLE="outer-cluster-borderless"
+  >
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="result$disableMenuOpt"
+      />
+    </CONDITION>
+
+
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="applicationTODOXML"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <SERVER_INTERFACE
+    CLASS="Application"
+    NAME="SR_DETAILS"
+    OPERATION="readSpecialRequirements"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="SR_DETAILS"
+      PROPERTY="key$applicationID"
+    />
+  </CONNECT>
+
+
+  <!-- Application Details -->
+
+
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.ApplicationDetails"
+  >
+    <FIELD LABEL="Field.Label.SubmittedDateTime">
+      <CONNECT>
+        <SOURCE
+          NAME="APPLICATIONSUMMARY"
+          PROPERTY="submittedDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.SplRequirement">
+      <CONNECT>
+        <SOURCE
+          NAME="SR_DETAILS"
+          PROPERTY="result$specialRequirement"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ApplicationMethod">
+      <CONNECT>
+        <SOURCE
+          NAME="APPLICATIONSUMMARY"
+          PROPERTY="applicationMethod"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.InterpreterLang">
+      <CONNECT>
+        <SOURCE
+          NAME="SR_DETAILS"
+          PROPERTY="result$interpreterLanguage"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    STYLE="outer-cluster-borderless"
+  >
+
+
+    <!-- Program Applied details -->
+    <CLUSTER
+      SHOW_LABELS="FALSE"
+      STYLE="outer-cluster-borderless"
+    >
+      <LIST
+        
+        TITLE="List.Title.ProgramApplied"
+      >
+        <FIELD
+          LABEL="Field.Title.Program"
+          WIDTH="32"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="APPLICATIONSUMMARY"
+              PROPERTY="result$programDtls$dtls$programType"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD
+          LABEL="Field.Title.Disposition"
+          WIDTH="34"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="APPLICATIONSUMMARY"
+              PROPERTY="result$programDtls$dtls$disposition"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD
+          LABEL="Field.Title.DispositionDate"
+          WIDTH="34"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="APPLICATIONSUMMARY"
+              PROPERTY="result$programDtls$dtls$dispositionDate"
+            />
+          </CONNECT>
+        </FIELD>
+        <ACTION_SET TYPE="LIST_ROW_MENU">
+          <ACTION_CONTROL
+            IMAGE="NewButton"
+            LABEL="ActionControl.Label.Withdraw"
+          >
+            <CONDITION>
+              <IS_TRUE
+                NAME="APPLICATIONSUMMARY"
+                PROPERTY="result$programDtls$dtls$isProgramPendingAndNoWithdrawalRequest"
+              />
+            </CONDITION>
+            <!--BEGIN, CR00302253, JD-->
+            <LINK
+              OPEN_MODAL="true"
+              PAGE_ID="Intake_createProgramWithdrawalRequest1"
+            >
+              <CONNECT>
+                <SOURCE
+                  NAME="APPLICATIONSUMMARY"
+                  PROPERTY="result$programDtls$dtls$programApplicationID"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="programApplicationID"
+                />
+              </CONNECT>
+
+
+              <CONNECT>
+                <SOURCE
+                  NAME="APPLICATIONSUMMARY"
+                  PROPERTY="result$programDtls$dtls$programType"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="programName"
+                />
+              </CONNECT>
+            </LINK>
+            <!--END, CR00302253-->
+          </ACTION_CONTROL>
+
+
+          <ACTION_CONTROL
+            IMAGE="NewButton"
+            LABEL="ActionControl.Label.ConfirmRequest"
+          >
+            <CONDITION>
+              <IS_TRUE
+                NAME="APPLICATIONSUMMARY"
+                PROPERTY="result$programDtls$dtls$isProgramPendingAndHasWithdrawalRequest"
+              />
+            </CONDITION>
+            <LINK
+              OPEN_MODAL="true"
+              PAGE_ID="Intake_confirmProgramWithdrawalRequest"
+            >
+              <CONNECT>
+                <SOURCE
+                  NAME="APPLICATIONSUMMARY"
+                  PROPERTY="result$programDtls$dtls$programApplicationID"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="programApplicationID"
+                />
+              </CONNECT>
+            </LINK>
+          </ACTION_CONTROL>
+
+
+          <!-- BEGIN, CR00284528, BF -->
+          <ACTION_CONTROL
+            APPEND_ELLIPSIS="false"
+            IMAGE="NewButton"
+            LABEL="ActionControl.Label.ViewWithdrawalRequest"
+          >
+            <CONDITION>
+              <IS_TRUE
+                NAME="APPLICATIONSUMMARY"
+                PROPERTY="result$programDtls$dtls$isProgramWithdrawn"
+              />
+            </CONDITION>
+            <LINK
+              OPEN_MODAL="true"
+              PAGE_ID="Intake_listProgramWithdrawalsFromApplicationHome"
+            >
+              <CONNECT>
+                <SOURCE
+                  NAME="APPLICATIONSUMMARY"
+                  PROPERTY="result$programDtls$dtls$programApplicationID"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="programApplicationID"
+                />
+              </CONNECT>
+            </LINK>
+          </ACTION_CONTROL>
+          <!-- END, CR00284528 -->
+        </ACTION_SET>
+      </LIST>
+    </CLUSTER>
+
+
+    <!-- Eligibility check  -->
+    <CLUSTER
+      SHOW_LABELS="FALSE"
+      STYLE="outer-cluster-borderless"
+    >
+      <LIST
+        
+        TITLE="List.Title.EligibilityChecks"
+      >
+        <FIELD
+          LABEL="Field.Title.Date"
+          WIDTH="30"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="RECENTELIGIBILITYCHECK"
+              PROPERTY="result$list$dateTime"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD
+          LABEL="Field.Title.CheckedBy"
+          WIDTH="35"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="RECENTELIGIBILITYCHECK"
+              PROPERTY="result$list$createdByUser"
+            />
+          </CONNECT>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="Organization_viewUserDetails"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="RECENTELIGIBILITYCHECK"
+                PROPERTY="userName"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="userName"
+              />
+            </CONNECT>
+          </LINK>
+        </FIELD>
+        <FIELD
+          LABEL="Field.Title.Result"
+          WIDTH="35"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="RECENTELIGIBILITYCHECK"
+              PROPERTY="result$list$eligiblePrograms"
+            />
+          </CONNECT>
+        </FIELD>
+      </LIST>
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    STYLE="outer-cluster-borderless"
+  >
+
+
+    <!-- Alerts and timers -->
+    <CLUSTER
+      SHOW_LABELS="FALSE"
+      STYLE="outer-cluster-borderless"
+    >
+      <LIST
+        
+        TITLE="List.Title.AlertsAndTimers"
+      >
+
+
+        <ACTION_SET TYPE="LIST_ROW_MENU">
+          <ACTION_CONTROL LABEL="ActionControl.Label.Extend">
+            <CONDITION>
+              <IS_TRUE
+                NAME="TIMERDETAILS"
+                PROPERTY="result$dtls$isExtendAllowed"
+              />
+            </CONDITION>
+            <LINK
+              OPEN_MODAL="true"
+              PAGE_ID="Intake_extendTimers"
+            >
+
+
+              <CONNECT>
+                <SOURCE
+                  NAME="TIMERDETAILS"
+                  PROPERTY="result$dtls$milestoneDeliveryID"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="milestoneDeliveryID"
+                />
+              </CONNECT>
+            </LINK>
+
+
+          </ACTION_CONTROL>
+
+
+        </ACTION_SET>
+
+
+        <FIELD
+          LABEL="Field.Title.Program"
+          WIDTH="30"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="TIMERDETAILS"
+              PROPERTY="program"
+            />
+          </CONNECT>
+        </FIELD>
+        <!-- BEGIN, CR00291216, PC -->
+        <FIELD
+          LABEL="Field.Title.Timer"
+          WIDTH="35"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="TIMERDETAILS"
+              PROPERTY="timer"
+            />
+          </CONNECT>
+        </FIELD>
+        <!-- BEGIN, CR00279965, PC -->
+        <FIELD
+          LABEL="Field.Title.Deadline"
+          WIDTH="35"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="TIMERDETAILS"
+              PROPERTY="deadlineWithImageOpt"
+            />
+          </CONNECT>
+        </FIELD>
+        <!-- END, CR00291216 -->
+        <!-- END, CR00279965 -->
+      </LIST>
+    </CLUSTER>
+
+
+    <!-- Outstanding verification  -->
+    <CLUSTER
+      SHOW_LABELS="FALSE"
+      STYLE="outer-cluster-borderless"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="APPLICATIONSUMMARY"
+          PROPERTY="result$verificationDtls$isModuleAvalible"
+        />
+      </CONDITION>
+
+
+      <LIST
+        
+        TITLE="Cluster.Title.OutstandingVerifications"
+      >
+        <FIELD
+          LABEL="Field.Label.Verifications"
+          WIDTH="38"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="APPLICATIONSUMMARY"
+              PROPERTY="result$verificationDtls$dtls$verificationDataItemName"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD
+          LABEL="Field.Label.Client"
+          WIDTH="32"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="APPLICATIONSUMMARY"
+              PROPERTY="result$verificationDtls$dtls$client"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD
+          LABEL="Field.Label.DaysLeft"
+          WIDTH="30"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="APPLICATIONSUMMARY"
+              PROPERTY="result$verificationDtls$dtls$daysLeft"
+            />
+          </CONNECT>
+        </FIELD>
+        <ACTION_SET TYPE="LIST_ROW_MENU">
+          <ACTION_CONTROL
+            IMAGE="NewButton"
+            LABEL="ActionControl.Label.AddVerification"
+          >
+            <CONDITION>
+              <IS_FALSE
+                NAME="APPLICATIONSUMMARY"
+                PROPERTY="result$disableMenuOpt"
+              />
+            </CONDITION>
+
+
+            <LINK
+              OPEN_MODAL="true"
+              PAGE_ID="VerificationApplication_createVerificationItemProvision"
+            >
+              <CONNECT>
+                <SOURCE
+                  NAME="APPLICATIONSUMMARY"
+                  PROPERTY="caseID"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="caseID"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="APPLICATIONSUMMARY"
+                  PROPERTY="result$verificationDtls$dtls$vDIEDLinkID"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="VDIEDLinkID"
+                />
+              </CONNECT>
+            </LINK>
+          </ACTION_CONTROL>
+
+
+        </ACTION_SET>
+      </LIST>
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+</PAGE>

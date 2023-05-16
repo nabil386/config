@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2009, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 															-->
+<!-- =========== 															-->
+<!-- The page allows the user to create a fund fiscal year line item.       -->
+<PAGE
+  PAGE_ID="FundPM_createFundFiscalYearLineItem"
+  WINDOW_OPTIONS="width=725"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainFundFiscalYearLineItem"
+    NAME="ACTION"
+    OPERATION="createLineItem"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="fundFiscalYearID"/>
+  <PAGE_PARAMETER NAME="fundName"/>
+  <PAGE_PARAMETER NAME="fiscalYearName"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainFundFiscalYear"
+    NAME="DISPLAY"
+    OPERATION="readFundHomeForFiscalYear"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="fundFiscalYearID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$fundFiscalYearID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="fundFiscalYearID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="fundFiscalYearID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00207190, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00207190 -->
+    <FIELD
+      LABEL="Field.Label.Type"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="type"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.InitialBudgetAllocation">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="budgetAllocatedTotal"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+
+
+    <FIELD
+      LABEL="Field.Label.AllocationReference"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="lineItemRefNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+
+
+    <!-- BEGIN, CR00426143, GK -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+      WIDTH="100"
+      WIDTH_UNITS="PERCENT"
+    >
+      <!-- END, CR00426143 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    BOTTOM="true"
+    TOP="false"
+  >
+    <!-- BEGIN, CR00227014, PS -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.SaveAndNew"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="FundPM_createFundFiscalYearLineItem"
+      />
+    </ACTION_CONTROL>
+    <!-- END, CR00227014 -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    />
+  </ACTION_SET>
+
+
+</PAGE>

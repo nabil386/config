@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                             -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This pop-up page allows the user to search active fiscal years.       -->
+<PAGE
+  PAGE_ID="FundPM_searchFiscalYearPopup"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainFiscalYear"
+    NAME="ACTION"
+    OPERATION="searchActiveFiscalYears"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainFiscalYear"
+    NAME="DISPLAY"
+    OPERATION="readActiveFiscalYearNames"
+    PHASE="DISPLAY"
+  />
+
+
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.FiscalYearName"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$dtlsList$dtls$yearName"
+          NAME="DISPLAY"
+          PROPERTY="result$dtlsList$yearNameDesc"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$yearName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Category"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$category"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Year"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$year"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Search"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="THIS"/>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+      <LINK PAGE_ID="FundPM_searchFiscalYearPopup"/>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="DISMISS"
+    />
+  </ACTION_SET>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+
+
+    <CONTAINER LABEL="Container.Label.Action">
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$dtls$fiscalYearID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$dtls$yearName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.FiscalYearName">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$yearName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Category">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$category"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description -->
+<!-- =========== -->
+<!--   -->
+<PAGE
+  PAGE_ID="UIAdminApplication_defaultSearchPageList"
+  WINDOW_OPTIONS="width=600"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="applicationID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationView"
+    NAME="DISPLAY"
+    OPERATION="listSearchPages"
+  />
+  <SERVER_INTERFACE
+    CLASS="ApplicationView"
+    NAME="ACTION"
+    OPERATION="modifyDefaultSearchPage"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$applicationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="applicationID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="currentDefaultSearchPageID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="existingDefaultPageID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL
+      LABEL="Control.Label.Save"
+      TYPE="SUBMIT"
+    > </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="Control.Label.Cancel"> </ACTION_CONTROL>
+  </ACTION_SET>
+  <LIST>
+    <CONTAINER
+      LABEL="Container.Label.Default"
+      WIDTH="5"
+    >
+      <WIDGET TYPE="SINGLESELECT">
+        <WIDGET_PARAMETER NAME="SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pageID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="defaultPageID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="SELECT_INITIAL">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="currentDefaultSearchPageID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.PageID">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="pageID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Description">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- BDM Foreign Applications List page. -->
+
+<PAGE PAGE_ID="BDMFEC_editFrgnLiasnChklstDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+  WINDOW_OPTIONS="width=765" >
+
+
+	<PAGE_TITLE>
+		<CONNECT>
+			<SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+		</CONNECT>
+	</PAGE_TITLE>
+
+	<MENU MODE="WIZARD_PROGRESS_BAR">
+		<CONNECT>
+			<SOURCE NAME="CONSTANT" PROPERTY="ForeignLiaisonEditWizard" />
+		</CONNECT>
+	</MENU>
+
+	<PAGE_PARAMETER NAME="caseID" />
+	<PAGE_PARAMETER NAME="wizardStateID" />
+	<PAGE_PARAMETER NAME="foreignLiaisonID" /> 
+
+	<SERVER_INTERFACE CLASS="BDMForeignLiaison"
+		NAME="ACTION" OPERATION="modifyFLChecklistFromWizard" PHASE="ACTION"
+		ACTION_ID_PROPERTY="key$actionIDProperty" />
+
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="caseID" />
+		<TARGET NAME="ACTION" PROPERTY="key$dtls$caseID" />
+	</CONNECT>
+
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="wizardStateID" />
+		<TARGET NAME="ACTION" PROPERTY="key$wizardStateID" />
+	</CONNECT>
+
+	<SERVER_INTERFACE CLASS="BDMForeignLiaison"
+		NAME="GETWIZARDDETAILS" OPERATION="readForeignLiaisonWizardDetails"
+		PHASE="DISPLAY" />
+
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="wizardStateID" />
+		<TARGET NAME="GETWIZARDDETAILS" PROPERTY="key$wizardStateID" />
+	</CONNECT>
+
+	<SERVER_INTERFACE CLASS="BDMForeignLiaison"
+		NAME="GETCHECKLISTCODES" OPERATION="listAllLiasnChecklistCodes"
+		PHASE="DISPLAY" />
+
+	<CLUSTER TITLE="Cluster.Title.LiaisonChecklist">
+		<FIELD CONTROL="CHECKBOXED_LIST" HEIGHT="15" USE_BLANK="true"
+			USE_DEFAULT="false">
+			<CONNECT>
+				<INITIAL HIDDEN_PROPERTY="result$dtls$code"
+					NAME="GETCHECKLISTCODES" PROPERTY="result$dtls$description" />
+			</CONNECT>
+			<CONNECT>
+				<SOURCE NAME="GETWIZARDDETAILS"
+					PROPERTY="result$dtls$flChkLstCdTabList" />
+			</CONNECT>
+			<CONNECT>
+				<TARGET NAME="ACTION" PROPERTY="key$dtls$flChkLstCdTabList" />
+			</CONNECT>
+		</FIELD>
+		<FIELD LABEL="Field.Label.Description">
+			<CONNECT>
+				<SOURCE NAME="GETWIZARDDETAILS"
+					PROPERTY="result$dtls$lisnChkLstOthrDesc" />
+			</CONNECT>
+			<CONNECT>
+				<TARGET NAME="ACTION" PROPERTY="key$dtls$lisnChkLstOthrDesc" />
+			</CONNECT>
+		</FIELD>
+	</CLUSTER>
+
+	<ACTION_SET ALIGNMENT="CENTER">
+		<ACTION_CONTROL LABEL="ActionControl.Label.Cancel"
+			ALIGNMENT="LEFT">
+			<LINK PAGE_ID="BDMFEC_listForeignLiaisons" SAVE_LINK="false">
+				<CONNECT>
+					<SOURCE PROPERTY="caseID" NAME="PAGE" />
+					<TARGET PROPERTY="caseID" NAME="PAGE" />
+				</CONNECT>
+			</LINK>
+		</ACTION_CONTROL>
+		
+		<ACTION_CONTROL LABEL="ActionControl.Label.Back">
+			<LINK PAGE_ID="BDMFEC_editFrgnLiasnDetails"
+				DISMISS_MODAL="false" SAVE_LINK="false">
+				<CONNECT>
+					<SOURCE PROPERTY="foreignLiaisonID" NAME="PAGE" />
+					<TARGET PROPERTY="foreignLiaisonID" NAME="PAGE" />
+				</CONNECT>
+				<CONNECT>			
+					<SOURCE PROPERTY="caseID" NAME="PAGE" />
+					<TARGET PROPERTY="caseID" NAME="PAGE" />
+				</CONNECT>
+				<CONNECT>
+					<SOURCE PROPERTY="wizardStateID" NAME="PAGE" />
+					<TARGET PROPERTY="wizardStateID" NAME="PAGE" />
+				</CONNECT>
+			</LINK>
+		</ACTION_CONTROL>
+
+		<ACTION_CONTROL
+			LABEL="ActionControl.Label.SaveAndClose" TYPE="SUBMIT"
+			ALIGNMENT="RIGHT" ACTION_ID="step2saveandclose">
+			<LINK PAGE_ID="BDMFEC_listForeignLiaisons" SAVE_LINK="false">
+				<CONNECT>
+					<SOURCE PROPERTY="caseID" NAME="PAGE" />
+					<TARGET PROPERTY="caseID" NAME="PAGE" />
+				</CONNECT>
+			</LINK>
+		</ACTION_CONTROL>
+
+		<ACTION_CONTROL LABEL="ActionControl.Label.Next"
+			TYPE="SUBMIT" ALIGNMENT="RIGHT" ACTION_ID="step2next">
+			<LINK PAGE_ID="BDMFEC_editFrgnLiasnAtchmtDetails"
+				DISMISS_MODAL="false" SAVE_LINK="false">
+				<CONNECT>
+					<SOURCE PROPERTY="foreignLiaisonID" NAME="PAGE" />
+					<TARGET PROPERTY="foreignLiaisonID" NAME="PAGE" />
+				</CONNECT>
+				<CONNECT>
+					<SOURCE PROPERTY="caseID" NAME="PAGE" />
+					<TARGET PROPERTY="caseID" NAME="PAGE" />
+				</CONNECT>
+				<CONNECT>
+					<SOURCE PROPERTY="wizardStateID" NAME="PAGE" />
+					<TARGET PROPERTY="wizardStateID" NAME="PAGE" />
+				</CONNECT>
+			</LINK>
+		</ACTION_CONTROL>
+	</ACTION_SET>
+
+</PAGE>
+  

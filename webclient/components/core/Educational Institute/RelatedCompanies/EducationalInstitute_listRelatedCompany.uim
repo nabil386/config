@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Lists all the companies that have a 'relationship' with the specified  -->
+<!-- employer.                                                              -->
+<PAGE
+  PAGE_ID="EducationalInstitute_listRelatedCompany"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Employer"
+    NAME="DISPLAY"
+    OPERATION="listRelationship"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="relationshipsByConcernRoleIDKey$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Employer_createRelatedCompany"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Employer_modifyRelatedCompany"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="concernRoleRelationshipID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleRelationshipID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="DeleteButton"
+        LABEL="ActionControl.Label.Delete"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Employer_cancelRelatedCompany"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="concernRoleRelationshipID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleRelationshipID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <DETAILS_ROW>
+
+
+      <INLINE_PAGE PAGE_ID="Employer_viewRelatedCompany">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleRelationshipID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleRelationshipID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleStatus"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="statusCode"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+
+
+    </DETAILS_ROW>
+
+
+    <FIELD
+      LABEL="Field.Title.RelatedCompany"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="concernRoleName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Employer_resolveRelatedCompaniesViewHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="employerRelationshipRMDetails$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleType"
+          />
+        </CONNECT>
+				// BEGIN, CR00020979, NH
+				<CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleStatus"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="statusCode"
+          />
+        </CONNECT>
+				// END, CR00020979
+			</LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Type"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="relationshipType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.From"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.To"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

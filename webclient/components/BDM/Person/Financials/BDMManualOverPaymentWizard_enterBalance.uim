@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<PAGE
+  PAGE_ID="BDMManualOverPaymentWizard_enterBalance"
+  WINDOW_OPTIONS="width=1045,height=950"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+<!--  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="result$dtls$dtls$informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+-->
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$wizardStateID"
+    />
+  </CONNECT>
+
+
+   <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$wizardStateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$wizardStateID"
+    />
+  </CONNECT>
+
+
+
+   <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+
+
+ <SERVER_INTERFACE
+    CLASS="BDMManualOverPayment"
+    NAME="DISPLAY"
+    OPERATION="readWizardDetails"
+  />
+
+
+ <SERVER_INTERFACE
+    CLASS="BDMManualOverPayment"
+    NAME="ACTION"
+    OPERATION="storeWizardDetails"
+    PHASE="ACTION"
+  />
+
+
+
+ <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Label.Details"
+  >
+    <FIELD LABEL="Field.Label.LiabilityAmount" USE_DEFAULT="false" >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="liabilityAmount"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$liabilityAmount"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+
+ <FIELD LABEL="Field.Label.startDate" USE_DEFAULT="false" >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseStartDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$caseStartDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+ <FIELD CONTROL="SKIP"/>
+  <FIELD CONTROL="SKIP"/>
+ </CLUSTER>
+
+
+
+
+
+
+  <ACTION_SET
+    BOTTOM="true"
+    TOP="true"
+  >
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="BDMManualOverPaymentWizard_selectBenefitCases"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

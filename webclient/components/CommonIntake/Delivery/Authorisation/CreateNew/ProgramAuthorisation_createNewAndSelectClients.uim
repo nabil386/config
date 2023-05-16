@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012-2014. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<!-- Description                                                        -->
+<!-- =================================================================  -->
+<!-- This page is used for authorizing a single program when the        -->
+<!-- program authorizing strategy is set to CreateNew.                  -->
+
+<PAGE
+  PAGE_ID="ProgramAuthorisation_createNewAndSelectClients"
+  SCRIPT_FILE="EnableCheckBoxes.js"  
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+    
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="intakeProgramApplicationID"/>
+  
+    <SERVER_INTERFACE 
+    CLASS="ApplicationCase" 
+    NAME="DISPLAY3" 
+    OPERATION="checkAnyPendingCasesByProgram"  
+    PHASE="DISPLAY"
+  />
+  
+  <SERVER_INTERFACE 
+    CLASS="ProgramAuthorisation" 
+    NAME="ACTION" 
+    OPERATION="authorise"
+    PHASE="ACTION"
+  />
+  
+  <SERVER_INTERFACE 
+    CLASS="ProgramAuthorisation" 
+    NAME="DISPLAY" 
+    OPERATION="listClientsForSelection"
+    PHASE="DISPLAY"
+  />  
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY3"
+      PROPERTY="appCaseKey$caseID"
+    />
+  </CONNECT>
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="intakeProgramApplicationID"
+    />
+    <TARGET
+      NAME="DISPLAY3"
+      PROPERTY="programKey$programID"
+    />
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="applicationCaseID"
+    />
+  </CONNECT>  
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="applicationCaseID"
+    />
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="intakeProgramApplicationID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$intakeProgramApplicationID"
+    />
+  </CONNECT>
+
+  <CONNECT>
+    <SOURCE NAME="CONSTANT" PROPERTY="Constant.True"/>
+    <TARGET NAME="ACTION" PROPERTY="createNewInd" />
+  </CONNECT>                
+    
+  <INFORMATIONAL>
+     <CONNECT>
+        <SOURCE NAME="DISPLAY3" PROPERTY="result$informationalDtls$dtls$informationMsgTxt"/>
+     </CONNECT>
+  </INFORMATIONAL>  
+    
+  <CLUSTER LABEL_WIDTH="30" TITLE="Cluster.Title.IntegratedCase"  DESCRIPTION="Cluster.Description.PrimaryClient">
+    <FIELD
+      LABEL="Field.Label.PrimaryClient"
+      USE_BLANK="false"
+      WIDTH="50">
+    <SCRIPT 
+      	ACTION="disablecheck()"
+      	EVENT="ONCHANGE"  
+		SCRIPT_FILE="EnableCheckBoxes.js"/>
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$nameDetailsList$dtls$participantID"
+          NAME="DISPLAY"
+          PROPERTY="result$nameDetailsList$dtls$participantName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="primaryClientID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+    
+    <LIST DESCRIPTION="Cluster.Description.ICClientList" >     
+      <CONTAINER>      
+        <WIDGET TYPE="MULTISELECT">
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE 
+                NAME="DISPLAY" 
+                PROPERTY="result$nameAndAgeDetailsList$dtls$participantID"/>
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET 
+                NAME="ACTION" 
+                PROPERTY="clientTabList" />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+      
+      <FIELD LABEL="Field.Label.Name" WIDTH="50">
+        <CONNECT>
+          <SOURCE 
+            NAME="DISPLAY" 
+            PROPERTY="result$nameAndAgeDetailsList$dtls$participantName"/>
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Age" WIDTH="50">
+        <CONNECT>
+          <SOURCE 
+            NAME="DISPLAY" 
+            PROPERTY="result$nameAndAgeDetailsList$dtls$age"/>
+        </CONNECT>
+      </FIELD>     
+    </LIST>    
+
+    
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    TOP="false"
+    >       
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />        
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />           
+  </ACTION_SET>
+      
+  <CLUSTER TITLE="Cluster.Title.Comments" SHOW_LABELS="false">   
+      
+    <FIELD HEIGHT="4">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="opComment"/>
+      </CONNECT>
+    </FIELD>  
+       
+  </CLUSTER>  
+  
+  <SCRIPT 
+      	ACTION="disablecheck()"
+      	EVENT="ONLOAD"  
+		SCRIPT_FILE="EnableCheckBoxes.js"
+  />
+   <SCRIPT 
+      	ACTION="disablecheck()"
+      	EVENT="ONCLICK"  
+		SCRIPT_FILE="EnableCheckBoxes.js"
+  />
+</PAGE>

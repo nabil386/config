@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This is a person search that returns to the                            -->
+<!-- IncomeScreening_viewRegisteredHousehold page after a person has been   -->
+<!-- selected.                                                              -->
+<PAGE
+  PAGE_ID="IncomeScreening_searchForHouseholdMember1"
+  HIDE_CONDITIONAL_LINKS="false"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <SERVER_INTERFACE
+    CLASS="Person"
+    NAME="ACTION"
+    OPERATION="searchPerson"
+    PHASE="ACTION"
+  />
+  <PAGE_PARAMETER NAME="caseEvidenceTypeID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+  <INCLUDE FILE_NAME="Person_searchCriteriaView.vim"/>
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="SearchButton"
+      LABEL="ActionControl.Label.Search"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="THIS"/>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="ResetButton"
+      LABEL="ActionControl.Label.Reset"
+    >
+      <LINK PAGE_ID="IncomeScreening_searchForHouseholdMember1">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseEvidenceTypeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseEvidenceTypeID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+  <LIST TITLE="List.Title.SearchResults">
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.Select">
+        <CONDITION>
+          <IS_FALSE
+            NAME="ACTION"
+            PROPERTY="result$personSearchResult$dtlsList$restrictedIndOpt"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="IncomeScreening_createHouseholdMember"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseEvidenceTypeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseEvidenceTypeID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="concernRoleName"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD
+      LABEL="Field.Title.Address"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="formattedAddress"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD
+      LABEL="Field.Title.DateOfBirth"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$dateOfBirth"
+        />
+      </CONNECT>
+    </FIELD>
+
+  </LIST>
+</PAGE>

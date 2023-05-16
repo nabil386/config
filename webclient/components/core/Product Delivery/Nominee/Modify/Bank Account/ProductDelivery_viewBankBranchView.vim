@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2005, 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2005, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This process allows the user to view bank branch details.              -->
+<VIEW
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+ 
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAY"
+    OPERATION="readBankBranch"
+    PHASE="DISPLAY"
+  />
+
+  
+  <!-- BEGIN, CR00377184, GA -->
+  <SERVER_INTERFACE
+    CLASS="Participant"
+    NAME="DISPLAY1"
+    OPERATION="readIban"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00377184 -->
+  
+
+
+  <PAGE_PARAMETER NAME="bankBranchID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="bankBranchID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="bankBranchKeyStruct$bankBranchID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+    SHOW_LABELS="true"
+    TAB_ORDER="ROW"
+    TITLE="Cluster.Title.Details"
+  >
+    <!-- BEGIN, CR00377184, GA -->
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY1"
+        PROPERTY="ibanInd"
+      />
+    </CONDITION>
+   <!-- END, CR00377184 -->
+
+    <FIELD LABEL="Field.Label.BankName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="bankName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.BranchName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.SortCode">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="bankSortCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <CONTAINER LABEL="Container.Label.PhoneNo">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="phoneCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="phoneAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="phoneNumber"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="phoneExtension"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <CONTAINER LABEL="Container.Label.FaxNo">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="faxCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="faxAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="faxNumber"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+  </CLUSTER>
+
+   <!-- BEGIN, CR00377184, GA -->
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+    SHOW_LABELS="true"
+    TAB_ORDER="ROW"
+    TITLE="Cluster.Title.Details"
+  >
+  
+      <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY1"
+        PROPERTY="ibanInd"
+      />
+    </CONDITION>
+
+    <FIELD LABEL="Field.Label.BankName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="bankName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.BranchName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.SortCode">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="bankSortCode"
+        />
+      </CONNECT>
+    </FIELD>
+   <FIELD LABEL="Field.Label.BIC">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="bicOpt"
+        />
+      </CONNECT>
+    </FIELD>
+    <CONTAINER LABEL="Container.Label.PhoneNo">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="phoneCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="phoneAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="phoneNumber"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="phoneExtension"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <CONTAINER LABEL="Container.Label.FaxNo">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="faxCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="faxAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="faxNumber"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+  </CLUSTER>
+   <!-- END, CR00377184 -->
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Address"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="formattedAddressData"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</VIEW>

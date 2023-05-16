@@ -1,0 +1,84 @@
+<!-- Task 11053 - CK - page for deleting external liabilities -->
+<PAGE
+  PAGE_ID="BDMPerson_deleteExternalLiability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+  >
+  
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Static.Title"/>    
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <PAGE_PARAMETER NAME="externalLiabilityID"/>
+  
+  <SERVER_INTERFACE
+    CLASS="BDMExternalLiability"  
+    NAME="ACTION"
+    OPERATION="deleteLiability"
+    PHASE="ACTION"
+  />
+  
+
+  <SERVER_INTERFACE
+    CLASS="BDMExternalLiability"  
+    NAME="DISPLAY"
+    OPERATION="readLiabilityVersion"
+  />
+  
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"/>
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"/>  
+  </CONNECT>  
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="externalLiabilityID"/>
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="externalLiabilityID"/>  
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="externalLiabilityID"/>
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="externalLiabilityID"/>  
+  </CONNECT>
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL 
+      ALIGNMENT="LEFT" 
+      LABEL="ActionControl.Label.Cancel" 
+      TYPE="ACTION"/>
+    
+    <ACTION_CONTROL 
+      LABEL="ActionControl.Label.Delete"
+      TYPE="SUBMIT"
+      />
+  </ACTION_SET>  
+      
+  <CLUSTER>
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="DeleteLiability.Description"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  
+  
+  
+</PAGE>

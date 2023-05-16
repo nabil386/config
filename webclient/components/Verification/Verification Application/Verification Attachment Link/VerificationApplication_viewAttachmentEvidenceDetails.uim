@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2008 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view an Attachment Page.                  -->
+<PAGE PAGE_ID="VerificationApplication_viewAttachmentEvidenceDetails" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.ViewAttachement"/>
+    </CONNECT>
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="result$pageContextDescription$description"/>
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="VerificationApplication" NAME="DISPLAY" OPERATION="readVerificationAttachment"/>
+
+
+  <SERVER_INTERFACE CLASS="VerificationApplication" NAME="DISPLAY1" OPERATION="fetchVerificationDetails"/>
+
+
+  <PAGE_PARAMETER NAME="verificationAttachmentLinkID"/>
+  <PAGE_PARAMETER NAME="attachmentID"/>
+  <PAGE_PARAMETER NAME="VDIEDLinkID"/>
+  <PAGE_PARAMETER NAME="evidenceDescriptorID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="contextDescription"/>
+  <PAGE_PARAMETER NAME="dataItemName"/>
+  <PAGE_PARAMETER NAME="evidenceType"/>
+  <PAGE_PARAMETER NAME="evidenceID"/>
+
+
+  <!-- Map Attachment details to view Attachment Details -->
+  <!-- display-phase bean in order to retrieve details -->
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="verificationAttachmentLinkID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$key$verificationAttachmentLinkID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="attachmentID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$key$attachmentID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="VDIEDLinkID"/>
+    <TARGET NAME="DISPLAY1" PROPERTY="vdIEDLinkID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="evidenceDescriptorID"/>
+    <TARGET NAME="DISPLAY1" PROPERTY="evidenceDescriptorID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+    <!-- BEGIN, CR00075582, RF -->
+    <TARGET NAME="DISPLAY1" PROPERTY="evidenceAndDataItemNameDetails$caseID"/>
+    <!-- END, CR00075582 -->
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="contextDescription"/>
+    <TARGET NAME="DISPLAY1" PROPERTY="description"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="dataItemName"/>
+    <TARGET NAME="DISPLAY1" PROPERTY="evidenceAndDataItemNameDetails$dataItemName"/>
+  </CONNECT>
+
+
+  <!-- An action set containing Edit, delete and  close buttons. -->
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL IMAGE="EditButton" LABEL="ActionControl.Label.Edit">
+      <!-- Link to page displaying editable details of the  -->
+      <!-- Attachment -->
+      <LINK OPEN_MODAL="true" PAGE_ID="VerificationApplication_modifyAttachmentDetailsEvidenceDetails">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$details$readLinkDtls$verificationAttachmentLinkID"/>
+          <TARGET NAME="PAGE" PROPERTY="verificationAttachmentLinkID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$details$readAttachmentDtls$attachmentID"/>
+          <TARGET NAME="PAGE" PROPERTY="attachmentID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$details$readLinkDtls$verificationItemProvidedID"/>
+          <TARGET NAME="PAGE" PROPERTY="verificationItemProvidedID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="contextDescription"/>
+          <TARGET NAME="PAGE" PROPERTY="contextDescription"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="evidenceDescriptorID"/>
+          <TARGET NAME="PAGE" PROPERTY="evidenceDescriptorID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="dataItemName"/>
+          <TARGET NAME="PAGE" PROPERTY="dataItemName"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="VDIEDLinkID"/>
+          <TARGET NAME="PAGE" PROPERTY="VDIEDLinkID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="evidenceID"/>
+          <TARGET NAME="PAGE" PROPERTY="evidenceID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="evidenceType"/>
+          <TARGET NAME="PAGE" PROPERTY="evidenceType"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="DeleteButton" LABEL="ActionControl.Label.Delete">
+      <!-- Link to page delete Attachment -->
+      <LINK OPEN_MODAL="true" PAGE_ID="VerificationApplication_deleteAttachmentEvidenceDetails" WINDOW_OPTIONS="width=400,height=150">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$details$readLinkDtls$verificationAttachmentLinkID"/>
+          <TARGET NAME="PAGE" PROPERTY="verificationAttachmentLinkID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$details$readLinkDtls$recordStatus"/>
+          <TARGET NAME="PAGE" PROPERTY="recordStatus"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$details$readLinkDtls$verificationItemProvidedID"/>
+          <TARGET NAME="PAGE" PROPERTY="verificationItemProvidedID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="contextDescription"/>
+          <TARGET NAME="PAGE" PROPERTY="contextDescription"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="evidenceDescriptorID"/>
+          <TARGET NAME="PAGE" PROPERTY="evidenceDescriptorID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="dataItemName"/>
+          <TARGET NAME="PAGE" PROPERTY="dataItemName"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="VDIEDLinkID"/>
+          <TARGET NAME="PAGE" PROPERTY="VDIEDLinkID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="evidenceID"/>
+          <TARGET NAME="PAGE" PROPERTY="evidenceID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="evidenceType"/>
+          <TARGET NAME="PAGE" PROPERTY="evidenceType"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="CloseButton" LABEL="ActionControl.Label.Close">
+      <LINK PAGE_ID="VerificationApplication_viewEvidenceVerificationItemProvisionDetails">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$details$readLinkDtls$verificationItemProvidedID"/>
+          <TARGET NAME="PAGE" PROPERTY="verificationItemProvidedID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="contextDescription"/>
+          <TARGET NAME="PAGE" PROPERTY="contextDescription"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="evidenceDescriptorID"/>
+          <TARGET NAME="PAGE" PROPERTY="evidenceDescriptorID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="dataItemName"/>
+          <TARGET NAME="PAGE" PROPERTY="dataItemName"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="VDIEDLinkID"/>
+          <TARGET NAME="PAGE" PROPERTY="VDIEDLinkID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="evidenceID"/>
+          <TARGET NAME="PAGE" PROPERTY="evidenceID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="evidenceType"/>
+          <TARGET NAME="PAGE" PROPERTY="evidenceType"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <!-- Cluster with Details -->
+
+
+  <CLUSTER NUM_COLS="2" TITLE="Cluster.Title.Details">
+
+
+    <FIELD LABEL="Field.Label.Description">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$details$readLinkDtls$description"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.FileLocation">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="fileLocation"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DateReceived">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="receiptDate"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="recordStatus"/>
+      </CONNECT>
+    </FIELD>
+    <CONTAINER LABEL="Field.Label.FileName">
+      <WIDGET TYPE="FILE_DOWNLOAD">
+        <WIDGET_PARAMETER NAME="LINK_TEXT">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="attachmentName"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="PARAMS">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="key$key$attachmentID"/>
+            <TARGET NAME="PAGE" PROPERTY="attachmentID"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="PARAMS">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="key$key$verificationAttachmentLinkID"/>
+            <TARGET NAME="PAGE" PROPERTY="verificationAttachmentLinkID"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.FileReference">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="fileReference"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DocumentType">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="documentType"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+</PAGE>

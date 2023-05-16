@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2011, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to search for the client for whom the        -->
+<!-- a manual payment is being made to.                                     -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="Financial_manualPaymentSearchPersonWizard"
+  WINDOW_OPTIONS="width=925,height=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00282028, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <SERVER_INTERFACE
+    CLASS="Person"
+    NAME="ACTION"
+    OPERATION="searchPerson"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00282028 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="Financial"
+    NAME="DISPLAYWIZARD"
+    OPERATION="getCaptureManualPaymentWizard"
+  />
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+  </ACTION_SET>
+
+
+  <INCLUDE FILE_NAME="Person_searchCriteriaView.vim"/>
+
+
+  <CLUSTER>
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      BOTTOM="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="THIS"
+        />
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="Financial_manualPaymentSearchPersonWizard"
+        />
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+  </CLUSTER>
+
+
+  <LIST
+    PAGINATED="false"
+    
+    TITLE="List.Title.SearchResults"
+  >
+
+
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.Select">
+        <CONDITION>
+          <IS_FALSE
+            NAME="ACTION"
+            PROPERTY="result$personSearchResult$dtlsList$restrictedIndOpt"
+          />
+        </CONDITION>
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="Financial_manualPaymentSelectCaseWizard"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtlsList$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="30"
+    >
+      <!-- BEGIN, CR00440849, AC-->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$xmlPersonData"
+        />
+      </CONNECT>
+      <!-- END, CR00440849-->
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Address"
+      WIDTH="45"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$formattedAddress"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.DateOfBirth"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$dateOfBirth"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

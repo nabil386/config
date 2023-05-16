@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2022. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- This page allows user to manage hearing case decision for integrated   -->
+<!-- case.                                                                  -->
+<PAGE PAGE_ID="Appeal_manageHearingCaseDecisionDetailsForIC" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="Appeal" NAME="DISPLAY" OPERATION="readDecisionAndAttachmentListForIC" PHASE="DISPLAY"/>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="appealCaseKey$caseID"/>
+  </CONNECT>
+
+
+  <CLUSTER LABEL_WIDTH="35" NUM_COLS="2" TITLE="Cluster.Title.Details">
+    <CONTAINER LABEL="Field.Label.DecisionResolution">
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="decisionResolutionCode"/>
+        </CONNECT>
+      </FIELD>
+
+
+      <ACTION_CONTROL APPEND_ELLIPSIS="false" LABEL="ActionControl.Label.EditResolution">
+        <LINK OPEN_MODAL="true" PAGE_ID="Appeal_resolveModifyAppealDecision">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="description"/>
+            <TARGET NAME="PAGE" PROPERTY="description"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+            <TARGET NAME="PAGE" PROPERTY="appealCaseID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="decisionID"/>
+            <TARGET NAME="PAGE" PROPERTY="hearingDecisionID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.DecisionStatus">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="decisionStatus"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

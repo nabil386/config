@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows a user to view audit plan details.                    -->
+<PAGE
+  PAGE_ID="CaseAudit_viewAuditPlan"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="AuditPlan"
+    NAME="DISPLAY"
+    OPERATION="viewAuditPlan"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="AuditPlan"
+    NAME="BIDISPLAY"
+    OPERATION="getAuditPlanFocusAreaChart"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00183007, GD -->
+  <SERVER_INTERFACE
+    CLASS="AuditPlanTransactionLog"
+    NAME="TRANSDISPLAY"
+    OPERATION="listRecentTransactions"
+  />
+  <!-- END, CR00183007 -->
+
+
+  <PAGE_PARAMETER NAME="auditPlanID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="auditPlanID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$auditPlanID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="auditPlanID"
+    />
+    <TARGET
+      NAME="BIDISPLAY"
+      PROPERTY="key$auditPlanID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="CaseAudit_modifyAuditPlan"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <SEPARATOR/>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddSchedule">
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="scheduleInfoSetInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="CaseAudit_maintainAuditPlanSchedule"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.EditSchedule">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="scheduleInfoSetInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="CaseAudit_maintainAuditPlanSchedule"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.DeleteSchedule">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="allowScheduleDeleteInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="CaseAudit_deleteScheduleInfo"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <SEPARATOR/>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.GenerateRandomCaseSample">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="result$showGenerateRandomInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="CaseAudit_resolveProduceCaseSamplePageName"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.SearchForCasesToAudit">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="result$showManualSelectionInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="CaseAudit_resolveQueryType"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.False"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="randomInd"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.SelectSpecificCasesToAudit">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="result$showManualSelectionInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="CaseAudit_selectCase"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddFindings">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="result$showAddSumFindingsLinkInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="AuditPlan_createSummaryFindings"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      APPEND_ELLIPSIS="false"
+      LABEL="ActionControl.Label.ViewFindings"
+    >
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="result$showAddSumFindingsLinkInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="AuditPlan_viewSummaryFindings"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.ModifyFindings">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="result$showEditSumFindingsInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="AuditPlan_modifySummaryFindings"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Complete">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="result$showCompleteLinkInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="TRUE"
+        PAGE_ID="AuditPlan_confirmCompletePlan"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <SEPARATOR/>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="CaseAudit_cancelAuditPlan"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+
+
+    <CONTAINER LABEL="Field.Label.Coordinator">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="coordinatorFullName"
+          />
+        </CONNECT>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_viewUserDetails"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$auditPlanDtls$coordinator"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.Change"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CaseAudit_coordSelect"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="auditPlanDtls$auditPlanID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="auditPlanID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="createdDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="auditPlanStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Purpose">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="purpose"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Priority">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="priority"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CreatedBy">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="createdByFullName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$auditPlanDtls$createdBy"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.RecordStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+
+
+    <CLUSTER
+      NUM_COLS="1"
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.Schedule"
+    >
+
+
+      <CLUSTER
+        LABEL_WIDTH="40"
+        NUM_COLS="1"
+        STYLE="cluster-cpr-no-border"
+      >
+        <FIELD LABEL="Field.Label.ScheduledStartDate">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="scheduledStartDate"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.ScheduledEndDate">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="scheduledEndDate"
+            />
+          </CONNECT>
+        </FIELD>
+      </CLUSTER>
+      <CLUSTER
+        NUM_COLS="1"
+        SHOW_LABELS="false"
+        STYLE="cluster-cpr-no-border"
+        TITLE="Cluster.Title.SchedulingComments"
+      >
+        <FIELD HEIGHT="3">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="scheduleComments"
+            />
+          </CONNECT>
+        </FIELD>
+      </CLUSTER>
+
+
+    </CLUSTER>
+
+
+    <CLUSTER
+      NUM_COLS="1"
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.ProgressChart"
+    >
+
+
+      <FIELD ALIGNMENT="CENTER">
+        <CONNECT>
+          <SOURCE
+            NAME="BIDISPLAY"
+            PROPERTY="report"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    TITLE="Cluster.Title.CaseSampleDetails"
+  >
+    <FIELD LABEL="Field.Label.PercentageOfCases">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="percentageCases"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.NumberOfCases">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="numberCases"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UserSelected">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="casesUserSelected"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.AuditPlanComments"
+  >
+    <FIELD HEIGHT="3">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <INCLUDE FILE_NAME="AuditPlan_listTransactionLogView.vim"/>
+
+
+</PAGE>

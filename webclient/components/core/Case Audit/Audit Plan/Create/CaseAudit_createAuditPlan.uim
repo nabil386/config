@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2009, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009-2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows a user to create an audit plan.                       -->
+<PAGE PAGE_ID="CaseAudit_createAuditPlan" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="AuditPlan" NAME="DISPLAY" OPERATION="getConfiguredTypesAndCoordinator" PHASE="DISPLAY"/>
+
+
+  <SERVER_INTERFACE CLASS="AuditPlan" NAME="ACTION" OPERATION="createAuditPlan" PHASE="ACTION"/>
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="result$configList$informationMsgTxt$dtls$informationMsgTxt"/>
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL IMAGE="SaveAndAddFocusAreasButton" LABEL="ActionControl.Label.SaveAndAddFocusAreas" TYPE="SUBMIT">
+      <LINK DISMISS_MODAL="false" PAGE_ID="CaseAudit_addAuditPlanFocusAreas" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="ACTION" PROPERTY="result$auditPlanID"/>
+          <TARGET NAME="PAGE" PROPERTY="auditPlanID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT">
+  
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel">
+     
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="40" NUM_COLS="2">
+
+
+    <FIELD LABEL="Field.Label.Purpose" USE_BLANK="true" USE_DEFAULT="false" WIDTH="80">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="details$purpose"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.AuditItem" USE_BLANK="true" WIDTH="80">
+      <CONNECT>
+        <INITIAL HIDDEN_PROPERTY="list$auditCaseConfigID" NAME="DISPLAY" PROPERTY="name"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="details$auditCaseConfigID"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Coordinator" WIDTH="80">
+      <CONNECT>
+        <INITIAL NAME="DISPLAY" PROPERTY="result$coordinatorFullName"/>
+      </CONNECT>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$coordinatorUserName"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="details$coordinator"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Priority" USE_BLANK="true" WIDTH="50">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="details$priority"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER DESCRIPTION="Cluster.UserInvolvement.Description" LABEL_WIDTH="22.5" NUM_COLS="1">
+    <FIELD LABEL="Field.Label.UserInvolvement" USE_BLANK="true" USE_DEFAULT="false" WIDTH="50">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="details$userAccess"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Title.Comments">
+    <!-- BEGIN, CR00408407, VT -->
+    <FIELD HEIGHT="4" LABEL="Field.Label.Comments">
+      <!-- END, CR00408407 -->
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="details$comments"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

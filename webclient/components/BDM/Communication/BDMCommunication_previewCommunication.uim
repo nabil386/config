@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PAGE
+  PAGE_ID="BDMCommunication_previewCommunication"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+  POPUP_PAGE="true"
+  WINDOW_OPTIONS="width=1000,height=1000"
+  >
+  <PAGE_PARAMETER NAME="communicationID"/>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title" />
+    </CONNECT>
+  </PAGE_TITLE>
+  <JSP_SCRIPTLET>
+<![CDATA[
+  final long communicationID = Long.parseLong(request.getParameter("communicationID"));
+  final long sessionKey = new java.util.Random().nextLong();
+  final String embedTag = "<embed type=\"application/pdf\" width=\"1000\" height=\"1000\" src=\"{1}/servlet/FileDownload?pageID=BDMCommunication_previewCommunication&communicationID={0,number,#}&sessionkeying={2,number,#}\" />";
+  out.print(java.text.MessageFormat.format(embedTag, communicationID, request.getContextPath(), sessionKey));
+]]>
+  </JSP_SCRIPTLET>
+</PAGE>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2017. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->                                                             
+<PAGE
+  COMPONENT_STYLE="page-omit-sidebar"
+  PAGE_ID="MeetingMinutesWizard_resolveStart"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+      
+  curam.omega3.request.RequestHandler 
+  rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+  String context = request.getContextPath() + "/";
+  context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/"; 
+
+  String caseID = request.getParameter("caseID");
+  String meetingID = request.getParameter("meetingID");
+  String activityID = request.getParameter("activityID");
+
+  if (!core.CustomValidation.isInteger(caseID)) {
+    curam.util.client.ClientException e = new curam.util.client.ClientException(-117520, "caseID");
+    System.out.println(e);
+    throw e;
+  }
+  if (meetingID != null &amp;&amp; !core.CustomValidation.isInteger(meetingID)) {
+    curam.util.client.ClientException e = new curam.util.client.ClientException(-117520, "meetingID");
+    System.out.println(e);
+    throw e;
+  }
+  if (activityID != null &amp;&amp; !core.CustomValidation.isInteger(activityID)) {
+    curam.util.client.ClientException e = new curam.util.client.ClientException(-117520, "activityID");
+    System.out.println(e);
+    throw e;
+  }
+
+  curam.interfaces.MeetingMinutesWizardPkg.MeetingMinutesWizard_createWizardStore_TH
+  th = new curam.interfaces.MeetingMinutesWizardPkg.MeetingMinutesWizard_createWizardStore_TH();
+  th.setFieldValue(th.caseKey$caseID_idx, caseID);
+  th.setFieldValue(th.activityKey$activityID_idx, activityID);
+  th.setFieldValue(th.meetingKey$meetingID_idx, meetingID);
+  th.callServer();
+
+  String wizardStateID = th.getFieldValue(th.result$wizardStateID_idx);
+  
+  if (wizardStateID != null &amp;&amp; !core.CustomValidation.isInteger(wizardStateID)) {
+    curam.util.client.ClientException e = new curam.util.client.ClientException(-117520, "wizardStateID");
+    System.out.println(e);
+    throw e;
+  }
+    
+  String url = context + "MeetingMinutesWizard_meetingDetailsPage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) + "&amp;wizardStateID=" + curam.omega3.request.RequestUtils.escapeURL(wizardStateID) + "&amp;meetingID=" + curam.omega3.request.RequestUtils.escapeURL(meetingID) + "&amp;activityID=" + curam.omega3.request.RequestUtils.escapeURL(activityID);
+  url += "&amp;" + rh.getSystemParameters();
+  response.sendRedirect(response.encodeRedirectURL(url));      
+
+
+  </JSP_SCRIPTLET>
+</PAGE>

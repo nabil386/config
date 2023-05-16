@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2017. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="AES_listLogicallyEquivalentEvidenceTypes"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <SERVER_INTERFACE
+    CLASS="EvidenceSharingAdmin"
+    NAME="DISPLAY"
+    OPERATION="listLogicallyEEvidenceTypeDetails"
+    PHASE="DISPLAY"
+  />
+  
+  <PAGE_PARAMETER NAME="evidenceBrokerConfigID"/>
+   
+     <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Identical"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="AES_listIdenticalEvidenceTypeDetails">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="evidenceBrokerConfigID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="evidenceBrokerConfigID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+	<ACTION_CONTROL
+      LABEL="ActionControl.Label.LogicallyEquivalent"
+      STYLE="in-page-current-link"
+    >
+      <LINK PAGE_ID="AES_listLogicallyEquivalentEvidenceTypes">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="evidenceBrokerConfigID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="evidenceBrokerConfigID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="evidenceBrokerConfigID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$evidenceBrokerConfigID"
+    />
+  </CONNECT>
+  
+  <CLUSTER>
+	  <DESCRIPTION>
+	  	<CONNECT>
+	  		<SOURCE
+	  			NAME="TEXT"
+	  			PROPERTY="Cluster.Description.LogicallyEquivalent"
+	  		/>
+	  	</CONNECT>
+	  </DESCRIPTION>
+	  
+	  <LIST>
+	   <ACTION_SET TYPE="LIST_ROW_MENU">
+	    	<ACTION_CONTROL
+		        LABEL="ActionControl.Label.Edit"
+		        TYPE="ACTION"
+		      >
+		        <LINK
+		          OPEN_MODAL="true"
+		          PAGE_ID="AES_modifyLogicallyEEvidenceConfig"
+		        >
+		          <CONNECT>
+		            <SOURCE
+		              NAME="DISPLAY"
+		              PROPERTY="result$dtls$details$sharingConfigDetails$evidenceBrokerConfigID"
+		            />
+		            <TARGET
+		              NAME="PAGE"
+		              PROPERTY="evidenceBrokerConfigID"
+		            />
+		          </CONNECT>
+		        	<CONNECT>
+					  <SOURCE
+					    NAME="DISPLAY"
+					    PROPERTY="sourceType"
+					  />
+					  <TARGET
+					    NAME="PAGE"
+					    PROPERTY="sourceType"
+					  />
+					</CONNECT>
+					<CONNECT>
+					  <SOURCE
+					    NAME="DISPLAY"
+					    PROPERTY="sourceName"
+					  />
+					  <TARGET
+					    NAME="PAGE"
+					    PROPERTY="sourceName"
+					  />
+					</CONNECT>
+					<CONNECT>
+					  <SOURCE
+					    NAME="DISPLAY"
+					    PROPERTY="targetType"
+					  />
+					  <TARGET
+					    NAME="PAGE"
+					    PROPERTY="targetType"
+					  />
+					</CONNECT>
+					<CONNECT>
+					  <SOURCE
+					    NAME="DISPLAY"
+					    PROPERTY="targetName"
+					  />
+					  <TARGET
+					    NAME="PAGE"
+					    PROPERTY="targetName"
+					  />
+					</CONNECT>
+		        </LINK>
+			</ACTION_CONTROL>
+	    	<ACTION_CONTROL
+		        LABEL="ActionControl.Label.Delete"
+		        TYPE="ACTION"
+		      >
+		        <LINK
+		          OPEN_MODAL="true"
+		          PAGE_ID="AES_cancelLogicallyESharedEvidenceConfig"
+		        >
+		          <CONNECT>
+		            <SOURCE
+		              NAME="DISPLAY"
+		              PROPERTY="result$dtls$details$sharingConfigDetails$evidenceBrokerConfigID"
+		            />
+		            <TARGET
+		              NAME="PAGE"
+		              PROPERTY="evidenceBrokerConfigID"
+		            />
+		          </CONNECT>
+		          <CONNECT>
+		            <SOURCE
+		              NAME="DISPLAY"
+		              PROPERTY="versionNo"
+		            />
+		            <TARGET
+		              NAME="PAGE"
+		              PROPERTY="versionNo"
+		            />
+		          </CONNECT>
+		        </LINK>
+			</ACTION_CONTROL>
+		</ACTION_SET>
+	 
+		<FIELD LABEL="Field.Label.SourceEvidenceType">
+	      <CONNECT>
+	        <SOURCE
+	          NAME="DISPLAY"
+	          PROPERTY="result$dtls$details$sharingConfigDetails$sourceEvidenceType"
+	        />
+	      </CONNECT>
+	    </FIELD>
+	    
+	    <FIELD LABEL="Field.Label.TargetEvidenceType">
+	      <CONNECT>
+	        <SOURCE
+	          NAME="DISPLAY"
+	          PROPERTY="result$dtls$details$sharingConfigDetails$targetEvidenceType"
+	        />
+	      </CONNECT>
+	    </FIELD>
+	
+	    <FIELD LABEL="Field.Label.TrustedSource">
+	      <CONNECT>
+	        <SOURCE
+	          NAME="DISPLAY"
+	          PROPERTY="result$dtls$details$sharingConfigDetails$trustedSource"
+	        />
+	      </CONNECT>
+	    </FIELD>
+	    
+	    <FIELD LABEL="Field.Label.ShareVerifications">
+	      <CONNECT>
+	        <SOURCE
+	          NAME="DISPLAY"
+	          PROPERTY="result$dtls$details$sharingConfigDetails$shareVerificationsOption"
+	        />
+	      </CONNECT>
+	    </FIELD>
+	    
+	    <DETAILS_ROW>
+	      <INLINE_PAGE PAGE_ID="AES_viewLogicallyEquivalentSharingRules">
+	        <CONNECT>
+	          <SOURCE
+	            NAME="DISPLAY"
+	            PROPERTY="sharingConfigDetails$evidenceBrokerConfigID"
+	          />
+	          <TARGET
+	            NAME="PAGE"
+	            PROPERTY="evidenceBrokerConfigID"
+	          />
+	        </CONNECT>
+	      </INLINE_PAGE>
+      </DETAILS_ROW>
+	  </LIST>
+	</CLUSTER>
+</PAGE>

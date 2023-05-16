@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed Materials - Property of IBM PID 5725-H26 Copyright IBM Corporation 
+	2003, 2014. All Rights Reserved. US Government Users Restricted Rights - 
+	Use, duplication or disclosure restricted by GSA ADP Schedule Contract with 
+	IBM Corp. -->
+<!-- Copyright (c) 2003-2006, 2008, 2010 Curam Software Ltd. -->
+<!-- All rights reserved. -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam -->
+<!-- Software. -->
+<!-- Description -->
+<!-- =========== -->
+<!-- -->
+<PAGE PAGE_ID="Supervisor_reallocateTasksReservedByUser"
+	WINDOW_OPTIONS="width=850"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+	<PAGE_TITLE>
+		<CONNECT>
+			<SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText" />
+		</CONNECT>
+	</PAGE_TITLE>
+
+
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="userName" />
+		<TARGET NAME="ACTION" PROPERTY="key$key$userName" />
+	</CONNECT>
+
+
+	<ACTION_SET ALIGNMENT="CENTER">
+		<ACTION_CONTROL IMAGE="SaveButton"
+			LABEL="ActionControl.Label.Save" TYPE="SUBMIT" />
+
+
+		<ACTION_CONTROL IMAGE="CancelButton"
+			LABEL="ActionControl.Label.Cancel" />
+	</ACTION_SET>
+
+
+	<SERVER_INTERFACE CLASS="BDMMaintainSupervisorUsers"
+		NAME="DISPLAY"
+		OPERATION="bdmReadOpenAndDererredTasksForReallocateTasks"
+		PHASE="DISPLAY" />
+
+
+	<SERVER_INTERFACE CLASS="MaintainSupervisorUsers"
+		NAME="ACTION" OPERATION="reallocateTasksReservedByUser" PHASE="ACTION" />
+
+
+	<PAGE_PARAMETER NAME="userName" />
+	<PAGE_PARAMETER NAME="userFullName" />
+	<PAGE_PARAMETER NAME="taskOptionCode" />
+
+
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="userName" />
+		<TARGET NAME="DISPLAY" PROPERTY="key$userName" />
+	</CONNECT>
+
+
+	<LIST TITLE="List.Title.OpenTasks">
+		<CONTAINER ALIGNMENT="CENTER"
+			LABEL="List.Multiselect.Header" WIDTH="5">
+			<WIDGET TYPE="MULTISELECT">
+				<WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+					<CONNECT>
+						<SOURCE NAME="DISPLAY"
+							PROPERTY="result$listOpenTaskDtls$taskDetailsList$taskDetailsList$taskID" />
+					</CONNECT>
+				</WIDGET_PARAMETER>
+				<WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+					<CONNECT>
+						<TARGET NAME="ACTION" PROPERTY="key$key$openTaskIDs" />
+					</CONNECT>
+				</WIDGET_PARAMETER>
+			</WIDGET>
+		</CONTAINER>
+
+
+		<FIELD LABEL="Field.Label.TaskID" WIDTH="10">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY"
+					PROPERTY="result$listOpenTaskDtls$taskDetailsList$taskDetailsList$taskID" />
+			</CONNECT>
+		</FIELD>
+
+
+		<FIELD LABEL="Field.Label.Subject" WIDTH="30">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY"
+					PROPERTY="result$listOpenTaskDtls$taskDetailsList$taskDetailsList$subject" />
+			</CONNECT>
+		</FIELD>
+
+
+		<!--START TASK 86598 : display urgent flag and escalation level -->
+
+		<FIELD LABEL="Field.Label.UrgentFlag" WIDTH="15">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY"
+					PROPERTY="result$listOpenTaskDtls$taskDetailsList$taskDetailsList$caseUrgentFlagStr" />
+			</CONNECT>
+		</FIELD>
+
+
+		<FIELD LABEL="Field.Label.EscalationLevel" WIDTH="15">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY"
+					PROPERTY="result$listOpenTaskDtls$taskDetailsList$taskDetailsList$escalationLevelDesc" />
+			</CONNECT>
+		</FIELD>
+
+		<!--END TASK 86598 : display urgent flag and escalation level -->
+
+		<FIELD LABEL="Field.Label.Priority" WIDTH="15">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY"
+					PROPERTY="result$listOpenTaskDtls$taskDetailsList$taskDetailsList$priority" />
+			</CONNECT>
+		</FIELD>
+
+
+		<FIELD LABEL="Field.Label.Reserved" WIDTH="20">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY"
+					PROPERTY="result$listOpenTaskDtls$taskDetailsList$taskDetailsList$assignedDateTime" />
+			</CONNECT>
+		</FIELD>
+
+
+		<FIELD LABEL="Field.Label.Deadline" WIDTH="20">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY"
+					PROPERTY="result$listOpenTaskDtls$taskDetailsList$taskDetailsList$dueDateTime" />
+			</CONNECT>
+		</FIELD>
+	</LIST>
+
+
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="userName" />
+		<TARGET NAME="DISPLAY" PROPERTY="key$userName" />
+	</CONNECT>
+
+
+	<LIST TITLE="List.Title.DeferredTasks">
+		<CONTAINER ALIGNMENT="CENTER"
+			LABEL="List.Multiselect.Header" WIDTH="5">
+			<WIDGET TYPE="MULTISELECT">
+				<WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+					<CONNECT>
+						<SOURCE NAME="DISPLAY"
+							PROPERTY="result$deferredTasksDetails$dtls$taskDetailsList$taskDetailsList$taskID" />
+					</CONNECT>
+				</WIDGET_PARAMETER>
+				<WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+					<CONNECT>
+						<TARGET NAME="ACTION" PROPERTY="key$key$deferredTaskIDs" />
+					</CONNECT>
+				</WIDGET_PARAMETER>
+			</WIDGET>
+		</CONTAINER>
+
+
+		<FIELD LABEL="Field.Label.TaskID" WIDTH="10">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY"
+					PROPERTY="result$deferredTasksDetails$dtls$taskDetailsList$taskDetailsList$taskID" />
+			</CONNECT>
+		</FIELD>
+
+
+		<FIELD LABEL="Field.Label.Subject" WIDTH="30">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY"
+					PROPERTY="result$deferredTasksDetails$dtls$taskDetailsList$taskDetailsList$subject" />
+			</CONNECT>
+		</FIELD>
+
+
+
+		<!--START TASK 86598 : display urgent flag and escalation level -->
+
+		<FIELD LABEL="Field.Label.UrgentFlag" WIDTH="15">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY"
+					PROPERTY="result$deferredTasksDetails$dtls$taskDetailsList$taskDetailsList$caseUrgentFlagStr" />
+			</CONNECT>
+		</FIELD>
+
+
+		<FIELD LABEL="Field.Label.EscalationLevel" WIDTH="15">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY"
+					PROPERTY="result$deferredTasksDetails$dtls$taskDetailsList$taskDetailsList$escalationLevelDesc" />
+			</CONNECT>
+		</FIELD>
+
+		<!--END TASK 86598 : display urgent flag and escalation level -->
+
+
+		<FIELD LABEL="Field.Label.Priority" WIDTH="15">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY"
+					PROPERTY="result$deferredTasksDetails$dtls$taskDetailsList$taskDetailsList$priority" />
+			</CONNECT>
+		</FIELD>
+
+
+		<FIELD LABEL="Field.Label.Restart" WIDTH="20">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY"
+					PROPERTY="result$deferredTasksDetails$dtls$taskDetailsList$taskDetailsList$restartDateTime" />
+			</CONNECT>
+		</FIELD>
+
+
+		<FIELD LABEL="Field.Label.Deadline" WIDTH="20">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY"
+					PROPERTY="result$deferredTasksDetails$dtls$taskDetailsList$taskDetailsList$deadlineDateTime" />
+			</CONNECT>
+		</FIELD>
+
+
+	</LIST>
+
+
+	<CLUSTER LABEL_WIDTH="25" SHOW_LABELS="false"
+		TITLE="Cluster.Title.Comments">
+		<!-- BEGIN, CR00417017, GK -->
+		<FIELD HEIGHT="4" LABEL="Field.Label.Comments">
+			<!-- END, CR00417017 -->
+			<CONNECT>
+				<TARGET NAME="ACTION" PROPERTY="comments" />
+			</CONNECT>
+		</FIELD>
+	</CLUSTER>
+
+
+</PAGE>

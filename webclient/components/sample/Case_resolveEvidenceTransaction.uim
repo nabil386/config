@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008,2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp redirects the user to view the evidence details page.         -->
+<PAGE PAGE_ID="Case_resolveEvidenceTransaction">
+  <JSP_SCRIPTLET>
+        
+        curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+        
+        String context = request.getContextPath() + "/";
+        context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+        
+        //get the evidenceID.
+        String evidenceID = request.getParameter("evidenceID");
+        String url = "";
+        
+        //get the caseID.
+        curam.interfaces.EvidencePkg.Evidence_readCaseEvidenceTree_TH 
+        th = new curam.interfaces.EvidencePkg.Evidence_readCaseEvidenceTree_TH();            
+        th.setFieldValue(th.key$caseEvidenceTreeID_idx,evidenceID);      
+        th.callServer(); 
+        String caseID = th.getFieldValue(th.result$caseID_idx);
+
+        //For Product Delivery Cases
+        if(!caseID.equals("0"))
+        {
+        //get the Product Type.
+        curam.interfaces.ProductDeliveryPkg.ProductDelivery_readProductType_TH 
+        pt = new curam.interfaces.ProductDeliveryPkg.ProductDelivery_readProductType_TH();            
+        pt.setFieldValue(pt.productDeliveryKey$caseID_idx,caseID);      
+        pt.callServer(); 
+        String productType = pt.getFieldValue(pt.result$productType_idx); 
+        
+        //For Benefit Sample Product.
+        if (productType.equals("PT1"))
+        {
+        url = context + "Case_viewBenefitSampleEvidenceTransactionPage.do" + "?evidenceID="+curam.omega3.request.RequestUtils.escapeURL(evidenceID);
+        }
+        
+        //For Liability Sample Product.
+        else if (productType.equals("PT7"))
+        {
+        url = context + "Case_viewLiabilitySampleEvidenceTransactionPage.do" + "?evidenceID="+curam.omega3.request.RequestUtils.escapeURL(evidenceID);
+        }
+        
+        }
+        else
+        {
+        // BEGIN, CR00279713, AC
+        //For Integrated Cases
+        curam.interfaces.EvidencePkg.Evidence_readCaseIDandEvidenceType_TH 
+        ed = new curam.interfaces.EvidencePkg.Evidence_readCaseIDandEvidenceType_TH();                    
+        ed.setFieldValue(ed.key$evidenceDescriptorID_idx,evidenceID);      
+            ed.callServer(); 
+            
+            //get the integratedCaseID.
+            String integratedCaseID = ed.getListFieldValue(ed.result$dtls$caseID_idx, 0);
+            
+            //get the relatedID.
+            String relatedID = ed.getListFieldValue(ed.result$dtls$relatedID_idx, 0);    
+            
+            //get the evidenceType.
+            String evidenceType = ed.getListFieldValue(ed.result$dtls$evidenceType_idx, 0);
+            // END, CR00279713 
+            
+            //for Sporting Activity Evidence.
+            if(evidenceType.equals("ET500"))
+            {
+             url = context + "ICSample_viewSportingActivityEvidenceTransactionPage.do" + "?caseID="+curam.omega3.request.RequestUtils.escapeURL(integratedCaseID)+"&amp;evidenceID="+curam.omega3.request.RequestUtils.escapeURL(relatedID)+"&amp;evidenceType="+curam.omega3.request.RequestUtils.escapeURL(evidenceType);
+            }
+            
+            //for Sporting Activity Expense Evidence.
+            else if(evidenceType.equals("ET501"))
+             {
+              url = context + "ICSample_viewSportingActivityExpenseEvidenceTransactionPage.do" + "?caseID="+curam.omega3.request.RequestUtils.escapeURL(integratedCaseID)+"&amp;evidenceID="+curam.omega3.request.RequestUtils.escapeURL(relatedID)+"&amp;evidenceType="+curam.omega3.request.RequestUtils.escapeURL(evidenceType);
+             }
+            
+            //for Sporting Sponsorship Evidence.
+            else if(evidenceType.equals("ET502"))
+            {
+             url = context + "PDSample_viewSportingSponsorshipEvidenceTransactionPage.do" + "?caseID="+curam.omega3.request.RequestUtils.escapeURL(integratedCaseID)+"&amp;evidenceID="+curam.omega3.request.RequestUtils.escapeURL(relatedID)+"&amp;evidenceType="+curam.omega3.request.RequestUtils.escapeURL(evidenceType);
+            }
+            
+            //for Person Details Evidence or Client Details Evidence.
+            else if(evidenceType.equals("PET2") || evidenceType.equals("PET3"))
+            {
+             url = context + "Person_homePageTransactionPage.do" + "?caseID="+curam.omega3.request.RequestUtils.escapeURL(integratedCaseID)+"&amp;concernRoleID="+curam.omega3.request.RequestUtils.escapeURL(relatedID)+"&amp;evidenceType="+curam.omega3.request.RequestUtils.escapeURL(evidenceType);
+            }
+            
+            //for Citizenship Evidence.
+            else if(evidenceType.equals("PET4"))
+            {
+              url = context + "Person_viewCitizenshipTransactionPage.do" + "?caseID="+curam.omega3.request.RequestUtils.escapeURL(integratedCaseID)+"&amp;citizenshipID="+curam.omega3.request.RequestUtils.escapeURL(relatedID)+"&amp;evidenceType="+curam.omega3.request.RequestUtils.escapeURL(evidenceType);
+            }
+            
+            //for Addresses Evidence.
+            else if(evidenceType.equals("PET5"))
+            {
+             url = context + "Participant_viewAddressTransactionPage.do" + "?caseID="+curam.omega3.request.RequestUtils.escapeURL(integratedCaseID)+"&amp;concernRoleAddressID="+curam.omega3.request.RequestUtils.escapeURL(relatedID)+"&amp;evidenceType="+curam.omega3.request.RequestUtils.escapeURL(evidenceType);
+            }
+            
+            //for Alternate Names Evidence.
+            else if(evidenceType.equals("PET6"))
+            {
+             url = context + "Person_viewAlternateNameTransactionPage.do" + "?caseID="+curam.omega3.request.RequestUtils.escapeURL(integratedCaseID)+"&amp;alternateNameID="+curam.omega3.request.RequestUtils.escapeURL(relatedID)+"&amp;evidenceType="+curam.omega3.request.RequestUtils.escapeURL(evidenceType);
+            }
+            
+            //for Employment Evidence.
+            else if(evidenceType.equals("PET7"))
+            {
+             url = context + "Person_viewEmploymentTransactionPage.do" + "?caseID="+curam.omega3.request.RequestUtils.escapeURL(integratedCaseID)+"&amp;employmentID="+curam.omega3.request.RequestUtils.escapeURL(relatedID)+"&amp;evidenceType="+curam.omega3.request.RequestUtils.escapeURL(evidenceType);
+            }
+            
+            //for Bank Accounts Evidence.
+            else if(evidenceType.equals("PET10"))
+            {
+              url = context + "Participant_viewBankAccountTransactionPage.do" + "?caseID="+curam.omega3.request.RequestUtils.escapeURL(integratedCaseID)+"&amp;concernRoleBankAccountID="+curam.omega3.request.RequestUtils.escapeURL(relatedID)+"&amp;evidenceType="+curam.omega3.request.RequestUtils.escapeURL(evidenceType);
+            }
+            
+            //for Relationships Evidence.
+            else if(evidenceType.equals("PET11"))
+            {
+             url = context + "Person_viewRelationshipTransactionPage.do" + "?caseID="+curam.omega3.request.RequestUtils.escapeURL(integratedCaseID)+"&amp;concernRoleRelationshipID="+curam.omega3.request.RequestUtils.escapeURL(relatedID)+"&amp;evidenceType="+curam.omega3.request.RequestUtils.escapeURL(evidenceType);
+            }
+            
+            //for Alternate IDs Evidence.
+            else if(evidenceType.equals("PET15"))
+            {
+             url = context + "Participant_viewAlternateIDTransactionPage.do" + "?caseID="+curam.omega3.request.RequestUtils.escapeURL(integratedCaseID)+"&amp;concernRoleAlternateID="+curam.omega3.request.RequestUtils.escapeURL(relatedID)+"&amp;evidenceType="+curam.omega3.request.RequestUtils.escapeURL(evidenceType);
+            }
+            
+            //for any other evidence other than the sample types
+            else
+            {
+             String transactionDescription = request.getParameter("transactionDescription");
+             String transactionDateTime = request.getParameter("transactionDateTime");
+             String userFullName = request.getParameter("userFullName");
+            
+             //get the evidenceTypeDesc.
+             curam.interfaces.EvidencePkg.Evidence_getEvidenceTypeDescription_TH 
+             et = new curam.interfaces.EvidencePkg.Evidence_getEvidenceTypeDescription_TH();            
+             et.setFieldValue(et.key$evidenceType_idx,evidenceType);      
+             et.callServer();
+             String evidenceTypeDesc = et.getFieldValue(et.result$evidenceTypeDesc_idx);
+          
+             url = context + "Generic_viewEvidenceTransactionPage.do?transactionDescription="+curam.omega3.request.RequestUtils.escapeURL(transactionDescription)+"&amp;userFullName="+curam.omega3.request.RequestUtils.escapeURL(userFullName)+"&amp;evidenceType="+curam.omega3.request.RequestUtils.escapeURL(evidenceTypeDesc)+"&amp;transactionDateTime="+curam.omega3.request.RequestUtils.escapeURL(transactionDateTime);
+            
+             }
+       
+        }
+        url += "&amp;" + rh.getSystemParameters();
+        
+        response.sendRedirect(response.encodeRedirectURL(url));
+        
+        
+    </JSP_SCRIPTLET>
+</PAGE>

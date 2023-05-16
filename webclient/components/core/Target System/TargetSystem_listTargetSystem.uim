@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- ===========                                                             -->
+<!-- This page displays the list of target systems to the user.              -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="TargetSystem_listTargetSystem"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTargetSystem"
+    NAME="DISPLAY"
+    OPERATION="listTargetSystems"
+    PHASE="DISPLAY"
+  />
+
+    <ACTION_SET BOTTOM="false">
+      <ACTION_CONTROL LABEL="ActionControl.Label.New">
+        <LINK OPEN_MODAL="true" PAGE_ID="TargetSystem_createTargetSystem"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+ <LIST>
+ <ACTION_SET TYPE="LIST_ROW_MENU">
+   <ACTION_CONTROL LABEL="ActionControl.Label.AddService">
+     <CONDITION>
+       <IS_FALSE
+         NAME="DISPLAY"
+         PROPERTY="recordCanceledInd"
+       />
+     </CONDITION>
+       <LINK OPEN_MODAL="true" PAGE_ID="TargetSystem_createTargetSystemService">
+         <CONNECT>
+           <SOURCE
+             NAME="DISPLAY"
+             PROPERTY="systemID"
+           />
+           <TARGET
+             NAME="PAGE"
+             PROPERTY="systemID"
+           />
+         </CONNECT>
+       </LINK>
+     </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+    <CONDITION>
+       <IS_FALSE
+          NAME="DISPLAY"
+           PROPERTY="recordCanceledInd"
+          />
+      </CONDITION>
+      <LINK OPEN_MODAL="true" PAGE_ID="TargetSystem_modifyTargetSystem">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="systemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="systemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+    <CONDITION>
+       <IS_FALSE
+          NAME="DISPLAY"
+           PROPERTY="recordCanceledInd"
+          />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="TargetSystem_cancelTargetSystem"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="systemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="systemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    </ACTION_SET>
+
+    <FIELD
+      LABEL="Field.Label.SystemName"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="systemName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.SystemURL"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="rootURL"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.CreatedBy"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="createdBy"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.CreatedOn"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="createdDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="TargetSystem_listTargetSystemService">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="systemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="systemID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+</PAGE>

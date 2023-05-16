@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Lists the withdrawals associated with a program.            -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="CommonIntake_listApplicationWithdrawals"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+ <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  
+  <SERVER_INTERFACE CLASS="ApplicationAuthorisation" NAME="DISPLAY" OPERATION="listApplicationWithdrawals"  PHASE="DISPLAY"/>
+  
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$applicationCaseID"/>
+  </CONNECT>
+
+  <ACTION_SET>
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="applicationWithdrawalInd"/>
+    </CONDITION>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Withdraw">
+      <LINK PAGE_ID="CommonIntake_withdrawProgram" OPEN_MODAL="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$intakeProgramApplicationID" />
+          <TARGET NAME="PAGE" PROPERTY="intakeProgramApplicationID" />
+        </CONNECT>    
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  
+  <LIST>
+     <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        
+        <LINK URI_SOURCE_NAME="DISPLAY" URI_SOURCE_PROPERTY="editProgramWithdrawalURL" OPEN_MODAL="true"/>
+      </ACTION_CONTROL>
+      
+      
+      </ACTION_SET>
+    
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="CommonIntake_readProgramWithdrawal">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="withdrawalRequestID" />
+          <TARGET NAME="PAGE" PROPERTY="withdrawalRequestID" />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    
+    <FIELD LABEL="Field.Label.RequestedBy" WIDTH="35">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="requestedByFullName"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Date" WIDTH="25">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="withdrawalDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Method" WIDTH="30">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="requestMethod"/>
+      </CONNECT>
+    </FIELD>
+    </LIST>
+
+</PAGE>
+
+

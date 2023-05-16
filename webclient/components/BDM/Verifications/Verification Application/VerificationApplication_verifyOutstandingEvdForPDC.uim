@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+ PID 5725-H26
+ 
+ Copyright IBM Corporation 2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="VerificationApplication_verifyOutstandingEvdForPDC"
+  WINDOW_OPTIONS="width=1045,height=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+  SCRIPT_FILE="BDMVerificationDynamicCluster.js"
+>
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="VerificationApplication"
+    NAME="LIST_NAME"
+    OPERATION="listAllVerificationItemsForCaseParticipant"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionIDProperty"
+    CLASS="BDMVerificationApplication"
+    NAME="ACTION"
+    OPERATION="bdmValidateBulkEvidenceVerificationAddProofPage"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="VerificationApplication"
+    NAME="DISPLAYWIZARD"
+    OPERATION="getAddItemsToOutstandingVerificationForPDCWizard"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="BDMVerificationApplication"
+    NAME="DISPLAY"
+    OPERATION="getBDMUserProvidedVerificationItemWizardDetails"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="LIST_NAME"
+      PROPERTY="arg1$participantID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="arg1$wizardStateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="wizardStateID$wizardStateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="arg3$wizardStateID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    BOTTOM="true"
+    TOP="true"
+  >
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+    <ACTION_CONTROL
+      ACTION_ID="NEXTPAGE"
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="VerificationApplication_associateOutstandingEvdForPDC"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="wizardStateID$wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$bdmNewUserProvdedVerificationItemDetails$newUserProvidedVerificationItemDetails$newUserProvidedVerificationInfo$verificationItemIDOpt"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="verificationItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="20.5">
+    <FIELD
+      LABEL="Field.Label.Item"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="verificationItemID"
+          NAME="LIST_NAME"
+          PROPERTY="description"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="verificationItemIDOpt"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$newUserProvidedVerificationItemDetails$newUserProvidedVerificationInfo$verificationItemIDOpt"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00452119, GK -->
+    <FIELD
+      LABEL="Field.Label.DateReceived"
+      WIDTH="12"
+    >
+      <!-- END, CR00452119 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateReceived"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$newUserProvidedVerificationItemDetails$newUserProvidedVerificationInfo$dateReceived"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="38.5"
+    TITLE="Cluster.Title.ProvidedBy"
+  >
+
+
+    <CLUSTER
+      DESCRIPTION="Field.Label.Description2"
+      LABEL_WIDTH="20.5"
+      STYLE="cluster-cpr-no-border"
+    >
+
+
+      <CONTAINER LABEL="Field.Label.Participant">
+        <FIELD WIDTH="25">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="participantType"
+            />
+          </CONNECT>
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="details$newUserProvidedVerificationItemDetails$itemProvidedDetailsdtls$participantType"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD WIDTH="55">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="participantConcernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <INITIAL
+              NAME="DISPLAY"
+              PROPERTY="participantNameOpt"
+            />
+          </CONNECT>
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="details$newUserProvidedVerificationItemDetails$itemProvidedDetailsdtls$participantConcernRoleID"
+            />
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <CLUSTER
+      DESCRIPTION="Field.Label.Description3"
+      LABEL_WIDTH="41"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD LABEL="Field.Label.Name">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="providerName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$newUserProvidedVerificationItemDetails$itemProvidedDetailsdtls$providerName"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <CLUSTER
+    DESCRIPTION="Field.Label.Description4"
+    LABEL_WIDTH="38.5"
+    TITLE="Cluster.Title.Attachment"
+  >
+
+
+<!-- TASK 90414 removed browse -->
+    <CLUSTER
+      LABEL_WIDTH="41"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD LABEL="Field.Label.FileLocation">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="fileLocation"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$newUserProvidedVerificationItemDetails$createVerificationAttachmentLinkDetails$createAttachmentDtls$fileLocation"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Description">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="createLinkDtls$description"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$newUserProvidedVerificationItemDetails$createVerificationAttachmentLinkDetails$createLinkDtls$description"
+            
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.FileReference">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="fileReference"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$newUserProvidedVerificationItemDetails$createVerificationAttachmentLinkDetails$createAttachmentDtls$fileReference"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.DocumentType">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="documentType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$newUserProvidedVerificationItemDetails$createVerificationAttachmentLinkDetails$createAttachmentDtls$documentType"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+    
+    <!-- TASK : Add Acceptance Status -->
+    <CLUSTER LABEL_WIDTH="41" NUM_COLS="2"
+	STYLE="cluster-cpr-no-border">
+	<FIELD LABEL="Field.Label.Acceptance.Status" WIDTH="20"
+		USE_BLANK="true" CONTROL_REF="statusRef">
+		<CONNECT>
+			<TARGET NAME="ACTION" PROPERTY="details$acceptanceStatus" />
+		</CONNECT>
+	</FIELD>
+	<CLUSTER LABEL_WIDTH="41" NUM_COLS="2"
+		STYLE="cluster-cpr-no-border">
+
+		<CONDITION TYPE="DYNAMIC">
+			<SCRIPT EXPRESSION="rejectionReasonEnabled" />
+		</CONDITION>
+		<FIELD CONTROL="SKIP" />
+		<FIELD LABEL="Field.Label.Rejection.Reason" WIDTH="20"
+			USE_BLANK="true" CONTROL_REF="rejectionReasonRef">
+			<CONNECT>
+				<TARGET NAME="ACTION" PROPERTY="details$rejectionReason" />
+			</CONNECT>
+		</FIELD>
+
+	</CLUSTER>
+</CLUSTER>
+<!-- TASK : Add Acceptance Status -->
+  </CLUSTER>
+</PAGE>

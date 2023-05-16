@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This Page allows users to create a new child removal record -->
+<?curam-deprecated Since Curam 6.0, replaced with LegalAction_manageDecision1.uim. As
+  part of the usability changes to make this page as an in-page navigation tab. 
+  See release note: CR00248727?>
+<PAGE
+  PAGE_ID="LegalAction_manageDecision"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Statement"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="legalActionID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="LegalActionDecision"
+    NAME="DISPLAY"
+    OPERATION="readDecision"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="legalActionID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="legalActionID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Manage"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="statusInd"
+      />
+    </CONDITION>
+    <CONTAINER>
+      <ACTION_CONTROL LABEL="ActionControl.Label.CreateAttachment">
+        <LINK PAGE_ID="LegalAction_createDecisionAttachment">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pageDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <CONTAINER>
+      <ACTION_CONTROL LABEL="ActionControl.Label.FinalDecision">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="decisionInd"
+          />
+        </CONDITION>
+        <LINK PAGE_ID="LegalAction_resolveCreateDecision">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="legalActionStatusCode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="legalActionStatus"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="legalActionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="legalActionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pageDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.DecisionAttachments">
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="LegalAction_resolveViewDecisionAttachment">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="attachmentLinkID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="attachmentLinkID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="decisionAttachmentType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="decisionAttachmentType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="recordStatus"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="decisionStatus"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK PAGE_ID="LegalAction_resolveModifyDecisionAttachment">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="attachmentLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="attachmentLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="decisionAttachmentType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="decisionAttachmentType"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pageDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="SearchPageID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="searchPage"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Label.AttachmentDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="attachmentDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AttachmentType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="decisionAttachmentType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AttachmentStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.FinalDecision"
+  >
+    <FIELD HEIGHT="4">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

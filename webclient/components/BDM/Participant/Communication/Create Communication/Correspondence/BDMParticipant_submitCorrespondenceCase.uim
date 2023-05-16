@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to create correspondence communication       -->
+
+<PAGE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+PAGE_ID="BDMParticipant_submitCorrespondenceCase" 
+WINDOW_OPTIONS="width=950" 
+xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+   <PAGE_TITLE>
+      <CONNECT>
+         <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+      </CONNECT>
+   </PAGE_TITLE>
+   
+   <SERVER_INTERFACE CLASS="BDMCommunication" NAME="ACTION" OPERATION="createCorrespondence" PHASE="ACTION" />
+   <SERVER_INTERFACE CLASS="BDMCommunication" NAME="DISPLAY" OPERATION="getCorrespondenceDetails" />
+   
+   <PAGE_PARAMETER NAME="wizardStateID" />
+   <PAGE_PARAMETER NAME="concernRoleID" />
+   <PAGE_PARAMETER NAME="templateID" />
+   <PAGE_PARAMETER NAME="caseID" />
+   
+   <CONNECT>
+      <SOURCE NAME="PAGE" PROPERTY="wizardStateID" />
+      <TARGET NAME="DISPLAY" PROPERTY="wizardStateID" />
+   </CONNECT>
+   
+   <CONNECT>
+      <SOURCE NAME="PAGE" PROPERTY="templateID" />
+      <TARGET NAME="DISPLAY" PROPERTY="key$templateID" />
+   </CONNECT>
+   
+   <CONNECT>
+      <SOURCE NAME="PAGE" PROPERTY="wizardStateID" />
+      <TARGET NAME="ACTION" PROPERTY="wizardStateID" />
+   </CONNECT>
+      
+   <CLUSTER DESCRIPTION="Cluster.Template.Description" LABEL_WIDTH="30">
+      <FIELD LABEL="Field.Label.TemplateName" WIDTH="50">        
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$templateName" />
+         </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.CorrespondentName">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$clientName" />
+         </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.CorrespondentTo">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$toCorrespondentName" />
+         </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.CorrespondentCC">
+         <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$ccCorrespondentName" />
+         </CONNECT>
+      </FIELD>
+      <CLUSTER LABEL_WIDTH="100" NUM_COLS="1" SHOW_LABELS="false">
+         <CONTAINER>
+            <FIELD CONFIG="CT_DISPLAY_LABELS" CONTROL="CT_HIERARCHY_VERTICAL" WIDTH="100">
+               <CONNECT>
+                  <TARGET NAME="ACTION" PROPERTY="submitOpt" />
+               </CONNECT>
+            </FIELD>
+         </CONTAINER>
+      </CLUSTER>
+      <!-- <CLUSTER LABEL_WIDTH="60" NUM_COLS="2" SHOW_LABELS="false">
+         <FIELD LABEL="Field.Label.DigitalInd">
+            <CONNECT>
+               <TARGET NAME="ACTION" PROPERTY="isDigitalInd" />
+            </CONNECT>
+         </FIELD>
+      </CLUSTER> -->
+   </CLUSTER>   
+   
+   <ACTION_SET ALIGNMENT="CENTER">
+      <ACTION_CONTROL LABEL="ActionControl.PrevButton.label">
+         <LINK DISMISS_MODAL="false" OPEN_MODAL="false" PAGE_ID="BDMParticipant_selectTemplateCase" SAVE_LINK="false">
+            <CONNECT>
+               <SOURCE NAME="PAGE" PROPERTY="concernRoleID" />
+               <TARGET NAME="PAGE" PROPERTY="concernRoleID" />
+            </CONNECT>
+            <CONNECT>
+               <SOURCE NAME="PAGE" PROPERTY="wizardStateID" />
+               <TARGET NAME="PAGE" PROPERTY="wizardStateID" />
+            </CONNECT>
+			<CONNECT>
+                  <SOURCE NAME="PAGE" PROPERTY="caseID" />
+                  <TARGET NAME="PAGE" PROPERTY="caseID" />
+            </CONNECT>
+         </LINK>
+      </ACTION_CONTROL>
+      
+      <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Submit" TYPE="SUBMIT">
+     	<LINK PAGE_ID="BDMParticipant_redirectAfterSubmitCase">
+            <CONNECT>
+               <SOURCE NAME="ACTION" PROPERTY="cctUrl" />
+               <TARGET NAME="PAGE" PROPERTY="cctUrl" />
+            </CONNECT>
+            <!-- <CONNECT>
+               <SOURCE NAME="PAGE" PROPERTY="concernRoleID" />
+               <TARGET NAME="PAGE" PROPERTY="concernRoleID" />
+            </CONNECT> -->
+			<CONNECT>
+                  <SOURCE NAME="PAGE" PROPERTY="caseID" />
+                  <TARGET NAME="PAGE" PROPERTY="caseID" />
+            </CONNECT>
+         </LINK>
+      </ACTION_CONTROL>
+      
+      
+      <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel" >
+       	   <LINK PAGE_ID="BDMFEC_listCommunication">
+       	   <CONNECT>
+               <SOURCE NAME="PAGE" PROPERTY="concernRoleID" />
+               <TARGET NAME="PAGE" PROPERTY="concernRoleID" />
+            </CONNECT>
+			<CONNECT>
+                  <SOURCE NAME="PAGE" PROPERTY="caseID" />
+                  <TARGET NAME="PAGE" PROPERTY="caseID" />
+            </CONNECT>
+           </LINK>
+         </ACTION_CONTROL>
+   </ACTION_SET>
+   
+</PAGE>

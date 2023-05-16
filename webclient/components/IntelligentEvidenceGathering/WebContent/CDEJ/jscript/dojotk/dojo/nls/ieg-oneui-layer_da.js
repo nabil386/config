@@ -1,0 +1,2 @@
+//>>built
+define("dojo/nls/ieg-oneui-layer_da",{"idx/widget/nls/HoverHelpTooltip":{"learnMoreLabel":"Læs mere","_localized":{}},"idx/widget/nls/Dialog":{"closeButtonLabel":"Luk","_localized":{}},"dijit/form/nls/ComboBox":{"previousMessage":"Forrige valg","_localized":{},"nextMessage":"Flere valg"},"dijit/form/nls/validate":{"invalidMessage":"Den angivne værdi er ugyldig.","rangeMessage":"Værdien er uden for intervallet.","_localized":{},"missingMessage":"Værdien er påkrævet."}});

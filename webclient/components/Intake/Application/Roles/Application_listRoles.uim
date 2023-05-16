@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This is the page to display a list of user roles for an  		    -->
+<!-- application.                                                           -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="Application_listRoles"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Application"
+    NAME="DISPLAY"
+    OPERATION="listRoles"
+  />
+
+
+  <PAGE_PARAMETER NAME="applicationID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$applicationID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL
+      IMAGE="NewOwnerButton"
+      LABEL="ActionControl.Label.NewOwner"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="reassignApplicationAllowedInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Application_modifyOwner"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL
+        IMAGE="EditButton"
+        LABEL="ActionControl.Label.Edit"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="reassignApplicationAllowedInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Application_modifyOwnerDetails"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="applicationRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="applicationRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Application_viewRole">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="applicationRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="applicationRoleID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="objectName"
+        />
+      </CONNECT>
+
+
+      <LINK
+        OPEN_MODAL="true"
+        URI_SOURCE_NAME="DISPLAY"
+        URI_SOURCE_PROPERTY="objectURL"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="userName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="organisationUnitID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationUnitID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="organisationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationStructureID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="positionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="positionID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="workQueueID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="workQueueID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Role"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="details$roleType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="details$fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="details$toDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+</PAGE>

@@ -1,0 +1,1 @@
+Please place all customized OOTB UIMs, VIMs, Properties, Jscript etc files in /BDM/ReferenceApp/<follow same folder structure as OOTB component> folder.

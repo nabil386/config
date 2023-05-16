@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009, 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- List all of the milestone waiver approvals for an organization unit.   -->
+<PAGE
+  PAGE_ID="Organization_listOrgUnitMilestoneApproval"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainMilestoneWaiverApproval"
+    NAME="DISPLAY"
+    OPERATION="listOrgUnitMWApprovals"
+  />
+
+
+  <PAGE_PARAMETER NAME="organisationUnitID"/>
+  <PAGE_PARAMETER NAME="organisationStructureID"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="organisationUnitID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$dtls$dtls$organisationUnitID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET BOTTOM="false">
+
+
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_createOrgUnitMilestoneApproval"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="orgUnitContextDesc$description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="organisationUnitID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationUnitID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <LIST>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_modifyOrgUnitMilestoneApprovalFromList"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="milestoneWaiverAppCheckID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="milestoneApprovalCheckID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="orgUnitContextDesc$description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="LocationStructure"
+        LABEL="ActionControl.Label.Delete"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_cancelOrgUnitMilestoneApproval"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="milestoneWaiverAppCheckID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="milestoneApprovalCheckID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="orgUnitContextDesc$description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.Milestone"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="milestoneConfigName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Percentage"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="percentage"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Organization_viewOrgUnitMilestoneApproval">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="milestoneWaiverAppCheckID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="milestoneApprovalCheckID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="organisationUnitID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationUnitID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="organisationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationStructureID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="orgUnitContextDesc$description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This script redirects the user to an appropriate reschedule hearing    -->
+<!-- page.                                                                  -->
+<PAGE
+  PAGE_ID="Appeal_resolveHearingType"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler rh = 
+        curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences
+        (pageContext.getSession()).getLocale() + "/";
+      String hearingID = request.getParameter("hearingID");
+      String typeCode = request.getParameter("typeCode");
+      String versionNo = request.getParameter("versionNo");
+      String pageDescription = request.getParameter("pageDescription");
+      String url = "";
+           
+      if (hearingID == null) {
+        // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "hearingID");
+       System.out.println(e);
+       throw e;
+       // END, CR00126196
+      }
+      
+      if (typeCode == null) {
+        // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "typeCode");
+       System.out.println(e);
+       throw e;
+       // END, CR00126196
+      }
+      
+      if (versionNo == null) {
+        // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "versionNo");
+       System.out.println(e);
+       throw e;
+       // END, CR00126196
+      }
+                  
+      if (typeCode.equals("HT1")) {
+      
+        url = context + "Appeal_rescheduleLocationHearingPage.do?hearingID=" + 
+          curam.omega3.request.RequestUtils.escapeURL(hearingID) + "&amp;versionNo=" + curam.omega3.request.RequestUtils.escapeURL(versionNo) + "&amp;pageDescription=" + 
+          curam.omega3.request.RequestUtils.escapeURL(pageDescription);
+          
+      } else if (typeCode.equals("HT2")) {
+
+          url = context + "Appeal_reschedulePhoneHearingPage.do?hearingID=" + 
+            curam.omega3.request.RequestUtils.escapeURL(hearingID) + "&amp;versionNo=" + curam.omega3.request.RequestUtils.escapeURL(versionNo) + "&amp;pageDescription=" + 
+            curam.omega3.request.RequestUtils.escapeURL(pageDescription);
+
+      } else if (typeCode.equals("HT3")) {
+
+          url = context + 
+            "Appeal_selectHomeRescheduleHearingAddressPage.do?hearingID=" + 
+            curam.omega3.request.RequestUtils.escapeURL(hearingID) + "&amp;versionNo=" + curam.omega3.request.RequestUtils.escapeURL(versionNo) + "&amp;pageDescription=" + 
+            curam.omega3.request.RequestUtils.escapeURL(pageDescription);
+
+      }
+           
+      url += "&amp;" + rh.getSystemParameters(); 
+
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+    
+  </JSP_SCRIPTLET>
+</PAGE>

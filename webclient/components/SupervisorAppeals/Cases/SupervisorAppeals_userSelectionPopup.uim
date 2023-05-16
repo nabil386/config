@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2006,2009 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to enter search criteria -->
+<!-- and search for registered users.-->
+<PAGE
+  PAGE_ID="SupervisorAppeals_userSelectionPopup"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE ICON="UserSearchPageIcon">
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="SupervisorAppealsAppPageContextDescription"
+    NAME="DISPLAY"
+    OPERATION="readLoggedInUserName"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorAppealCase"
+    NAME="ACTION"
+    OPERATION="userSearch"
+    PHASE="ACTION"
+  />
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+
+
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="SupervisorAppeals_userSearch"/>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Label.FirstName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="criteria$firstname"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.OrganisationUnit">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="criteria$organisationUnitID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.LastName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="criteria$surname"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Job">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="jobID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+
+
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      SEPARATOR="Container.Separator"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+
+
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$username"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$fullName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+
+
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.View">
+        <LINK PAGE_ID="Supervisor_userWorkspace">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$username"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="supervisor.viewTaskOption"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskOptionCode"
+            />
+          </CONNECT>
+        </LINK>
+
+
+      </ACTION_CONTROL>
+
+
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Title.FirstName"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$firstname"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.LastName"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$surname"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.OrganisationUnit"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$organisationUnitName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Organization_viewUserDetails">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$username"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Position"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$positionName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_NEW="true"
+        PAGE_ID="Organization_viewPositionDetails"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$positionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="positionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$organisationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationStructureID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

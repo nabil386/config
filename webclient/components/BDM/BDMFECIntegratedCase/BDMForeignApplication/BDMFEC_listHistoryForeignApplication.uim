@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- BDM Foreign Application History List page. -->
+
+<PAGE PAGE_ID="BDMFEC_listHistoryForeignApplication"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+  <SERVER_INTERFACE CLASS="BDMForeignEngagementCase"
+    NAME="DISPLAY" OPERATION="listFAHistory" />
+
+  <PAGE_PARAMETER NAME="fApplicationID" />
+
+  <CONNECT>
+    <SOURCE PROPERTY="fApplicationID" NAME="PAGE" />
+    <TARGET PROPERTY="key$fApplicationID" NAME="DISPLAY" />
+  </CONNECT>
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL LABEL="Page.Title.FADetails"
+      STYLE="in-page-link" TYPE="ACTION">
+      <LINK PAGE_ID="BDMFEC_detailsForeignApplication">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="fApplicationID" />
+          <TARGET NAME="PAGE" PROPERTY="fApplicationID" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="Page.Title.FAHistory"
+      STYLE="in-page-current-link" TYPE="ACTION">
+      <LINK PAGE_ID="BDMFEC_listHistoryForeignApplication">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="fApplicationID" />
+          <TARGET NAME="PAGE" PROPERTY="fApplicationID" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+  <LIST TITLE="List.Title.ForeignApplications">
+
+    <DETAILS_ROW>
+      <INLINE_PAGE
+        PAGE_ID="BDMFEC_detailsForeignApplicationHistory">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY"
+            PROPERTY="result$bdmFADetails$fAppHistoryID" />
+          <TARGET NAME="PAGE" PROPERTY="fAppHistoryID" />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+    <FIELD LABEL="Field.List.Label.ApplicationType">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmFADetails$faApplTypeAndRefNumStr" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.List.Label.ReceivedDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmFADetails$receiveDate" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.List.Label.ApplicationStatus">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmFADetails$status" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.List.Label.RecordStatus">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmFADetails$recordStatus" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.List.Label.LastUpdatedOnAndBy">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$bdmFADetails$lastUpdatedOnAndByStr" />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  
+</PAGE>
+  

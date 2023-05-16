@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012,2017. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<!-- Copyright (c) 2011,2017 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Page used to edit a decision matrix.                                   -->
+<!-- run.                                                                   -->
+<PAGE PAGE_ID="DecisionMatrix_editDecisionMatrix" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+    >
+    <JSP_SCRIPTLET>
+        <![CDATA[	
+          String decisionMatrixVersionID = request.getParameter("decisionMatrixVersionID");
+          String versionNo = request.getParameter("versionNo"); 
+          String isMatrixReadOnly = request.getParameter("isMatrixReadOnly"); 
+          String questionnaireID = request.getParameter("questionnaireID"); 
+
+          // Set default values 
+          if(decisionMatrixVersionID == null || decisionMatrixVersionID == "null") {
+            decisionMatrixVersionID = "null";
+          }
+          if(versionNo == null){
+            final java.text.NumberFormat nf = java.text.NumberFormat.getInstance(prefs.getLocale());
+            versionNo = nf.format(-1);
+          }                                                            
+          if(isMatrixReadOnly == null || isMatrixReadOnly == "null") {
+            isMatrixReadOnly = "FALSE";
+          }                                                            
+          if(questionnaireID == null || questionnaireID == "null") {
+            questionnaireID = "";
+          }                                                            
+          String syncToken = curam.util.client.security.CSRFToken.getToken(session);
+          StringBuilder flashVars = new StringBuilder();
+
+          // decisionMatrixVersionID
+          flashVars.append("decisionMatrixVersionID")
+            .append("=")
+            .append(curam.omega3.request.RequestUtils.escapeURL(decisionMatrixVersionID))
+            .append("&");
+
+          // isMatrixReadOnly
+          flashVars.append("isMatrixReadOnly")
+            .append("=")
+            .append(curam.omega3.request.RequestUtils.escapeURL(isMatrixReadOnly))
+            .append("&");
+
+          // questionnaireID
+          flashVars.append("questionnaireID")
+            .append("=")
+            .append(curam.omega3.request.RequestUtils.escapeURL(questionnaireID))
+            .append("&");
+
+          // base text direction
+          flashVars.append("baseTextDir")
+            .append("=")
+            .append(curam.util.client.BidiUtils.getBaseTextDirection().toString())
+            .append("&");
+
+          // locale
+          flashVars.append("locale")
+            .append("=")
+            .append(curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+               pageContext.getSession()).getLocale().toString())
+            .append("&");
+               
+          // versionNo
+          flashVars.append("versionNo")
+             .append("=")
+             .append(curam.omega3.request.RequestUtils.escapeURL(versionNo))
+             .append("&"); 
+
+          // syncToken
+          flashVars.append("syncToken")
+             .append("=")
+             .append(curam.omega3.request.RequestUtils.escapeURL(syncToken));
+             
+          StringBuilder htmlOut = new StringBuilder("<html lang=\"en\"><head>");
+
+          htmlOut.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>");
+          htmlOut.append("<title>Decision Matrix Editor</title><style>body { margin: 0px; overflow:hidden }</style>");
+          htmlOut.append("<script  type=\"text/javascript\" src=\"../DecisionMatrix/AC_OETags.js\"></script>");
+          htmlOut.append("<script type=\"text/javascript\">var reqVMajor=10,reqVMajor=0,reqRevision=s0;");
+          htmlOut.append("var noFlashContent = document.createTextNode('Alternate HTML content should be placed here.This content requires the Adobe Flash Player.');");
+          htmlOut.append("var hasRequestedVersion = DetectFlashVer(reqVMajor, reqVMajor, reqRevision);");
+          htmlOut.append("function displayAlt(hasFlash) { if (!hasFlash) {");
+          htmlOut.append("var editor=document.getElementById('DecisionMatrixEditor');");
+          htmlOut.append("var altContent=document.createElement('div'); altContent.appendChild(noFlashContent);");
+          htmlOut.append("var getLink=document.createElement('a');getLink.href='http://www.adobe.com/go/getflash';getLink.appendChild(document.createTextNode('Get Flash'));"); 
+          htmlOut.append("altContent.appendChild(getLink);document.body.insertBefore(altContent,editor);}}");
+          htmlOut.append("function notifyTop() { setTimeout(\"window.parent.dojo.publish('/curam/progress/unload');displayAlt(hasRequestedVersion);\",2000); };");
+          htmlOut.append("</script></head><body scroll=\"no\" onload=\"notifyTop();\">");
+          
+          // EMBEDDING THE DECISION MATRIX EDITOR SWF
+          htmlOut.append("<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" id=\"DecisionMatrixEditor\" width=\"100%\" height=\"100%\"");
+          htmlOut.append(" codebase=\"http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab\">");
+          htmlOut.append("<param name=\"movie\" value=\"DecisionMatrixEditor.swf\" /><param name=\"quality\" value=\"high\" />");
+          htmlOut.append("<param name=\"wmode\" value=\"opaque\" /><param name=\"bgcolor\" value=\"white\" /><param name=\"allowScriptAccess\" value=\"sameDomain\" />");
+          htmlOut.append("<param name=\"flashVars\" value=\"").append(flashVars).append("\">");
+          htmlOut.append("<embed src=\"../DecisionMatrix/DecisionMatrixEditor.swf\" wmode=\"opaque\" quality=\"high\" bgcolor=\"white\"");
+          htmlOut.append(" id=\"DecisionMatrixEditorEmbed\" width=\"100%\" height=\"100%\" name=\"DecisionMatrixEditor\" align=\"middle\"");
+          htmlOut.append(" play=\"true\" loop=\"false\" quality=\"high\" allowScriptAccess=\"sameDomain\"");
+          htmlOut.append(" type=\"application/x-shockwave-flash\" pluginspage=\"http://www.adobe.com/go/getflashplayer\"");
+          htmlOut.append(" flashVars=\"").append(flashVars).append("\"></embed></object></body></html>");
+
+          out.print(htmlOut);
+       ]]>
+    </JSP_SCRIPTLET>
+</PAGE>

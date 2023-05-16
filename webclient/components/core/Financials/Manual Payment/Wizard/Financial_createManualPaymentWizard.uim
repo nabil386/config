@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2011, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user capture the details of the manual payment.   -->
+<PAGE
+  PAGE_ID="Financial_createManualPaymentWizard"
+  WINDOW_OPTIONS="width=800,height=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Financial"
+    NAME="ACTION"
+    OPERATION="captureManualPayment"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Financial"
+    NAME="DISPLAYWIZARD"
+    OPERATION="getCaptureManualPaymentWizard"
+  />
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <ACTION_SET>
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+    <ACTION_CONTROL
+      IMAGE="BackButton"
+      LABEL="ActionControl.Label.Back"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="Financial_manualPaymentSelectNomineeWizard"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="nomineeID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="manualPmtCaseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="manualPmtConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="nomineeID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="manualPmtCaseNomineeID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.PaymentDate"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="manualPmtDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00385299, MV -->
+    <!-- BEGIN, CR00417043, MV -->
+    <FIELD
+      LABEL="Field.Label.CoverPeriodFromOpt"
+      USE_DEFAULT="false"
+      WIDTH="35"
+    >
+      <!-- END, CR00417043 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="manualPmtCoverPeriodFromOpt"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00385299 -->
+
+
+    <FIELD
+      LABEL="Field.Label.Currency"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="currencyTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ReferenceNumber"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="manualPmtRefNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Amount"
+      WIDTH="10"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="manualPmtAmount"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00385299, MV -->
+    <!-- BEGIN, CR00417043, MV -->
+    <FIELD
+      LABEL="Field.Label.CoverPeriodToOpt"
+      USE_DEFAULT="false"
+      WIDTH="35"
+    >
+      <!-- END, CR00417043, MV -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="manualPmtCoverPeriodToOpt"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00385299 -->
+
+
+    <FIELD
+      LABEL="Field.Label.DeliveryMethod"
+      WIDTH="60"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="methodOfPayment"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00408407, VT -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00408407 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

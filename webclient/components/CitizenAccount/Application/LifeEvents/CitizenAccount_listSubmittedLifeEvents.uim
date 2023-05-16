@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="CitizenAccount_listSubmittedLifeEvents"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd" HIDE_CONDITIONAL_LINKS="false">
+
+	<SERVER_INTERFACE CLASS="CitizenLifeEvents" NAME="DISPLAY" OPERATION="listSubmittedLifeEvents"/>
+
+	<PAGE_TITLE>
+		<CONNECT>
+			<SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+		</CONNECT>
+	</PAGE_TITLE>
+
+	<LIST>
+		<FIELD LABEL="Field.Title.LifeEventName">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="lifeEventName"/>
+			</CONNECT>
+		</FIELD>
+		<FIELD LABEL="Field.Title.DateSubmitted">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="submittedDate"/>
+			</CONNECT>
+		</FIELD>
+		<FIELD LABEL="Field.Title.RemoteSystems">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="remoteSystems"/>
+			</CONNECT>
+		</FIELD>
+		<CONTAINER LABEL="Container.Label.Action" SEPARATOR="Container.Separator">
+			<ACTION_CONTROL LABEL="ActionControl.Label.ViewAnswers">
+				<CONDITION>
+					<IS_TRUE NAME="DISPLAY" PROPERTY="hasAnswerScript"/>
+				</CONDITION>			
+				<LINK PAGE_ID="CitizenAccount_resolveStartReviewLifeEventScript">
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="lifeEventID"/>
+						<TARGET NAME="PAGE" PROPERTY="lifeEventID"/>
+					</CONNECT>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="hasAnswerScript"/>
+						<TARGET NAME="PAGE" PROPERTY="hasAnswerScript"/>
+					</CONNECT>
+				</LINK>
+			</ACTION_CONTROL>
+			<ACTION_CONTROL LABEL="ActionControl.Label.ViewRecommendations">
+			
+				<CONDITION>
+					<IS_TRUE NAME="DISPLAY" PROPERTY="hasRecommendationsRuleSet"/>
+				</CONDITION>			
+			
+				<LINK PAGE_ID="CitizenAccount_viewRecommendations">
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="lifeEventID"/>
+						<TARGET NAME="PAGE" PROPERTY="lifeEventID"/>
+					</CONNECT>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="playerID"/>
+						<TARGET NAME="PAGE" PROPERTY="id"/>
+					</CONNECT>
+				</LINK>
+			</ACTION_CONTROL>
+
+		</CONTAINER>
+	</LIST>
+
+</PAGE>

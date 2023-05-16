@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright2007, 2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to select the case member whose evidence is  -->
+<!-- being transferred to another case                                      -->
+<!-- BEGIN, CR00216737, GYH -->
+<?curam-deprecated Since Curam 6.0, replaced with Evidence_transferEvidence.
+  As part of evidence workspace changes, now the transfer evidence has been 
+  changed from two stage process to one screen with confirmation screen ask 
+  user confirmation evidence transfer. See Release note: CR00216737
+?>
+<!-- END, CR00216737 -->
+<PAGE
+  PAGE_ID="Evidence_selectMemberAndCase"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="IntegratedCase"
+    NAME="DISPLAY"
+    OPERATION="listCaseMembers1"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Evidence"
+    NAME="ACTION"
+    OPERATION="getDetailsForEvidenceTransfer"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="contextDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="NextButton"
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        PAGE_ID="Evidence_listEvidenceForTransfer"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="toCaseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="participantRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="participantRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$caseParticipantRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseParticipantRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contextDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.Member.Description"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Member"
+  >
+    <FIELD LABEL="Field.Label.Member">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="caseParticipantRoleID"
+          NAME="DISPLAY"
+          PROPERTY="result$participantList$name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$caseParticipantRoleID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.CaseSearch.Description"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Case"
+  >
+    <FIELD
+      LABEL="Field.Label.Case"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="toCaseKey$caseID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

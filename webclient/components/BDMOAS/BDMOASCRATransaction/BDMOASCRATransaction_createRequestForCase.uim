@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PAGE PAGE_ID="BDMOASCRATransaction_createRequestForCase"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+	<PAGE_PARAMETER NAME="caseID" />
+
+	<PAGE_TITLE>
+		<CONNECT>
+			<SOURCE NAME="TEXT" PROPERTY="Page.Title" />
+		</CONNECT>
+	</PAGE_TITLE>
+
+	<SERVER_INTERFACE NAME="DISPLAY" PHASE="DISPLAY"
+		CLASS="BDMOASCRATransaction" OPERATION="getRequestOptionsForCase" />
+
+	<SERVER_INTERFACE NAME="ACTION" PHASE="ACTION"
+		CLASS="BDMOASCRATransaction" OPERATION="createRequest" />
+
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="caseID" />
+		<TARGET NAME="DISPLAY" PROPERTY="key$caseID" />
+	</CONNECT>
+
+	<CLUSTER>
+		<FIELD LABEL="Field.Label.Participant" USE_DEFAULT="false"
+			USE_BLANK="true">
+			<CONNECT>
+				<INITIAL NAME="DISPLAY"
+					HIDDEN_PROPERTY="result$members$concernRoleID"
+					PROPERTY="result$members$concernRoleName" />
+			</CONNECT>			
+			<CONNECT>
+				<TARGET NAME="ACTION" PROPERTY="details$concernRoleID" />
+			</CONNECT>
+		</FIELD>
+		<FIELD LABEL="Field.Label.RequestType" USE_DEFAULT="false"
+			USE_BLANK="true">
+			<CONNECT>
+				<TARGET NAME="ACTION" PROPERTY="details$transactionSubCode" />
+			</CONNECT>
+		</FIELD>
+	</CLUSTER>
+
+	<LIST PAGINATED="false">
+		<CONTAINER>
+			<WIDGET TYPE="MULTISELECT">
+				<WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="taxYear" />
+					</CONNECT>
+				</WIDGET_PARAMETER>
+				<WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+					<CONNECT>
+						<TARGET NAME="ACTION" PROPERTY="details$taxYearList" />
+					</CONNECT>
+				</WIDGET_PARAMETER>
+			</WIDGET>
+		</CONTAINER>
+		<FIELD LABEL="Field.Label.TaxYear" USE_DEFAULT="false" USE_BLANK="true">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="taxYear" />
+			</CONNECT>
+		</FIELD>
+	</LIST>
+
+	<ACTION_SET ALIGNMENT="CENTER" TOP="false">
+		<ACTION_CONTROL IMAGE="SaveButton"
+			LABEL="ActionControl.Label.Save" TYPE="SUBMIT" />
+		<ACTION_CONTROL IMAGE="CancelButton"
+			LABEL="ActionControl.Label.Cancel" />
+	</ACTION_SET>
+
+</PAGE>

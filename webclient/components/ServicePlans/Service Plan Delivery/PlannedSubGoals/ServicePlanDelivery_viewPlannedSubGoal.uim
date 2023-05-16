@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Page to view the details of a planned sub-goal                         -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_viewPlannedSubGoal"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY_MENU"
+    OPERATION="getICServicePlanMenuData"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00237333, MR-->
+  <PAGE_PARAMETER NAME="caseID"/>
+  <!-- END, CR00237333-->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY_MENU"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewPlannedSubGoal"
+      STYLE="in-page-current-link"
+    >
+      <LINK PAGE_ID="ServicePlanDelivery_viewPlannedSubGoal">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="plannedSubGoalID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="plannedSubGoalID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.PlanItems"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="ServicePlanDelivery_listPlanItems">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="plannedSubGoalID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="plannedSubGoalID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Milestones"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="ServicePlanDelivery_listMilestones">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="plannedSubGoalID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="plannedSubGoalID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <INCLUDE FILE_NAME="ServicePlanDelivery_viewPlannedSubGoalView.vim"/>
+
+
+  <!--<ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="EditButton"
+      LABEL="ActionControl.Label.Edit"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ServicePlanDelivery_modifyPlannedSubGoalFromView"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="plannedSubGoalID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="plannedSubGoalID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="servicePlanDeliveryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="DeleteButton"
+      LABEL="ActionControl.Label.Delete"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ServicePlanDelivery_deletePlannedSubGoal"
+        SAVE_LINK="false"
+        WINDOW_OPTIONS="width=400,height=150"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="plannedSubGoalID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="plannedSubGoalID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="servicePlanDeliveryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    >
+
+      <LINK
+        PAGE_ID="ServicePlanDelivery_listPlanContentForSP"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="servicePlanDeliveryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>-->
+
+
+</PAGE>

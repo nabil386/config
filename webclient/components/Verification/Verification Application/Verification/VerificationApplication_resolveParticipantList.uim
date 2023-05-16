@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007-2008 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This action allows the user to link to a participant home page         -->
+<!-- depending on the concern role type                                     -->
+<PAGE
+  PAGE_ID="VerificationApplication_resolveParticipantList"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+
+      String concernRoleID = request.getParameter("concernRoleID");
+      
+      String concernRoleType = "";
+      String url = "";
+  
+      if(concernRoleID == null) 
+      {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "concernRoleID");
+       System.out.println(e);
+       throw e;
+       // END, CR00110216
+      }
+  
+  
+      curam.interfaces.ParticipantPkg.Participant_readConcernRoleType_TH 
+         th = new curam.interfaces.ParticipantPkg.Participant_readConcernRoleType_TH();
+    
+      th.setFieldValue(th.key$readConcernRoleKey$concernRoleID_idx, concernRoleID);
+         
+      th.callServer();
+    
+      concernRoleType=th.getFieldValue(th.result$concernRoleType_idx);
+      
+ 
+  
+  
+  
+      if(concernRoleType == null)
+      {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "concernRoleType");
+       System.out.println(e);
+       throw e;
+       
+      }
+   
+    
+      if(concernRoleType.equals("RL1"))
+      {
+      url = context + "VerificationApplication_PersonVerificationListPage.do?concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+      }
+        
+        
+
+      if (concernRoleType.equals("RL2")) 
+      {
+      url = context + "VerificationApplication_EmployerVerificationListPage.do?concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+      }
+
+
+
+      if (concernRoleType.equals("RL8")) 
+      {
+      url = context + "VerificationApplication_PEmployerVerificationListPage.do?concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+      } 
+      
+      
+
+      if (concernRoleType.equals("RL7")) 
+      {
+      url = context + "VerificationApplication_PPersonVerificationListPage.do?concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+      } 
+      // END, CR00110216
+      response.sendRedirect(response.encodeRedirectURL(url));
+
+  </JSP_SCRIPTLET>
+</PAGE>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page redirects the user to the appropriate confirmation page for -->
+<!-- change set apply action depending on whether the apply action is -->
+<!-- happening for the first time or successive times. -->
+<PAGE PAGE_ID="CTM_resolveInitialAndSuccessiveApplyAction"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+    <JSP_SCRIPTLET> 
+        
+        curam.omega3.request.RequestHandler rh =
+        curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+        
+        String context = request.getContextPath() + "/"; 
+        
+        context +=
+        curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale()
+        + "/"; 
+        
+        String url = ""; 
+        String changeSetID = request.getParameter("changeSetID"); 
+        String
+        versionNo = request.getParameter("versionNo"); 
+        String actionString = "";
+        
+        curam.interfaces.MaintainChangeSetPkg.MaintainChangeSet_resolveInitialAndSuccessiveApplyAction_TH
+        th = new
+        curam.interfaces.MaintainChangeSetPkg.MaintainChangeSet_resolveInitialAndSuccessiveApplyAction_TH();
+        
+        th.setFieldValue(th.details$changeSetID_idx, changeSetID);
+        th.setFieldValue(th.details$versionNo_idx, versionNo); 
+        th.callServer(); 
+        actionString = th.getFieldValue(th.result$actionString_idx); 
+        
+        if(actionString.equalsIgnoreCase("Initial Apply")){ 
+        
+        url = context +
+        "CTM_initialApplyChangeSetPage.do?changeSetID="+curam.omega3.request.RequestUtils.escapeURL(changeSetID)+"&amp;versionNo="+curam.omega3.request.RequestUtils.escapeURL(versionNo);
+        
+        } else if(actionString.equalsIgnoreCase("Successive Apply")){ 
+        
+        url = context +
+        "CTM_successiveApplyChangeSetPage.do?changeSetID="+curam.omega3.request.RequestUtils.escapeURL(changeSetID)+"&amp;versionNo="+curam.omega3.request.RequestUtils.escapeURL(versionNo);
+        } 
+        
+        url += "&amp;" + rh.getSystemParameters();
+        response.sendRedirect(response.encodeRedirectURL(url)); 
+    
+    </JSP_SCRIPTLET>
+</PAGE>

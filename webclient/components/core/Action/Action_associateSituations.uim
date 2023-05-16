@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page is used to display the situation details.                    -->
+<!-- BEGIN, CR00205132, AK -->
+<PAGE PAGE_ID="Action_associateSituations" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <!-- END, CR00205132 -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00216915, AK -->
+  <SERVER_INTERFACE CLASS="Action" NAME="DISPLAYACTION" OPERATION="readAction1" PHASE="DISPLAY"/>
+
+
+  <SERVER_INTERFACE CLASS="Action" NAME="DISPLAYSITUATIONS" OPERATION="listAssociatedSituations"/>
+  <!-- END, CR00216915 -->
+  <!-- BEGIN, CR00226282, AK -->
+  <SERVER_INTERFACE ACTION_ID_PROPERTY="clientActionID" CLASS="Action" NAME="ACTION" OPERATION="associateSituations" PHASE="ACTION"/>
+  <!--END, CR00226282 -->
+  <SERVER_INTERFACE CLASS="Action" NAME="DISPLAY" OPERATION="listSituationsForAssociation"/>
+  <SERVER_INTERFACE CLASS="IntegratedCase" NAME="DISPLAYCASEPARTICIPANT" OPERATION="getCaseParticipantsAgeConcernRoleID"/>
+  <SERVER_INTERFACE CLASS="InvestigationDelivery" NAME="DISPLAYALLEGATIONS" OPERATION="listAllegation"/>
+  <!-- BEGIN, CR00216915, AK -->
+  <SERVER_INTERFACE CLASS="Action" NAME="DISPLAYSITUATIONLIST" OPERATION="listAssociatedSituations" PHASE="DISPLAY"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="actionID"/>
+    <TARGET NAME="DISPLAYSITUATIONS" PROPERTY="actionID"/>
+  </CONNECT>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="actionPlanID"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <PAGE_PARAMETER NAME="actionID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="actionID"/>
+    <TARGET NAME="DISPLAYACTION" PROPERTY="key$actionID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="actionID"/>
+    <TARGET NAME="DISPLAYSITUATIONS" PROPERTY="actionID"/>
+  </CONNECT>
+  <!-- END, CR00216915 -->
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="actionPlanID"/>
+    <TARGET NAME="ACTION" PROPERTY="actionPlanID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="actionID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="actionID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="actionPlanID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="actionPlanActionkey$actionPlanID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="actionID"/>
+    <TARGET NAME="ACTION" PROPERTY="actionID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+    <TARGET NAME="DISPLAYCASEPARTICIPANT" PROPERTY="caseID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+    <TARGET NAME="DISPLAYALLEGATIONS" PROPERTY="caseID"/>
+  </CONNECT>
+  <!-- BEGIN, CR00216915, AK -->
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="actionID"/>
+    <TARGET NAME="DISPLAYSITUATIONLIST" PROPERTY="actionID"/>
+  </CONNECT>
+
+
+  <CLUSTER LABEL_WIDTH="20">
+    <FIELD LABEL="Field.Label.Action">
+      <CONNECT>
+        <SOURCE NAME="DISPLAYACTION" PROPERTY="action"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- END, CR00216915 -->
+  <!-- BEGIN, CR00208312, AK -->
+  <LIST TITLE="List.Title.SituationList">
+    <CONTAINER ALIGNMENT="CENTER" LABEL="List.Multiselect.Header" WIDTH="6">
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="situationID"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+
+
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="situationTabList"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.SituationCategory" WIDTH="30" WIDTH_UNITS="PERCENT">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="situationCategory"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.SituationRequiringAction" WIDTH="60" WIDTH_UNITS="PERCENT">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="situationRequiringAction"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL ACTION_ID="ASSOCIATE_EXISTING" LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+
+
+    <!-- BEGIN, CR00234027, AK -->
+    <ACTION_CONTROL ACTION_ID="DUMMY_SUBMIT" IMAGE="CloseButton" LABEL="ActionControl.Label.Close" TYPE="SUBMIT"/>
+    <!-- END, CR00234027 -->
+  </ACTION_SET>
+  <!-- END, CR00213311 -->
+  <!-- END, CR00208312 -->
+</PAGE>

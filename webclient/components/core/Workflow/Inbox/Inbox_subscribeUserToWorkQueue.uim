@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012,2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows users to search and subscribe the work queues.                         -->
+<PAGE
+  PAGE_ID="Inbox_subscribeUserToWorkQueue"
+  WINDOW_OPTIONS="height=550"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="input$actionIDProperty"
+    CLASS="WorkAllocation"
+    NAME="ACTION"
+    OPERATION="searchOrSubscribeWorkQueue"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      ACTION_ID="SUBSCRIBE_QUEUES"
+      IMAGE="SaveButton"
+      LABEL="ActionControl.SaveButton.label"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.CancelButton.label"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="1"
+    TITLE="Cluster.Title.Details"
+  >
+    <FIELD LABEL="Field.Label.SearchQueueName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="input$dtls$key$workQueueName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        ACTION_ID="SEARCH"
+        DEFAULT="true"
+        IMAGE="RunButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK
+          PAGE_ID="Inbox_subscribeUserToWorkQueue"
+          SAVE_LINK="false"
+        />
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+  <LIST TITLE="List.Title.SearchResult">
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$dtls$dtlsList$dtls$workQueueID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="input$name"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.WorkQueue">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$dtlsList$dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page lists all the active Workflow Allocation rule sets on        -->
+<!-- the system                                                             -->
+<PAGE
+  PAGE_ID="WorkflowAllocation_listAllDeletedRuleSets"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="WorkflowCERAllocationAdmin"
+    NAME="DISPLAY"
+    OPERATION="listAllDeletedRuleSetsForDisplay"
+  />
+
+
+  <MENU>
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewTask">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="TaskManagement_createTask"
+      />
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewActivity">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Activity_createStandardUserActivity"
+      />
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <LIST>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="WorkflowAllocation_listRuleSetVersionHistory">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="creoleRuleSetID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="creoleRuleSetID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00232952, CW -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="creoleRuleSetEditActionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="ruleSetEditActionID"
+          />
+        </CONNECT>
+        <!-- END, CR00232952 -->
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Restore">
+        <!-- BEGIN, CR00238517, CW -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="allowEdit"
+          />
+        </CONDITION>
+        <!-- END, CR00238517 -->
+        <!-- BEGIN, CR00232952, CW -->
+        <LINK
+          OPEN_MODAL="TRUE"
+          PAGE_ID="Creole_confirmRestoreRuleSetToInEdit"
+        >
+          <!-- END, CR00232952 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="creoleRuleSetSnapShotID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="creoleRuleSetSnapShotID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.RuleSetName"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="ruleSetDescription"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.StatusType"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="displayStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ActionDateTime"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="actionDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Username"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="username"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

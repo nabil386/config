@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2008, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to list all currency exchange records. -->
+<PAGE PAGE_ID="Organization_searchCurrencyExchangeRates" WINDOW_OPTIONS="width=1000" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="Organization" NAME="ACTION" OPERATION="listCurrencyExchangeByDates" PHASE="ACTION"/>
+
+
+  <PAGE_PARAMETER NAME="fromPageId"/>
+
+
+  <CLUSTER LABEL_WIDTH="25" NUM_COLS="2" TITLE="Cluster.Filter.Title">
+    <FIELD LABEL="Field.Label.StartDate" USE_BLANK="true" USE_DEFAULT="false">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="key$rateFromDate"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EndDate" USE_BLANK="true" USE_DEFAULT="false">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="key$rateToDate"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+      <ACTION_CONTROL DEFAULT="true" IMAGE="SearchButton" LABEL="ActionControl.Label.Search" TYPE="SUBMIT">
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL IMAGE="ResetButton" LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="Organization_searchCurrencyExchangeRates"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Organization_listCurrencyExchangeHistory">
+        <CONNECT>
+          <SOURCE NAME="ACTION" PROPERTY="result$orgCurrencyExchangeList$dtls$currencyTypeCode"/>
+          <TARGET NAME="PAGE" PROPERTY="currencyTypeCode"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="ACTION" PROPERTY="dtls$statusCode"/>
+          <TARGET NAME="PAGE" PROPERTY="statusCode"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="ACTION" PROPERTY="currencyExchangeID"/>
+          <TARGET NAME="PAGE" PROPERTY="fromPageId"/>
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK OPEN_MODAL="true" PAGE_ID="Organization_modifyCurrencyExchangeFromList">
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="currencyExchangeID"/>
+            <TARGET NAME="PAGE" PROPERTY="currencyExchangeID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="currencyExchangeID"/>
+            <TARGET NAME="PAGE" PROPERTY="fromPageId"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK DISMISS_MODAL="false" OPEN_MODAL="true" PAGE_ID="Organization_cancelCurrencyExchange">
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="versionNo"/>
+            <TARGET NAME="PAGE" PROPERTY="versionNo"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="currencyExchangeID"/>
+            <TARGET NAME="PAGE" PROPERTY="currencyExchangeID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="currencyExchangeID"/>
+            <TARGET NAME="PAGE" PROPERTY="fromPageId"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Label.CurrencyExchange" WIDTH="25">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="currencyTypeText"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CurrencyCode" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="result$orgCurrencyExchangeList$dtls$currencyTypeCode"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Rate" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="rate"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.RateFromDate" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="result$orgCurrencyExchangeList$dtls$rateFromDate"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.RateToDate" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="result$orgCurrencyExchangeList$dtls$rateToDate"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

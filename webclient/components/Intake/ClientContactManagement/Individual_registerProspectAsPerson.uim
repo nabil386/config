@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to register a prospect employer as employer. -->
+<PAGE
+  PAGE_ID="Individual_registerProspectAsPerson"
+  WINDOW_OPTIONS="width=975"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <INCLUDE FILE_NAME="ProspectPerson_registerAsPersonView.vim"/>
+  <SERVER_INTERFACE
+    CLASS="ProspectPerson"
+    NAME="ACTION"
+    OPERATION="registerProspectPersonAsPerson"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ProspectPerson"
+    NAME="DISPLAY"
+    OPERATION="autoPopulateRegistrationFields"
+  />
+
+
+  <!-- BEGIN, CR00108252 PA -->
+
+
+  <SERVER_INTERFACE
+    CLASS="ProspectPerson"
+    NAME="DISPLAYPROSPECTPERSON"
+    OPERATION="readProspectPerson"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ProspectPerson"
+    NAME="DISPLAYRACE"
+    OPERATION="listRace"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- END, CR00108252 - PA -->
+
+
+  <!-- BEGIN, CR00078486, POH -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="msg"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00078486 -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="maintainConcernRoleKey$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="maintainConcernRoleKey$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00108252 PA -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAYPROSPECTPERSON"
+      PROPERTY="maintainConcernRoleKey$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- END, CR00108252 - PA -->
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL
+      IMAGE="RegisterButton"
+      LABEL="ActionControl.Label.Register"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="true"
+        OPEN_MODAL="false"
+        PAGE_ID="Individual_resolveConcernRoleTypeHome"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$registrationIDDetails$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+</PAGE>

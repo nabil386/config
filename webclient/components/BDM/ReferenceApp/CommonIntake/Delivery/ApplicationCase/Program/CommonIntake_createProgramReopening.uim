@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Description -->
+<!-- =========== -->
+<!-- This Page allows a user to reopen a specific program application -->
+<PAGE
+  PAGE_ID="CommonIntake_createProgramReopening"
+    WINDOW_OPTIONS="width=800"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="intakeProgramApplicationID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationCaseProgram"
+    NAME="DISPLAY"
+    OPERATION="getReopenStatusTransitionReasons"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationCaseProgram"
+    NAME="ACTION"
+    OPERATION="reopen"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="intakeProgramApplicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$intakeProgramApplicationID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="intakeProgramApplicationID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$intakeProgramApplicationID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+  
+ <CLUSTER NUM_COLS="2" LABEL_WIDTH="35">
+    
+     
+         <FIELD LABEL="Field.Label.Date" USE_DEFAULT="true" WIDTH_UNITS="CHARS">
+             
+             <CONNECT>
+                 <TARGET NAME="ACTION" PROPERTY="reopenDate"/>
+             </CONNECT>
+              </FIELD> 
+     
+    
+   <FIELD LABEL="Field.Label.Reason" USE_BLANK="true">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="code"
+          NAME="DISPLAY"
+          PROPERTY="description"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="reopenReason"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+ <CLUSTER TITLE="Field.Label.Comment" SHOW_LABELS="false">
+         <FIELD HEIGHT="5" LABEL="Field.Label.Comment">
+             <CONNECT>
+                 <TARGET
+                     NAME="ACTION"
+                     PROPERTY="comments"
+                 />
+             </CONNECT>
+         </FIELD>
+ </CLUSTER>
+ </PAGE>

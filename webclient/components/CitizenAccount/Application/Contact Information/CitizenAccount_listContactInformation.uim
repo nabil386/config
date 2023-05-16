@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="CitizenAccount_listContactInformation"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+    <PAGE_TITLE ICON="CitizenAccount_listContactInformation.Page.Icon">
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+        </CONNECT>
+    </PAGE_TITLE>
+    <SERVER_INTERFACE CLASS="CitizenAccount" NAME="DISPLAY"
+        OPERATION="listCitizenContactInformationDetails"/>
+	<CLUSTER NUM_COLS="3" SHOW_LABELS="false" STYLE="outer-cluster-borderless">
+        <CONDITION>
+            <IS_TRUE NAME="DISPLAY" PROPERTY="showClientDetailsInd"/>
+        </CONDITION>
+        <CLUSTER SHOW_LABELS="false" STYLE="outer-cluster-borderless" WIDTH="98">
+            <LIST TITLE="List.Title.Addresses" PAGINATED="false">
+                <FIELD>
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="citizenAddressString"/>
+                    </CONNECT>
+                </FIELD>
+            </LIST>
+        </CLUSTER>
+        <CLUSTER SHOW_LABELS="false" STYLE="outer-cluster-borderless" WIDTH="98">
+            <LIST TITLE="List.Title.PhoneNumber" PAGINATED="false">
+                <FIELD>
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="citizenPhoneNumberString"/>
+                    </CONNECT>
+                </FIELD>
+            </LIST>
+        </CLUSTER>
+        <CLUSTER SHOW_LABELS="false" STYLE="outer-cluster-borderless" WIDTH="98">
+            <LIST TITLE="List.Title.EmailAddresses" PAGINATED="false">
+                <FIELD>
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="citizenEmailAddressString"/>
+                    </CONNECT>
+                </FIELD>
+            </LIST>
+        </CLUSTER>
+    </CLUSTER>
+    <CLUSTER TITLE="Cluster.Title.CaseWorkerDetails" SHOW_LABELS="false">
+        <CONDITION>
+            <IS_TRUE NAME="DISPLAY" PROPERTY="showCaseworkerDetailsInd"/>
+        </CONDITION>
+        <FIELD>
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="citizenCases"/>
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+</PAGE>

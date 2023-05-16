@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                          -->
+<!-- All rights reserved.                                                        -->
+<!-- This software is the confidential and proprietary information of Curam      -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose         -->
+<!-- such Confidential Information and shall use it only in accordance with      -->
+<!-- the terms of the license agreement you entered into with Curam              -->
+<!-- Software.                                                                   -->
+<!--This page allows you to view the list of the text translations               -->
+<!-- for Organization name.                                                   -->
+<PAGE
+  PAGE_ID="External_listLocalizableText"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="ApplicationLocalizer"
+    NAME="DISPLAY"
+    OPERATION="listLocalizations"
+  />
+  <PAGE_PARAMETER NAME="localizableKey"/>
+  <PAGE_PARAMETER NAME="documentID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="localizableKey"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="keyDetails$propKey"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="documentID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="keyDetails$documentID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="External_modifyTranslation"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$locale"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="locale"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$propKey"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localizableKey"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$documentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="documentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$title"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="text"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Title.Language"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="locale"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.Text">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="title"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddTranslation">
+
+
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="External_addTranslation"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="localizableKey"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="localizableKey"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="documentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="documentID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close"/>
+  </ACTION_SET>
+</PAGE>

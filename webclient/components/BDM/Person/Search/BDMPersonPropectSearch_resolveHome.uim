@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Redirect to the correct person home page based on the whether the      -->
+
+<PAGE
+  PAGE_ID="BDMPersonPropectSearch_resolveHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <JSP_SCRIPTLET>
+      
+      String concernRoleID = request.getParameter("concernRoleID");
+	  String concernRoleType = request.getParameter("concernRoleType");
+      if(concernRoleID == null) {
+        core.ScriptletMissingParamException e = new
+        core.ScriptletMissingParamException(-20002, "concernRoleID");
+        throw e;
+      }
+      
+      curam.omega3.request.RequestHandler rh = 
+      curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+      
+      String pageID = "Person_homePagePDC";
+      if (concernRoleType.equals("RL1")) {
+        pageID = "Person_resolveHomePage";
+      } else if (concernRoleType.equals("RL7")) {
+		pageID = "ProspectPerson_resolveHomePage";
+	  }
+      
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+        pageContext.getSession()).getLocale() + "/"; 
+      String url = context + curam.omega3.request.RequestUtils.escapeURL(pageID) + "Page.do?concernRoleID=" 
+        + curam.omega3.request.RequestUtils.escapeURL(concernRoleID) + "&amp;" + rh.getSystemParameters();
+      
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+   
+  </JSP_SCRIPTLET>
+
+
+</PAGE>

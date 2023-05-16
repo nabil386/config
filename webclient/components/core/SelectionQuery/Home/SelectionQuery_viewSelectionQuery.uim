@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                                      -->
+<!-- All rights reserved.                                                                                   -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose         -->
+<!-- such Confidential Information and shall use it only in accordance with   -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                                                                 -->
+<!-- Description                                                                                               -->
+<!-- ===========                                                                                   -->
+<!-- This page allows a user to view a selection query.                                 -->
+<PAGE
+  PAGE_ID="SelectionQuery_viewSelectionQuery"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="SelectionQuery"
+    NAME="DISPLAY"
+    OPERATION="readSelectionQuery"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="selectionQueryID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="selectionQueryID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$selectionQueryID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="20"
+    NUM_COLS="2"
+  >
+
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="showPageNameInd"
+      />
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.RandomPageName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="randPageName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ManualPageName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="manPageName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER LABEL_WIDTH="10">
+
+
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.SQL"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sqlText"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER TITLE="Cluster.Title.Criteria">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="showCriteriaListInd"
+      />
+    </CONDITION>
+
+
+    <LIST>
+
+
+      <FIELD LABEL="Field.Label.CriteriaName">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$dtls$dtls$name"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Value">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$dtls$dtls$value"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.DisplayName">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$dtls$dtls$displayName"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.DisplayValue">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$dtls$dtls$displayValue"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </LIST>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <FIELD HEIGHT="4">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

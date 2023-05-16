@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  PID 5725-H26
+ 
+  Copyright IBM Corporation 2008, 2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2010,2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Marks a duplicate client. -->
+<PAGE
+  PAGE_ID="Participant_markDuplicate"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="originalConcernRoleID"/>
+  <PAGE_PARAMETER NAME="duplicateConcernRoleID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="ClientMerge"
+    NAME="DISPLAY"
+    OPERATION="readOriginalAndDuplicateDetails1"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ClientMerge"
+    NAME="ACTION"
+    OPERATION="markDuplicate"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="originalConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="originalConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="duplicateConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="duplicateConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="duplicateConcernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="markDuplicateCreateDetails$duplicateConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="originalConcernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="markDuplicateCreateDetails$originalConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="RIGHT">
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MarkDuplicate"
+      TYPE="SUBMIT"
+    >
+
+
+      <LINK PAGE_ID="Participant_listDuplicates">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="originalConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MarkDuplicateAndStartMerge"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="Participant_mergeWizard"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="originalConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="originalConcernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="duplicateConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="duplicateConcernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="concernRoleDuplicateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleDuplicateID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.OriginalPerson"
+  >
+
+
+    <FIELD LABEL="Field.Label.FirstName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="firstForename"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.LastName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="surname"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Gender">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sex"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DateOfBirth">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="originalDtls$dateOfBirth"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Address">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="formattedAddressData"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PhoneNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="originalDtls$phoneNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.MaritalStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="originalDtls$maritalStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.MothersName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="motherBirthSurname"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Nationality">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="originalDtls$nationality"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CountryOfBirth">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="birthCountry"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00144945, SS -->
+    <FIELD LABEL="Field.Label.EthnicOrigin">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="ethnicOriginCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Race">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="originalDtls$race"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.IndigenousGroup">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="indigenousGroupCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00144945 -->
+
+
+    <FIELD LABEL="Field.Label.FirstName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="firstName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.LastName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="lastName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Gender">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="gender"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DateOfBirth">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="duplicateDtls$dateOfBirth"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Address">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="address"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PhoneNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="duplicateDtls$phoneNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.MaritalStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="duplicateDtls$maritalStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.MothersName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="mothersName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Nationality">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="duplicateDtls$nationality"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CountryOfBirth">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="countryOfBirth"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00144945, SS -->
+    <FIELD LABEL="Field.Label.EthnicOrigin">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="ethnicOrigin"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Race">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="duplicateDtls$race"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.IndigenousGroup">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="indigenousGroup"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00144945 -->
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Reason"
+  >
+    <FIELD LABEL="Field.Label.Reason">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="duplicateReason"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00408407, VT -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00408407 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="duplicateComments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

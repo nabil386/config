@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2013-2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Reads the authorisation details for an application case.                -->
+<PAGE HIDE_CONDITIONAL_LINKS="false" PAGE_ID="CommonIntake_viewApplicationAuthorization"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+  <SERVER_INTERFACE CLASS="ApplicationAuthorisation" NAME="DISPLAY"
+    OPERATION="viewAuthorisationDetails" PHASE="DISPLAY"/>
+   
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$applicationCaseID"/>
+  </CONNECT>
+  
+  <INFORMATIONAL>
+        <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="informationMsgTxt"/>
+        </CONNECT>
+    </INFORMATIONAL>
+    
+ <ACTION_SET>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Authorise">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="applicationAuthorisationInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="TRUE"
+        PAGE_ID="ApplicationAuthorisation_resolveStart"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET> 
+
+
+  <CLUSTER NUM_COLS="2">
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="integratedCaseOnlyInd"/>
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Date">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorisationDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.IntegratedCase">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="integratedCaseReference"/>
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="integratedCaseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.User">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorisedBy"/>
+      </CONNECT>
+      <LINK PAGE_ID="Organization_viewUserDetails" OPEN_MODAL="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    
+  </CLUSTER>
+
+  <CLUSTER NUM_COLS="2">
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="planProductDeliveryInd"/>
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Date">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorisationDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Plan" WIDTH="26">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="planReference"/>
+      </CONNECT>
+      <LINK PAGE_ID="OutcomePlan_home">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="outcomePlanID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProductDelivery">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="productDeliveryCaseReference"/>
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="productDeliveryCaseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>  
+    <FIELD LABEL="Field.Label.User">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorisedBy"/>
+      </CONNECT>
+      <LINK PAGE_ID="Organization_viewUserDetails" OPEN_MODAL="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PlanClients">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="outcomePlanClients"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProductDeliveryClients">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="productDeliveryClients"/>
+      </CONNECT>
+    </FIELD>   
+  </CLUSTER>
+
+  <CLUSTER NUM_COLS="2">
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="productDeliveryOnlyInd"/>
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Date">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorisationDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProductDelivery">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="productDeliveryCaseReference"/>
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="productDeliveryCaseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>    
+    <FIELD LABEL="Field.Label.User">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorisedBy"/>
+      </CONNECT>
+      <LINK PAGE_ID="Organization_viewUserDetails" OPEN_MODAL="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProductDeliveryClients">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="productDeliveryClients"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+  <CLUSTER NUM_COLS="2">
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="planIntegratedCaseInd"/>
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Date">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorisationDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.IntegratedCase">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="integratedCaseReference"/>
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="integratedCaseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PlanClients">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="outcomePlanClients"/>
+      </CONNECT>
+    </FIELD>    
+    <FIELD LABEL="Field.Label.User">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorisedBy"/>
+      </CONNECT>
+      <LINK PAGE_ID="Organization_viewUserDetails" OPEN_MODAL="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Plan" WIDTH="26">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="planReference"/>
+      </CONNECT>
+      <LINK PAGE_ID="OutcomePlan_home">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="outcomePlanID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>    
+  </CLUSTER>
+
+  <CLUSTER NUM_COLS="2">
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="planOnlyInd"/>
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Date">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorisationDate"/>
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.Plan" WIDTH="26">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="planReference"/>
+      </CONNECT>
+      <LINK PAGE_ID="OutcomePlan_home">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="outcomePlanID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.User">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorisedBy"/>
+      </CONNECT>
+      <LINK PAGE_ID="Organization_viewUserDetails" OPEN_MODAL="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.PlanClients">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="outcomePlanClients"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+    
+  <CLUSTER NUM_COLS="2">
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="productDeliveryIntegratedCaseInd"/>
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Date">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorisationDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.IntegratedCase">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="integratedCaseReference"/>
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="integratedCaseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProductDeliveryClients">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="productDeliveryClients"/>
+      </CONNECT>
+    </FIELD>    
+    <FIELD LABEL="Field.Label.User">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorisedBy"/>
+      </CONNECT>
+      <LINK PAGE_ID="Organization_viewUserDetails" OPEN_MODAL="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProductDelivery">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="productDeliveryCaseReference"/>
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="productDeliveryCaseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>    
+  </CLUSTER>
+  
+  <CLUSTER NUM_COLS="2">
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="planICPDExistInd"/>
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Date">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorisationDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.IntegratedCase">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="integratedCaseReference"/>
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="integratedCaseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProductDeliveryClients">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="productDeliveryClients"/>
+      </CONNECT>
+    </FIELD>    
+    <FIELD LABEL="Field.Label.PlanClients">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="outcomePlanClients"/>
+      </CONNECT>
+    </FIELD>    
+    <FIELD LABEL="Field.Label.User">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorisedBy"/>
+      </CONNECT>
+      <LINK PAGE_ID="Organization_viewUserDetails" OPEN_MODAL="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProductDelivery">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="productDeliveryCaseReference"/>
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="productDeliveryCaseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Plan" WIDTH="26">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="planReference"/>
+      </CONNECT>
+      <LINK PAGE_ID="OutcomePlan_home">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="outcomePlanID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>    
+  </CLUSTER>
+  
+  <CLUSTER NUM_COLS="2">
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="planICPDNotExistInd"/>
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Date">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorisationDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.User">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorisedBy"/>
+      </CONNECT>
+      <LINK PAGE_ID="Organization_viewUserDetails" OPEN_MODAL="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+  </CLUSTER>
+  
+  <CLUSTER TITLE="Cluster.Title.Comments" SHOW_LABELS="false">
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="commentsInd"/>
+    </CONDITION>
+    <FIELD LABEL="Cluster.Title.Comments">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="comments"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+</PAGE>

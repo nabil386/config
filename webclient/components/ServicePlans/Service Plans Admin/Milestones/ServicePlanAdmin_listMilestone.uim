@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page lists all the milestones associated with a service plan.     -->
+<PAGE
+  PAGE_ID="ServicePlanAdmin_listMilestone"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00233651, GP -->
+  <SERVER_INTERFACE
+    CLASS="ServicePlan"
+    NAME="DISPLAY"
+    OPERATION="listServicePlanMilestones"
+  />
+  <!-- END, CR00233651 -->
+
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.NewButton.label"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ServicePlanAdmin_createMilestone"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="servicePlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="servicePlanID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="contextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="AddExisting"
+      LABEL="ActionControl.AddExisting.label"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ServicePlanAdmin_addExistingMilestone"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="servicePlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="servicePlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <PAGE_PARAMETER NAME="servicePlanID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="servicePlanID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="servicePlanID"
+    />
+  </CONNECT>
+  <LIST>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL
+        IMAGE="EditButton"
+        LABEL="ActionControl.Label.Edit"
+      >
+        <!--BEGIN, CR00142278, MC-->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Product_modifyMilestoneConfigAssociation"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="milestoneLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="milestoneLinkID"
+            />
+          </CONNECT>
+        </LINK>
+        <!--END, CR00142278-->
+
+
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+
+
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ServicePlanAdmin_removeMilestone"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="milestoneLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="milestoneLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="servicePlanID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="servicePlanID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <!-- BEGIN, CR00233651, GP -->
+    <CONTAINER LABEL="Field.Label.Name">
+      <FIELD>
+        <!-- BEGIN , CR00300298, DK -->
+        <LINK PAGE_ID="Product_listMilestoneConfiguration">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="milestoneConfigurationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="milestoneConfigurationID"
+            />
+          </CONNECT>
+        </LINK>
+        <!-- END , CR00300298, DK -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="name"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL
+        IMAGE="LocalizableTextTranslation"
+        LABEL="ActionControl.Label.TextTranslation"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Product_listLocalizableMilestoneNameText"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="nameTextID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localizableTextID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="milestoneConfigurationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="milestoneConfigurationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <CONTAINER LABEL="Field.Label.Type">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="type"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL
+        IMAGE="LocalizableTextTranslation"
+        LABEL="ActionControl.Label.TextTranslation"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Product_listLocalizableMilestoneTypeText"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="typeTextID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localizableTextID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="milestoneConfigurationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="milestoneConfigurationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <!-- END, CR00233651  -->
+
+
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DateCreated">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ServicePlanAdmin_viewMilestoneConfigurationFromServicePlan">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="milestoneConfigurationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="milestoneConfigurationID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+</PAGE>

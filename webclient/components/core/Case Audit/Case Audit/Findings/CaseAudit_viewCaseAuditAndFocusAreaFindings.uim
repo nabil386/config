@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009, 2010 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view findings for a case audit and        -->
+<!-- its focus areas                                  											-->
+<PAGE
+  PAGE_ID="CaseAudit_viewCaseAuditAndFocusAreaFindings"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="CaseAuditFindings"
+    NAME="DISPLAY"
+    OPERATION="readCaseAuditAndFocusAreaFindings"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseAuditID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseAuditID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseAuditID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    >
+      <LINK PAGE_ID="Inbox_listAlerts"/>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="FALSE"
+    TITLE="Cluster.Title.CaseAuditFindings"
+  >
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="result$caseAuditFindings$noFindingsYetInd"
+      />
+    </CONDITION>
+    <FIELD HEIGHT="3">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$caseAuditFindings$findingsText"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="FALSE"
+    TITLE="Cluster.Title.CaseAuditFindings"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="result$caseAuditFindings$noFindingsYetInd"
+      />
+    </CONDITION>
+    <CONTAINER LABEL="Container.Label.NoFindingsYet">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Container.Label.NoFindingsYet"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.FocusAreas">
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.ViewFinding">
+      <LINK
+        OPEN_MODAL="TRUE"
+        PAGE_ID="CaseAudit_viewFocusAreaFinding"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$focusAreaFindings$dtls$focusAreaFindingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="focusAreaFindingID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <FIELD
+      LABEL="List.Title.FocusArea"
+      WIDTH="65"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$focusAreaFindings$dtls$focusAreaText"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="List.Title.FocusAreaSatisfied"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$focusAreaFindings$dtls$focusAreaSatisfied"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

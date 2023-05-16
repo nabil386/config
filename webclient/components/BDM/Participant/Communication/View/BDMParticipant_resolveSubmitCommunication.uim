@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Description                                                            -->
+<!-- ===============                                                        -->
+<!-- This jsp redirects the user the appropriate submit communication  page.   -->
+<!-- Based on communication format appropriate modal opens up               -->
+<PAGE
+  PAGE_ID="BDMParticipant_resolveSubmitCommunication"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+<!--  TASL 26537 JP -->
+
+  <PAGE_PARAMETER NAME="communicationID"/>
+   <PAGE_PARAMETER NAME="communicationFormat"/>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String communicationID = request.getParameter("communicationID");
+      String communicationFormat = request.getParameter("communicationFormat");
+      String url = "";
+  
+       if (communicationID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "communicationID");
+       throw e;
+      }
+      
+      
+      if (communicationFormat == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "communicationFormat");
+       throw e;
+      }      
+      
+          
+     
+      
+      // Pro Forma communication
+      if (communicationFormat.equals("CF3")) {
+                     
+      url = context + "BDMCommunication_submitProFormaCommunicationPage.do" + "?communicationID=" 
+                    + curam.omega3.request.RequestUtils.escapeURL(communicationID); 
+      }
+      
+      // Microsoft Word communication
+      else if (communicationFormat.equals("CF1")) {
+        url = context + "BDMCommunication_submitMSWordCommunicationPage.do" + "?communicationID=" 
+                      + curam.omega3.request.RequestUtils.escapeURL(communicationID); 
+      }
+     
+      url += "&amp;" + rh.getSystemParameters();  
+      response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+   
+</PAGE>

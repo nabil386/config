@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows a user to create a new case attachment. -->
+<!-- BEGIN, CR00335813, MV -->
+<PAGE PAGE_ID="Case_createAttachment" WINDOW_OPTIONS="width=765"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+	<!-- END, CR00335813 -->
+
+
+	<PAGE_TITLE>
+		<CONNECT>
+			<SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+		</CONNECT>
+	</PAGE_TITLE>
+
+<!-- START: TASK : 12776  Call custome server interface to create attachmwent JP-->
+	<SERVER_INTERFACE CLASS="BDMCase" NAME="ACTION"
+		OPERATION="createCaseAttachment" PHASE="ACTION" />
+<!-- END: TASK : 12776  Call custome server interface to create attachmwent JP-->
+
+	<SERVER_INTERFACE CLASS="IntegratedCase"
+		NAME="DISPLAY" OPERATION="listMemberDetails" />
+
+
+	<ACTION_SET ALIGNMENT="CENTER" TOP="false">
+
+
+		<ACTION_CONTROL IMAGE="SaveButton"
+			LABEL="ActionControl.Label.Save" TYPE="SUBMIT" />
+
+
+		<ACTION_CONTROL IMAGE="CancelButton"
+			LABEL="ActionControl.Label.Cancel" />
+
+
+	</ACTION_SET>
+
+
+	<PAGE_PARAMETER NAME="caseID" />
+	<PAGE_PARAMETER NAME="pageDescription" />
+
+
+	<!-- BEGIN, CR00088228, ANK -->
+	<CONNECT>
+		<SOURCE NAME="DISPLAY" PROPERTY="caseID" />
+		<!-- END, CR00088228 -->
+		<TARGET NAME="ACTION" PROPERTY="caseID" />
+	</CONNECT>
+
+
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="caseID" />
+		<TARGET NAME="DISPLAY" PROPERTY="caseID" />
+	</CONNECT>
+
+
+	<!-- BEGIN CR00081716, PN <CLUSTER LABEL_WIDTH="18" > END CR00081716 BEGIN, 
+		CR00109753 , SK <WIDGET LABEL="Field.Label.File" TYPE="FILE_UPLOAD" WIDTH="100" 
+		WIDTH_UNITS="PERCENT" > END CR00109753 <WIDGET_PARAMETER NAME="CONTENT"> 
+		<CONNECT> <TARGET NAME="ACTION" PROPERTY="newCaseAttachmentContents" /> </CONNECT> 
+		</WIDGET_PARAMETER> <WIDGET_PARAMETER NAME="FILE_NAME"> <CONNECT> <TARGET 
+		NAME="ACTION" PROPERTY="newCaseAttachmentName" /> </CONNECT> </WIDGET_PARAMETER> 
+		</WIDGET> </CLUSTER> -->
+
+
+	<CLUSTER LABEL_WIDTH="43" NUM_COLS="2">
+
+
+		<WIDGET LABEL="Field.Label.File" TYPE="FILE_UPLOAD">
+			<WIDGET_PARAMETER NAME="CONTENT">
+				<CONNECT>
+					<TARGET NAME="ACTION" PROPERTY="newCaseAttachmentContents" />
+				</CONNECT>
+			</WIDGET_PARAMETER>
+
+
+			<WIDGET_PARAMETER NAME="FILE_NAME">
+				<CONNECT>
+					<TARGET NAME="ACTION" PROPERTY="newCaseAttachmentName" />
+				</CONNECT>
+			</WIDGET_PARAMETER>
+
+
+		</WIDGET>
+
+
+		<FIELD LABEL="Field.Label.FileLocation">
+			<CONNECT>
+				<TARGET NAME="ACTION" PROPERTY="filelocation" />
+			</CONNECT>
+		</FIELD>
+		<FIELD LABEL="Field.Label.DocumentType" USE_BLANK="true">
+			<CONNECT>
+				<TARGET NAME="ACTION" PROPERTY="documentType" />
+			</CONNECT>
+		</FIELD>
+		
+		<FIELD LABEL="Field.Label.ReceiptDate">
+			<CONNECT>
+				<TARGET NAME="ACTION" PROPERTY="receiptDate" />
+			</CONNECT>
+		</FIELD>
+		
+		
+		<FIELD LABEL="Field.Label.ParticipantName" USE_BLANK="true">
+			<CONNECT>
+				<INITIAL HIDDEN_PROPERTY="caseParticipantRoleID"
+					NAME="DISPLAY" PROPERTY="nameAndAgeOpt" />
+			</CONNECT>
+			<CONNECT>
+				<TARGET NAME="ACTION" PROPERTY="caseParticipantRoleID" />
+			</CONNECT>
+		</FIELD>
+		<FIELD LABEL="Field.Label.FileReference">
+			<CONNECT>
+				<TARGET NAME="ACTION" PROPERTY="fileReference" />
+			</CONNECT>
+		</FIELD>
+		
+		
+		<!-- START TASK :12776 Add File Source JP-->
+		
+		<FIELD LABEL="Field.Label.FileSource" USE_BLANK="true">
+			<CONNECT>
+				<TARGET NAME="ACTION" PROPERTY="fileSource" />
+			</CONNECT>
+		</FIELD>
+		
+			<!-- END TASK :12776 Add File Source JP -->
+	</CLUSTER>
+	<!-- END, CR00150195 -->
+	
+		
+		
+		<FIELD CONTROL="SKIP"/>
+
+
+		<!-- END TASK :12776 Add File Source JP-->
+	<CLUSTER LABEL_WIDTH="21.5">
+		<FIELD HEIGHT="4" LABEL="Field.Label.Description">
+			<CONNECT>
+				<TARGET NAME="ACTION" PROPERTY="description" />
+			</CONNECT>
+		</FIELD>
+	</CLUSTER>
+</PAGE>

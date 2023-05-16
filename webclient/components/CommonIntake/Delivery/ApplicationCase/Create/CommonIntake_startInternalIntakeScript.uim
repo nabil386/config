@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE PAGE_ID="CommonIntake_startInternalIntakeScript" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd" WINDOW_OPTIONS="width=900,height=600">
+  <JSP_SCRIPTLET>
+    <![CDATA[
+    
+      /*
+      * This simply redirects to an IEG script passing along the given execution ID, 
+      * along with any other system parameters.
+      */
+    
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+      String context = request.getContextPath() + "/";
+      
+      String iegExecutionID = request.getParameter("iegExecutionID");
+      if (iegExecutionID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "iegExecutionID");
+       throw e;
+      }
+      String applicationFormID = request.getParameter("applicationFormID");
+      if (applicationFormID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "applicationFormID");
+       throw e;
+      }
+      String versionNo = request.getParameter("versionNo");
+      if (versionNo == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "versionNo");
+       throw e;
+      }
+      
+      String url = context + "ieg/Screening.do?"  
+                           + "executionID=" + curam.omega3.request.RequestUtils.escapeURL(iegExecutionID) 
+                           + "&" + "applicationFormID=" + curam.omega3.request.RequestUtils.escapeURL(applicationFormID) 
+                           + "&" + "versionNo=" + curam.omega3.request.RequestUtils.escapeURL(versionNo) 
+                           + "&" + rh.getSystemParameters();
+
+      response.sendRedirect(response.encodeRedirectURL(url));      
+      
+    ]]>
+  </JSP_SCRIPTLET>
+</PAGE>

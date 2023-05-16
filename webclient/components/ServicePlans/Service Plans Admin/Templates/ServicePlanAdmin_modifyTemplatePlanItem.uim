@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012, 2015. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright  2004-2006, 2009-2010 Curam Software Ltd.                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify a service plan template plan item. -->
+<PAGE
+  PAGE_ID="ServicePlanAdmin_modifyTemplatePlanItem"
+  WINDOW_OPTIONS="width=725"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00226792 MN -->
+  <SERVER_INTERFACE
+    CLASS="ServicePlan"
+    NAME="DISPLAY"
+    OPERATION="readPlanTemplatePlanItemForModify"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00226792 -->
+  <!-- BEGIN, CR00226905 MN -->
+  <SERVER_INTERFACE
+    CLASS="ServicePlan"
+    NAME="ACTION"
+    OPERATION="modifyTemplatePlanItemDetails"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00226905 -->
+  <PAGE_PARAMETER NAME="planItemID"/>
+  <PAGE_PARAMETER NAME="planTemplatePlanItemID"/>
+  <PAGE_PARAMETER NAME="planTemplateSubGoalID"/>
+  <PAGE_PARAMETER NAME="contextDescription"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="planItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$key$planItemKey$planItemID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="planTemplatePlanItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$key$planTemplatePlanItemKey$planTemplatePlanItemID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="planTemplateSubGoalID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$key$planTemplateSubGoalKey$planTemplateSubGoalID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="planTemplatePlanItemID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="planTemplatePlanItemID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00229083, GP -->
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="descriptionTextID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="descriptionTextID"
+    />
+  </CONNECT>
+  <!-- END,  CR00229083 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ServicePlanAdmin_templatePlanItemHome">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="planTemplatePlanItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="planTemplatePlanItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+      <LINK PAGE_ID="ServicePlanAdmin_templatePlanItemHome">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="planTemplatePlanItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="planTemplatePlanItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+  >
+    <FIELD LABEL="Field.Label.PlanItem">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="dtls$planItemID"
+          NAME="DISPLAY"
+          PROPERTY="dtls$name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="details$planItemID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="planItemID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Outcome">
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="expectedOutcomeName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expectedOutcomeID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="expectedOutcomeID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+    <!-- BEGIN, CR00161962, LJ -->
+    <FIELD LABEL="Field.Label.isMandatory">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="isMandatoryInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$details$details$isMandatoryInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00161962 -->
+  </CLUSTER>
+  <!-- BEGIN, CR00161962, LJ -->
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.ApprovalDetails"
+  >
+    <FIELD LABEL="Field.Label.ApprovalRequired">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="approvalReqInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$details$details$approvalReqInd"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00161962 -->
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.DeliveryDetails"
+  >
+    <FIELD
+      LABEL="Field.Label.StartAfterPlanStart"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDay"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDay"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.AuthorizedUnits"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="authorizedUnits"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="authorizedUnits"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Duration"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="duration"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="duration"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.MaximumUnits"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="maximumUnits"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="maximumUnits"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Description"
+  >
+    <!-- BEGIN, CR00463142, EC -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Cluster.Title.Description"
+    >
+      <!-- END, CR00463142 -->
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="description"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

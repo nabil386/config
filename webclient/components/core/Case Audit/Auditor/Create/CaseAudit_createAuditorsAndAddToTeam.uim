@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009, 2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to create an audit team for the audit plan.  -->
+<PAGE
+  PAGE_ID="CaseAudit_createAuditorsAndAddToTeam"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="auditPlanID"/>
+  <PAGE_PARAMETER NAME="selectedUsers"/>
+
+
+  <!-- BEGIN, CR00290965, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYTEAMS"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00290965 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="Auditor"
+    NAME="DISPLAYUSERS"
+    OPERATION="listSelectedAuditors"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00290965, IBM -->
+  <SERVER_INTERFACE
+    CLASS="Auditor"
+    NAME="DISPLAYTEAMS"
+    OPERATION="getAuditTeamsOnPlanList"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00290965 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="Auditor"
+    NAME="ACTION"
+    OPERATION="addToNewOrExistingAuditTeam"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="selectedUsers"
+    />
+    <TARGET
+      NAME="DISPLAYUSERS"
+      PROPERTY="selectedUsers"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="auditPlanID"
+    />
+    <TARGET
+      NAME="DISPLAYTEAMS"
+      PROPERTY="auditPlanID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="auditPlanID"
+    />
+    <TARGET
+      NAME="DISPLAYUSERS"
+      PROPERTY="auditPlanID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="auditPlanID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$createDtls$auditPlanID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER NUM_COLS="1">
+
+
+    <CLUSTER
+      LABEL_WIDTH="40"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-grey-background cluster-cpr-no-border"
+    >
+
+
+      <FIELD LABEL="Field.Label.TeamName">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$createDtls$name"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.ExistingTeams"
+        USE_BLANK="true"
+      >
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="result$dtlsList$auditTeamID"
+            NAME="DISPLAYTEAMS"
+            PROPERTY="result$dtlsList$name"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$auditTeamID"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+
+
+    <LIST>
+
+
+      <CONTAINER WIDTH="5">
+        <WIDGET TYPE="MULTISELECT">
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAYUSERS"
+                PROPERTY="username"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="selectedAuditors"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAYUSERS"
+                PROPERTY="selectedUsers"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+
+
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAYUSERS"
+            PROPERTY="fullName"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </LIST>
+
+
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.CancelButton"
+    />
+  </ACTION_SET>
+
+
+</PAGE>

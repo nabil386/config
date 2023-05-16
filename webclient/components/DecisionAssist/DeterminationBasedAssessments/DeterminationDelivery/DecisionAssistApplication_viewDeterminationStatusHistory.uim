@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view a determination status history.      -->
+<PAGE
+  PAGE_ID="DecisionAssistApplication_viewDeterminationStatusHistory"
+  WINDOW_OPTIONS="width=450"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_PARAMETER NAME="determinationDeliveryID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <SERVER_INTERFACE
+    CLASS="DeterminationDelivery"
+    NAME="VIEW_DETERMINATION_STATUS_HISTORY"
+    OPERATION="readAllDeterminationStatusHistoryDetails"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="VIEW_DETERMINATION_STATUS_HISTORY"
+      PROPERTY="key$dtls$dtls$determinationDeliveryID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="DeterminationDelivery"
+    NAME="ASSESSMENTCONTEXT"
+    OPERATION="viewAssessmentContextDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="ASSESSMENTCONTEXT"
+      PROPERTY="key$dtls$dtls$determinationDeliveryID"
+    />
+  </CONNECT>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <LIST>
+    <FIELD
+      LABEL="Field.Label.Date"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_STATUS_HISTORY"
+          PROPERTY="date"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.User"
+      WIDTH="45"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_STATUS_HISTORY"
+          PROPERTY="userFullName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="VIEW_DETERMINATION_STATUS_HISTORY"
+            PROPERTY="user"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_STATUS_HISTORY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- BEGIN, CR00214223, PS -->
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+  <!-- END, CR00214223 -->
+</PAGE>

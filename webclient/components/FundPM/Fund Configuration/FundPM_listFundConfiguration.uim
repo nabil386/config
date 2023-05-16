@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+    Copyright 2010-2011 Curam Software Ltd.
+    All rights reserved.
+    
+    This software is the confidential and proprietary information of Curam
+    Software, Ltd. ("Confidential Information"). You shall not disclose
+    such Confidential Information and shall use it only in accordance with the
+    terms of the license agreement you entered into with Curam Software.
+-->
+<!-- This page allows the user to list active obligation configuration for a fund  -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="FundPM_listFundConfiguration"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="contextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="fundID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainFundConfiguration"
+    NAME="DISPLAY"
+    OPERATION="listFundConfiguration"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="fundID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$programFundID"
+    />
+  </CONNECT>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewFund"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="FundPM_viewFundHome">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fundID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fundIDParam"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00261860, GP -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fundID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="programFundID"
+          />
+        </CONNECT>
+        <!-- END, CR00261860 -->
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.FundConfiguration"
+      STYLE="in-page-current-link"
+    >
+      <LINK PAGE_ID="FundPM_listFundConfiguration">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fundID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fundID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.FundAssociation"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="FundPM_listFundLinks">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fundID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fundIDParam"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </MENU>
+
+
+  <!-- BEGIN, CR00207190, PS -->
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    BOTTOM="false"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="FundPM_createFundConfiguration"
+        WINDOW_OPTIONS="width=550"
+      >
+        <!-- END, CR00207190 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fundID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fundID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="contextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contextDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+    <!-- BEGIN, CR00207190, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00207190 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="details$supersededInd"
+          />
+        </CONDITION>
+        <!-- BEGIN, CR00207190, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="FundPM_modifyFundConfigurationFromList"
+          WINDOW_OPTIONS="width=550"
+        >
+          <!-- END, CR00207190 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="details$dtls$fundConfigurationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="obligationConfigurationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="details$dtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="fundID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="fundID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00207190, PS -->
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Delete"
+        TYPE="ACTION"
+      >
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="details$supersededInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="FundPM_deleteFundConfiguration"
+          WINDOW_OPTIONS="width=500"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="details$dtls$fundConfigurationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="obligationConfigurationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="details$dtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="fundID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="fundID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="details$fundName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="fundName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- END, CR00207190 -->
+
+
+    <FIELD
+      LABEL="Field.Label.EffectiveDate"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="details$dtls$effectiveDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.OverObligationAllowedWhenCreatingObligation">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="details$dtls$overObligationIndCreateOblign"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.WaitListAllowed"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="details$dtls$waitListAllowedInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.OverObligationAllowedWhenAdjustingObligation">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="details$dtls$overObligationIndAdjustOblign"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="8"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="details$derivedStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00207190, PS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="FundPM_viewFundConfiguration">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="details$dtls$fundConfigurationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="obligationConfigurationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fundID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fundID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00207190 -->
+  </LIST>
+
+
+</PAGE>

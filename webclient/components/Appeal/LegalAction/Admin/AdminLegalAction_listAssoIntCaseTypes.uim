@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+    * Copyright 2008, 2010-2011 Curam Software Ltd.
+    * All rights reserved.
+    *
+    * This software is the confidential and proprietary information of Curam
+    * Software, Ltd. ("Confidential Information"). You shall not disclose
+    * such Confidential Information and shall use it only in accordance with
+    * the terms of the license agreement you entered into with Curam
+    * Software.
+    *
+    * Description
+    * ===========
+    * Lists all the legal action
+    *
+    *
+-->
+<PAGE
+  PAGE_ID="AdminLegalAction_listAssoIntCaseTypes"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file:\\Curam\CuramUIMSchema"
+>
+  <!-- BEGIN, CR00206667, GP -->
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.LegalAction"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="AdminLegalAction_viewLegalAction"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="legalActionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="legalActionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.IntegratedCase"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="AdminLegalAction_listAssoIntCaseTypes"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="legalActionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="legalActionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- BEGIN, CR00265048, DG -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ScreeningCase"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="AdminLegalAction_listAssoScreeningCaseTypes"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="legalActionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="legalActionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR0026508 -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ProductCase"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="AdminLegalAction_listAssoProductCaseTypes"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="legalActionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="legalActionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.InvestigationCase"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="AdminLegalAction_listAssoInvestigCaseTypes"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="legalActionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="legalActionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <!-- END, CR00206667 -->
+
+
+  <!-- The page title for this page -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="legalActionID"/>
+
+
+  <!-- Declare the 'display' server bean -->
+  <SERVER_INTERFACE
+    CLASS="AdminLegalAction"
+    NAME="DISPLAY"
+    OPERATION="listAssociatedIntegratedCase"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- connection parameters required for display bean -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="legalActionID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="configLegalActionID"
+    />
+  </CONNECT>
+
+
+  <!-- List fields on this page -->
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <!-- BEGIN, CR00248221, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="AdminLegalAction_removeAssoIntCaseTypes"
+        >
+          <!-- END, CR00248221 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="legalCaseTypeLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="legalCaseTypeLinkID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Label.CaseTypes">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="intCaseType"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

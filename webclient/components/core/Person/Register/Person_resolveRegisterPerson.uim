@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="Person_resolveRegisterPerson"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <JSP_SCRIPTLET>
+      curam.omega3.request.RequestHandler rh = 
+      curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+      pageContext.getSession()).getLocale() + "/"; 
+      
+      String relatedConcernID = request.getParameter("relatedConcernID");
+
+      if (relatedConcernID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "relatedConcernID");
+       System.out.println(e);
+       throw e;
+      }
+      
+      curam.interfaces.PDCUtilPkg.PDCUtil_readPDCEnabledInd_TH 
+        th = new curam.interfaces.PDCUtilPkg.PDCUtil_readPDCEnabledInd_TH();
+      th.callServer();
+      
+      String pdcOn = th.getFieldValue(th.result$enabled_idx);
+      
+      String registerPage = "Person_register";
+	  	if ("true".equals(pdcOn)) {
+				registerPage = "Person_registerForPDC";
+	  	}
+
+      String url = context+registerPage+"Page.do?&amp;relatedConcernID=" 
+        + curam.omega3.request.RequestUtils.escapeURL(relatedConcernID) +
+      "&amp;" + rh.getSystemParameters();
+
+      response.sendRedirect(response.encodeRedirectURL(url));
+
+   
+  </JSP_SCRIPTLET>
+
+
+</PAGE>

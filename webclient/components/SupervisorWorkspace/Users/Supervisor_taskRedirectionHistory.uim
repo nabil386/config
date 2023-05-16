@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- Copyright (c) 2003-2006, 2008-2009 Curam Software Ltd.                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the supervisor to view the task redirection history   -->
+<!-- for the User.                                                          -->
+<?curam-deprecated Since Curam 6.0, This UIM has been deprecated because editable fields contained in the UIM have been replaced. 
+This UIM has been replaced by Supervisor_redirectTasksToUsersHistory. See release note CR00225257?>
+<PAGE PAGE_ID="Supervisor_taskRedirectionHistory" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="MaintainSupervisorUsers" NAME="DISPLAY" OPERATION="listUserTaskRedirectionHistory" PHASE="DISPLAY"/>
+
+
+  <PAGE_PARAMETER NAME="userName"/>
+  <PAGE_PARAMETER NAME="taskOptionCode"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="userName"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$userName"/>
+  </CONNECT>
+
+
+  <LIST TITLE="Cluster.Title.ActiveAndPendingRedirections">
+    <CONTAINER LABEL="Container.Label.Action" WIDTH="10">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Clear">
+        <LINK OPEN_MODAL="true" PAGE_ID="Supervisor_clearTaskRedirection" SAVE_LINK="true" WINDOW_OPTIONS="width=400,height=200">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$taskRedirectionID"/>
+            <TARGET NAME="PAGE" PROPERTY="redirectedTaskID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$startDateTime"/>
+            <TARGET NAME="PAGE" PROPERTY="startDateTime"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$endDateTime"/>
+            <TARGET NAME="PAGE" PROPERTY="endDateTime"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$versionNo"/>
+            <TARGET NAME="PAGE" PROPERTY="versionNum"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="description"/>
+            <TARGET NAME="PAGE" PROPERTY="userFullName"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="userName"/>
+            <TARGET NAME="PAGE" PROPERTY="userName"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.RedirectedTo" WIDTH="30">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$toUserFullName"/>
+      </CONNECT>
+      <LINK OPEN_NEW="true" PAGE_ID="Supervisor_userWorkspace">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$toUserName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="CONSTANT" PROPERTY="supervisor.viewTaskOption"/>
+          <TARGET NAME="PAGE" PROPERTY="taskOptionCode"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.StartDate" WIDTH="02">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$startDateTime"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EndDate" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$endDateTime"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$redirectionStatus"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <LIST TITLE="Cluster.Title.ExpiredRedirections">
+    <FIELD LABEL="Field.Label.ExpiredRedirectedTo" WIDTH="60">
+      <!-- BEGIN, CR00124977, SAI -->
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$expiredTaskRedirections$expiredDtls$toUserFullName"/>
+      </CONNECT>
+      <!-- END, CR00124977 -->
+      <LINK OPEN_NEW="true" PAGE_ID="Supervisor_userWorkspace">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$expiredTaskRedirections$expiredDtls$toUserName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="CONSTANT" PROPERTY="supervisor.viewTaskOption"/>
+          <TARGET NAME="PAGE" PROPERTY="taskOptionCode"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ExpiredStartDate" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$expiredTaskRedirections$expiredDtls$startDateTime"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ExpiredEndDate" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$expiredTaskRedirections$expiredDtls$endDateTime"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

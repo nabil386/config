@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<VIEW
+  PAGE_ID="ProcessDefinitionTool_editRuleAllocationInputMapping"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="processID"/>
+  <PAGE_PARAMETER NAME="processVersionNo"/>
+  <PAGE_PARAMETER NAME="activityID"/>
+  <PAGE_PARAMETER NAME="rdoName"/>
+  <PAGE_PARAMETER NAME="strategyParent"/>
+  <PAGE_PARAMETER NAME="filterType"/>
+  <PAGE_PARAMETER NAME="workflowDataObjectAttributeType"/>
+  <SERVER_INTERFACE
+    CLASS="AllocationStrategyAdmin"
+    NAME="DISPLAY"
+    OPERATION="readRuleInputMappingForModify"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="AllocationStrategyAdmin"
+    NAME="ACTION"
+    OPERATION="modifyRuleInputMapping"
+    PHASE="ACTION"
+  />
+  <ACTION_SET>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+  <CLUSTER LABEL_WIDTH="40%">
+    <FIELD LABEL="Field.Label.WorkflowDataObjectMapping">
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="wdoAttributeID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="wdoAttributeID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="wdoAttributeID"
+        />
+      </CONNECT>
+      <LINK>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processVersionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processVersionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="activityID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="activityID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="filterType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="filterType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="workflowDataObjectAttributeType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="workflowDataObjectAttributeType"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+  </CLUSTER>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="processID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processVersionNo"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="processVersionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="activityID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="activityID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="rdoName"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="rdoName"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="strategyParent"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="strategyParent"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="processID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processVersionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="processVersionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="activityID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="activityID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="rdoName"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="rdoName"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="strategyParent"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="strategyParent"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+</VIEW>

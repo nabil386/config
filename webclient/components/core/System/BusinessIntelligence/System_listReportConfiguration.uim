@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- This page allows the user to view a list of report configurations.     -->
+<PAGE
+  PAGE_ID="System_listReportConfiguration"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="ReportConfiguration"
+    NAME="ACTION"
+    OPERATION="listReportConfiguration"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewReportConfiguration">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="System_createReportConfiguration"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="33"
+    NUM_COLS="2"
+    TITLE="Cluster.Filter.Title"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.ReportCategory"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$reportCategory"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      BOTTOM="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="System_listReportConfiguration"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_modifyReportConfiguration"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$biReportConfigurationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="biReportConfigurationID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddParameter">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_addConfigurationParameter"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$biReportConfigurationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="biReportConfigurationID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_deleteReportConfiguration"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$biReportConfigurationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="biReportConfigurationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Title.ReportName">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$reportName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="System_viewReportConfiguration">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$biReportConfigurationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="biReportConfigurationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$reportName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="reportName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.ReportFileName">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$reportFileName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.Description">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$description"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.ReportCategory">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$reportCategory"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

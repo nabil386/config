@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2006, 2008-2010 Curam Software Ltd.                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                 -->
+<!-- This page allows the user to create redirection period for tasks.        -->
+<?curam-deprecated Since Curam 6.0, This UIM has been deprecated because editable fields contained in the UIM have been replaced. 
+This UIM has been replaced by Organization_taskRedirectionForUser. See release note CR00225257?>
+<PAGE PAGE_ID="Organization_taskRedirection" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE CLASS="Organization" NAME="DISPLAY" OPERATION="listTaskRedirectionHistoryForUser" PHASE="DISPLAY"/>
+  <SERVER_INTERFACE CLASS="Organization" NAME="ACTION" OPERATION="redirectTasksForUserDetails" PHASE="ACTION"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="userName"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$userName"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="userName"/>
+    <TARGET NAME="ACTION" PROPERTY="key$fromUserName"/>
+  </CONNECT>
+  <PAGE_PARAMETER NAME="userFullName"/>
+  <PAGE_PARAMETER NAME="userName"/>
+
+
+  <CLUSTER LABEL_WIDTH="25" NUM_COLS="2" TITLE="Cluster.Title.NewTaskRedirection">
+    <CONTAINER LABEL="Container.Label.RedirectToUser">
+      <FIELD>
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="key$toUserNameInSupervisorGroup"/>
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.StartDate" USE_DEFAULT="false">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="key$startDateTime"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <FIELD LABEL="Field.Label.EndDate" USE_DEFAULT="false">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="key$endDateTime"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.ActiveAndPendingRedirections">
+
+
+    <CONTAINER LABEL="Container.Label.Action" WIDTH="10">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Clear">
+        <LINK OPEN_MODAL="true" PAGE_ID="Supervisor_clearTaskRedirection" SAVE_LINK="true" WINDOW_OPTIONS="width=400">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$activeAndPendingTaskRedirections$activeAndPendingDtls$taskRedirectionID"/>
+            <TARGET NAME="PAGE" PROPERTY="redirectedTaskID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$activeAndPendingTaskRedirections$activeAndPendingDtls$startDateTime"/>
+            <TARGET NAME="PAGE" PROPERTY="startDateTime"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$activeAndPendingTaskRedirections$activeAndPendingDtls$endDateTime"/>
+            <TARGET NAME="PAGE" PROPERTY="endDateTime"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$activeAndPendingTaskRedirections$activeAndPendingDtls$versionNo"/>
+            <TARGET NAME="PAGE" PROPERTY="versionNum"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="userFullName"/>
+            <TARGET NAME="PAGE" PROPERTY="userFullName"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="userName"/>
+            <TARGET NAME="PAGE" PROPERTY="userName"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.ActivePendingRedirectTo">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$activeAndPendingTaskRedirections$activeAndPendingDtls$toUserFullName"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ActivePendingStartDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$activeAndPendingTaskRedirections$activeAndPendingDtls$startDateTime"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ActivePendingEndDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$activeAndPendingTaskRedirections$activeAndPendingDtls$endDateTime"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ActivePendingStatus">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$activeAndPendingTaskRedirections$activeAndPendingDtls$redirectionStatus"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <ACTION_SET ALIGNMENT="CENTER" TOP="FALSE">
+    <ACTION_CONTROL DEFAULT="true" IMAGE="SaveButton" LABEL="ActionControl.SaveButton.label" TYPE="SUBMIT">
+      <LINK PAGE_ID="Organization_userHome">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.CancelButton.label">
+      <LINK PAGE_ID="Organization_userHome">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

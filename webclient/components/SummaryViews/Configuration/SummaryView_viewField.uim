@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<PAGE
+  PAGE_ID="SummaryView_viewField"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYCONTEXT"
+        PROPERTY="description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="summaryViewFieldDefinitionID"/>
+  <PAGE_PARAMETER NAME="summaryViewGroupDefinitionID"/>
+  <PAGE_PARAMETER NAME="ruleSetID"/>
+  <PAGE_PARAMETER NAME="productID"/>
+  <PAGE_PARAMETER NAME="groupType"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="SummaryViewConfiguration"
+    NAME="DISPLAYCONTEXT"
+    OPERATION="getProductContextDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="productID"
+    />
+    <TARGET
+      NAME="DISPLAYCONTEXT"
+      PROPERTY="productID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="SummaryViewConfiguration"
+    NAME="DISPLAY"
+    OPERATION="readSummaryViewFieldDetails"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="summaryViewFieldDefinitionID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$summaryViewFieldDefinitionID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="EditButton"
+      LABEL="ActionControl.Label.Edit"
+    >
+      <LINK PAGE_ID="SummaryView_resolveModifyField">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="summaryViewFieldDefinitionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="summaryViewFieldDefinitionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="summaryViewGroupDefinitionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="summaryViewGroupDefinitionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="ruleSetID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="ruleSetID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="groupType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="groupType"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="DeleteButton"
+      LABEL="ActionControl.Label.Delete"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="SummaryView_cancelField"
+        WINDOW_OPTIONS="width=500"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="summaryViewFieldDefinitionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="summaryViewFieldDefinitionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$fieldName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fieldName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="summaryViewGroupDefinitionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="summaryViewGroupDefinitionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="ruleSetID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="ruleSetID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    >
+      <LINK PAGE_ID="SummaryView_viewGroup">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="summaryViewGroupDefinitionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="summaryViewGroupDefinitionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="ruleSetID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="ruleSetID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <CLUSTER
+    LABEL_WIDTH="30"
+    TITLE="Cluster.Title.Details"
+  >
+    <FIELD LABEL="Field.Label.FieldName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$fieldName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RDOName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$rdoName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DataItem">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dataItemName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DataType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dataType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

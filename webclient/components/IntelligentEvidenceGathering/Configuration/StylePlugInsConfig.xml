@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2017. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<pc:plug-ins
+    xmlns:pc="http://www.curamsoftware.com/curam/util/common/plug-in-config">
+
+  <pc:plug-in purpose="ieg-cluster-flow-layout-help" name="component-renderer"
+              class="curam.ieg.player.IEGHelpRenderer">
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="policy-label-prop">help.link.policy</pc:property>
+    <pc:property name="policy-desc-prop">help.link.desc.policy</pc:property>
+    <pc:property name="legislation-label-prop">help.link.legislation</pc:property>
+    <pc:property name="help-link-close-prop">help.link.close</pc:property>
+    <pc:property name="legislation-desc-prop">help.link.desc.legislation</pc:property>
+    <pc:property name="help-panel-close-prop">help.panel.close</pc:property>
+    <pc:property name="close-help-link-title-prop">help.close.title</pc:property>
+    <pc:property name="compile-cluster-help-prop">compile.cluster.help</pc:property>
+  </pc:plug-in>
+
+
+  <pc:plug-in purpose="ieg-cluster-flow-layout-body" name="component-renderer"
+              class="curam.ieg.player.FlowLayoutRenderer">
+    <pc:local-plug-in local-purpose="render-help"
+                      name="component-renderer"
+                      purpose="ieg-cluster-flow-layout-help"/>
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="label-align-prop">label.align</pc:property>
+    <pc:property name="more-info-desc-prop">help.link.desc.moreinfo</pc:property>
+    <pc:property name="more-info-desc-cxt-prop">help.link.desc.cxt.moreinfo</pc:property>
+  </pc:plug-in>
+
+  <pc:plug-in purpose="inline-layout" name="component-renderer"
+    class="curam.ieg.player.internal.InlineLayoutRenderer">
+    <pc:local-plug-in local-purpose="render-help"
+      name="component-renderer"
+      purpose="ieg-cluster-flow-layout-help"/>
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="policy-label-prop">help.link.policy</pc:property>
+    <pc:property name="policy-desc-prop">help.link.desc.policy</pc:property>
+    <pc:property name="legislation-label-prop">help.link.legislation</pc:property>
+    <pc:property name="legislation-desc-prop">help.link.desc.legislation</pc:property>
+    <pc:property name="more-info-desc-prop">help.link.desc.moreinfo</pc:property>
+    <pc:property name="more-info-desc-cxt-prop">help.link.desc.cxt.moreinfo</pc:property>
+    <pc:property name="close-help-link-title-prop">help.close.title</pc:property>
+    <pc:property name="compile-cluster-help-prop">compile.cluster.help</pc:property>
+    <pc:property name="help-panel-close-prop">help.panel.close</pc:property>
+  </pc:plug-in>
+
+  <!--
+  The renderer that puts a heading around the cluster body.
+  -->
+  <pc:plug-in purpose="ieg-cluster-flow-layout-with-help"
+              name="component-renderer"
+              class="curam.ieg.player.ContentHeadingRenderer">
+    <!--
+    The name of the properties resource in the resource store to use for
+    dynamic configuration and the names of the properties that will be used
+    from that resource. All are mandatory.
+    -->
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="edit-label-prop">action.edit</pc:property>
+    <pc:property name="edit-desc-prop">action.desc.edit</pc:property>
+    <pc:property name="edit-desc-cxt-prop">action.desc.cxt.edit</pc:property>
+    <pc:property name="more-info-label-prop">help.link.moreinfo</pc:property>
+    <pc:property name="more-info-desc-prop">help.link.desc.moreinfo</pc:property>
+    <pc:property name="more-info-desc-cxt-prop">help.link.desc.cxt.moreinfo</pc:property>
+    <pc:property name="hide-more-info-text-prop">help.link.moreinfo.hide</pc:property>
+    <pc:property name="hide-more-info-text-prop">help.link.moreinfo.hide</pc:property>
+    <pc:property name="cluster-link-edit-show-prop">cluster.link.edit.show</pc:property>
+
+    <!-- Optional property in the resource store -->
+    <pc:property name="compile-cluster-help-prop">compile.cluster.help</pc:property>
+    <pc:property name="show-cluster-help-dialog-prop">show.cluster.help.dialog</pc:property>
+
+    <!-- CSS class to apply to the "div" element that wraps the cluster. -->
+    <pc:property name="wrapper-div-class">cluster</pc:property>
+
+    <pc:local-plug-in local-purpose="render-help"
+                      name="component-renderer"
+                      purpose="ieg-cluster-flow-layout-help"/>
+    <pc:local-plug-in local-purpose="render-body"
+                      name="component-renderer"
+                      purpose="ieg-cluster-flow-layout-body"/>
+  </pc:plug-in>
+
+  <!--
+  The renderer that displays the banner at the top of the HTML page.
+  -->
+  <pc:plug-in purpose="ieg-page-banner"
+              name="component-renderer"
+              class="curam.ieg.player.IEGBannerRenderer">
+    <!--
+    The name of the properties resource in the resource store to use for
+    dynamic configuration and the names of the properties that will be used
+    from that resource. All are optional.
+    -->
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="sys-title-prop">banner.systitle</pc:property>
+    <pc:property name="app-title-prop">banner.apptitle</pc:property>
+    <pc:property name="banner-button-label-prop">banner.link.button</pc:property>
+    <pc:property name="banner-button-desc-prop">banner.link.button.desc</pc:property>
+    <pc:property name="banner-button-url-prop">banner.link.button.url</pc:property>
+    <pc:property name="region-role-banner">region.role.banner.value</pc:property>
+    <!--
+    Properties defining literal values to use if the above dynamic properties
+    are not defined or cannot be resolved. All are mandatory.
+    -->
+    <pc:property name="sys-title">CURAM</pc:property>
+    <pc:property name="app-title">CITIZEN WORKSPACE</pc:property>
+    <pc:property name="print-label">PRINT</pc:property>
+  </pc:plug-in>
+
+  <!--
+    The renderer that presents the script sections.
+  -->
+  <pc:plug-in purpose="ieg-section-panel"
+              name="component-renderer"
+              class="curam.ieg.player.IEGSectionPanelRenderer">
+    <!--
+              The name of the properties resource in the resource store to use for
+              dynamic configuration and the names of the properties that will be used
+              from that resource. All are mandatory.
+    -->
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="section-desc-prev-prop">sectionspanel.desc.prev</pc:property>
+    <pc:property name="section-desc-current-prop">sectionspanel.desc.current</pc:property>
+    <pc:property name="section-style-prop">sectionspanel.style</pc:property>
+    <pc:property name="section-max-display-prop">sectionspanel.horizontal.max.display</pc:property>
+    <pc:property name="section-truncate-limit-prop">sectionspanel.horizontal.truncate.limit</pc:property>
+    <pc:property name="section-arrow-move-amount-prop">sectionspanel.horizontal.arrow.move.amount</pc:property>
+    <pc:property name="section-back-arrow-title-prop">sectionspanel.horizontal.back.arrow.title</pc:property>
+    <pc:property name="section-next-arrow-title-prop">sectionspanel.horizontal.next.arrow.title</pc:property>
+  </pc:plug-in>
+
+  <!--
+    The renderer that presents the header and body for lists of data. Based
+    on configuration settings, the render may either both the header and body
+    for a list or just the body alone. The renderer produces only the body for
+    a list when the style list as a cluster property has been specified as
+    in that scenario, the Content Heading Renderer will have already produced
+    the header for the list.
+  -->
+  <pc:plug-in purpose="ieg-list-layout-header-and-body"
+    name="component-renderer"
+              class="curam.ieg.player.IEGListRenderer">
+    <!--
+    The name of the properties resource in the resource store to use for
+    dynamic configuration and the names of the properties that will be used
+    from that resource. All are mandatory.
+    -->
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="add-label-prop">list.action.add</pc:property>
+    <pc:property name="add-desc-prop">list.action.desc.add</pc:property>
+    <pc:property name="add-select-desc-prop">list.action.desc.add.select</pc:property>
+    <pc:property name="edit-label-prop">list.action.edit</pc:property>
+    <pc:property name="edit-desc-prop">list.action.desc.edit</pc:property>
+    <pc:property name="delete-label-prop">list.action.delete</pc:property>
+    <pc:property name="delete-desc-prop">list.action.desc.delete</pc:property>
+    <pc:property name="delete-confirm-prop">list.action.delete.confirm</pc:property>
+    <pc:property name="no-data-text">list.no.data.text</pc:property>
+    <pc:property name="action-label-prop">list.action.label</pc:property>
+    <pc:property name="label-align-prop">label.align</pc:property>
+    <pc:property name="delete-confirm-title-prop">confirm.delete.title</pc:property>
+    <pc:property name="delete-confirm-message-prop">confirm.delete.message</pc:property>
+    <pc:property name="delete-confirm-ok-button-prop">confirm.delete.ok.button</pc:property>
+    <pc:property name="delete-confirm-cancel-button-prop">confirm.delete.cancel.button</pc:property>
+    <pc:property name="list-link-add-show-prop">list.link.add.show</pc:property>
+    <pc:property name="more-info-desc-prop">help.link.desc.moreinfo</pc:property>
+    <pc:property name="more-info-desc-cxt-prop">help.link.desc.cxt.moreinfo</pc:property>
+    <pc:property name="style-list-as-cluster">style.list.as.cluster</pc:property>
+    <pc:property name="help-panel-close-prop">help.panel.close</pc:property>
+    <pc:property name="close-help-link-title-prop">help.close.title</pc:property>
+    <pc:property name="table-generic-summary">table.generic.summary</pc:property>
+   	<!--
+    The values to use for alt texts on person images.
+    -->
+    <pc:property name="persontabs-adult-male-alt">persontabs.adult.male.alt</pc:property>
+    <pc:property name="persontabs-adult-female-alt">persontabs.adult.female.alt</pc:property>
+    <pc:property name="persontabs-child-male-alt">persontabs.child.male.alt</pc:property>
+    <pc:property name="persontabs-child-female-alt">persontabs.child.female.alt</pc:property>
+  </pc:plug-in>
+
+  <!--
+    The renderer that presents the header and body for lists of data, for
+	use by NPG.
+  -->
+  <pc:plug-in purpose="npg-list-layout-header-and-body"
+    name="component-renderer"
+              class="curam.ieg.player.NPGListRenderer">
+    <!--
+    The name of the properties resource in the resource store to use for
+    dynamic configuration and the names of the properties that will be used
+    from that resource. All are mandatory.
+    -->
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="add-label-prop">list.action.add</pc:property>
+    <pc:property name="add-desc-prop">list.action.desc.add</pc:property>
+    <pc:property name="add-select-desc-prop">list.action.desc.add.select</pc:property>
+    <pc:property name="edit-label-prop">list.action.edit</pc:property>
+    <pc:property name="edit-desc-prop">list.action.desc.edit</pc:property>
+    <pc:property name="delete-label-prop">list.action.delete</pc:property>
+    <pc:property name="delete-desc-prop">list.action.desc.delete</pc:property>
+    <pc:property name="delete-confirm-prop">list.action.delete.confirm</pc:property>
+    <pc:property name="no-data-text">list.no.data.text</pc:property>
+    <pc:property name="action-label-prop">list.action.label</pc:property>
+    <pc:property name="label-align-prop">label.align</pc:property>
+    <pc:property name="delete-confirm-title-prop">confirm.delete.title</pc:property>
+    <pc:property name="delete-confirm-message-prop">confirm.delete.message</pc:property>
+    <pc:property name="delete-confirm-ok-button-prop">confirm.delete.ok.button</pc:property>
+    <pc:property name="delete-confirm-cancel-button-prop">confirm.delete.cancel.button</pc:property>
+    <pc:property name="more-info-desc-prop">help.link.desc.moreinfo</pc:property>
+    <pc:property name="more-info-desc-cxt-prop">help.link.desc.cxt.moreinfo</pc:property>
+    <pc:property name="style-list-as-cluster">style.list.as.cluster</pc:property>
+    <pc:property name="help-panel-close-prop">help.panel.close</pc:property>
+    <pc:property name="close-help-link-title-prop">help.close.title</pc:property>
+  </pc:plug-in>
+
+  <!--
+    The renderer that presents lists of data. It renders the heading of the
+    list first and then delegates to render the body of the list. Based on
+    configuration, the list heading may styled as a list or a cluster.
+  -->
+  <pc:plug-in purpose="ieg-list-layout"
+    name="component-renderer"
+    class="curam.ieg.player.ContentHeadingRenderer">
+
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="edit-label-prop">action.edit</pc:property>
+    <pc:property name="edit-desc-prop">action.desc.edit</pc:property>
+    <pc:property name="edit-desc-cxt-prop">action.desc.cxt.edit</pc:property>
+    <pc:property name="more-info-label-prop">help.link.moreinfo</pc:property>
+    <pc:property name="more-info-desc-prop">help.link.desc.moreinfo</pc:property>
+    <pc:property name="more-info-desc-cxt-prop">help.link.desc.cxt.moreinfo</pc:property>
+    <pc:property name="hide-more-info-text-prop">help.link.moreinfo.hide</pc:property>
+    <pc:property name="style-list-as-cluster">style.list.as.cluster</pc:property>
+    <pc:property name="add-label-prop">list.action.add</pc:property>
+    <pc:property name="add-desc-prop">list.action.desc.add</pc:property>
+    <pc:property name="add-select-desc-prop">list.action.desc.add.select</pc:property>
+    <pc:property name="show-cluster-help-dialog-prop">show.cluster.help.dialog</pc:property>
+    <pc:property name="compile-cluster-help-prop">compile.cluster.help</pc:property>
+
+    <pc:local-plug-in local-purpose="render-body"
+                      name="component-renderer"
+                      purpose="ieg-list-layout-header-and-body"/>
+  </pc:plug-in>
+
+  <!--
+  The renderer that presents the relationships.
+  -->
+  <pc:plug-in purpose="ieg-relationships-panel"
+              name="component-renderer"
+              class="curam.ieg.player.IEGRelationshipsRenderer">
+    <!--
+    The name of the properties resource in the resource store to use for
+    dynamic configuration and the names of the properties that will be used
+    from that resource. All are optional.
+    -->
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="rel-type-domain-prop">relationship.type.domain.name</pc:property>
+    <pc:property name="rel-capture-item-1-prop">relationship.capture.item.1</pc:property>
+    <pc:property name="rel-capture-item-2-prop">relationship.capture.item.2</pc:property>
+    <pc:property name="rel-capture-item-3-prop">relationship.capture.item.3</pc:property>
+    <pc:property name="relationship-person-label-maxLength">relationship.person.name.maxLength</pc:property>
+
+    <!--
+    The literal value to use if "rel-type-domain-prop" is not defined or if
+    it evaluates to nothing. This is mandatory.
+    -->
+    <pc:property name="rel-type-domain">IEG_RELATIONSHIP_TYPE</pc:property>
+
+    <!--
+    The literal values to use if the three "rel-capture-item-X-prop" properties
+    are not defined or if they evaluate to nothing. These are mandatory. Valid
+    values are:
+    "from": Represents the text displayed for the first person in the
+          relationship.
+    "input": Represents the input control used to capture the relationship type.
+    "to": Represents the text displayed for the second person in the
+          relationship.
+
+     Note: For RTL locales these properties do not have to be customized. They
+     will automatically be drawn in the specified order below from right to
+     left.
+    -->
+    <pc:property name="rel-capture-item-1">from</pc:property>
+    <pc:property name="rel-capture-item-2">input</pc:property>
+    <pc:property name="rel-capture-item-3">to</pc:property>
+
+	<!--
+    The values to use for alt texts on person images.
+    -->
+    <pc:property name="persontabs-adult-male-alt">persontabs.adult.male.alt</pc:property>
+    <pc:property name="persontabs-adult-female-alt">persontabs.adult.female.alt</pc:property>
+    <pc:property name="persontabs-child-male-alt">persontabs.child.male.alt</pc:property>
+    <pc:property name="persontabs-child-female-alt">persontabs.child.female.alt</pc:property>
+  </pc:plug-in>
+
+  <!--
+    The renderer that presents the header and body for relationship summary
+    pages. Based on configuration settings, the render may either both the
+    header and body for a list or just the body alone. The renderer produces
+    only the body for a list when the style list as a cluster property has
+    been specified as in that scenario, the Content Heading Renderer will have
+    already produced the header for the list.
+  -->
+  <pc:plug-in purpose="ieg-relationship-summary-header-and-body"
+    name="component-renderer"
+              class="curam.ieg.player.IEGRelationshipsSummaryRenderer">
+
+    <!--
+    The name of the properties resource in the resource store to use for
+    dynamic configuration and the names of the properties that will be used
+    from that resource. All but "rel-type-domain-prop" are mandatory.
+    -->
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="label-align-prop">label.align</pc:property>
+    <pc:property name="edit-label-prop">list.action.edit</pc:property>
+    <pc:property name="edit-desc-prop">list.action.desc.edit</pc:property>
+    <pc:property name="rel-type-domain-prop">relationship.type.domain.name</pc:property>
+    <pc:property name="rel-from-label-prop">relationship.from.label</pc:property>
+    <pc:property name="rel-type-label-prop">relationship.type.label</pc:property>
+    <pc:property name="rel-to-label-prop">relationship.to.label</pc:property>
+    <pc:property name="rel-action-label-prop">relationship.action.label</pc:property>
+    <pc:property name="style-list-as-cluster">style.list.as.cluster</pc:property>
+    <!--
+    The literal value to use if "rel-type-domain-prop" is not defined or if
+    it evaluates to nothing. This is mandatory.
+    -->
+    <pc:property name="rel-type-domain">IEG_RELATIONSHIP_TYPE</pc:property>
+  </pc:plug-in>
+
+  <!--
+    The renderer that presents a summary of the relationships. It renders the
+    heading of the relationship summary first and then delegates to render
+    the body of the summary. Based on configuration, the list heading may
+    styled as a list or a cluster.
+  -->
+  <pc:plug-in purpose="ieg-relationship-summary-list"
+    name="component-renderer"
+    class="curam.ieg.player.ContentHeadingRenderer">
+
+    <!-- The properties pertinent to the Content Heading Renderer. -->
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="edit-label-prop">action.edit</pc:property>
+    <pc:property name="edit-desc-prop">action.desc.edit</pc:property>
+    <pc:property name="edit-desc-cxt-prop">action.desc.cxt.edit</pc:property>
+    <pc:property name="more-info-label-prop">help.link.moreinfo</pc:property>
+    <pc:property name="more-info-desc-prop">help.link.desc.moreinfo</pc:property>
+    <pc:property name="more-info-desc-cxt-prop">help.link.desc.cxt.moreinfo</pc:property>
+    <pc:property name="hide-more-info-text-prop">help.link.moreinfo.hide</pc:property>
+    <pc:property name="style-list-as-cluster">style.list.as.cluster</pc:property>
+    <pc:property name="show-cluster-help-dialog-prop">show.cluster.help.dialog</pc:property>
+    <pc:property name="compile-cluster-help-prop">compile.cluster.help</pc:property>
+
+    <pc:local-plug-in local-purpose="render-body"
+      name="component-renderer"
+      purpose="ieg-relationship-summary-header-and-body"/>
+  </pc:plug-in>
+
+  <!--
+  The renderer that displays the page title.
+  -->
+  <pc:plug-in purpose="ieg-page-title-panel"
+              name="component-renderer"
+              class="curam.ieg.player.IEGPageTitleRenderer">
+    <!--
+    The name of the properties resource in the resource store to use for
+    dynamic configuration and the names of the properties that will be used
+    from that resource. All are mandatory.
+    -->
+  <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="image-width-prop">pagetitle.imagecell.width</pc:property>
+    <pc:property name="policy-label-prop">help.link.policy</pc:property>
+    <pc:property name="policy-desc-prop">help.link.desc.policy</pc:property>
+    <pc:property name="legislation-label-prop">help.link.legislation</pc:property>
+    <pc:property name="legislation-desc-prop">help.link.desc.legislation</pc:property>
+  </pc:plug-in>
+
+  <!--
+  The renderer that displays the skip fields.
+  -->
+  <pc:plug-in purpose="ieg-skip-field"
+              name="component-renderer"
+              class="curam.ieg.player.IEGSkipFieldRenderer">
+
+  <!--The name of the properties resource in the resource store to use for
+  dynamic configuration and the names of the properties that will be used
+  from that resource. All are mandatory.-->
+
+  <pc:property name="config-resource">ieg-config-properties</pc:property>
+
+  </pc:plug-in>
+
+  <!--
+  The renderer that displays the progress bar.
+  -->
+  <pc:plug-in purpose="ieg-progress-bar"
+              name="component-renderer"
+              class="curam.ieg.player.IEGProgressBarRenderer">
+    <!--
+    The name of the properties resource in the resource store to use for
+    dynamic configuration and the names of the properties that will be used
+    from that resource. All are mandatory.
+    -->
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="desc-prop">progress.bar.text</pc:property>
+    <pc:property name="region-role-complementary">region.role.complementary.value</pc:property>
+  </pc:plug-in>
+
+  <!--
+  The renderer that displays an information label.
+  -->
+  <pc:plug-in purpose="ieg-informational-message"
+              name="component-renderer"
+              class="curam.ieg.player.IEGInformationalMessageRenderer">
+    <!--
+    The name of the properties resource in the resource store to use for
+    dynamic configuration and the names of the properties that will be used
+    from that resource. All are optional.
+    -->
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="infoMessage-text-prop">informational.message.text</pc:property>
+    <pc:property name="infoMessage-external-image-prop">informational.message.external.image</pc:property>
+    <pc:property name="infoMessage-internal-image-prop">informational.message.internal.image</pc:property>
+  </pc:plug-in>
+
+  <!--
+  The renderer that displays error messages.
+  -->
+  <pc:plug-in purpose="ieg-messages-panel"
+              name="component-renderer"
+              class="curam.ieg.player.IEGMessagesPanelRenderer">
+    <!--
+    The name of the properties resource in the resource store to use for
+    dynamic configuration and the names of the properties that will be used
+    from that resource. All are mandatory.
+    -->
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="desc-prop">messages.panel.description</pc:property>
+    <pc:property name="reset-script-prop">messages.panel.reset.script.message</pc:property>
+  </pc:plug-in>
+
+  <!--
+  The renderer that displays navigation buttons.
+  -->
+  <pc:plug-in purpose="ieg-navigation-panel"
+              name="component-renderer"
+              class="curam.ieg.player.IEGNavigationPanelRenderer">
+    <!--
+    The name of the properties resource in the resource store to use for
+    dynamic configuration and the names of the properties that will be used
+    from that resource. All are optional.
+    -->
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="back-label-prop">navpanel.button.back.text</pc:property>
+    <pc:property name="exit-label-prop">navpanel.button.exit.text</pc:property>
+    <pc:property name="quit-label-prop">navpanel.button.quit.text</pc:property>
+    <pc:property name="next-label-prop">navpanel.button.next.text</pc:property>
+    <pc:property name="back-desc-prop">navpanel.button.back.desc</pc:property>
+    <pc:property name="exit-desc-prop">navpanel.button.exit.desc</pc:property>
+    <pc:property name="quit-desc-prop">navpanel.button.quit.desc</pc:property>
+    <pc:property name="next-desc-prop">navpanel.button.next.desc</pc:property>
+    <!--
+    Properties defining literal values to use if the above dynamic properties
+    are not defined or cannot be resolved. All are mandatory.
+    -->
+    <pc:property name="back-label">Back</pc:property>
+    <pc:property name="exit-label">Exit</pc:property>
+    <pc:property name="quit-label">Quit</pc:property>
+    <pc:property name="next-label">Next</pc:property>
+    <pc:property name="back-desc">Back</pc:property>
+    <pc:property name="exit-desc">Exit</pc:property>
+    <pc:property name="quit-desc">Quit</pc:property>
+    <pc:property name="next-desc">Next</pc:property>
+
+  </pc:plug-in>
+
+  <!--
+  The renderer that displays navigation buttons in a modal dialog.
+  -->
+  <pc:plug-in purpose="ieg-modal-nav-panel"
+              name="component-renderer"
+              class="curam.ieg.player.IEGNavigationPanelModalRenderer">
+    <!--
+    The name of the properties resource in the resource store to use for
+    dynamic configuration and the names of the properties that will be used
+    from that resource. All are optional.
+    -->
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="back-label-prop">navpanel.button.back.text</pc:property>
+    <pc:property name="exit-label-prop">navpanel.button.exit.text</pc:property>
+    <pc:property name="quit-label-prop">navpanel.button.quit.text</pc:property>
+    <pc:property name="next-label-prop">navpanel.button.next.text</pc:property>
+    <pc:property name="back-desc-prop">navpanel.button.back.desc</pc:property>
+    <pc:property name="exit-desc-prop">navpanel.button.exit.desc</pc:property>
+    <pc:property name="quit-desc-prop">navpanel.button.quit.desc</pc:property>
+    <pc:property name="next-desc-prop">navpanel.button.next.desc</pc:property>
+    <pc:property name="close-on-exit-prop">modal.close.dialog.on.exit</pc:property>
+
+    <!--
+    Properties defining literal values to use if the above dynamic properties
+    are not defined or cannot be resolved. All are mandatory.
+    -->
+    <pc:property name="back-label">Back</pc:property>
+    <pc:property name="exit-label">Exit</pc:property>
+    <pc:property name="quit-label">Quit</pc:property>
+    <pc:property name="next-label">Next</pc:property>
+    <pc:property name="back-desc">Back</pc:property>
+    <pc:property name="exit-desc">Exit</pc:property>
+    <pc:property name="quit-desc">Quit</pc:property>
+    <pc:property name="next-desc">Next</pc:property>
+
+  </pc:plug-in>
+
+  <pc:plug-in purpose="ieg-notes-button"
+              name="component-renderer"
+              class="curam.ieg.player.IEGNotesButtonRenderer">
+   <!--
+   The name of the properties resource in the resource store to use for
+   dynamic configuration and the names of the properties that will be used
+   from that resource. All are optional.
+   -->
+   <pc:property name="config-resource">ieg-config-properties</pc:property>
+   <pc:property name="notes-label-prop">notes.button.text</pc:property>
+   <!--
+   Properties defining literal values to use if the above dynamic properties
+   are not defined or cannot be resolved. All are mandatory.
+   -->
+   <pc:property name="notes-label">Notes</pc:property>
+  </pc:plug-in>
+
+  <pc:plug-in purpose="ieg-set-focus"
+      name="component-renderer"
+      class="curam.ieg.player.IEGSetFocusRenderer">
+  <!--
+  The name of the properties resource in the resource store to use for
+  dynamic configuration and the names of the properties that will be used
+  from that resource. All are optional.
+  -->
+  <pc:property name="set-focus-prop">true</pc:property>
+
+  </pc:plug-in>
+
+  <!--
+  The renderer that displays the person tabs.
+  -->
+  <pc:plug-in purpose="ieg-person-tabs"
+              name="component-renderer"
+              class="curam.ieg.player.IEGPersonTabsPanelRenderer">
+    <!--
+    The name of the properties resource in the resource store to use for
+    dynamic configuration and the names of the properties that will be used
+    from that resource. All are mandatory.
+    -->
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+
+    <!--
+    A property that indicates whether the persons tab panel should be displayed
+    if there is only one person, where it would otherwise be displayed.
+    -->
+   <pc:property name="persontabs-hide-panel-if-one-person">persontabs.hide.panel.if.one.person</pc:property>
+   	<!--
+    The values to use for alt texts on person images.
+    -->
+   <pc:property name="persontabs-adult-male-alt">persontabs.adult.male.alt</pc:property>
+   <pc:property name="persontabs-adult-female-alt">persontabs.adult.female.alt</pc:property>
+   <pc:property name="persontabs-child-male-alt">persontabs.child.male.alt</pc:property>
+   <pc:property name="persontabs-child-female-alt">persontabs.child.female.alt</pc:property>
+   <pc:property name="persontabs-unknown-person-alt">persontabs.unknown.person.alt</pc:property>
+   <pc:property name="persontabs-current-person-alt">persontabs.current.person.alt</pc:property>
+   <pc:property name="persontabs-active-alt">persontabs.active.alt</pc:property>
+   <pc:property name="persontabs-inactive-alt">persontabs.inactive.alt</pc:property>
+   <!--
+   Properties that define the value a screen reader should announce when a known or unknown 
+   person tab is highlighted.
+   -->
+   <pc:property name="persontabs-selected-accessability-announcment">persontabs.selected.accessability.announcment</pc:property>
+   <pc:property name="persontabs-unknown-accessability-announcment">persontabs.unknown.accessability.announcment</pc:property>
+  </pc:plug-in>
+
+  <!--
+  View renderer for multiple-select question answer values.
+  -->
+  <pc:plug-in purpose="ieg-view-ct" name="component-renderer"
+              class="curam.ieg.player.internal.IEGCTListViewRenderer">
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="layout-optimum-columns">multiselect.layout.optimum.columns</pc:property>
+  </pc:plug-in>
+
+  <!--
+  View renderer for codetable hierarchies.
+  -->
+  <pc:plug-in purpose="ieg-view-cthierarchy" name="component-renderer"
+    class="curam.ieg.player.internal.IEGCTHierarchyListViewRenderer">
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+  </pc:plug-in>
+
+  <!--
+  View renderer for caretaker questions on relationship pages.
+  -->
+  <pc:plug-in purpose="ieg-view-caretaker" name="component-renderer"
+              class="curam.ieg.player.internal.IEGCaretakerQuestionViewRenderer">
+
+    <!--
+    The name of the properties resource in the resource store to use for
+    dynamic configuration and the names of the properties that will be used
+    from that resource. All are mandatory.
+    -->
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+
+  </pc:plug-in>
+
+  <!--
+  View renderer for caretaker questions on relationship pages.
+  -->
+  <pc:plug-in purpose="ieg-view-relationship-type" name="component-renderer"
+              class="curam.ieg.player.internal.IEGRelationshipTypeViewRenderer">
+     <!--
+    The name of the properties resource in the resource store to use for
+    dynamic configuration and the names of the properties that will be used
+    from that resource. All are mandatory.
+    -->
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+
+  </pc:plug-in>
+
+  <!--
+  Renderer that is used to delegate to custom renderers specified in an IEG Script
+  -->
+  <pc:plug-in purpose="ieg-custom-output" name="component-renderer"
+              class="curam.ieg.player.IEGCustomOutputRenderer">
+    <!--
+    The name of the properties resource in the resource store to use for
+    dynamic configuration and the names of the properties that will be used
+    from that resource. All are mandatory.
+    -->
+    <pc:property name="config-resource">ieg-config-properties</pc:property>
+    <pc:property name="renderer-class-invalid-prop">custom.output.class.invalid</pc:property>
+
+  </pc:plug-in>
+
+
+</pc:plug-ins>

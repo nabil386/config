@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2003, 2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information"). You                 -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to forward a task.                           -->
+<PAGE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PAGE_ID="WorkAllocation_forwardTask" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE NAME="PAGE" PROPERTY="pageDescription" />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE CLASS="WorkAllocation" NAME="ACTION" OPERATION="forwardTask" PHASE="ACTION" />
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+    <ACTION_CONTROL IMAGE="SaveButton" TYPE="SUBMIT" LABEL="ActionControl.SaveButton.label">
+      <LINK PAGE_ID="WorkAllocation_viewTask" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="taskID" />
+          <TARGET NAME="PAGE" PROPERTY="taskID" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.CancelButton.label">
+      <LINK PAGE_ID="WorkAllocation_viewTask" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="taskID" />
+          <TARGET NAME="PAGE" PROPERTY="taskID" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <PAGE_PARAMETER NAME="taskID" />
+  <PAGE_PARAMETER NAME="pageDescription" />
+  <PAGE_PARAMETER NAME="versionNo" />
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="taskID" />
+    <TARGET NAME="ACTION" PROPERTY="taskID" />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="versionNo" />
+    <TARGET NAME="ACTION" PROPERTY="versionNo" />
+  </CONNECT>
+  <CLUSTER LABEL_WIDTH="30" TITLE="Cluster.Title.AssignmentDetails">
+    <CONTAINER LABEL="Field.Label.ForwardTo">
+      <FIELD>
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="forwardToType" />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="forwardToID" />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+  <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Title.Comments">
+    <!-- BEGIN, CR00408407, VT -->
+    <FIELD HEIGHT="3" LABEL="Field.Label.Comments">
+      <!-- END, CR00408407 -->
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="comment" />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>
+

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007, 2009, 2010 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Insert the details for a close user.                                   -->
+<?curam-deprecated Since Curam 6.0, This UIM has been deprecated because editable fields contained in the UIM have been replaced. 
+This UIM has been replaced by Organization_closeOrganizationUser. See release note CR00225257?>
+<PAGE
+  PAGE_ID="Organization_closeUser"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="userName"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAY_SI"
+    OPERATION="readCloseUserDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="ACTION_SI"
+    OPERATION="closeUser"
+    PHASE="ACTION"
+  />
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION_SI"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="DISPLAY_SI"
+      PROPERTY="key$userName"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION_SI"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="ACTION_SI"
+      PROPERTY="userName"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY_SI"
+      PROPERTY="leadPositionInd"
+    />
+    <TARGET
+      NAME="ACTION_SI"
+      PROPERTY="leadPositionInd"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        PAGE_ID="Organization_userHome"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+      <LINK
+        PAGE_ID="Organization_userHome"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.ClosureDetails"
+  >
+
+
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION_SI"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.UsersSupervisor">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_SI"
+          PROPERTY="supervisorName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.LeadUser">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_SI"
+          PROPERTY="leadPositionInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="25"
+    NUM_COLS="1"
+    TITLE="Cluster.Title.TaskRedirectionDetails"
+  >
+
+
+    <FIELD LABEL="Field.Label.ReassignTaskTo">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION_SI"
+          PROPERTY="assignTaskTo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+</PAGE>

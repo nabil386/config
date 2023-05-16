@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows a user to view a planned item attachment.             -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_viewAttachmentForPlannedItem"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- Page Title information for this page -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- Page Parameters used in this page -->
+  <PAGE_PARAMETER NAME="attachmentID"/>
+  <PAGE_PARAMETER NAME="plannedItemID"/>
+  <PAGE_PARAMETER NAME="plannedItemAttachmentLinkID"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <!-- Display Phase server access beans used in this page -->
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY"
+    OPERATION="viewAttachment"
+  />
+
+
+  <!-- Page level connect statements used in this page -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="plannedItemAttachmentLinkID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="plannedItemAttachmentLinkKey$plannedItemAttachmentLinkID"
+    />
+  </CONNECT>
+
+
+  <!-- Cluster for displaying the attachment details -->
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+  >
+    <CONTAINER LABEL="Field.Label.Name">
+      <WIDGET TYPE="FILE_DOWNLOAD">
+        <WIDGET_PARAMETER NAME="LINK_TEXT">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$attachmentName"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="PARAMS">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="plannedItemAttachmentLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="plannedItemAttachmentLinkID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.FileLocation">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileLocation"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DocumentType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="documentType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.FileReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileReference"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

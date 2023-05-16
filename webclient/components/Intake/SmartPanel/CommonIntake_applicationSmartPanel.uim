@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE PAGE_ID="CommonIntake_applicationSmartPanel">
+
+
+  <!-- No ideal because the calls are not actually required but to get
+       the domain on the page we need to do this -->
+  <SERVER_INTERFACE
+    CLASS="Advisor"
+    NAME="ADVISOR"
+    OPERATION="getAdvice"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="QuickNotes"
+    NAME="QUICKNOTESDIS"
+    OPERATION="readForInitialDisplay"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="QuickNotes"
+    NAME="QUICKNOTESSUB"
+    OPERATION="createQuickNotes"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="relatedID"/>
+  <PAGE_PARAMETER NAME="noteType"/>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="smart-panel-cluster"
+    TITLE="Cluster.Label.AdviceList"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="ADVISOR"
+          PROPERTY="result$adviceXML"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="smart-panel-cluster"
+    TITLE="Cluster.Label.QuickNotes"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="QUICKNOTESDIS"
+          PROPERTY="QuickNotesInitialDisplay"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER SHOW_LABELS="false">
+    <CONDITION>
+      <IS_TRUE
+        NAME="QUICKNOTESDIS"
+        PROPERTY="showSubmitButton"
+      />
+    </CONDITION>
+
+
+    <ACTION_SET>
+      <ACTION_CONTROL TYPE="SUBMIT">
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+</PAGE>

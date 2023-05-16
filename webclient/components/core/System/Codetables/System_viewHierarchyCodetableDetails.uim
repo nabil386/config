@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page displays the hierarchy details of a codetable.               -->
+<PAGE
+  PAGE_ID="System_viewHierarchyCodetableDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="System"
+    NAME="listCodesBean"
+    OPERATION="listCodes"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="System"
+    NAME="readCodetableHierarchyDetailsBean"
+    OPERATION="readCodetableHierarchyDetails"
+  />
+
+
+  <PAGE_PARAMETER NAME="codetableName"/>
+  <PAGE_PARAMETER NAME="hierarchyName"/>
+  <!-- BEGIN, CR00392403, JC -->
+  <PAGE_PARAMETER NAME="codetableDisplay"/>
+  <PAGE_PARAMETER NAME="parentTableName"/>
+  <PAGE_PARAMETER NAME="parentTableDisplay"/>
+  <!-- END, CR00392403 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="codetableName"
+    />
+    <TARGET
+      NAME="listCodesBean"
+      PROPERTY="codetableName$name"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="codetableName"
+    />
+    <TARGET
+      NAME="readCodetableHierarchyDetailsBean"
+      PROPERTY="codetableName$name"
+    />
+  </CONNECT>
+
+
+  <LIST TITLE="List.Title.CodetableItems">
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="System_viewHierarchyCodetableItemDetails">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="hierarchyName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="hierarchyName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="codetableName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="codetableName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="listCodesBean"
+            PROPERTY="code"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="code"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00392403, JC -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="codetableDisplay"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="codetableDisplay"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="parentTableName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="parentTableName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="parentTableDisplay"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="parentTableDisplay"
+          />
+        </CONNECT>
+        <!-- END, CR00392403 -->
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.ModifyParent">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_modifyParentCodePopup"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="hierarchyName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="hierarchyName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="codetableName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="codetableName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listCodesBean"
+              PROPERTY="code"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="code"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listCodesBean"
+              PROPERTY="parentCode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="parentCode"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="readCodetableHierarchyDetailsBean"
+              PROPERTY="parent"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="parentCodetable"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.ModifyChildren">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_modifyChildrenCodePopup"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="hierarchyName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="hierarchyName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="codetableName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="codetableName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listCodesBean"
+              PROPERTY="code"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="code"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.Description"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="listCodesBean"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Value"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="listCodesBean"
+          PROPERTY="code"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ParentCode"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="listCodesBean"
+          PROPERTY="parentCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

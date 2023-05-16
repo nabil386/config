@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2011, 2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows a user to view a verification waiver record           -->
+<PAGE
+  PAGE_ID="VerificationApplication_viewWaiverDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- The page title for this page -->
+  <PAGE_TITLE DESCRIPTION="Pagetitle.Description">
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Pagetitle.Description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- Declare the 'display' server bean -->
+  <SERVER_INTERFACE
+    CLASS="VerificationApplication"
+    NAME="DISPLAY"
+    OPERATION="readWaiverDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- Page parameters to this page -->
+  <PAGE_PARAMETER NAME="verificationWaiverID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="verificationWaiverID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$verificationWaiverID"
+    />
+  </CONNECT>
+
+
+  <!-- Fields on this page -->
+  <CLUSTER NUM_COLS="2">
+    <FIELD LABEL="Field.Label.startDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.endDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LastModifiedByUser">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="lastModifiedByUserFullName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.recordStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00416277, VT -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00416277 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

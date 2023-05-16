@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2008, 2014,. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2009, 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to add the custom basic plan item to sub goal-->
+<!--BEGIN, CR00234759, MR-->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_addCustomPlanItemToSubGoal"
+  WINDOW_OPTIONS="width=750"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!--END, CR00234759-->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00226831, LP -->
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY"
+    OPERATION="readPossibleOutcomesAndSubGoalNameDetailsForPlanItem"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00226831 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="ACTION"
+    OPERATION="createBasicPlanItemToSubGoal"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="planItemID"/>
+  <PAGE_PARAMETER NAME="plannedSubGoalID"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="planItemID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="planItemID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="planItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="planItemID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="plannedSubGoalID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="plannedSubGoalID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="plannedSubGoalID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="plannedSubGoalID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00161962, LJ -->
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="guidanceURL"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="createPlannedItemDetailsStruct$createPlannedItemDetailsStruct$plannedItemDtls$guidanceURL"
+    />
+  </CONNECT>
+  <!-- END, CR00161962 -->
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="true"
+  >
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+  <!--BEGIN, CR00234759, MR-->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+    <!--END, CR00234759-->
+
+
+    <FIELD LABEL="Field.Label.SubGoal">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="subGoalName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!--BEGIN CR00108988, GBA-->
+    <FIELD LABEL="Field.Label.Concerning">
+      <!--BEGIN, CR00146503, GBA-->
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="participantList$list$dtls$concernRoleID"
+          NAME="DISPLAY"
+          PROPERTY="participantList$list$dtls$concernRoleName"
+        />
+      </CONNECT>
+      <!--END, CR00146503-->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="concerningID"
+        />
+      </CONNECT>
+    </FIELD>
+    <!--END CR00108988-->
+
+
+    <FIELD LABEL="Field.Label.ExpectedStartDate">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="expectedStartDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ExpectedOutcome">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="plannedItemDtls$expectedOutcomeID"
+        />
+      </CONNECT>
+      <LINK>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="planItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="planItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00161962, LJ -->
+    <FIELD LABEL="Field.Label.GuidanceURL">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="guidanceURL"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_NEW="true"
+        URI_SOURCE_NAME="DISPLAY"
+        URI_SOURCE_PROPERTY="guidanceURL"
+      />
+    </FIELD>
+    <!-- END, CR00161962 -->
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="planItemName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00108992, ANK -->
+      <!-- Included the TARGET element to make the field editable -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <!-- END CR00108992, -->
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Sensitivity">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="sensitivityCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ExpectedEndDate">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="expectedEndDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EstimatedCost">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="estimatedCost"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <!--BEGIN CR00144311, GBA-->
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Label.Description"
+  >
+    <FIELD HEIGHT="4">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!--END CR00144311-->
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Label.Responsibility"
+  >
+
+
+    <FIELD LABEL="Field.Label.ResponsibilitySetToMe">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="responsibilitySetToMeInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ResponsibilitySetToSubGoalOwner">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="responsibilitySetToSubGoalOwnerInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ResponsibilitySetToUser">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="responsibilitySetToUser"
+        />
+      </CONNECT>
+    </FIELD>
+    <!--BEGIN CR00108988, GBA-->
+    <FIELD
+      LABEL="Field.Label.Participants"
+      USE_BLANK="true"
+    >
+      <!--BEGIN, CR00146503, GBA-->
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="respParticipantList$list$dtls$concernRoleID"
+          NAME="DISPLAY"
+          PROPERTY="respParticipantList$list$dtls$concernRoleName"
+        />
+      </CONNECT>
+      <!--END, CR00146503-->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="responsibilitySetToParticipant"
+        />
+      </CONNECT>
+    </FIELD>
+    <!--END CR00108988-->
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Label.Owner"
+  >
+
+
+    <FIELD LABEL="Field.Label.OwnerSetToSubGoalOwner">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="ownerSetToSubGoalOwnerInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.OwnerSetToUser">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="ownerSetToUser"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Label.Comments"
+  >
+    <!-- BEGIN, CR00417389, VT -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00417389 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

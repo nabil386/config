@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010, 2012 Curam Software Ltd.                         -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows users to view the list of external party office addresses   -->
+<PAGE
+  PAGE_ID="ExternalParty_listOfficeAddress" HIDE_CONDITIONAL_LINKS="false"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="BDMExternalParty"
+    NAME="DISPLAY"
+    OPERATION="listOfficeAddress"
+  />
+
+
+  <PAGE_PARAMETER NAME="externalPartyOfficeID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="externalPartyOfficeID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="officeKey$externalPartyOfficeID"
+    />
+  </CONNECT>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.OfficeHome"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ExternalParty_viewExternalPartyOffice"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="externalPartyOfficeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="externalPartyOfficeID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Addresses"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="ExternalParty_listOfficeAddress"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="externalPartyOfficeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="externalPartyOfficeID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.OfficeMembers"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ExternalParty_listOfficeMember"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="externalPartyOfficeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="externalPartyOfficeID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.PhoneNumbers"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ExternalParty_listOfficePhoneNumber"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="externalPartyOfficeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="externalPartyOfficeID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <LIST>
+
+
+    <DETAILS_ROW>
+
+
+      <INLINE_PAGE PAGE_ID="ExternalParty_viewOfficeAddress">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="officeAddressID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="officeAddressID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="officeName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="officeName"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+
+
+    </DETAILS_ROW>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <CONDITION>
+          <IS_TRUE NAME="DISPLAY" PROPERTY="result$displayAdminInd" />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ExternalParty_modifyOfficeAddress"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="officeAddressID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="officeAddressID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="officeName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="officeName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="DeleteButton"
+        LABEL="ActionControl.Label.Delete"
+      >
+        <!-- BEGIN, CR00306326, SG -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="result$displayAdminInd"
+          />
+        </CONDITION>
+        <!-- END, CR00306326 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ExternalParty_cancelOfficeAddress"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="officeAddressID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="officeAddressID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="officeName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="officeName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.Primary"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="primaryAddressInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="type"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Address"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="addressLine1"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.City"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="city"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.From"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.To"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+</PAGE>

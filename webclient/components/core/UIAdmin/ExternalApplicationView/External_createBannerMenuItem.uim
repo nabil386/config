@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed Materials - Property of IBM Copyright IBM Corporation 2012. All Rights Reserved. US Government Users Restricted Rights - Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp. -->
+<!-- Copyright (c) 2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description -->
+<!-- =========== -->
+<!--   -->
+<PAGE
+  PAGE_ID="External_createBannerMenuItem"
+  WINDOW_OPTIONS="width=780"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="type"/>
+  <PAGE_PARAMETER NAME="applicationID"/>
+  <PAGE_PARAMETER NAME="menuItemID"/>
+  <SERVER_INTERFACE
+    CLASS="ApplicationView"
+    NAME="DISPLAY"
+    OPERATION="readBannerMenuItemDetails"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="ApplicationView"
+    NAME="ACTION"
+    OPERATION="createBannerMenuItemDetails"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="applicationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="type"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="type"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="keyDetails$dtls$applicationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="type"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="keyDetails$type"
+    />
+  </CONNECT>
+  <CLUSTER LABEL_WIDTH="45">
+    <FIELD LABEL="Field.Label.Title">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="title"
+        />
+      </CONNECT>
+    </FIELD>
+    <WIDGET
+      LABEL="Field.Label.Icon"
+      TYPE="FILE_UPLOAD"
+      WIDTH="100"
+      WIDTH_UNITS="PERCENT"
+    >
+      <WIDGET_PARAMETER NAME="CONTENT">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="iconContents"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+      <WIDGET_PARAMETER NAME="FILE_NAME">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="iconName"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+      <WIDGET_PARAMETER NAME="CONTENT_TYPE">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="iconContentType"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+    </WIDGET>
+  </CLUSTER>
+  <CLUSTER LABEL_WIDTH="45">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="needsDescription"
+      />
+    </CONDITION>
+    <FIELD
+      HEIGHT="5"
+      LABEL="Field.Label.Text"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="text"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER LABEL_WIDTH="45">
+    <FIELD LABEL="Field.Label.Page.ID">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="pageID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER LABEL_WIDTH="45">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="isPersonType"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Hidden">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$hiddenForUserType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$hiddenForUserType"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <ACTION_SET>
+    <ACTION_CONTROL
+      LABEL="Control.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="Control.Label.Cancel">
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

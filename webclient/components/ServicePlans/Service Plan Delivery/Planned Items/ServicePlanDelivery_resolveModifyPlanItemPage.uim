@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012-2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2005, 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This jsp redirects the user to the Modify PlanItem Page.-->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_resolveModifyPlanItemPage"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String plannedItemID = request.getParameter("plannedItemID");
+      String description = request.getParameter("description");
+      String modifyPlanItemPageName="";
+      String modifyPlanItemPageParam="";
+      String url = "";
+  
+      if (plannedItemID == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "plannedItem");
+       throw e;
+       // END, CR00110216
+      }
+      
+      curam.interfaces.ServicePlanDeliveryPkg.ServicePlanDelivery_resolveModifyPlanItemPage_TH
+        th = new curam.interfaces.ServicePlanDeliveryPkg.ServicePlanDelivery_resolveModifyPlanItemPage_TH();
+        
+      th.setFieldValue(th.plannedItemIDKey$plannedItemIDKey$plannedItemIDKey$plannedItemID_idx,plannedItemID);
+
+      th.callServer();
+     
+      modifyPlanItemPageName=th.getFieldValue(th.result$modifyPageDetailsStruct$modifyPageDetailsStruct$modifyPageName_idx);
+      modifyPlanItemPageParam=th.getFieldValue(th.result$modifyPageDetailsStruct$modifyPageDetailsStruct$modifyPagePlanItemParamName_idx);
+      // BEGIN, CR00110216, SK
+      url = context + curam.omega3.request.RequestUtils.escapeURL(modifyPlanItemPageName) + "Page.do?" + curam.omega3.request.RequestUtils.escapeURL(modifyPlanItemPageParam) + "=" + curam.omega3.request.RequestUtils.escapeURL(plannedItemID) + "&amp;description=" + curam.omega3.request.RequestUtils.escapeURL(description);;
+      // END, CR00110216
+      url += "&amp;" + rh.getSystemParameters();  
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+    
+  </JSP_SCRIPTLET>
+</PAGE>

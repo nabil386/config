@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  PID 5725-H26
+
+  Copyright IBM Corporation 2007, 2013. All rights reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="Organization_SearchAndListBankBranch"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionIDProperty"
+    CLASS="Organization"
+    NAME="DISPLAY"
+    OPERATION="searchBankBranch"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="bankID"/>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.BankHome"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="Organization_bankHome"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="bankID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="bankID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.BankBranch"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="Organization_SearchAndListBankBranch"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="bankID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="bankID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="Participant"
+    NAME="IBANINDICATOR"
+    OPERATION="readIban"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="bankID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="bankID"
+    />
+  </CONNECT>
+  <CLUSTER>
+    <CLUSTER
+      NUM_COLS="2"
+      TITLE="Cluster.Filter.SearchCriteria"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="IBANINDICATOR"
+          PROPERTY="ibanInd"
+        />
+      </CONDITION>
+
+
+      <FIELD
+        LABEL="Field.Label.Name"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="DISPLAY"
+            PROPERTY="searchBankBranchCriteria$name"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.SortCode"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="DISPLAY"
+            PROPERTY="searchBankBranchCriteria$bankSortCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.AddressLine1"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="DISPLAY"
+            PROPERTY="addressLine1"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD CONTROL="SKIP"/>
+      <FIELD
+        LABEL="Field.Label.BIC"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="DISPLAY"
+            PROPERTY="searchBankBranchCriteria$bicOpt"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.AddressLine2"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="DISPLAY"
+            PROPERTY="addressLine2"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER
+      NUM_COLS="2"
+      TITLE="Cluster.Filter.SearchCriteria"
+    >
+      <CONDITION>
+        <IS_FALSE
+          NAME="IBANINDICATOR"
+          PROPERTY="ibanInd"
+        />
+      </CONDITION>
+      <FIELD
+        LABEL="Field.Label.Name"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="DISPLAY"
+            PROPERTY="searchBankBranchCriteria$name"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.SortCode"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="DISPLAY"
+            PROPERTY="searchBankBranchCriteria$bankSortCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.AddressLine1"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="DISPLAY"
+            PROPERTY="addressLine1"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.AddressLine2"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="DISPLAY"
+            PROPERTY="addressLine2"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        ACTION_ID="SEARCH"
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        ACTION_ID="RESETPAGE"
+        DEFAULT="false"
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="Organization_SearchAndListBankBranch"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    TITLE="Cluster.Filter.SearchResults"
+  >
+    <LIST>
+      <CONDITION>
+        <IS_FALSE
+          NAME="IBANINDICATOR"
+          PROPERTY="ibanInd"
+        />
+      </CONDITION>
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+        <ACTION_CONTROL
+          IMAGE="EditButton"
+          LABEL="ActionControl.Label.Edit"
+        >
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="Organization_modifyBankBranchFromList"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="bankBranchID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="bankBranchID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL
+          IMAGE="DeleteButton"
+          LABEL="ActionControl.Label.Delete"
+        >
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="Organization_cancelBankBranch"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="bankBranchID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="bankBranchID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="dtls$name"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="bankBranchName"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+
+
+      <FIELD
+        LABEL="Field.Title.Name"
+        WIDTH="55"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dtls$name"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Title.SortCode"
+        WIDTH="25"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dtls$bankSortCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Title.Status"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="bankBranchStatus"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <DETAILS_ROW>
+        <INLINE_PAGE PAGE_ID="Organization_viewBankBranch">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="bankBranchID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="bankBranchID"
+            />
+          </CONNECT>
+        </INLINE_PAGE>
+      </DETAILS_ROW>
+    </LIST>
+
+
+    <LIST>
+      <CONDITION>
+        <IS_TRUE
+          NAME="IBANINDICATOR"
+          PROPERTY="ibanInd"
+        />
+      </CONDITION>
+
+
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+        <ACTION_CONTROL
+          IMAGE="EditButton"
+          LABEL="ActionControl.Label.Edit"
+        >
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="Organization_modifyBankBranchFromList"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="bankBranchID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="bankBranchID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL
+          IMAGE="DeleteButton"
+          LABEL="ActionControl.Label.Delete"
+        >
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="Organization_cancelBankBranch"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="bankBranchID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="bankBranchID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="dtls$name"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="bankBranchName"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+
+
+      <FIELD
+        LABEL="Field.Title.Name"
+        WIDTH="45"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dtls$name"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Title.Bic"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$bankBranchList$dtls$bicOpt"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Title.SortCode"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dtls$bankSortCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Title.Status"
+        WIDTH="15"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="bankBranchStatus"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <DETAILS_ROW>
+        <INLINE_PAGE PAGE_ID="Organization_viewBankBranch">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="bankBranchID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="bankBranchID"
+            />
+          </CONNECT>
+        </INLINE_PAGE>
+      </DETAILS_ROW>
+    </LIST>
+  </CLUSTER>
+</PAGE>

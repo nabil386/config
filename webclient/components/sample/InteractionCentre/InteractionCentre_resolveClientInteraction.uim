@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2003, 2008, 2011 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- This jsp redirects the user the appropriate Interaction Centre page    -->
+<!-- based on the verification code returned.                               -->
+<PAGE
+  PAGE_ID="InteractionCentre_resolveClientInteraction"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String interactionCentreParameters = request.getParameter("ctiData");
+            
+      String url = "";
+      
+      curam.interfaces.InteractionCentrePkg.InteractionCentre_verifyInteractionCentreParameters_TH th =
+        new curam
+          .interfaces
+          .InteractionCentrePkg
+          .InteractionCentre_verifyInteractionCentreParameters_TH();
+
+      th.setFieldValue(th.key$dtls$interactionCentreParamters_idx, interactionCentreParameters);
+
+      th.callServer();
+
+      String participantID = th.getFieldValue(th.result$dtls$participantID_idx); 
+      String verificationCode = th.getFieldValue(th.result$dtls$verificationCode_idx);
+      String ctiDataReferenceNumber = th.getFieldValue(th.result$dtls$ctiDataReferenceNumber_idx);  
+      String interactionID = th.getFieldValue(th.result$dtls$interactionID_idx);  
+      String clientInteractionID = th.getFieldValue(th.result$dtls$recordedInteractionDetails$clientInteractionID_idx);       
+      String versionNo = th.getFieldValue(th.result$dtls$recordedInteractionDetails$versionNo_idx);                     
+                     
+      if (verificationCode.equals("ICV3")) {
+      url = context + "InteractionCentre_personSearchPage.do?interactionID=" + curam.omega3.request.RequestUtils.escapeURL(interactionID);
+      } else if (verificationCode.equals("ICV2")) {
+        url = context + "InteractionCentre_clientInteractionPage.do?ctiDataReferenceNumber="
+        + curam.omega3.request.RequestUtils.escapeURL(ctiDataReferenceNumber) + "&amp;interactionID=" + curam.omega3.request.RequestUtils.escapeURL(interactionID);
+      } else if (verificationCode.equals("ICV1")) {
+        url = context + "InteractionCentre_recordedPersonInteractionPage.do?participantID="
+        + curam.omega3.request.RequestUtils.escapeURL(participantID) +"&amp;interactionID=" + curam.omega3.request.RequestUtils.escapeURL(interactionID)
+          + "&amp;clientInteractionID=" + curam.omega3.request.RequestUtils.escapeURL(clientInteractionID) + "&amp;versionNo=" + curam.omega3.request.RequestUtils.escapeURL(versionNo);
+      }
+                 
+      url += "&amp;" + rh.getSystemParameters();  
+      
+      response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+</PAGE>

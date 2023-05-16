@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns="http://www.w3.org/1999/xhtml" xmlns:curam="http://www.curamsoftware.com/curam" version="2.0">
+    <jsp:directive.page isErrorPage="false" pageEncoding="UTF-8" contentType="text/html;charset=UTF-8" isELIgnored="false" language="java" buffer="32kb" errorPage="/cw/ErrorPage.do" />
+    <jsp:output omit-xml-declaration="yes" />
+    <jsp:text><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></jsp:text>
+    <jsp:scriptlet>
+        pageContext.setAttribute("pageLocale", 
+        curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+        pageContext.getSession()).getLocale().toString());
+    </jsp:scriptlet>
+    <curam:userPreferences localeCode="${pageScope.pageLocale}"/>
+    <jsp:scriptlet>
+        <![CDATA[
+
+      javax.servlet.http.HttpServletRequest hsRequest;
+      javax.servlet.http.HttpSession httpSession;
+      hsRequest = (javax.servlet.http.HttpServletRequest) request;
+      httpSession = hsRequest.getSession();
+      java.security.Principal userPrincipal = hsRequest.getUserPrincipal();
+      String url;
+      String contextPath = request.getContextPath();    
+
+      String playerID = request.getParameter("id");
+      
+      String motivationName = request.getParameter("name");
+      String navigatorID = (String) httpSession.getAttribute("curam.navigatorid");
+      
+      // Call setup motivation process
+      curam.interfaces.MotivationPkg.Motivation_setupMotivation_TH th = 
+        new curam.interfaces.MotivationPkg.Motivation_setupMotivation_TH(); 
+      th.setFieldValue(th.key$motivationType_idx, motivationName); 
+      th.setFieldValue(th.key$navigatorID_idx, navigatorID); 
+      th.setFieldValue(th.key$sessionID_idx, playerID);
+      th.callServer();
+      
+      String motivationID = th.getFieldValue(th.result$motivationID_idx);
+      
+      httpSession.setAttribute("curam.motivationid", motivationID);
+
+      String loginRequiredInd = th.getFieldValue(th.result$requiresLogin_idx);
+      String username = th.getFieldValue(th.result$username_idx);
+      String password = th.getFieldValue(th.result$password_idx);      
+      String usertype = th.getFieldValue(th.result$userType_idx);
+      String pagePlayerID = th.getFieldValue(th.result$pagePlayerID_idx);
+      String anonLoginAllowed = th.getFieldValue(th.result$anonLoginAllowed_idx);
+
+      String pageName = "";
+      String pageType = "";
+
+      if ("true".equals(loginRequiredInd)) {
+        pageName = "MotivationMandatoryLogin";
+        pageType = "";
+      } else {
+        pageName = "StartMotivation";
+        pageType = "resolve";      
+      }
+
+      if ("true".equals(loginRequiredInd) && userPrincipal != null) {
+      
+        // Set the session values required to forward to the correct page after logon
+        String params = "&id=" + pagePlayerID;
+        httpSession.setAttribute("curam.page.name", pageName);
+        httpSession.setAttribute("curam.page.params", params);
+        httpSession.setAttribute("curam.page.type", pageType);
+        httpSession.setAttribute("curam.userName", username);    
+        httpSession.setAttribute("curam.password", password);    
+        httpSession.setAttribute("curam.tempUser", "true");
+        httpSession.setAttribute("curam.userType", usertype);    
+        url = "../logon.jsp";
+
+      } else {
+      
+        url = ""; // url variable has not been initialised
+        
+        // determine whether to route to ResolvePage or PagePlayerPage
+        if ("resolve".equalsIgnoreCase(pageType)) {
+          url += "ResolvePage.do?";
+        } else {
+          url += "PlayerPage.do?";      
+        }
+
+        // Add the params
+        url += "id=" + curam.omega3.request.RequestUtils.escapeURL(pagePlayerID) + "&page=" + curam.omega3.request.RequestUtils.escapeURL(pageName);      
+      }     
+                  
+      response.sendRedirect(response.encodeRedirectURL(url)); 
+
+      ]]>
+    </jsp:scriptlet> 
+    
+</jsp:root>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2005-2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Lists the status history for a Incident                                -->
+<!-- BEGIN, CR00238748, GD -->
+<?curam-deprecated Since Curam 6.0, replaced by IncidentStatus_listByIncident1.uim?>
+<!-- END, CR00238748 -->
+<PAGE
+  PAGE_ID="IncidentStatus_listByIncident"
+  WINDOW_OPTIONS="width=625"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="pageDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Incidents"
+    NAME="DISPLAY"
+    OPERATION="listStatusHistoryForIncident"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="incidentID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$incidentID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="FALSE"
+  >
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    />
+  </ACTION_SET>
+
+
+  <LIST>
+
+
+    <FIELD
+      LABEL="List.Title.DateTime"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtlsList$incidentStatusDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00143927, SK  -->
+    <FIELD
+      LABEL="List.Title.User"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtlsList$concernRoleName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00143927  -->
+
+
+    <FIELD
+      LABEL="List.Title.Status"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtlsList$incidentStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

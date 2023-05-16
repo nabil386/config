@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012,2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->                                                           
+<PAGE
+  PAGE_ID="CommonIntake_listRelatedCases"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+  >
+    
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>        
+  </PAGE_TITLE>  
+  
+  <SERVER_INTERFACE
+    CLASS="ApplicationCase"
+    NAME="DISPLAY"
+    OPERATION="listClientCases"
+  />
+    
+  <PAGE_PARAMETER NAME="caseID"/>
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$applicationCaseID"
+    />
+  </CONNECT>  
+  
+  <LIST> 
+    <FIELD
+      LABEL="Field.Label.CaseReference"
+      WIDTH="15"
+      >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseReference"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="caseDtls$caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+        
+    <FIELD
+      LABEL="Field.Label.CaseType"
+      WIDTH="19"
+      >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseType"
+        />
+      </CONNECT>
+    </FIELD>    
+    
+    <FIELD
+      LABEL="Field.Label.Clients"
+      WIDTH="21"
+      >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseClients"
+        />
+      </CONNECT>
+    </FIELD>
+        
+    <CONTAINER LABEL="Field.Label.Owner" WIDTH="16">
+      <FIELD LABEL="Field.Label.Owner">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="ownerDetails$userFullName" />
+        </CONNECT>
+        <LINK OPEN_MODAL="true" PAGE_ID="Case_resolveOrgObjectTypeHome" WINDOW_OPTIONS="width=900,height=500">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="ownerDetails$userName" />
+            <TARGET NAME="PAGE" PROPERTY="userName" />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="ownerDetails$orgObjectReference" />
+            <TARGET NAME="PAGE" PROPERTY="orgObjectReference" />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="ownerDetails$orgObjectType" />
+            <TARGET NAME="PAGE" PROPERTY="orgObjectType" />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </CONTAINER>
+    
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="12"
+      >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseStartDate"
+        />
+      </CONNECT>
+    </FIELD>
+        
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="12"
+      >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+        
+  </LIST>
+  
+</PAGE>

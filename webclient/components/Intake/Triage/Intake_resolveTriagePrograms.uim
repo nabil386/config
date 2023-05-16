@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- ====================================================================== -->
+<!-- Copyright 2010 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ====================================================================== -->
+<!-- This page resolves between starting the screening or listing the       -->
+<!-- programs to be selected for screening                                  -->
+<PAGE
+  PAGE_ID="Intake_resolveTriagePrograms"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    curam.omega3.request.RequestHandler
+    rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+    
+    String context = request.getContextPath() + "/";
+    String concernRoleID = request.getParameter("concernRoleID");
+    String programTypeIDs = request.getParameter("programTypeIDs");
+   
+    
+    if(programTypeIDs == null) {
+    core.ScriptletMissingParamException e = new
+    core.ScriptletMissingParamException(-20002, "programTypeIDs");
+    throw e;
+    }
+    
+    programTypeIDs = programTypeIDs.replaceAll("\\t", ",");
+    String url = "";
+    
+    curam.interfaces.IntakeScreeningPkg.IntakeScreening_getScreeningTypeByProgramID_TH
+    th = new curam.interfaces.IntakeScreeningPkg.IntakeScreening_getScreeningTypeByProgramID_TH();
+    th.setFieldValue(
+    th.key$programTypeIDs_idx, programTypeIDs);
+    th.callServer();
+    String screeningTypeID = th.getFieldValue(th.result$screeningTypeID_idx);
+      
+      if (screeningTypeID == null) {
+      core.ScriptletMissingParamException e = new
+      core.ScriptletMissingParamException(-20002, "screeningTypeID");
+      throw e;
+      }
+   
+    context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+    pageContext.getSession()).getLocale() + "/";
+    url = context + "Intake_listProgramItemsForScreeningPage.do?" + "programTypeIDs=" + curam.omega3.request.RequestUtils.escapeURL(programTypeIDs);
+    url += "&amp;" + "concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+    url += "&amp;" + "screeningTypeID=" + curam.omega3.request.RequestUtils.escapeURL(screeningTypeID);
+    url += "&amp;o3frame=modal";
+    
+    url += "&amp;" + rh.getSystemParameters();
+    response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+</PAGE>

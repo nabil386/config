@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view the answer details for a questionnaire. -->
+<PAGE
+  PAGE_ID="DecisionAssistApplication_viewAnswers"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_PARAMETER NAME="questionID"/>
+  <PAGE_PARAMETER NAME="determinationDeliveryID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionID"
+    />
+    <TARGET
+      NAME="VIEW_ANSWER_DETAILS"
+      PROPERTY="key$key$key$questionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="VIEW_ANSWER_DETAILS"
+      PROPERTY="key$key$key$determinationDeliveryID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="QuestionAnswer"
+    NAME="VIEW_ANSWER_DETAILS"
+    OPERATION="viewQuestionAnswers"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="DeterminationDelivery"
+    NAME="ASSESSMENTCONTEXT"
+    OPERATION="viewAssessmentContextDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="ASSESSMENTCONTEXT"
+      PROPERTY="key$dtls$dtls$determinationDeliveryID"
+    />
+  </CONNECT>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="ASSESSMENTCONTEXT"
+        PROPERTY="result$dtls$assessmentName"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText2"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="ASSESSMENTCONTEXT"
+        PROPERTY="result$dtls$caseReference"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText2"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="ASSESSMENTCONTEXT"
+        PROPERTY="result$dtls$concernRoleName"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText2"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="ASSESSMENTCONTEXT"
+        PROPERTY="result$dtls$primaryAlternateID"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <CLUSTER
+    LABEL_WIDTH="15"
+    NUM_COLS="1"
+    TITLE="Cluster.Title.Details"
+  >
+    <FIELD LABEL="Field.Label.Questionnaire">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_ANSWER_DETAILS"
+          PROPERTY="result$dtls$questionnaireDetails$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Version"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_ANSWER_DETAILS"
+          PROPERTY="result$dtls$questionnaireDetails$versionNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Question"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_ANSWER_DETAILS"
+          PROPERTY="result$dtls$questionnaireDetails$questionText"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.SelectedAnswer"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_ANSWER_DETAILS"
+          PROPERTY="result$dtls$dtls$answer"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Source"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_ANSWER_DETAILS"
+          PROPERTY="result$dtls$dtls$source"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST TITLE="Cluster.Title.AnswersReceived">
+    <FIELD
+      LABEL="Field.Label.From"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_ANSWER_DETAILS"
+          PROPERTY="result$dtls$list$dtls$answeredBy"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_ANSWER_DETAILS"
+          PROPERTY="result$dtls$list$dtls$source"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Answer"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_ANSWER_DETAILS"
+          PROPERTY="result$dtls$list$dtls$answer"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Close"
+      TYPE="ACTION"
+    />
+  </ACTION_SET>
+</PAGE>

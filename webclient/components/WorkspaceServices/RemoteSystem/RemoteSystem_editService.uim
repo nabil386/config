@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows a user to modify a target system service.             -->
+<PAGE PAGE_ID="RemoteSystem_editService"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+  WINDOW_OPTIONS="width=575">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <PAGE_PARAMETER NAME="serviceID"/>
+  <PAGE_PARAMETER NAME="systemID"/>
+
+  <SERVER_INTERFACE CLASS="MaintainRemoteSystem" NAME="DISPLAY" OPERATION="viewRemoteSystemService" PHASE="DISPLAY"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="serviceID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$serviceID"/>
+  </CONNECT>
+
+  <SERVER_INTERFACE CLASS="MaintainRemoteSystem" NAME="ACTION" OPERATION="modifyRemoteSystemService" PHASE="ACTION"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="serviceID"/>
+    <TARGET NAME="ACTION" PROPERTY="serviceID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="dtls$versionNo"/>
+    <TARGET NAME="ACTION" PROPERTY="versionNo"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="systemID"/>
+    <TARGET NAME="ACTION" PROPERTY="systemID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="dtls$name"/>
+    <TARGET NAME="ACTION" PROPERTY="dtls$name"/>
+  </CONNECT>
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+  <CLUSTER LABEL_WIDTH="35">
+    <FIELD WIDTH="100" LABEL="Field.Label.ServiceName">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="dtls$name"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD WIDTH="100" LABEL="Field.Label.ExtensionURL">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="dtls$extensionURL"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="dtls$extensionURL"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD WIDTH="100" LABEL="Field.Label.UserName">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="dtls$username"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="dtls$username"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD WIDTH="100" LABEL="Field.Label.Password">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="dtls$password"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

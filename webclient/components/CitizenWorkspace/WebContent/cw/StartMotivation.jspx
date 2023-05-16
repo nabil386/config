@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns="http://www.w3.org/1999/xhtml" xmlns:curam="http://www.curamsoftware.com/curam" version="2.0">
+    <jsp:directive.page isErrorPage="false" pageEncoding="UTF-8" contentType="text/html;charset=UTF-8" isELIgnored="false" language="java" buffer="32kb" errorPage="/cw/ErrorPage.do" />
+    <jsp:output omit-xml-declaration="yes" />
+    <jsp:text><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></jsp:text>
+    <jsp:scriptlet>
+        pageContext.setAttribute("pageLocale", 
+        curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+        pageContext.getSession()).getLocale().toString());
+    </jsp:scriptlet>
+    <curam:userPreferences localeCode="${pageScope.pageLocale}"/>
+    <jsp:scriptlet>
+        <![CDATA[
+
+      javax.servlet.http.HttpServletRequest hsRequest;
+      javax.servlet.http.HttpSession httpSession;
+      hsRequest = (javax.servlet.http.HttpServletRequest) request;
+      httpSession = hsRequest.getSession();
+      java.security.Principal userPrincipal = hsRequest.getUserPrincipal();
+      String url;
+      String contextPath = request.getContextPath();    
+
+      String motivationID = (String) httpSession.getAttribute("curam.motivationid");
+      String pagePlayerID = request.getParameter("id"); 
+            
+      // Call setup intake process
+      curam.interfaces.MotivationPkg.Motivation_startMotivationScript_TH th = 
+        new curam.interfaces.MotivationPkg.Motivation_startMotivationScript_TH(); 
+      th.setFieldValue(th.key$motivationID_idx, motivationID);
+      th.setFieldValue(th.key$sessionID_idx, pagePlayerID);       
+      th.callServer();
+      
+      String executionID = th.getFieldValue(th.result$iegExecutionID_idx);
+     
+     url = "StartIEGScript.jspx?executionID=" + curam.omega3.request.RequestUtils.escapeURL(executionID) + "&playerID=" + curam.omega3.request.RequestUtils.escapeURL(pagePlayerID);
+     response.sendRedirect(response.encodeRedirectURL(url));
+
+
+      ]]>
+    </jsp:scriptlet> 
+    
+</jsp:root>

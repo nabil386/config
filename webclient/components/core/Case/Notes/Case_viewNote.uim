@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2002, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002-2003 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows a user to view a new case note.  -->
+<?curam-deprecated Since Curam 6.0, replaced by Case_viewNote1.uim?>
+<PAGE PAGE_ID="Case_viewNote" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+    <CONNECT>
+      <SOURCE NAME="PAGE" PROPERTY="pageDescription"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="Case" NAME="DISPLAY" OPERATION="readNote"/>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL IMAGE="EditButton" LABEL="ActionControl.Label.Edit">
+      <LINK OPEN_MODAL="true" PAGE_ID="Case_modifyNoteFromView" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="caseNoteID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseNoteID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="pageDescription"/>
+          <TARGET NAME="PAGE" PROPERTY="pageDescription"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="DeleteButton" LABEL="ActionControl.Label.Delete">
+      <LINK OPEN_MODAL="true" PAGE_ID="Case_cancelNote" SAVE_LINK="false" WINDOW_OPTIONS="width=400">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="caseNoteID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseNoteID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="versionNo"/>
+          <TARGET NAME="PAGE" PROPERTY="versionNo"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="pageDescription"/>
+          <TARGET NAME="PAGE" PROPERTY="pageDescription"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="CloseButton" LABEL="ActionControl.Label.Close"/>
+
+
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="caseNoteID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseNoteID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$key$key$caseNoteID"/>
+  </CONNECT>
+
+
+  <CLUSTER NUM_COLS="2" TITLE="Cluster.Label.Details">
+
+
+    <FIELD LABEL="Field.Label.Priority">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="priorityCode"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EnteredBy">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="fullname"/>
+      </CONNECT>
+      <LINK OPEN_NEW="true" PAGE_ID="Organization_userSummary">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Sensitivity">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="sensitivityCode"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CreationDateTime">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="creationDateTime"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="recordStatus"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Label.Comments">
+    <!-- BEGIN, CR00416277, VT -->
+    <FIELD HEIGHT="3" LABEL="Field.Label.Comments">
+      <!-- END, CR00416277 -->
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="notesText"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

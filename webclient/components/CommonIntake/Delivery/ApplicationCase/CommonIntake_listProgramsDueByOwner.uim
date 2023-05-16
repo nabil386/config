@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed Materials - Property of IBM
+    
+    Copyright IBM Corporation 2013. All Rights Reserved.
+    
+    US Government Users Restricted Rights - Use, duplication or disclosure 
+    restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<!-- 
+    List page for the common intake application view to display a list of Programs Due 
+    for the currently logged in user.
+-->
+<PAGE
+    PAGE_ID="CommonIntake_listProgramsDueByOwner"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+    >
+    
+    <SERVER_INTERFACE CLASS="ApplicationCase" NAME="DISPLAY" OPERATION="listMyProgramsDue"
+        PHASE="DISPLAY"/>
+    <SERVER_INTERFACE CLASS="ApplicationCase" NAME="DISPLAY2" OPERATION="getMyProgramsDueFilterCriteria"
+        PHASE="DISPLAY"/>
+    <SERVER_INTERFACE CLASS="ApplicationCase" NAME="ACTION" OPERATION="storeMyProgramsDueFilterCriteria"
+        PHASE="ACTION"/>
+    
+    <INFORMATIONAL>
+        <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="informationMsgTxt"/>
+        </CONNECT>
+    </INFORMATIONAL>
+    
+    <CLUSTER
+        LABEL_WIDTH="80"
+        NUM_COLS="2"
+        TITLE="Cluster.Title.Filter"
+        >
+        <FIELD LABEL="Cluster.Field.Label.DueDays">
+            <CONNECT>
+                <SOURCE
+                    NAME="DISPLAY2"
+                    PROPERTY="numDueDays"
+                />
+            </CONNECT>
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="numDueDays"
+                />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Cluster.Field.Label.OverduePrograms">
+            <CONNECT>
+                <SOURCE
+                    NAME="DISPLAY2"
+                    PROPERTY="overdueProgramsInd"
+                />
+            </CONNECT>
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="overdueProgramsInd"
+                />
+            </CONNECT>
+        </FIELD>
+        <ACTION_SET
+            ALIGNMENT="CENTER"
+            TOP="false"
+            >
+            <ACTION_CONTROL
+                DEFAULT="true"
+                IMAGE="SearchButton"
+                LABEL="ActionControl.Label.Search"
+                TYPE="SUBMIT"
+                >
+                <LINK PAGE_ID="THIS"/>
+            </ACTION_CONTROL>
+        </ACTION_SET>
+    </CLUSTER>
+    
+    <LIST> 
+        <FIELD WIDTH="3">
+            <CONNECT>
+                <SOURCE
+                    NAME="DISPLAY"
+                    PROPERTY="timerImage"
+                />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.CaseReference" WIDTH="10">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="caseReference"/>
+            </CONNECT>
+            <LINK URI_SOURCE_NAME="DISPLAY" URI_SOURCE_PROPERTY="applicationHomeURL" />
+        </FIELD>
+        <FIELD LABEL="Field.Label.ProgramName" WIDTH="35">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="programName"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.Clients" WIDTH="35">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="caseClients"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.ExpiryDate" WIDTH="20">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="expiryDate"/>
+            </CONNECT>
+        </FIELD>
+    </LIST>
+</PAGE>

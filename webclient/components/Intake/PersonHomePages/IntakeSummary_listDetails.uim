@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright  2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This is the home worspace for the web application which will redirect  -->
+<!-- users to the income support product section.                           -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="IntakeSummary_listDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="firstRanDateTime"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+
+
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="IntakeSummary"
+    NAME="DISPLAY"
+    OPERATION="readIntakeSummary"
+  />
+
+
+  <CLUSTER NUM_COLS="2">
+
+
+    <CLUSTER NUM_COLS="1">
+
+
+      <FIELD
+        LABEL="Field.Label.InitialTriageDate"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$lastTriageDate"
+          />
+
+
+        </CONNECT>
+        <LINK
+          OPEN_MODAL="false"
+          PAGE_ID="Intake_triagePrograms"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="lastParticipantTriageID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="participantTriageID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+
+
+        </LINK>
+      </FIELD>
+
+
+      <LIST
+        
+        TITLE="List.Title.PendingApplication"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isPendingApplication"
+          />
+        </CONDITION>
+
+
+        <FIELD
+          LABEL="Container.Label.Reference"
+          WIDTH="30"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$pendingApplicationDtls$list$displayDtls$entityDtls$reference"
+            />
+          </CONNECT>
+          <LINK
+            URI_SOURCE_NAME="DISPLAY"
+            URI_SOURCE_PROPERTY="result$pendingApplicationDtls$list$pageURL"
+          >
+            <CONDITION>
+              <IS_FALSE
+                NAME="DISPLAY"
+                PROPERTY="result$pendingApplicationDtls$list$displayMenuPrimary"
+              />
+            </CONDITION>
+          </LINK>
+        </FIELD>
+        <FIELD
+          LABEL="Field.Label.Type"
+          WIDTH="40"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$pendingApplicationDtls$list$displayDtls$entityDtls$applicationType"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD
+          LABEL="Field.Label.DueDate"
+          WIDTH="30"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$pendingApplicationDtls$list$displayDtls$entityDtls$filingDate"
+            />
+          </CONNECT>
+        </FIELD>
+      </LIST>
+
+
+    </CLUSTER>
+
+
+    <CLUSTER NUM_COLS="1">
+
+
+      <FIELD
+        LABEL="Field.Title.Date"
+        WIDTH="50"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$lastScreeningDate"
+          />
+        </CONNECT>
+        <LINK
+          OPEN_MODAL="false"
+          PAGE_ID="Intake_screeningResults"
+          SAVE_LINK="false"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="result$isCompletedInd"
+            />
+          </CONDITION>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="lastParticipantScreeningID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="screeningExecutionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$iegExecutionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="executionID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+
+
+      <LIST
+        
+        TITLE="List.Title.CurrentCases"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isCurrentCases"
+          />
+        </CONDITION>
+
+
+        <FIELD
+          LABEL="Field.Title.CaseReference"
+          WIDTH="30"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$caseDtls$list$caseReference"
+            />
+          </CONNECT>
+          <LINK
+            URI_SOURCE_NAME="DISPLAY"
+            URI_SOURCE_PROPERTY="result$caseDtls$list$pageURL"
+          />
+        </FIELD>
+
+
+        <FIELD
+          LABEL="Field.Title.Type"
+          WIDTH="40"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$caseDtls$list$productTypeCode"
+            />
+          </CONNECT>
+        </FIELD>
+
+
+        <FIELD
+          LABEL="Field.Title.StartDate"
+          WIDTH="30"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$caseDtls$list$startDate"
+            />
+          </CONNECT>
+        </FIELD>
+
+
+      </LIST>
+
+
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+</PAGE>

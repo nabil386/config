@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012, 2015. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to check if the person or prospect person    -->
+<!-- has already been registered.                                           -->
+<!-- BEGIN, CR00232757, GD -->
+<?curam-deprecated Since Curam 6.0, replaced by ProspectPerson_duplicateRegistrationCheck1.uim?>
+<!-- END, CR00232757 -->
+<PAGE PAGE_ID="ProspectPerson_duplicateRegistrationCheck" WINDOW_OPTIONS="width=1200" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_PARAMETER NAME="relatedConcernID"/>
+
+
+  <PAGE_TITLE DESCRIPTION="PageTitle.Description">
+
+
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00100777, BD -->
+  <SERVER_INTERFACE CLASS="Person" NAME="DISPLAY" OPERATION="readSearchWithNicknamesIndicator"/>
+  <!-- END, CR00100777 -->
+
+
+  <SERVER_INTERFACE CLASS="ProspectPerson" NAME="ACTION" OPERATION="searchPersonsAndProspectPersons" PHASE="ACTION"/>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL IMAGE="ContinueButton" LABEL="ActionControl.Label.ContinueRegistration">
+      <LINK DISMISS_MODAL="false" OPEN_MODAL="false" PAGE_ID="ProspectPerson_register" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="relatedConcernID"/>
+          <TARGET NAME="PAGE" PROPERTY="relatedConcernID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel">
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="33" NUM_COLS="2" TITLE="Cluster.Title.SearchCriteria">
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$referenceNumber"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.LastName">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$surname"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DateOfBirth" USE_DEFAULT="false">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$dateOfBirth"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.AddressLineOne">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$address"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.BirthLastName">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$birthSurname"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00100777, BD -->
+    <CONTAINER LABEL="Field.Label.FirstName">
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD LABEL="Field.Label.FirstName">
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$forename"/>
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Nickname">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$searchWithNicknamesInd"/>
+        </CONNECT>
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$nicknameInd"/>
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <!-- END, CR00100777 -->
+
+
+    <FIELD LABEL="Field.Label.Gender" USE_BLANK="true" USE_DEFAULT="false">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$sex"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.City">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$city"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.MotherBirthName">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$motherSurname"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <ACTION_SET ALIGNMENT="LEFT" BOTTOM="false">
+      <ACTION_CONTROL DEFAULT="true" IMAGE="SearchButton" LABEL="ActionControl.Label.Search" TYPE="SUBMIT">
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL IMAGE="ResetButton" LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="ProspectPerson_duplicateRegistrationCheck"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <!-- List 2 to display Person records-->
+  <LIST>
+    <TITLE>
+      <CONNECT>
+        <SOURCE NAME="TEXT" PROPERTY="List.Title.Persons"/>
+      </CONNECT>
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="result$personIndicator"/>
+      </CONNECT>
+      <CONNECT>
+        <SOURCE NAME="TEXT" PROPERTY="Field.Label.SearchResultsClosingParanthesis"/>
+      </CONNECT>
+    </TITLE>
+
+
+    <CONTAINER LABEL="Container.Label.AlternativeRegistration" WIDTH="9">
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="ACTION" PROPERTY="pDetails$dtls$altRegistrationIndicator"/>
+        </CONNECT>
+        <LINK PAGE_ID="Person_resolveHomePage">
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="pDetails$dtls$concernRoleID"/>
+            <TARGET NAME="PAGE" PROPERTY="concernRoleID"/>
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </CONTAINER>
+
+
+    <CONTAINER LABEL="Container.Label.ReferenceNumber" WIDTH="17">
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="ACTION" PROPERTY="pDetails$dtls$referenceNumber"/>
+        </CONNECT>
+        <LINK PAGE_ID="Person_resolveHomePage">
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="pDetails$dtls$concernRoleID"/>
+            <TARGET NAME="PAGE" PROPERTY="concernRoleID"/>
+          </CONNECT>
+
+
+        </LINK>
+      </FIELD>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.FirstName" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="pDetails$dtls$forename"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.LastName" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="pDetails$dtls$surname"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.AddressLineOne" WIDTH="12">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="pDetails$dtls$address"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.City" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="pDetails$dtls$city"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DateOfBirth" WIDTH="12">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="pDetails$dtls$dateOfBirth"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <!-- List 3 to display Prospect  Person records-->
+  <LIST>
+    <TITLE>
+      <CONNECT>
+        <SOURCE NAME="TEXT" PROPERTY="List.Title.ProspectPersons"/>
+      </CONNECT>
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="result$prospectPersonIndicator"/>
+      </CONNECT>
+      <CONNECT>
+        <SOURCE NAME="TEXT" PROPERTY="Field.Label.SearchResultsClosingParanthesis"/>
+      </CONNECT>
+    </TITLE>
+
+
+    <CONTAINER LABEL="Container.Label.AlternativeRegistration" WIDTH="9">
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="ACTION" PROPERTY="ppDetails$dtls$altRegistrationIndicator"/>
+        </CONNECT>
+        <LINK PAGE_ID="Person_resolveHomePage">
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="ppDetails$dtls$personConcernRoleID"/>
+            <TARGET NAME="PAGE" PROPERTY="concernRoleID"/>
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </CONTAINER>
+
+
+    <CONTAINER LABEL="Container.Label.ReferenceNumber" WIDTH="17">
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="ACTION" PROPERTY="ppDetails$dtls$referenceNumber"/>
+        </CONNECT>
+        <LINK PAGE_ID="ProspectPerson_homePage">
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="ppDetails$dtls$concernRoleID"/>
+            <TARGET NAME="PAGE" PROPERTY="concernRoleID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="ppDetails$dtls$concernRoleType"/>
+            <TARGET NAME="PAGE" PROPERTY="concernRoleType"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="ppDetails$dtls$altRegistrationIndicator"/>
+            <TARGET NAME="PAGE" PROPERTY="altRegistrationIndicator"/>
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.FirstName" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="ppDetails$dtls$forename"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.LastName" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="ppDetails$dtls$surname"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.AddressLineOne" WIDTH="12">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="ppDetails$dtls$address"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.City" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="ppDetails$dtls$city"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DateOfBirth" WIDTH="12">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="ppDetails$dtls$dateOfBirth"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+</PAGE>

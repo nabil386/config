@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software Ltd. ("Confidential Information"). You shall not        -->
+<!-- disclose such Confidential Information and shall use it only in        -->
+<!-- accordance with the terms of the license agreement you entered into    -->
+<!-- with Curam Software.                                                   -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Page to cancel a hearing witness.   -->
+<PAGE
+  PAGE_ID="Appeal_cancelWitness"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="HearingWitness"
+    NAME="ACTION"
+    OPERATION="cancelHearingWitness"
+    PHASE="ACTION"
+  >
+  </SERVER_INTERFACE>
+
+
+  <PAGE_PARAMETER NAME="hearingWitnessID"/>
+  <PAGE_PARAMETER NAME="contextDescription"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="hearingWitnessID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="hearingWitnessIDKey$hearingWitnessID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="cancelCaseParticipantRoleDetails$versionNo"
+    />
+  </CONNECT>
+
+
+  <CLUSTER SHOW_LABELS="FALSE">
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+
+
+      <ACTION_CONTROL
+        IMAGE="YesButton"
+        LABEL="ActionControl.Label.Yes"
+        TYPE="SUBMIT"
+      >
+        <!-- BEGIN CR00124935 LP-->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Appeal_viewWitnessIC"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="hearingWitnessID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="hearingWitnessID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="contextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contextDescription"
+            />
+          </CONNECT>
+        </LINK>
+        <!-- END CR00124935 LP-->
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="NoButton"
+        LABEL="ActionControl.Label.No"
+      >
+        <LINK
+          PAGE_ID="Appeal_viewWitness"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="hearingWitnessID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="hearingWitnessID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="contextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contextDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.CancelWitness"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

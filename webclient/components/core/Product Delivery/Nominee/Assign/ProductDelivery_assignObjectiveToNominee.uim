@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2005, 2009-2010 Curam Software Ltd.                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- The included view to allow the user to modify the delivery pattern for -->
+<!-- a case nominee.                                                        -->
+<!-- BEGIN, CR00190939, GD -->
+<?curam-deprecated Since Curam 6.0, replaced with ProductDelivery_assignObjectiveToNominee1.
+  This page doesn't support Multiple Active Nominee Delivery Patterns (HLFR14604) . 
+  Hence this page has been deprecated. See release note: CR00190939 ?>
+<!-- END, CR00190939 -->
+<PAGE
+  PAGE_ID="ProductDelivery_assignObjectiveToNominee"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Case"
+    NAME="DISPLAY"
+    OPERATION="listOperationalNominee"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Case"
+    NAME="ACTION"
+    OPERATION="assignObjective1"
+    PHASE="ACTION"
+  />
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="rulesObjectiveID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseNomineeCaseIDAndStatusKey$caseID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="rulesObjectiveID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="rulesObjectiveID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER LABEL_WIDTH="47">
+    <FIELD LABEL="Field.Label.Nominee">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="caseNomineeID"
+          NAME="DISPLAY"
+          PROPERTY="concernRoleName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="caseNomineeID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.FromStartDateInd">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fromCaseStartDateInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.FromDate"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

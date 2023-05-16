@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description -->
+<!-- =========== -->
+<!--   -->
+<PAGE PAGE_ID="Tab_refresh">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="tabID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="Tab"
+    NAME="DISPLAY"
+    OPERATION="readRefreshDetails"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="tabID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$tabID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="Control.Label.AddPage">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Tab_addRefreshPage"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="key$tabID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="tabID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Tab_readRefreshPage">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="key$tabID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="tabID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="pageID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <FIELD LABEL="Field.Label.PageID">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="pageID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.OnSubmit">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="onsubmitEnabled"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.OnLoad">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="onloadEnabled"
+        />
+      </CONNECT>
+    </FIELD>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="Control.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Tab_modifyRefreshPage"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="key$tabID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="tabID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pageID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="Control.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Tab_deleteRefreshPage"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="key$tabID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="tabID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pageID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </LIST>
+
+
+</PAGE>

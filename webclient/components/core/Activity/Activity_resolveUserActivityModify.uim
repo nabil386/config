@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp redirects the user to the appropriate page to                 -->
+<!-- modify details of user activity.                                       -->
+<PAGE
+  PAGE_ID="Activity_resolveUserActivityModify"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+		curam.omega3.request.RequestHandler 
+			rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+		String context = request.getContextPath() + "/";
+		context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+
+		String activityID = request.getParameter("activityID");
+		String caseID = request.getParameter("caseID");
+		String recurringInd = request.getParameter("recurringInd");
+
+		String url = "";
+
+		if (activityID == null) { 
+
+		 core.ScriptletMissingParamException e = new
+							core.ScriptletMissingParamException(-20002, "activityID");
+		 System.out.println(e);
+		 throw e;
+
+		}      
+
+		if (caseID == null) {
+
+		 core.ScriptletMissingParamException e = new
+							core.ScriptletMissingParamException(-20002, "caseID");
+		 System.out.println(e);
+		 throw e;
+
+		}
+
+		if (recurringInd == null) {
+
+		 core.ScriptletMissingParamException e = new
+							core.ScriptletMissingParamException(-20002, "recurringInd");
+		 System.out.println(e);
+		 throw e;
+
+		}
+
+		String activityType = "";
+		String description = "";
+
+		// Read the activity type      
+		curam.interfaces.ActivityPkg.Activity_readStandardOrganizationActivity_TH
+		th = new curam.interfaces.ActivityPkg.Activity_readStandardOrganizationActivity_TH();
+
+		th.setFieldValue(th.key$maintainActivityKey$activityID_idx,activityID);
+		th.callServer();
+
+		activityType = th.getFieldValue(th.result$organizationStandardActivityDetails$activityTypeCode_idx);
+		description = th.getFieldValue(th.result$activityContextDescriptionDetails$description_idx);
+
+		// Activity of type Meeting
+		if (activityType.equals("AT2")) {
+
+			url = context + "CalendarMeeting_modifyMeetingFromUserCalendarPage.do?activityID=" + curam.omega3.request.RequestUtils.escapeURL(activityID)
+						+ "&amp;description=" + curam.omega3.request.RequestUtils.escapeURL(description);
+
+		// Standard Activity 
+		} else {
+
+			url = context + "Activity_resolveModifyStandardUserActivity1Page.do?ID=" + curam.omega3.request.RequestUtils.escapeURL(activityID)
+						+ "&amp;RE=" + curam.omega3.request.RequestUtils.escapeURL(recurringInd) + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+		}
+
+
+		url += "&amp;" + rh.getSystemParameters();
+	  response.sendRedirect(response.encodeRedirectURL(url));
+
+  </JSP_SCRIPTLET>
+
+
+</PAGE>

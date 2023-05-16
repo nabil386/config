@@ -1,0 +1,757 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page displays results after running a task query.                 -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="TaskQuery_runQuery"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="BDMTaskQuery"
+    NAME="DISPLAY"
+    OPERATION="runBDM"
+    PHASE="DISPLAY"
+  />
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <PAGE_PARAMETER NAME="queryID"/>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="EditButton"
+      LABEL="ActionControl.Label.Modify"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="TaskQuery_modifyQuery"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="queryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="queryID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="queryID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$queryID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER TITLE="Cluster.Title.QueryCriteria">
+    <CLUSTER
+      LABEL_WIDTH="40"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+
+
+      <FIELD LABEL="Field.Label.MyTasksListOnly">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$criteria$criteria$searchMyTasksOnly"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <CONTAINER
+        LABEL="Container.Label.BusinessObjType"
+        SEPARATOR="Container.Separator"
+      >
+        <FIELD
+          ALIGNMENT="LEFT"
+          USE_BLANK="true"
+          WIDTH="35"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$criteria$criteria$businessObjectType"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD
+          ALIGNMENT="LEFT"
+          WIDTH="45"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$criteria$criteria$businessObjectName"
+            />
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+
+
+      <FIELD
+        LABEL="Field.Label.Status"
+        USE_BLANK="true"
+        WIDTH="35"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$criteria$criteria$status"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.Category"
+        USE_BLANK="true"
+        WIDTH="35"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$criteria$criteria$taskCategory"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <CLUSTER
+      LABEL_WIDTH="20"
+      NUM_COLS="1"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD
+        ALIGNMENT="LEFT"
+        LABEL="Field.Label.AssignedTo"
+        WIDTH="35"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$criteria$criteria$selectedOrgObjectNames"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+
+
+    <CLUSTER
+      LABEL_WIDTH="40"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+      TITLE="Cluster.Title.Deadline"
+    >
+
+
+      <FIELD
+        LABEL="Field.Label.DeadlineFromDate"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$criteria$criteria$deadlineFromDate"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.DeadlineDue"
+        USE_BLANK="true"
+        WIDTH="90"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$criteria$criteria$deadlineDue"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.DeadlineToDate"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$criteria$criteria$deadlineToDate"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <CLUSTER
+      LABEL_WIDTH="40"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+      TITLE="Cluster.Title.CreationTime"
+    >
+
+
+      <FIELD
+        LABEL="Field.Label.CreationFromDate"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$criteria$criteria$creationFromDate"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.CreationLastNumberOfDays"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+        WIDTH="40"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$criteria$criteria$creationLastNumberOfDays"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.CreationToDate"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$criteria$criteria$creationToDate"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.CreationLastNumberOfWeeks"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+        WIDTH="40"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$criteria$criteria$creationLastNumberOfWeeks"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+    <CLUSTER
+      LABEL_WIDTH="40"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+      TITLE="Cluster.Title.RestartTime"
+    >
+
+
+      <FIELD
+        LABEL="Field.Label.RestartFromDate"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$criteria$criteria$restartFromDate"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.RestartToDate"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$criteria$criteria$restartToDate"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+  <LIST>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <!-- Add Comments action control -->
+      <ACTION_CONTROL
+        IMAGE="NewProduct"
+        LABEL="Field.Label.AddComment"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="TaskManagement_addComment"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$resultList$taskDetailsList$taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- Add to My Tasks action control -->
+      <ACTION_CONTROL
+        IMAGE="NewProduct"
+        LABEL="Field.Label.AddToMyTasks"
+      >
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="isReservedByUser"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="TaskManagement_ReserveTask"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$resultList$taskDetailsList$taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$resultList$taskDetailsList$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- Make Available action control -->
+      <ACTION_CONTROL
+        IMAGE="NewProduct"
+        LABEL="Field.Label.MakeAvailable"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isReservedByUser"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="TaskManagement_UnReserveTask"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$resultList$taskDetailsList$taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$resultList$taskDetailsList$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- Forward action control -->
+      <ACTION_CONTROL
+        IMAGE="NewProduct"
+        LABEL="Field.Label.Forward"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isReservedByUser"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="TaskManagement_forward"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$resultList$taskDetailsList$taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$resultList$taskDetailsList$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- ReAllocate action control -->
+      <ACTION_CONTROL
+        IMAGE="NewProduct"
+        LABEL="Field.Label.ReAllocate"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isReservedByUser"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="TaskManagement_reallocate"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$resultList$taskDetailsList$taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$resultList$taskDetailsList$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- Defer action control -->
+      <ACTION_CONTROL
+        IMAGE="NewProduct"
+        LABEL="Field.Label.Defer"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isReservedByUser"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="TaskManagement_DeferTask"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$resultList$taskDetailsList$taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$resultList$taskDetailsList$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- Restart action control -->
+      <ACTION_CONTROL
+        IMAGE="NewProduct"
+        LABEL="Field.Label.Restart"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isReservedByUser"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="TaskManagement_RestartTask"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$resultList$taskDetailsList$taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$resultList$taskDetailsList$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- Close action control -->
+      <ACTION_CONTROL
+        IMAGE="NewProduct"
+        LABEL="Field.Label.Close"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isReservedByUser"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="TaskManagement_closeTask"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$resultList$taskDetailsList$taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <FIELD WIDTH="5">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="taskDetailsList$isOverdue"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Subject"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="subject"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="TaskManagement_taskHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$resultList$taskDetailsList$taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+<!--START TASK 81174:   -->
+<!--TODO:  update taskSubject to urgent flag and escalevel when Facades implemented and modelling complete  -->
+  <FIELD
+      LABEL="Field.Label.CaseUrgentFlag"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseUrgentFlagStr"
+        />
+      </CONNECT>
+    </FIELD>
+    
+     <FIELD
+      LABEL="Field.Label.EscalationLevel"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="escalationLevelDesc"
+        />
+      </CONNECT>
+    </FIELD>
+<!--START TASK 81174:   -->
+
+    <FIELD
+      LABEL="Field.Label.Priority"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="taskDetailsList$priority"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Deadline"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="taskDetailsList$deadlineDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <!--START: Bug 103038-->
+    <FIELD LABEL="Field.Label.Status" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY"
+          PROPERTY="result$resultList$taskDetailsList$status" />
+      </CONNECT>
+    </FIELD>
+    <!--END: Bug 103038-->
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="TaskManagement_taskHomeInline">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$resultList$taskDetailsList$taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+
+
+</PAGE>

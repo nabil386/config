@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TASK-57493 -->
+<PAGE PAGE_ID="CaseOnlineAppealRequests_list"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+	<PAGE_TITLE>
+		<CONNECT>
+			<SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+		</CONNECT>
+	</PAGE_TITLE>
+
+	<PAGE_PARAMETER NAME="caseID" />
+
+	<SERVER_INTERFACE CLASS="BDMCaseAppealOnlineRequests"
+		NAME="DISPLAY" OPERATION="getOnlineAppealRequestsDetailsForCase" />
+
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="caseID" />
+		<TARGET NAME="DISPLAY" PROPERTY="arg1$appealCaseID" />
+	</CONNECT>
+
+
+	<LIST>
+
+		<DETAILS_ROW>
+			<INLINE_PAGE
+				PAGE_ID="BDMPerson_listAppealRequestAttachments">
+				<CONNECT>
+					<SOURCE NAME="DISPLAY" PROPERTY="primaryAppellantRoleID" />
+					<TARGET NAME="PAGE" PROPERTY="concernRoleID" />
+				</CONNECT>
+				<CONNECT>
+					<SOURCE NAME="DISPLAY" PROPERTY="onlineAppealRequestID" />
+					<TARGET NAME="PAGE" PROPERTY="onlineAppealRequestID" />
+				</CONNECT>
+			</INLINE_PAGE>
+		</DETAILS_ROW>
+
+		<FIELD LABEL="Field.Title.ReferenceNumber" WIDTH="40">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="referenceNumber" />
+			</CONNECT>
+		</FIELD>
+
+		<FIELD LABEL="Field.Title.Request" WIDTH="40">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="displayText" />
+			</CONNECT>
+		</FIELD>
+
+		<FIELD LABEL="Field.Title.Program" WIDTH="40">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="program" />
+			</CONNECT>
+		</FIELD>
+
+
+		<FIELD LABEL="Field.Title.AppealType" WIDTH="30">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="appealDetails" />
+			</CONNECT>
+			<LINK PAGE_ID="Case_resolveCaseHome">
+				<CONNECT>
+					<SOURCE NAME="DISPLAY" PROPERTY="result$dtls$appealCaseID" />
+					<TARGET NAME="PAGE" PROPERTY="caseID" />
+				</CONNECT>
+			</LINK>
+		</FIELD>
+
+
+		<FIELD LABEL="Field.Title.PrimaryAppellant" WIDTH="30">
+			<CONNECT>
+				<SOURCE NAME="DISPLAY" PROPERTY="primaryAppellantName" />
+			</CONNECT>
+			<LINK PAGE_ID="Participant_resolve">
+				<CONNECT>
+					<SOURCE NAME="DISPLAY" PROPERTY="primaryAppellantRoleID" />
+					<TARGET NAME="PAGE" PROPERTY="concernRoleID" />
+				</CONNECT>
+			</LINK>
+		</FIELD>
+
+
+	</LIST>
+
+</PAGE>

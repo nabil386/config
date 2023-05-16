@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 							                                              -->
+<!-- =========== 							                                              -->
+<!-- List all the email addresses for a person -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="Participant_listEmailAddresses"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Addresses"
+      STYLE="in-page-link"
+    >
+
+
+      <LINK
+        PAGE_ID="Participant_listAllAddress"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </ACTION_CONTROL>
+    <!-- BEGIN, CR00260709, KG -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.PhoneNumbers"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="Participant_listPhoneNumbers"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.EmailAddresses"
+      STYLE="in-page-current-link"
+    >
+      <!-- END, CR00260709 -->
+      <LINK
+        PAGE_ID="Participant_listEmailAddresses"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.WebAddresses"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="Participant_listWebAddresses"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <SERVER_INTERFACE
+    CLASS="Participant"
+    NAME="EMAIL"
+    OPERATION="listEmailAddress"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="EMAIL"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- Link to page displaying editable details of the email address-->
+
+
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Participant_modifyEmailAddressFromList"
+        >
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="EMAIL"
+              PROPERTY="concernRoleEmailAddressID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleEmailAddressID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="DeleteButton"
+        LABEL="ActionControl.Label.Delete"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Participant_cancelEmailAddress"
+        >
+          <!-- Map parameters in order to delete correct Email Address -->
+          <CONNECT>
+            <SOURCE
+              NAME="EMAIL"
+              PROPERTY="concernRoleEmailAddressID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleEmailAddressID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="EMAIL"
+              PROPERTY="emailAddressVersionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="emailAddressVersionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="EMAIL"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="EMAIL"
+              PROPERTY="concernRoleEmailAddressVersionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleEmailAddressVersionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Participant_viewEmailAddress">
+        <CONNECT>
+          <SOURCE
+            NAME="EMAIL"
+            PROPERTY="concernRoleEmailAddressID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleEmailAddressID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <FIELD
+      LABEL="Field.Label.EmailPrimary"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="EMAIL"
+          PROPERTY="primaryInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EmailAddress"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="EMAIL"
+          PROPERTY="emailAddress"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EmailType"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="EMAIL"
+          PROPERTY="typeCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EmailFrom"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="EMAIL"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EmailTo"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="EMAIL"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="EMAIL"
+          PROPERTY="statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <ACTION_SET BOTTOM="false">
+    <!-- BEGIN, CR00260709, KG -->
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Participant_createEmailAddress"
+      >
+        <!-- END, CR00260709 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

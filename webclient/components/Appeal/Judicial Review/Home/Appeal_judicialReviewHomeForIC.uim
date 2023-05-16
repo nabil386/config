@@ -1,0 +1,693 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2008, 2015. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view details of a Judicial Review on an   -->
+<!-- integrated case.                                                       -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="Appeal_judicialReviewHomeForIC"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="JudicialReview"
+    NAME="DISPLAY"
+    OPERATION="readJudicialReviewSummaryIC"
+    PHASE="DISPLAY"
+  />
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="EditButton"
+      LABEL="ActionControl.Label.Edit"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Appeal_modifyJudicialReview"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <!-- BEGIN, CR00248571, GP -->
+    <!-- BEGIN, CR00301189, DK -->
+    <ACTION_CONTROL LABEL="Field.Label.Close">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Appeal_closeJudicialReview1"
+      >
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00301189, DK -->
+  </ACTION_SET>
+  <!-- END, CR00248571 -->
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="priorAppealCaseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="judicialReviewCaseKey$caseID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Decision"
+  >
+
+
+    <CONTAINER LABEL="Field.Label.Resolution">
+      <FIELD LABEL="Field.Label.Resolution">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="decisionResolution"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <!-- BEGIN, CR00249153, GP -->
+      <ACTION_CONTROL LABEL="Field.Label.RecordDecision">
+        <LINK PAGE_ID="Appeal_manageJudicialReviewDecisionForIC">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00249153 -->
+
+
+    </CONTAINER>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00021086, RKi -->
+
+
+  <JSP_SCRIPTLET>
+    curam.omega3.texthelper.TextHelper  th
+                                    = (curam.omega3.texthelper.TextHelper)pageContext.findAttribute("DISPLAY");
+                  String multipleAppellantInd =
+                    th.getFieldValue("result$judicialReviewCaseSummaryDetails$multipleAppellant$multipleAppellants");
+                        if (multipleAppellantInd.equals("false"))
+                        {
+
+  </JSP_SCRIPTLET>
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+
+
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="judicialReviewReference"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER LABEL="Field.Label.Owner">
+      <FIELD LABEL="Field.Label.Owner">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="ownerFullName"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00248571, GP -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_viewUserDetails"
+        >
+          <!-- END, CR00248571 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="ownerUserName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.Change"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Case_modifyCaseOwner"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <CONTAINER LABEL="Field.Label.CourtPetition">
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.Print"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="courtPetitionInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Appeal_createPetition"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER LABEL="Field.Label.Status">
+      <FIELD LABEL="Field.Label.Status">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="judicialCaseStatus"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.CancelCase"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Appeal_cancelJudicialReview"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="caseVersionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.Difficulty">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="difficultyCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <JSP_SCRIPTLET>
+  }else if(multipleAppellantInd.equals("true"))
+                        {
+  </JSP_SCRIPTLET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+
+
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="judicialReviewReference"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00098893, RKi -->
+    <CONTAINER LABEL="Field.Label.Owner">
+      <FIELD LABEL="Field.Label.Owner">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="ownerFullName"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00200487, GP -->
+        <!-- BEGIN, CR00248571, GP -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_viewUserDetails"
+        >
+          <!-- END, CR00248571 -->
+          <!-- END, CR00200487 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="ownerUserName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <!-- END, CR00098893 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Change">
+        <LINK PAGE_ID="Case_modifyCaseOwner">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <CONTAINER LABEL="Field.Label.CourtPetition">
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.Print"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="courtPetitionInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Appeal_createPetition"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER LABEL="Field.Label.Status">
+      <FIELD LABEL="Field.Label.Status">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="judicialCaseStatus"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL LABEL="ActionControl.Label.CancelCase">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Appeal_cancelJudicialReview"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="caseVersionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.Difficulty">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="difficultyCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <JSP_SCRIPTLET>
+  }
+  </JSP_SCRIPTLET>
+
+
+  <!-- END, CR00021086 -->
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00417165, GK -->
+    <FIELD LABEL="Field.Label.Comments">
+      <!-- END, CR00417165 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00125512, LP -->
+  <CLUSTER SHOW_LABELS="false">
+    <LIST TITLE="List.Title.RecentChanges">
+      <DETAILS_ROW>
+        <INLINE_PAGE PAGE_ID="Case_resolveViewTransactionLogRecord">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="relatedID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="relatedID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="transactionDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="transactionDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="transactionDateTime"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="transactionDateTime"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="userFullName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userFullName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="eventTypeDesc"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="eventType"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pageID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageID"
+            />
+          </CONNECT>
+        </INLINE_PAGE>
+      </DETAILS_ROW>
+
+
+      <FIELD LABEL="Field.Label.Description">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="transactionDescription"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.TransactionDateTime">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="transactionDateTime"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.UserFullname">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="userFullName"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00248571, GP -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_viewUserDetails"
+        >
+          <!-- END, CR00248571 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="username"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+  <!-- END, CR00125512 -->
+
+
+</PAGE>

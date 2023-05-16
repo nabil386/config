@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010, 2012 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- This jsp redirects to an informational page if they click onto the     -->
+<!-- navigation link to the current decision if assessment has yet to be    -->
+<!-- run on the case.                                                       -->
+<PAGE
+  PAGE_ID="ProductDelivery_resolveDetermination"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+  
+      curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String caseID = request.getParameter("caseID");
+     
+      curam.interfaces.CaseDeterminationPkg.CaseDetermination_listDecisionPeriodsForDetermination_TH 
+         th = new curam.interfaces.CaseDeterminationPkg.CaseDetermination_listDecisionPeriodsForDetermination_TH();
+      
+      th.setFieldValue(th.key$caseID_idx, caseID);
+      String url = context;
+      
+      try {
+        th.callServer();
+      
+        String description = th.getFieldValue(th.result$caseDesc$description_idx);
+      
+        String pageName = "";
+      
+        if (description.length() == 0) {
+          pageName = "ProductDelivery_infoNoDetermination";
+        } 
+        else
+        {
+          pageName = "ProductDelivery_listCreoleDecisions";
+        }
+
+        url += pageName + "Page.do?";
+            
+      } catch(java.lang.Exception e) {
+        url += "ProductDelivery_errorDeterminationPage.do?";
+      }
+
+      url += "caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);                   
+      url += "&amp;" + rh.getSystemParameters();
+      response.sendRedirect(response.encodeRedirectURL(url));
+
+  </JSP_SCRIPTLET>
+</PAGE>

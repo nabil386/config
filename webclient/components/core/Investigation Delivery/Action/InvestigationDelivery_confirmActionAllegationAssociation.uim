@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Asks user for confirmation before associating allegation to action.    -->
+<?curam-deprecated Since Curam 6.0, as part of the Action Plan Enhancement, 
+   allegations are now associated to situations and not actions. 
+   See release note:CEF-722 : ActionPlan Enhancement
+ ?>
+<PAGE
+  PAGE_ID="InvestigationDelivery_confirmActionAllegationAssociation"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="InvestigationDelivery"
+    NAME="ACTION"
+    OPERATION="createActionAllegationAssociation"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="actionID"/>
+  <PAGE_PARAMETER NAME="parentLinkID"/>
+  <PAGE_PARAMETER NAME="childLinkID"/>
+  <PAGE_PARAMETER NAME="relatedID"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="actionID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="actionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="childLinkID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="childLinkID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="relatedID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="relatedID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="YesButton"
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    >
+
+
+      <LINK PAGE_ID="InvestigationDelivery_viewActionFromActionPlan">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="relatedID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="parentLinkID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="parentLinkID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="actionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="actionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="NoButton"
+      LABEL="ActionControl.Label.No"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="InvestigationDelivery_listAllegationForAction"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="relatedID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="parentLinkID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="parentLinkID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="actionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="actionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+
+
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.ConfirmAssociation"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+</PAGE>

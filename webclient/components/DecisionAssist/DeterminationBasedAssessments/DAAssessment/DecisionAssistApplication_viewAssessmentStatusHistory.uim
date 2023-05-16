@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<PAGE
+  PAGE_ID="DecisionAssistApplication_viewAssessmentStatusHistory"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="assessmentCaseID"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="DAAssessment"
+    NAME="ASSESSMENTCONTEXT"
+    OPERATION="viewAssessmentContextDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="assessmentCaseID"
+    />
+    <TARGET
+      NAME="ASSESSMENTCONTEXT"
+      PROPERTY="key$dtls$dtls$assessmentCaseID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="DAAssessment"
+    NAME="VIEW_ASSESSMENT_STATUS_HISTORY"
+    OPERATION="readAllAssessmentWithUserFullNameStatusHistory"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="assessmentCaseID"
+    />
+    <TARGET
+      NAME="VIEW_ASSESSMENT_STATUS_HISTORY"
+      PROPERTY="key$dtls$dtls$assessmentCaseID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+    <FIELD
+      LABEL="Field.Label.Date"
+      WIDTH="30"
+    >
+      <CONNECT>`
+            <SOURCE
+          NAME="VIEW_ASSESSMENT_STATUS_HISTORY"
+          PROPERTY="result$list$list$actionDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.User"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_ASSESSMENT_STATUS_HISTORY"
+          PROPERTY="result$list$list$actionedBy"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_ASSESSMENT_STATUS_HISTORY"
+          PROPERTY="result$list$list$status"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2008, 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="CMISAdmin_metadataAttachmentList"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="CMSAdministration"
+    NAME="DISPLAY"
+    OPERATION="listAttachmentMetadataProperties"
+  />
+
+
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.EditDisplayName">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="LocalizableText_viewLocalizableText"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$propertyDisplayNameID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localizableTextID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.EditDescription">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="LocalizableText_viewLocalizableText"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$propertyDescriptionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localizableTextID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Enable">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$enabled"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CMISAdmin_metadataAttachmentEnable"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$cmsMetadataPropertyID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="metadataID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Disable">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$enabled"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CMISAdmin_metadataAttachmentDisable"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$cmsMetadataPropertyID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="metadataID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$propertyDisplayName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00360494, PS -->
+    <FIELD
+      LABEL="Field.Label.Description"
+      WIDTH="55"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$propertyDescription"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Enabled"
+      WIDTH="15"
+    >
+      <!-- END, CR00360494 -->
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$enabled"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

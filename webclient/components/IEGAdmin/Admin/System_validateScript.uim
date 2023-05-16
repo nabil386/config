@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<!-- ====================================================================== -->
+<!--                                                                        -->
+<!-- Copyright (c) 2008-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!--                                                                        -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Page used to allow a user to select a datastore schema to validate     -->
+<!-- the IEG script against and then run the validations.                   -->
+<!--                                                                        -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="System_validateScript" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+    <PAGE_TITLE>
+      <CONNECT>
+          <SOURCE 
+          NAME="TEXT" 
+          PROPERTY="PageTitle.StaticText1" />
+      </CONNECT>        
+    </PAGE_TITLE>
+    <PAGE_PARAMETER NAME="scriptID" />
+    <PAGE_PARAMETER NAME="scriptType" />
+    <PAGE_PARAMETER NAME="scriptVersion" />
+    <PAGE_PARAMETER NAME="name" />
+    <SERVER_INTERFACE CLASS="DatastoreSchema" NAME="DISPLAY" OPERATION="listSchemas" PHASE="DISPLAY" />    
+    <SERVER_INTERFACE CLASS="IEGScriptAdmin" NAME="ACTION" OPERATION="getSchemaName" PHASE="ACTION" />
+    <CLUSTER 
+      DESCRIPTION="Cluster.Description"
+      LABEL_WIDTH="30%">
+        <FIELD LABEL="Field.Label.SchemaName">
+            <CONNECT>
+                <INITIAL NAME="DISPLAY" PROPERTY="schemaDisplayName"
+                         HIDDEN_PROPERTY="schemaName"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="key$schemaName" />
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+    <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+        <ACTION_CONTROL LABEL="ActionControl.Label.ValidateButton" TYPE="SUBMIT">
+            <LINK PAGE_ID="System_listValidationErrors" DISMISS_MODAL="false">
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="scriptID" />
+                    <TARGET NAME="PAGE" PROPERTY="scriptID" />
+                </CONNECT>
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="scriptType" />
+                    <TARGET NAME="PAGE" PROPERTY="scriptType" />
+                </CONNECT>
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="scriptVersion" />
+                    <TARGET NAME="PAGE" PROPERTY="scriptVersion" />
+                </CONNECT>                    
+                <CONNECT>
+                    <SOURCE NAME="ACTION" PROPERTY="result$schemaName" />
+                    <TARGET NAME="PAGE" PROPERTY="schemaName" />
+                </CONNECT>
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="name" />
+                    <TARGET NAME="PAGE" PROPERTY="name" />
+                </CONNECT>                    
+            </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Cancel" />            
+    </ACTION_SET>
+</PAGE>

@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2008, 2013, 2017. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Creates evidence sharing configuration for non-identical evidence      -->
+<!-- sharing.                                                               -->
+<?curam-deprecated Since Curam 7.0.2.0, this functionality has been replaced with the Advanced Evidence Sharing component.?>
+<PAGE PAGE_ID="EvidenceBroker_createNonIdenticalSharedEvidenceConfig" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00290965, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="informationMsgTxt"/>
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00290965 -->
+
+
+  <!-- BEGIN, CR00205401, GYH -->
+  <!-- BEGIN, CR00290965, IBM -->
+  <SERVER_INTERFACE CLASS="EvidenceBrokerAdmin" NAME="DISPLAY" OPERATION="getEvidenceSharingConfigDetailsListBySourceAndTarget" PHASE="DISPLAY"/>
+  <!-- END, CR00290965 -->
+
+
+  <SERVER_INTERFACE CLASS="EvidenceBrokerAdmin" NAME="DISPLAY1" OPERATION="listEvidenceBrokerTargetSystems" PHASE="DISPLAY"/>
+
+
+  <SERVER_INTERFACE CLASS="EvidenceBrokerAdmin" NAME="ACTION" OPERATION="createNonIdenticalEvidenceSharingConfig" PHASE="ACTION"/>
+
+
+  <SERVER_INTERFACE CLASS="EvidenceBrokerAdmin" NAME="DISPLAY2" OPERATION="getSourceAndTargetCaseCategoryDesc" PHASE="DISPLAY"/>
+
+
+  <!--BEGIN, CR00119949, NP-->
+  <SERVER_INTERFACE CLASS="EvidenceBrokerAdmin" NAME="SOURCETARGETDROPDOWN" OPERATION="listEvidenceTypesAvailableForSharing" PHASE="DISPLAY"/>
+  <!--END, CR00119949-->
+
+
+  <PAGE_PARAMETER NAME="sourceID"/>
+  <PAGE_PARAMETER NAME="sourceType"/>
+  <PAGE_PARAMETER NAME="sourceName"/>
+  <PAGE_PARAMETER NAME="targetID"/>
+  <PAGE_PARAMETER NAME="targetType"/>
+  <PAGE_PARAMETER NAME="targetName"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="sourceID"/>
+    <TARGET NAME="ACTION" PROPERTY="sourceID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="sourceType"/>
+    <TARGET NAME="ACTION" PROPERTY="sourceType"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="targetID"/>
+    <TARGET NAME="ACTION" PROPERTY="targetID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="targetType"/>
+    <TARGET NAME="ACTION" PROPERTY="targetType"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="sourceID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$sourceID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="sourceType"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$sourceType"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="targetID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$targetID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="targetType"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$targetType"/>
+  </CONNECT>
+
+
+  <!--BEGIN, CR00119949, NP-->
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="sourceID"/>
+    <TARGET NAME="SOURCETARGETDROPDOWN" PROPERTY="sourceID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="sourceType"/>
+    <TARGET NAME="SOURCETARGETDROPDOWN" PROPERTY="sourceType"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="targetID"/>
+    <TARGET NAME="SOURCETARGETDROPDOWN" PROPERTY="targetID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="targetType"/>
+    <TARGET NAME="SOURCETARGETDROPDOWN" PROPERTY="targetType"/>
+  </CONNECT>
+  <!--END, CR00119949-->
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="sourceType"/>
+    <TARGET NAME="DISPLAY2" PROPERTY="sourceCaseType"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="targetType"/>
+    <TARGET NAME="DISPLAY2" PROPERTY="targetCaseType"/>
+  </CONNECT>
+
+
+  <CLUSTER LABEL_WIDTH="40" NUM_COLS="2">
+
+
+    <FIELD LABEL="Field.Label.SourceType">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY2" PROPERTY="sourceName"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Source">
+      <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="sourceName"/>
+      </CONNECT>
+    </FIELD>
+    <!--BEGIN, CR00119949, NP-->
+    <FIELD LABEL="Field.Label.SourceEvidenceType" USE_BLANK="true" USE_DEFAULT="false">
+      <CONNECT>
+        <INITIAL HIDDEN_PROPERTY="listSourceDetails$listDetails$evidenceTypeCode" NAME="SOURCETARGETDROPDOWN" PROPERTY="listSourceDetails$listDetails$evidenceDescription"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="sourceEvidenceTypeCode"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.SourceSystem" USE_BLANK="true">
+      <CONNECT>
+        <INITIAL HIDDEN_PROPERTY="systemID" NAME="DISPLAY1" PROPERTY="systemName"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="sourceSystemID"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00348265, AKr -->
+    <!-- BEGIN, CR00358719, SSK -->
+    <FIELD LABEL="Field.Label.ShareVerifications">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="shareVerificationsOption"/>
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00358719 -->
+    <!-- END, CR00348265 -->
+
+
+    <FIELD LABEL="Field.Label.TargetType">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY2" PROPERTY="targetName"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Target">
+      <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="targetName"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <!--BEGIN, CR00130754, CL-->
+    <FIELD LABEL="Field.Label.TargetEvidenceType" USE_BLANK="true" USE_DEFAULT="false">
+      <CONNECT>
+        <INITIAL HIDDEN_PROPERTY="listTargetDetails$listDetails$evidenceTypeCode" NAME="SOURCETARGETDROPDOWN" PROPERTY="listTargetDetails$listDetails$evidenceDescription"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="targetEvidenceTypeCode"/>
+      </CONNECT>
+    </FIELD>
+    <!--END, CR00130754-->
+    <!--END, CR00119949-->
+
+
+    <FIELD LABEL="Field.Label.TargetSystem" USE_BLANK="true">
+      <CONNECT>
+        <INITIAL HIDDEN_PROPERTY="systemID" NAME="DISPLAY1" PROPERTY="systemName"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="externalSystem"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00351647, LKS -->
+  <CLUSTER LABEL_WIDTH="35" NUM_COLS="2" SHOW_LABELS="false" TITLE="Cluster.Title.LimitSharingTo">
+    <FIELD LABEL="Field.Label.ShareLatestOnly">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="shareLimitType"/>
+      </CONNECT>
+    </FIELD>
+    <CLUSTER NUM_COLS="2" SHOW_LABELS="false">
+      <FIELD LABEL="Field.Label.ShareLast">
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="shareLastNumber"/>
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00400701, RPB -->
+      <FIELD LABEL="Field.Label.ShareLast" USE_BLANK="true">
+        <!-- END, CR00400701 -->
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="shareLastOption"/>
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+  <!-- END, CR00351647 -->
+
+
+  <CLUSTER SHOW_LABELS="false" STYLE="outer-cluster-borderless">
+    <LIST TITLE="List.Label.ExistingSharingConfiguration">
+      <FIELD LABEL="Field.Label.SourceEvidenceType" WIDTH="50">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="sourceEvidenceDesc"/>
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.TargetEvidenceType" WIDTH="50">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="targetEvidenceDesc"/>
+        </CONNECT>
+      </FIELD>
+    </LIST>
+
+
+  </CLUSTER>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT">
+      <LINK PAGE_ID="EvidenceBroker_listNonIdenticalSharedEvidenceConfig" SAVE_LINK="false">
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="SaveAndAddButton" LABEL="ActionControl.Label.SaveAndAdd" TYPE="SUBMIT">
+      <LINK PAGE_ID="EvidenceBroker_createNonIdenticalSharedEvidenceConfig" SAVE_LINK="false">
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel">
+      <LINK PAGE_ID="EvidenceBroker_listNonIdenticalSharedEvidenceConfig" SAVE_LINK="false">
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+  <!-- END, CR00205401 -->
+
+
+</PAGE>

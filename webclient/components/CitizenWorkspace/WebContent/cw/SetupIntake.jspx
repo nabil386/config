@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns="http://www.w3.org/1999/xhtml" xmlns:curam="http://www.curamsoftware.com/curam" version="2.0">
+  <jsp:directive.page isErrorPage="false" pageEncoding="UTF-8" contentType="text/html;charset=UTF-8" isELIgnored="false" language="java" buffer="32kb" errorPage="/cw/ErrorPage.do" />
+  <jsp:output omit-xml-declaration="yes" />
+  <jsp:text><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></jsp:text>
+  <jsp:scriptlet>
+    pageContext.setAttribute("pageLocale", 
+    curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+    pageContext.getSession()).getLocale().toString());
+  </jsp:scriptlet>
+  <curam:userPreferences localeCode="${pageScope.pageLocale}"/>
+  <jsp:scriptlet>
+    <![CDATA[
+
+      javax.servlet.http.HttpServletRequest hsRequest;
+      javax.servlet.http.HttpSession httpSession;
+      hsRequest = (javax.servlet.http.HttpServletRequest) request;
+      httpSession = hsRequest.getSession();
+      java.security.Principal userPrincipal = hsRequest.getUserPrincipal();
+      String url;
+      String contextPath = request.getContextPath();    
+
+      String playerID = request.getParameter("id");
+      String navigatorID = (String) httpSession.getAttribute("curam.navigatorid");
+      
+      // Call setup intake process
+      curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_setupIntake_TH th = 
+        new curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_setupIntake_TH(); 
+      th.setFieldValue(th.details$playerID_idx, playerID);
+      th.setFieldValue(th.details$navigatorID_idx, navigatorID);
+      th.callServer();
+      
+      String newPlayerId = th.getFieldValue(th.result$playerID_idx);
+      String pageName = th.getFieldValue(th.result$nextPage_idx);
+      String pageType = th.getFieldValue(th.result$pageType_idx);
+      String loginRequiredInd = th.getFieldValue(th.result$loginRequiredInd_idx);
+      String username = th.getFieldValue(th.result$username_idx);
+      String password = th.getFieldValue(th.result$password_idx);
+      String pageParams = th.getFieldValue(th.result$pageParams_idx);
+      String usertype = th.getFieldValue(th.result$usertype_idx);
+
+      httpSession.setAttribute("curam.page.playerExecutionID", newPlayerId);
+
+      if ("true".equals(loginRequiredInd) && userPrincipal != null) {
+      
+        // Set the session values required to forward to the correct page after logon
+        String params = "&id=" + newPlayerId + pageParams;
+        httpSession.setAttribute("curam.page.name", pageName);
+        httpSession.setAttribute("curam.page.params", params);
+        httpSession.setAttribute("curam.page.type", pageType);
+        httpSession.setAttribute("curam.userName", username);    
+        httpSession.setAttribute("curam.password", password);    
+        httpSession.setAttribute("curam.tempUser", "true");
+        httpSession.setAttribute("curam.userType", usertype);  
+        url = "../logon.jsp";
+
+      } else {
+      
+        // determine whether to route to ResolvePage or PagePlayerPage     
+        if (pageType.equals("resolve")) {
+        
+         // send to the resolve script. under certain configurations we route directly
+         // to the StartIntakeScript jsp file to start intake without any more pages
+         // being played.
+         url = "ResolvePage.do?id=" + curam.omega3.request.RequestUtils.escapeURL(newPlayerId) + 
+            "&page=" + curam.omega3.request.RequestUtils.escapeURL(pageName);
+          
+        } else {
+          // Forward to the page player, passing the executionID and page to display
+          url = "PlayerPage.do?id=" + curam.omega3.request.RequestUtils.escapeURL(newPlayerId) + 
+            "&page=" + curam.omega3.request.RequestUtils.escapeURL(pageName);
+        }
+        
+        if (pageParams != null && pageParams.length() > 0) {
+            pageParams = citizenworkspace.util.ParameterEncodingHelper.getEncodedPageParms(pageParams);
+            url += "&" + pageParams;      
+        }
+
+      }
+      response.sendRedirect(response.encodeRedirectURL(url)); 
+
+      ]]>
+  </jsp:scriptlet> 
+  
+</jsp:root>

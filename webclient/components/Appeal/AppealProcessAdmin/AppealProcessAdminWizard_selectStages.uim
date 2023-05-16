@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2011, 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Appeal Process Administration Wizard.                                  -->
+<!-- Select the stages for the appeal process.                              -->
+<PAGE
+  PAGE_ID="AppealProcessAdminWizard_selectStages"
+  WINDOW_OPTIONS="width=1025"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="AppealProcessAdmin"
+    NAME="DISPLAYWIZARD"
+    OPERATION="getAppealProcessWizard"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="AppealProcessAdmin"
+    NAME="DISPLAY"
+    OPERATION="getAppealStageOrderDetails"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="AppealProcessAdmin"
+    NAME="ACTION"
+    OPERATION="setAppealStageOrderDetails"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$wizardStateID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$wizardStateID"
+    />
+  </CONNECT>
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <ACTION_SET
+    BOTTOM="true"
+    TOP="true"
+  >
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="AppealProcessAdminWizard_setTimeConstraints"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST
+    PAGINATED="false"
+    TITLE="Cluster.Title.SelectStages"
+  >
+
+
+    <!-- BEGIN, CR00342018, PS -->
+    <FIELD
+      LABEL="Field.Label.Select"
+      WIDTH="15"
+    >
+      <!-- END, CR00342018 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="selectedInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="selectedInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00342018, PS -->
+    <FIELD
+      LABEL="Field.Label.StageOrder"
+      WIDTH="25"
+    >
+      <!-- END, CR00342018 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="stageOrder"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.StageType"
+      WIDTH="60"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="stageType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="stageType"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <!-- BEGIN, CR00360130, PS -->
+  <CLUSTER
+    LABEL_WIDTH="47"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00360130 -->
+
+
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="7"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

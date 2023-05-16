@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2004,2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Page to list outcomes for a goal.                                      -->
+<PAGE PAGE_ID="ServicePlanAdmin_listOutcomesForGoal" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE CLASS="ServicePlan" NAME="DISPLAY" OPERATION="listOutcomesForGoal" PHASE="DISPLAY"/>
+  <PAGE_PARAMETER NAME="goalID"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="goalID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="goalID"/>
+  </CONNECT>
+  <ACTION_SET ALIGNMENT="LEFT" BOTTOM="false" TOP="true">
+    <ACTION_CONTROL IMAGE="NewButton" LABEL="ActionControl.Label.New">
+      <LINK OPEN_MODAL="true" PAGE_ID="ServicePlanAdmin_createOutcomeForGoal">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="goalID"/>
+          <TARGET NAME="PAGE" PROPERTY="goalID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="contextDescription"/>
+          <TARGET NAME="PAGE" PROPERTY="pageDescription"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL IMAGE="AddExisting" LABEL="ActionControl.Label.AddExisting">
+      <LINK OPEN_MODAL="true" PAGE_ID="ServicePlanAdmin_addOutcomesToGoal">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="goalID"/>
+          <TARGET NAME="PAGE" PROPERTY="goalID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <LINK OPEN_MODAL="true" PAGE_ID="ServicePlanAdmin_removeOutcomeFromGoal" WINDOW_OPTIONS="width=400,height=150">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="goalID"/>
+            <TARGET NAME="PAGE" PROPERTY="goalID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="outcomeID"/>
+            <TARGET NAME="PAGE" PROPERTY="outcomeID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="contextDescription"/>
+            <TARGET NAME="PAGE" PROPERTY="pageDescription"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD LABEL="Field.Title.Name" WIDTH="60">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="name"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.DateCreated" WIDTH="40">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="dateCreated"/>
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ServicePlanAdmin_createOutcomeForGoal">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="goalID"/>
+          <TARGET NAME="PAGE" PROPERTY="goalID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="contextDescription"/>
+          <TARGET NAME="PAGE" PROPERTY="pageDescription"/>
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+</PAGE>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Lists the withdrawals associated with a program.            -->
+<PAGE
+  PAGE_ID="CommonIntake_readProgramWithdrawal"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+ <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <SERVER_INTERFACE CLASS="ProgramAuthorisation" NAME="DISPLAY" OPERATION="readWithdrawalDetails"  PHASE="DISPLAY"/>
+  
+  <PAGE_PARAMETER NAME="withdrawalRequestID"/>
+ 
+  
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="withdrawalRequestID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$withdrawalRequestID"/>
+  </CONNECT>
+
+
+  
+  <CLUSTER NUM_COLS="1" LABEL_WIDTH="30">
+    <CONDITION>
+      <IS_FALSE NAME="DISPLAY" PROPERTY="programWithdrawnOnlineInd"/>
+    </CONDITION>
+  <FIELD LABEL="Field.Label.WithdrawnBy" WIDTH="35">
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="withdrawnBy"/>
+    </CONNECT>
+    <LINK PAGE_ID="Organization_viewUserDetails" OPEN_MODAL="true">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="username" />
+        <TARGET NAME="PAGE" PROPERTY="userName" />
+      </CONNECT>
+    </LINK>
+  </FIELD>
+  </CLUSTER>
+  <CLUSTER NUM_COLS="1" LABEL_WIDTH="30">
+  <FIELD LABEL="Field.Label.WithdrawalReason" USE_BLANK="true">
+    
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="withdrawalRequestReason"/>
+    </CONNECT>
+    
+  </FIELD> 
+  </CLUSTER>
+  <CLUSTER TITLE="Cluster.Title.OtherWithdrawalReason" SHOW_LABELS="false">
+    <FIELD HEIGHT="5">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="otherWReqReason"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER TITLE="Cluster.Title.Comments" SHOW_LABELS="false">
+    <FIELD HEIGHT="5">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+   </CLUSTER> 
+   
+</PAGE>
+

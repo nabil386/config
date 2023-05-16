@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010, 2011 Curam Software Ltd.                    -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows you to view decision details for a                    -->
+<!-- determination-based assessment.                                        -->
+<PAGE
+  PAGE_ID="DecisionAssistApplication_viewDecisionDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MenuDecision"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="DecisionAssistApplication_viewDecisionDetails"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationDecisionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationDecisionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationDeliveryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationDeliveryID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MenuAnswers"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="DecisionAssistApplication_viewDecisionAnswerDetails"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationDecisionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationDecisionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationDeliveryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationDeliveryID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <PAGE_PARAMETER NAME="determinationDecisionID"/>
+  <PAGE_PARAMETER NAME="determinationDeliveryID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="DeterminationExecution"
+    NAME="VIEW_DETERMINATION_DECISION"
+    OPERATION="viewDecisionDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="DeterminationDelivery"
+    NAME="ASSESSMENTCONTEXT"
+    OPERATION="viewAssessmentContextDescription"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="ASSESSMENTCONTEXT"
+      PROPERTY="key$dtls$dtls$determinationDeliveryID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDecisionID"
+    />
+    <TARGET
+      NAME="VIEW_DETERMINATION_DECISION"
+      PROPERTY="key$key$determinationDecisionID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="VIEW_DETERMINATION_DECISION"
+      PROPERTY="key$key$determinationDeliveryID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00214223, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00214223 -->
+    <FIELD LABEL="Field.Label.DecisionMadeBy">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_DECISION"
+          PROPERTY="result$decisionDtls$decisionMadeByUserFullName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="VIEW_DETERMINATION_DECISION"
+            PROPERTY="result$decisionDtls$decisionMadeBy"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Contradiction">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_DECISION"
+          PROPERTY="result$decisionDtls$contradictionMessage"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_DECISION"
+          PROPERTY="result$decisionDtls$status"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.OutcomesAndScore"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="ASSESSMENTCONTEXT"
+        PROPERTY="result$dtls$totalScoreInd"
+      />
+    </CONDITION>
+    <FIELD
+      LABEL="Field.Label.Outcomes"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_DECISION"
+          PROPERTY="result$decisionDtls$outcomes"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.TotalScore"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_DECISION"
+          PROPERTY="result$decisionDtls$totalScore"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.OutcomesAndScore"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="VIEW_DETERMINATION_DECISION"
+        PROPERTY="result$decisionDtls$outcomesInd"
+      />
+    </CONDITION>
+    <FIELD
+      LABEL="Field.Label.Outcomes"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_DECISION"
+          PROPERTY="result$decisionDtls$outcomes"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

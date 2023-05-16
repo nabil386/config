@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- Copyright (c) 2003-2009 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the supervisor to assign task redirection to his/her  -->
+<!-- users.                                                                 -->
+<?curam-deprecated Since Curam 6.0, This UIM has been deprecated because editable fields contained in the UIM have been replaced. 
+This UIM has been replaced by Supervisor_redirectTasksToUsers. See release note CR00225257?>
+<PAGE PAGE_ID="Supervisor_taskRedirection" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE CLASS="MaintainSupervisorUsers" NAME="DISPLAY" OPERATION="listUserTaskRedirectionHistory" PHASE="DISPLAY"/>
+  <SERVER_INTERFACE CLASS="MaintainSupervisorUsers" NAME="DISPLAY1" OPERATION="listSupervisorUsers" PHASE="DISPLAY"/>
+  <SERVER_INTERFACE CLASS="MaintainSupervisorUsers" NAME="ACTION" OPERATION="redirectTasksToUser" PHASE="ACTION"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="userName"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$userName"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="userName"/>
+    <TARGET NAME="ACTION" PROPERTY="key$dtls$fromUserName"/>
+  </CONNECT>
+  <PAGE_PARAMETER NAME="userFullName"/>
+  <PAGE_PARAMETER NAME="userName"/>
+  <!--Begin, CR00039906, SS-->
+  <CLUSTER LABEL_WIDTH="25" NUM_COLS="2" TITLE="Cluster.Title.NewTaskRedirection">
+    <CONTAINER LABEL="Container.Label.RedirectToUser">
+      <FIELD USE_BLANK="true">
+        <CONNECT>
+          <INITIAL HIDDEN_PROPERTY="userName" NAME="DISPLAY1" PROPERTY="fullName"/>
+        </CONNECT>
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="key$dtls$toUserName"/>
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="key$dtls$toUserNameInSupervisorGroup"/>
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.StartDate" USE_DEFAULT="false">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="key$dtls$startDateTime"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <FIELD LABEL="Field.Label.EndDate" USE_DEFAULT="false">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="key$dtls$endDateTime"/>
+      </CONNECT>
+    </FIELD>
+    <!--End, CR00039906-->
+  </CLUSTER>
+  <!--Begin, CR00039906, SS-->
+  <LIST TITLE="List.Title.ActiveAndPendingRedirections">
+    <!--End, CR00039906-->
+    <CONTAINER LABEL="Container.Label.Action" WIDTH="10">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Clear">
+        <LINK OPEN_MODAL="true" PAGE_ID="Supervisor_clearTaskRedirection" SAVE_LINK="true" WINDOW_OPTIONS="width=400,height=200">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$taskRedirectionID"/>
+            <TARGET NAME="PAGE" PROPERTY="redirectedTaskID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$startDateTime"/>
+            <TARGET NAME="PAGE" PROPERTY="startDateTime"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$endDateTime"/>
+            <TARGET NAME="PAGE" PROPERTY="endDateTime"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$versionNo"/>
+            <TARGET NAME="PAGE" PROPERTY="versionNum"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="description"/>
+            <TARGET NAME="PAGE" PROPERTY="userFullName"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="userName"/>
+            <TARGET NAME="PAGE" PROPERTY="userName"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.ActivePendingRedirectTo" WIDTH="30">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$toUserFullName"/>
+      </CONNECT>
+      <LINK OPEN_NEW="true" PAGE_ID="Supervisor_userWorkspace">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$toUserName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="CONSTANT" PROPERTY="supervisor.viewTaskOption"/>
+          <TARGET NAME="PAGE" PROPERTY="taskOptionCode"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ActivePendingStartDate" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$startDateTime"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ActivePendingEndDate" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$endDateTime"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ActivePendingStatus" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirections$activeAndPendingDtls$redirectionStatus"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <!--Begin, CR00039906, SS-->
+  <ACTION_SET ALIGNMENT="CENTER" TOP="FALSE">
+    <ACTION_CONTROL DEFAULT="true" IMAGE="SaveButton" LABEL="ActionControl.SaveButton.label" TYPE="SUBMIT"/>
+
+
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.CancelButton.label"/>
+  </ACTION_SET>
+  <!--End, CR00039906-->
+</PAGE>

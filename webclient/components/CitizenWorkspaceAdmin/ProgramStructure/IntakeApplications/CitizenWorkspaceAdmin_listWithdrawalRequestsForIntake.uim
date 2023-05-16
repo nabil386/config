@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright (c) 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="CitizenWorkspaceAdmin_listWithdrawalRequestsForIntake" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE NAME="PAGE" PROPERTY="intakeApplicationTypeName" />
+    </CONNECT>
+  </PAGE_TITLE>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL LABEL="ActionControl.Label.IntakeDetails" STYLE="in-page-link">
+      <LINK PAGE_ID="CitizenWorkspaceAdmin_viewIntakeApplicationType" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+          <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Programs" STYLE="in-page-link">
+      <LINK PAGE_ID="CitizenWorkspaceAdmin_listProgramTypesForIntake" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+          <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="intakeApplicationTypeName" />
+          <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeName" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.WithdrawalRequests" STYLE="in-page-current-link">
+      <LINK PAGE_ID="CitizenWorkspaceAdmin_listWithdrawalRequestsForIntake" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+          <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="intakeApplicationTypeName" />
+          <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeName" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>    
+  <PAGE_PARAMETER NAME="intakeApplicationTypeID" />
+  <PAGE_PARAMETER NAME="intakeApplicationTypeName" />
+  <SERVER_INTERFACE CLASS="IntakeApplicationType" NAME="DISPLAY" OPERATION="listWithdrawalReasonsForIntake" />
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+    <TARGET NAME="DISPLAY" PROPERTY="key$intakeApplicationTypeID" />
+  </CONNECT>
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <LINK PAGE_ID="CitizenWorkspaceAdmin_removeIntakeWithdrawalReason" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="withdrawalReqReasonID" />
+            <TARGET NAME="PAGE" PROPERTY="withdrawalReqReasonID" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD LABEL="Field.Title.Reason" WIDTH="100">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="reasonCode" />
+      </CONNECT>
+    </FIELD>
+  </LIST>  
+</PAGE>

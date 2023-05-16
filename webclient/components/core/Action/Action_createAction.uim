@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26  
+  
+  Copyright IBM Corporation 2010, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                      -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- ===========                                                             -->
+<!-- This page allows the user to create an action.                          -->
+<!-- BEGIN, CR00200707, AK -->
+<PAGE
+  PAGE_ID="Action_createAction"
+  WINDOW_OPTIONS="width=700"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00200707 -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Action"
+    NAME="ACTION"
+    OPERATION="createAction1"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="IntegratedCase"
+    NAME="DISPLAYCASEPARTICIPANT"
+    OPERATION="getCaseParticipantsAgeConcernRoleID"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <!-- BEGIN, CR00205132, AK -->
+  <PAGE_PARAMETER NAME="actionPlanID"/>
+  <!-- END, CR00205132 -->
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+  <CONNECT>
+    <!-- BEGIN, CR00205132, AK -->
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="actionPlanID"
+    />
+    <!-- END, CR00205132 -->
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="createActionDetails$actionDetails$parentLinkID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAYCASEPARTICIPANT"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00407868, SG -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="caseIDOpt"
+    />
+  </CONNECT>
+  <!-- END, CR00407868 -->
+
+
+  <!--BEGIN, CR00226282, AK -->
+
+
+  <INCLUDE FILE_NAME="Action_createActionView.vim"/>
+  <!--END, CR00226282 -->
+</PAGE>
