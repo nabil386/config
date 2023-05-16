@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project
+default="main"
+name="BDMBatchBase"
+>
+<property environment="sysenv."/>
+<property name="dir.server" value="${sysenv.SERVER_DIR}"/>
+<property name="dir.sde" value="${sysenv.CURAMSDEJ}" />
+<property name="batch.parameters" value="${sysenv.BATCHPARAM}" />
+<property name="java.jvmargs" value="${sysenv.JVMARGS}" />
+<property name="dir.logs" value="./Logs"/>
+<property name="dir.logs.detailed" value="${dir.logs}/${batch}" />
+<mkdir dir="${dir.logs.detailed}" />
+<property name="java.failonerror" value="false"/>
+<property name="build.logs.basedir" value="${sysenv.SERVER_DIR}/buildlogs"/>
+<import file="${dir.sde}/bin/app_batchlauncher.xml"/>
+<import file="${dir.sde}/bin/app_properties.xml"/>
+
+ <target name="runStream">
+<property name="perform.batch.stream.log" value="${batch}_Stream"/>
+<property name="runStream.logfile" value="${dir.logs.detailed}/${perform.batch.stream.log}_${streamNo}.log"/>
+
+ <echo message="${batch.program}"/>
+<echo message="${batch.parameters}"/>
+<echo message="${java.jvmargs}"/>
+<record
+loglevel="info"
+name="${runStream.logfile}"
+/>
+
+ <ant
+antfile="${sysenv.CURAMSDEJ}/bin/app_batchlauncher.xml"
+inheritall="false"
+target="main"
+>
+<property name="batch.program" value="${batch.program}" />
+<property name="batch.username" value="SYSTEM" />
+<property name="batch.parameters" value="${batch.parameters}"/>
+<property name="java.jvmargs" value="${java.jvmargs}"/>
+</ant>
+
+ <record
+action="stop"
+loglevel="info"
+name="${runStream.logfile}"
+/>
+<echo message="STOP STREAM ${streamNo}"/>
+</target>
+
+ <target name="runChunker">
+<property name="perform.batch.chunker.log" value="${batch}_Chunker"/>
+<property name="runChunker.logfile" value="${dir.logs.detailed}/${perform.batch.chunker.log}.log" />
+<echo message="${batch.program}"/>
+<echo message="${batch.parameters}"/>
+<record
+loglevel="info"
+name="${runChunker.logfile}"
+/>
+
+ <sequential>
+<sleep seconds="5"/>
+<ant
+antfile="${sysenv.CURAMSDEJ}/bin/app_batchlauncher.xml"
+inheritall="false"
+target="main"
+>
+<property name="batch.program" value="${batch.program}" />
+<property name="batch.username" value="SYSTEM" />
+<property name="batch.parameters" value="${batch.parameters}"/>
+<property name="java.jvmargs" value="${java.jvmargs}"/>
+</ant>
+</sequential>
+
+ <record
+action="stop"
+loglevel="info"
+name="${runChunker.logfile}"
+/>
+<echo message="STOP CHUNKER"/>
+
+ </target>
+
+</project>

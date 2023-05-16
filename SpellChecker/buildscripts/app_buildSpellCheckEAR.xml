@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  default="spellcheck.buildEARs"
+  name="SpellCheckerBuild"
+>
+
+
+  <!-- Copy the EAR delivered in the SpellChecker Component to the appropriated build folder -->
+  <target
+    depends="set.vendor.property"
+    name="spellcheck.buildEARs"
+  >
+    <antcall target="spellcheck.buildEARs.was"/>
+    <antcall target="spellcheck.buildEARs.wls"/>
+    <antcall target="spellcheck.buildEARs.nas"/>
+  </target>
+
+
+  <!-- IBM WebSphere -->
+  <target
+    if="vendor.equals.ibm"
+    name="spellcheck.buildEARs.was"
+  >
+    <copy
+      file="${sysenv.CURAM_DIR}/SpellChecker/SpellChecker.ear"
+      tofile="${dir.ear}/WAS/SpellChecker.ear"
+    />
+  </target>
+  <!-- BEA Weblogic -->
+  <target
+    depends="set.vendor.property"
+    if="vendor.equals.bea"
+    name="spellcheck.buildEARs.wls"
+  >
+    <copy
+      file="${sysenv.CURAM_DIR}/SpellChecker/SpellChecker.ear"
+      tofile="${dir.ear}/WLS/SpellChecker.ear"
+    />
+  </target>
+  <!-- SAP Netweaver -->
+  <target
+    depends="set.vendor.property"
+    if="vendor.equals.nas"
+    name="spellcheck.buildEARs.nas"
+  >
+    <echo>Spell Checking currently not supported on NAS. No EAR file will be copied to the build location.</echo>
+    <!--- copy file="${sysenv.CURAM_DIR}/SpellChecker/SpellChecker.ear" tofile="${dir.ear}/NAS/SpellChecker.ear"/-->
+  </target>
+
+
+  <!-- Set the vendor property required to copy the EAR to the correct location. -->
+  <target name="set.vendor.property">
+    <condition property="vendor.equals.ibm">
+      <equals
+        arg1="${as.vendor}"
+        arg2="ibm"
+        casesensitive="false"
+      />
+    </condition>
+    <condition property="vendor.equals.bea">
+      <equals
+        arg1="${as.vendor}"
+        arg2="bea"
+        casesensitive="false"
+      />
+    </condition>
+    <condition property="vendor.equals.sap">
+      <equals
+        arg1="${as.vendor}"
+        arg2="sap"
+        casesensitive="false"
+      />
+    </condition>
+  </target>
+</project>
