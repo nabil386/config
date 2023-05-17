@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description																														-->
+<!-- ===========																														-->
+<!-- Page used to link from the IEGTester page to the IEGScriptPlayer JSP.  -->
+<!-- A check for validation errors is carried out first and if there are    -->
+<!-- any present, the validation errors page is displayed.                  -->
+<PAGE PAGE_ID="CitizenAccount_triage">
+	<JSP_SCRIPTLET>
+    <![CDATA[
+    
+    // This sets up triage for Citizen Account. The process is simiar to that in the SetupTriage.jspx file.
+	  // Some security code has been removed as the user is always logged in when this page his hit.
+	  // This version is retrieving the playerID from the session as opposed to the page / request.
+	  // This adds a different context to the URL than SetupTriage.jspx
+    
+      javax.servlet.http.HttpServletRequest hsRequest = (javax.servlet.http.HttpServletRequest) request;
+      javax.servlet.http.HttpSession httpSession = hsRequest.getSession();
+
+      String url;
+	    String contextPath = request.getContextPath();
+      String playerID = (String) httpSession.getAttribute("curam.page.playerExecutionID");
+        
+      // Call setup triage process
+      curam.interfaces.TriagePkg.Triage_setupTriage_TH th = 
+        new curam.interfaces.TriagePkg.Triage_setupTriage_TH(); 
+      th.setFieldValue(th.key$playerID_idx, playerID);       
+      th.callServer();
+      
+      playerID = th.getFieldValue(th.result$playerID_idx);
+      
+      String pageName = th.getFieldValue(th.result$nextPage_idx);
+      String pageType = th.getFieldValue(th.result$pageType_idx);
+      String pageParams = th.getFieldValue(th.result$pageParams_idx);
+
+	    // determine whether to route to ResolvePage or PagePlayerPage 
+      if(pageType.equals("resolve")) {
+
+          url = contextPath + "/cw/" + "StartIEGScript.jspx?";
+          
+          // Call the Start Triage Script server interface
+          curam.interfaces.TriagePkg.Triage_startTriage_TH startTriageScript_TH = 
+            new curam.interfaces.TriagePkg.Triage_startTriage_TH(); 
+          startTriageScript_TH.setFieldValue(startTriageScript_TH.key$playerID_idx, playerID);            
+          startTriageScript_TH.callServer();
+          
+          String iegExecutionID = startTriageScript_TH.getFieldValue(startTriageScript_TH.result$iegExecutionID_idx); 
+          
+          url = url + "executionID=" + curam.omega3.request.RequestUtils.escapeURL(iegExecutionID) + "&id=" + curam.omega3.request.RequestUtils.escapeURL(playerID);
+          
+        
+        } else {
+          url = contextPath + "/cw/PlayerPage.do?page=" + curam.omega3.request.RequestUtils.escapeURL(pageName) + "&id=" +  curam.omega3.request.RequestUtils.escapeURL(playerID);
+
+          if (!citizenworkspace.util.StringHelper.isEmpty(pageParams)) {
+            pageParams = citizenworkspace.util.ParameterEncodingHelper.getEncodedPageParms(pageParams);
+            url += "&" + pageParams;                  
+          }
+          
+        }
+           
+      response.sendRedirect(response.encodeRedirectURL(url)); 
+    ]]>
+  </JSP_SCRIPTLET>
+</PAGE>

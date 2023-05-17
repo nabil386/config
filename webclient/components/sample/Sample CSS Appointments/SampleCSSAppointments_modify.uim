@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2012, 2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify daily schedule details.            -->
+<!-- BEGIN, CR00332092, AKr -->
+<PAGE PAGE_ID="SampleCSSAppointments_modify" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- END, CR00332092 -->
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <SERVER_INTERFACE CLASS="SampleCSSAppointments" NAME="DISPLAY" OPERATION="readDailySchedule" PHASE="DISPLAY"/>
+
+
+  <SERVER_INTERFACE CLASS="SampleCSSAppointments" NAME="ACTION" OPERATION="modifyDailySchedule" PHASE="ACTION"/>
+
+
+  <PAGE_PARAMETER NAME="scheduleID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="scheduleID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="dailyScheduleKey$scheduleID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="scheduleID"/>
+    <TARGET NAME="ACTION" PROPERTY="scheduleID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="recordStatus"/>
+    <TARGET NAME="ACTION" PROPERTY="recordStatus"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="versionNo"/>
+    <TARGET NAME="ACTION" PROPERTY="dailyScheduleDtls$versionNo"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="locationID"/>
+    <TARGET NAME="ACTION" PROPERTY="locationID"/>
+  </CONNECT>
+
+
+  <CLUSTER LABEL_WIDTH="50" NUM_COLS="2" SHOW_LABELS="true">
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="name"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="name"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EffectiveDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="effectiveDate"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="effectiveDate"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Title.Comments">
+    <!-- BEGIN, CR00408407, VT -->
+    <FIELD HEIGHT="4" LABEL="Field.Label.Comments">
+      <!-- END, CR00408407 -->
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="comments"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="comments"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

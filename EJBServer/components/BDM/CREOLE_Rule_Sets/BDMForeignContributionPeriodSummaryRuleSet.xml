@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 73158 DEV: Contribution details Evidence in Foreign Engagement Case -->
+<RuleSet name="BDMForeignContributionPeriodSummaryRuleSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+
+  <Class extends="DefaultEvidenceSummary"
+    extendsRuleSet="EvidenceSummaryRuleSet" name="SummaryInformation">
+
+    <Attribute name="evidence">
+      <type>
+        <ruleclass name="BDMForeignContributionPeriod"
+          ruleset="BDMForeignContributionPeriodRuleSet" />
+      </type>
+      <derivation>
+        <specified />
+      </derivation>
+    </Attribute>
+
+    <Attribute name="summary">
+      <type>
+        <javaclass name="curam.creole.value.Message" />
+      </type>
+      <derivation>
+        <choose>
+            <type>
+                <javaclass name="curam.creole.value.Message" />
+            </type>
+            <when>
+                <condition>
+                    <all>
+                        <fixedlist>
+                            <listof>
+                                <javaclass name="Boolean" />
+                            </listof>
+                            <members>
+                                <not>
+                                    <equals>
+                                        <reference attribute="isVoluntary">
+                                            <reference attribute="evidence" />
+                                        </reference>
+                                        <null/>
+                                    </equals>
+                                </not>
+                                <reference attribute="isVoluntary">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </members>
+                        </fixedlist>
+                    </all>
+                </condition>
+                <value>
+                    <reference attribute="voluntarySummary" />
+                </value>
+            </when>
+            <otherwise>
+                <value>
+                    <reference attribute="defaultSummary" />
+                </value>
+            </otherwise>
+        </choose>
+      </derivation>
+      </Attribute>
+      
+    <Attribute name="defaultSummary">
+      <type>
+        <javaclass name="curam.creole.value.Message" />
+      </type>
+      <derivation>
+        <ResourceMessage key="SummaryMessage"
+          resourceBundle="curam.ca.gc.bdm.evidence.BDMForeignContributionPeriodSummaryRuleSet">
+          <reference attribute="startDate">
+            <reference attribute="evidence" />
+          </reference>
+          <reference attribute="endDate">
+            <reference attribute="evidence" />
+          </reference>
+          <reference attribute="country">
+            <reference attribute="evidence" />
+          </reference>
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+    
+    <Attribute name="voluntarySummary">
+      <type>
+        <javaclass name="curam.creole.value.Message" />
+      </type>
+      <derivation>
+        <ResourceMessage key="VoluntarySummaryMessage"
+          resourceBundle="curam.ca.gc.bdm.evidence.BDMForeignContributionPeriodSummaryRuleSet">
+          <reference attribute="startDate">
+            <reference attribute="evidence" />
+          </reference>
+          <reference attribute="endDate">
+            <reference attribute="evidence" />
+          </reference>
+          <reference attribute="country">
+            <reference attribute="evidence" />
+          </reference>
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+
+  </Class>
+
+</RuleSet>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2003, 2008, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp redirects the user to an evidence group page.                 -->
+<PAGE
+  PAGE_ID="Case_resolveViewTransactionLogRecord"
+  WINDOW_OPTIONS="width=700"
+>
+  <JSP_SCRIPTLET>
+        
+  
+        curam.omega3.request.RequestHandler
+          rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+  
+        String context = request.getContextPath() + "/";
+        context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+        String relatedID = request.getParameter("relatedID");
+        String transactionDescription = request.getParameter("transactionDescription");
+        String transactionDateTime = request.getParameter("transactionDateTime");
+        String userFullName = request.getParameter("userFullName");
+        String eventType = request.getParameter("eventType");
+        String pageID =  request.getParameter("pageID");
+        
+        String pageDescription="";
+        String url = "";
+  
+  
+  if(!(pageID.equals("")))
+  {
+    // BEGIN, CR00234804, PM
+    if (pageID.equals("ProductDelivery_viewMilestoneTransactionPage.do?milestoneDeliveryID="))
+    {
+  
+      curam.interfaces.ProductDeliveryPkg.ProductDelivery_readMilestone_TH
+      th = new curam.interfaces.ProductDeliveryPkg.ProductDelivery_readMilestone_TH();
+        
+      th.setFieldValue(th.key$milestoneDeliveryID_idx,curam.omega3.request.RequestUtils.escapeURL(relatedID));
+      th.callServer();
+     
+      String ownerUserName=th.getFieldValue(th.result$milestoneDetails$readDetails$ownerUserName_idx);
+      
+      if(ownerUserName == null || ownerUserName.equals(""))
+      {
+        url = context + "Case_viewTransactionLogRecordPage.do?transactionDescription="+curam.omega3.request.RequestUtils.escapeURL(transactionDescription)+"&amp;userFullName="+curam.omega3.request.RequestUtils.escapeURL(userFullName)+"&amp;eventType="+curam.omega3.request.RequestUtils.escapeURL(eventType)+"&amp;transactionDateTime="+curam.omega3.request.RequestUtils.escapeURL(transactionDateTime);
+      }
+      else
+      {
+        url = context + core.util.ParameterEncodingHelper.encodePageIDParamForTransactionLog(pageID) + curam.omega3.request.RequestUtils.escapeURL(relatedID) + curam.omega3.request.RequestUtils.escapeURL(pageDescription)+"&amp;transactionDescription="+curam.omega3.request.RequestUtils.escapeURL(transactionDescription)+"&amp;userFullName="+curam.omega3.request.RequestUtils.escapeURL(userFullName)+"&amp;transactionDateTime="+curam.omega3.request.RequestUtils.escapeURL(transactionDateTime);
+      }
+    }
+    else if (pageID.equals("Case_viewNoteTransactionPage.do?caseNoteID=")) {
+    
+      url = context + "Case_viewNoteTransactionPage.do?caseNoteID=" + curam.omega3.request.RequestUtils.escapeURL(relatedID) + curam.omega3.request.RequestUtils.escapeURL(pageDescription)+"&amp;transactionDescription="+curam.omega3.request.RequestUtils.escapeURL(transactionDescription)+"&amp;userFullName="+curam.omega3.request.RequestUtils.escapeURL(userFullName)+"&amp;transactionDateTime="+curam.omega3.request.RequestUtils.escapeURL(transactionDateTime);
+      
+    }
+    else {
+    // END, CR00234804
+    
+      //BEGIN CR00121379, MR
+      url = context + core.util.ParameterEncodingHelper.encodePageIDParamForTransactionLog(pageID) + curam.omega3.request.RequestUtils.escapeURL(relatedID) + curam.omega3.request.RequestUtils.escapeURL(pageDescription)+"&amp;transactionDescription="+curam.omega3.request.RequestUtils.escapeURL(transactionDescription)+"&amp;userFullName="+curam.omega3.request.RequestUtils.escapeURL(userFullName)+"&amp;transactionDateTime="+curam.omega3.request.RequestUtils.escapeURL(transactionDateTime);
+      // END, CR00121379
+    }
+  }
+  else {
+    url = context + "Case_viewTransactionLogRecordPage.do?transactionDescription="+curam.omega3.request.RequestUtils.escapeURL(transactionDescription)+"&amp;userFullName="+curam.omega3.request.RequestUtils.escapeURL(userFullName)+"&amp;eventType="+curam.omega3.request.RequestUtils.escapeURL(eventType)+"&amp;transactionDateTime="+curam.omega3.request.RequestUtils.escapeURL(transactionDateTime);
+  }
+        
+    url += "&amp;" + rh.getSystemParameters();
+   
+    response.sendRedirect(response.encodeRedirectURL(url));
+        
+      
+    </JSP_SCRIPTLET>
+</PAGE>

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2020. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant file for creating Web Services EAR files.
+
+-->
+<project name="app_webservices" default="main"
+  xmlns:if="ant:if"
+  xmlns:unless="ant:unless">
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="./app_properties.xml" />
+
+  <!--  **************************  -->
+  <!--  ***  Import Utilities  ***  -->
+  <!--  **************************  -->
+  <import file="./app_utilities.xml" />
+
+  <!--  *************************  -->
+  <!--  ***  Import Macros    ***  -->
+  <!--  *************************  -->
+  <import file="./app_macros.xml" />
+
+  <!--  ***************************  -->
+  <!--  ***  Import Axis2 build ***  -->
+  <!--  ***************************  -->
+  <import file="./app_webservices_axis2.xml" />
+
+  <!--  *************  -->
+  <!--  ***  MAIN ***  -->
+  <!--  *************  -->
+  <target name="main">
+
+    <condition property="services.exist">
+      <available file="${dir.bld.svr.web}/${project.package}/server-config.wsdd"/>
+    </condition>
+
+    <antcall target="test.services"/>
+
+    <condition property="isWAS">
+      <equals arg1="${app.server}" arg2="was"/>
+    </condition>
+    <condition property="isWLP">
+      <equals arg1="${app.server}" arg2="wlp"/>
+    </condition>
+    <condition property="isWLS">
+      <equals arg1="${app.server}" arg2="wls"/>
+    </condition>
+
+    <delete dir="${dir.bld.svr.gen.int.ws}"/>
+    <mkdir dir="${dir.bld.svr.gen.int.ws}"/>
+
+    <antcall target="copy" inheritAll="false">
+      <param name="app.server" value="${app.server}"/>
+    </antcall>
+
+    <delete file="${dir.bld.svr.gen.int}/webservices2.war"/>
+
+    <antcall target="was.main"/>
+    <antcall target="wlp.main"/>
+    <antcall target="wls.main"/>
+
+  </target>
+
+  <target name="was.main" if="isWAS">
+
+    <!-- Update property files -->
+    <property file="${app.prop.location}"/>
+    <antcall target="replace" inheritAll="false">
+      <param name="prp.contextproviderurl" value="iiop://localhost:${curam.server.port}"/>
+      <param name="prp.contextfactoryname" value="com.ibm.websphere.naming.WsnInitialContextFactory"/>
+      <param name="prp.jndiusername"       value="${curam.security.credentials.ws.username}"/>
+      <param name="prp.jndipassword"       value="${curam.security.credentials.ws.password}"/>
+      <param name="prp.wsurl"            value="http://localhost:${curam.webservices.httpport}"/>
+    </antcall>
+
+    <!-- Build Axis2 war file -->
+    <antcall target="axis2" inheritAll="false">
+      <param name="app.server" value="was"/>
+    </antcall>
+
+    <!-- Create the ear file containing all the war files -->
+    <antcall target="pack.ear" inheritAll="false">
+      <param name="dir.appserver" value="WAS"/>
+    </antcall>
+
+  </target>
+
+  <target name="wlp.main" if="isWLP">
+
+    <property file="${app.prop.location}"/>
+    <antcall target="replace" inheritAll="false">
+      <param name="prp.contextproviderurl" value="iiop://localhost:${curam.server.port}"/>
+      <param name="prp.contextfactoryname" value="com.ibm.ws.jndi.iiop.InitialContextFactory"/>
+      <param name="prp.jndiusername"       value="${curam.security.credentials.ws.username}"/>
+      <param name="prp.jndipassword"       value="${curam.security.credentials.ws.password}"/>
+      <param name="prp.wsurl"            value="http://localhost:${curam.webservices.httpport}"/>
+    </antcall>
+
+    <!-- Build Axis2 war file -->
+    <antcall target="axis2" inheritAll="false">
+      <param name="app.server" value="wlp"/>
+    </antcall>
+
+    <antcall target="pack.ear" inheritAll="false">
+      <param name="dir.appserver" value="WLP"/>
+    </antcall>
+
+  </target>
+
+  <target name="wls.main" if="isWLS">
+
+    <!-- Update property files -->
+    <property file="${app.prop.location}"/>
+    <antcall target="replace" inheritAll="false">
+      <param name="prp.contextproviderurl" value="t3://localhost:${curam.server.port}"/>
+      <param name="prp.contextfactoryname" value="weblogic.jndi.WLInitialContextFactory"/>
+      <param name="prp.jndiusername"       value="${curam.security.credentials.ws.username}"/>
+      <param name="prp.jndipassword"       value="${curam.security.credentials.ws.password}"/>
+      <param name="prp.wsurl"              value="http://localhost:${curam.server.port}"/>
+    </antcall>
+
+    <!-- Build Axis2 war file -->
+    <antcall target="axis2" inheritAll="false">
+      <param name="app.server" value="wls"/>
+    </antcall>
+
+    <!-- Create the ear file containing all the war files -->
+    <antcall target="pack.ear" inheritAll="false">
+      <param name="dir.appserver" value="WLS"/>
+    </antcall>
+
+  </target>
+
+  <!--  **************  -->
+  <!--  ***  TEST  ***  -->
+  <!--  **************  -->
+
+  <target name="test.services" unless="services.exist">
+      <echo>Unable to find ${dir.bld.svr.web}/${project.package}/server-config.wsdd</echo>
+      <echo message="There are no web service components to build!"/>
+  </target>
+
+  <!--  **************  -->
+  <!--  ***  COPY  ***  -->
+  <!--  **************  -->
+  <target name="copy">
+
+    <copy toDir="${dir.bld.svr.gen.int.ws}" includeEmptyDirs="false">
+      <fileset dir="${dir.sde.ear}/webservices/${app.server}/war"
+        includes="**/*"
+        excludes="web.xml weblogic.xml web-j2ee-engine.xml ibm-web-bnd.xml *.xmi"/>
+    </copy>
+
+    <copy toDir="${dir.bld.svr.gen.int.ws}/META-INF" includeEmptyDirs="false">
+      <fileset dir="${dir.sde.ear}/webservices/${app.server}/ear"
+        includes="*"/>
+    </copy>
+
+  </target>
+
+  <!--  *********************  -->
+  <!--  ***  WS - REPLACE ***  -->
+  <!--  *********************  -->
+  <target name="replace" depends="get.replaced.project.package">
+
+    <echo message="Replacing."/>
+
+    <replace dir="${dir.bld.svr.gen.int.ws}"
+      includes="**/*.wsdd
+                **/ibm-web-bnd.xml
+                **/*.xmi
+                **/*.xml
+                **/*.wsdd">
+      <replacefilter token="JNDI_USERNAME"             value="${prp.jndiusername}" />
+      <replacefilter token="JNDI_PASSWORD"             value="${prp.jndipassword}" />
+      <replacefilter token="CONTEXT_PROVIDER_URL"      value="${prp.contextproviderurl}" />
+      <replacefilter token="FULL_CONTEXT_FACTORY_NAME" value="${prp.contextfactoryname}" />
+      <replacefilter token="SERVER_MODEL_NAME"         value="${SERVER_MODEL_NAME}WS" />
+      <replacefilter token="WS_URL"                    value="${prp.wsurl}/${SERVER_MODEL_NAME}WS" />
+    </replace>
+
+  </target>
+
+  <!--  *****************  -->
+  <!--  ***  PACK EAR ***  -->
+  <!--  *****************  -->
+  <target name="pack.ear">
+
+    <ear destfile="${dir.ear}/${dir.appserver}/${SERVER_MODEL_NAME}WebServices.ear"
+      appxml="${dir.bld.svr.gen.int.ws}/META-INF/application.xml"
+      manifest="${dir.templates}/app-Manifest.mf">
+      <fileset dir="${dir.bld.svr.gen.int.ws}"
+        excludes="**/application.xml"
+        includes="META-INF/*"/>
+      <fileset dir="${dir.bld.svr.gen.int}" includes="*.war"/>
+    </ear>
+
+  </target>
+
+  <!--  *******************************  -->
+  <!--  ***  CREATE PROPERTIES FILE ***  -->
+  <!--  *******************************  -->
+  <target name="create.properties.jar">
+
+    <!-- Cause dynamic properties to be disabled. -->
+    <property name="properties.file.name" value="Bootstrap.properties" />
+    <echo file="${target.dir}/${properties.file.name}" append="false">curam.disable.dynamic.properties=true
+    </echo>
+    <echo file="${target.dir}/${properties.file.name}" append="true">curam.environment.as.vendor=${as.vendor}
+  	</echo>
+    <echo file="${target.dir}/${properties.file.name}" append="true">
+    curam.security.credentials.ws.username=${curam.security.credentials.ws.username}
+    curam.security.credentials.ws.password=${curam.security.credentials.ws.password}
+    </echo>
+
+    <jar destfile="${target.dir}/properties.jar"
+       basedir="${target.dir}"
+       includes="**/Bootstrap.properties"/>
+
+    <delete file="${target.dir}/${properties.file.name}"/>
+
+  </target>
+
+</project>

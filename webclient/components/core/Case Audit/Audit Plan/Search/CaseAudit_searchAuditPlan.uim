@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Audit Plan search page                                                 -->
+<PAGE
+  PAGE_ID="CaseAudit_searchAuditPlan"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00290965, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00290965 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="AuditPlan"
+    NAME="DISPLAY"
+    OPERATION="getConfiguredTypes"
+  />
+
+
+  <!-- BEGIN, CR00290965, IBM -->
+  <SERVER_INTERFACE
+    CLASS="AuditPlan"
+    NAME="ACTION"
+    OPERATION="searchAuditPlanDetails"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00290965 -->
+
+
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="1"
+    TITLE="Cluster.SearchDetails.Title"
+  >
+
+
+    <CLUSTER
+      LABEL_WIDTH="50"
+      NUM_COLS="2"
+      SHOW_LABELS="true"
+      STYLE="cluster-cpr-no-border"
+    >
+
+
+      <FIELD
+        LABEL="Field.Label.ReferenceNumber"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$auditPlanReference"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.AuditItem"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="type"
+            NAME="DISPLAY"
+            PROPERTY="name"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$type"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.ActiveAuditPlansOnly">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$activeOnlyInd"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Coordinator">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$coordinator"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.Status"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$status"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD CONTROL="SKIP"/>
+
+
+    </CLUSTER>
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="CaseAudit_searchAuditPlan"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+    <CONTAINER
+      LABEL="Container.Label.Actions"
+      WIDTH="7"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.ViewAuditPlan">
+        <CONDITION>
+          <IS_TRUE
+            NAME="ACTION"
+            PROPERTY="dtlsList$isAuditPlanCoordinator"
+          />
+        </CONDITION>
+        <LINK PAGE_ID="CaseAudit_viewAuditPlan">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtlsList$auditPlanID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="auditPlanID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="List.Title.AuditPlanReference"
+      WIDTH="18"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$auditPlanReference"
+        />
+      </CONNECT>
+      <!--   <LINK PAGE_ID="CaseAudit_viewAuditPlan">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtlsList$auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+      </LINK>-->
+    </FIELD>
+
+
+    <FIELD
+      LABEL="List.Title.Purpose"
+      WIDTH="18"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$purpose"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="List.Title.AuditItem"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$type"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="List.Title.Status"
+      WIDTH="17"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="List.Title.ScheduledStartDate"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$scheduledStartDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="List.Title.Coordinator"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$coordinatorFullName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- AF -->
+
+
+  </LIST>
+</PAGE>

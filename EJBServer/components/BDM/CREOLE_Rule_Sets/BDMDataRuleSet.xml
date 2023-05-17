@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMDataRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class name="BDMCaseData">
+		<Initialization>
+			<Attribute name="caseID">
+				<type>
+					<javaclass name="Number" />
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="caseHeaderRecord">
+			<type>
+				<ruleclass name="CaseHeader" ruleset="CaseEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<singleitem onMultiple="error" onEmpty="error">
+					<readall ruleclass="CaseHeader" ruleset="CaseEntitiesRuleSet">
+						<match retrievedattribute="caseID">
+							<reference attribute="caseID" />
+						</match>
+					</readall>
+				</singleitem>
+			</derivation>
+		</Attribute>
+		<Attribute name="caseParticipantRoleRecordList">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="CaseParticipantRole"
+						ruleset="CaseEntitiesRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<readall ruleclass="CaseParticipantRole"
+					ruleset="CaseEntitiesRuleSet">
+					<match retrievedattribute="caseID">
+						<reference attribute="caseID" />
+					</match>
+				</readall>
+			</derivation>
+		</Attribute>
+		<Attribute name="memberCaseParticipantRoleRecordList">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="CaseParticipantRole"
+						ruleset="CaseEntitiesRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<filter>
+					<list>
+						<reference attribute="caseParticipantRoleRecordList" />
+					</list>
+					<listitemexpression>
+						<any>
+							<fixedlist>
+								<listof>
+									<javaclass name="Boolean" />
+								</listof>
+								<members>
+									<equals>
+										<reference attribute="typeCode">
+											<current />
+										</reference>
+										<Code table="CaseParticipantRoleType">
+											<String value="PRI" />
+										</Code>
+									</equals>
+									<equals>
+										<reference attribute="typeCode">
+											<current />
+										</reference>
+										<Code table="CaseParticipantRoleType">
+											<String value="MEM" />
+										</Code>
+									</equals>
+								</members>
+							</fixedlist>
+						</any>
+					</listitemexpression>
+				</filter>
+			</derivation>
+		</Attribute>
+		<Attribute name="primaryCaseParticipantRoleRecord">
+			<type>
+				<ruleclass name="CaseParticipantRole"
+					ruleset="CaseEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<singleitem onMultiple="error" onEmpty="error">
+					<filter>
+						<list>
+							<reference attribute="memberCaseParticipantRoleRecordList" />
+						</list>
+						<listitemexpression>
+							<equals>
+								<reference attribute="typeCode">
+									<current />
+								</reference>
+								<Code table="CaseParticipantRoleType">
+									<String value="PRI" />
+								</Code>
+							</equals>
+						</listitemexpression>
+					</filter>
+				</singleitem>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class name="BDMCaseParticipantData">
+		<Initialization>
+			<Attribute name="caseParticipantRoleID">
+				<type>
+					<javaclass name="Number" />
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="caseParticipantRoleRecord">
+			<type>
+				<ruleclass name="CaseParticipantRole"
+					ruleset="CaseEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<singleitem onMultiple="error" onEmpty="error">
+					<readall ruleclass="CaseParticipantRole"
+						ruleset="CaseEntitiesRuleSet">
+						<match retrievedattribute="caseParticipantRoleID">
+							<reference attribute="caseParticipantRoleID" />
+						</match>
+					</readall>
+				</singleitem>
+			</derivation>
+		</Attribute>
+		<Attribute name="caseData">
+			<type>
+				<ruleclass name="BDMCaseData" />
+			</type>
+			<derivation>
+				<create ruleclass="BDMCaseData">
+					<reference attribute="caseID">
+						<reference attribute="caseParticipantRoleRecord" />
+					</reference>
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="participantDataCaseHeaderRecord">
+			<type>
+				<ruleclass name="CaseHeader" ruleset="CaseEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<singleitem onMultiple="error" onEmpty="error">
+					<filter>
+						<list>
+							<readall ruleclass="CaseHeader" ruleset="CaseEntitiesRuleSet">
+								<match retrievedattribute="concernRoleID">
+									<reference attribute="concernRoleID">
+										<reference attribute="participantRole">
+											<reference attribute="caseParticipantRoleRecord" />
+										</reference>
+									</reference>
+								</match>
+							</readall>
+						</list>
+						<listitemexpression>
+							<equals>
+								<reference attribute="caseTypeCode">
+									<current />
+								</reference>
+								<Code table="CaseTypeCode">
+									<String value="CT2001" />
+								</Code>
+							</equals>
+						</listitemexpression>
+					</filter>
+				</singleitem>
+			</derivation>
+		</Attribute>
+		<Attribute name="addressRecordList">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="PDCAddress" ruleset="PDCAddressDataRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<readall ruleclass="PDCAddress" ruleset="PDCAddressDataRuleSet">
+					<match retrievedattribute="caseID">
+						<reference attribute="caseID">
+							<reference attribute="participantDataCaseHeaderRecord" />
+						</reference>
+					</match>
+				</readall>
+			</derivation>
+		</Attribute>
+		<Attribute name="residentialAddressRecordList">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="PDCAddress" ruleset="PDCAddressDataRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<filter>
+					<list>
+						<reference attribute="addressRecordList" />
+					</list>
+					<listitemexpression>
+						<equals>
+							<reference attribute="addressType">
+								<current />
+							</reference>
+							<Code table="AddressType">
+								<String value="AT1" />
+							</Code>
+						</equals>
+					</listitemexpression>
+				</filter>
+			</derivation>
+		</Attribute>
+        <Attribute name="birthAndDeathDetailsRecord">
+            <type>
+                <ruleclass name="PDCBirthAndDeath" ruleset="PDCBirthAndDeathDataRuleSet" />
+            </type>
+            <derivation>
+                <singleitem onMultiple="returnFirst" onEmpty="error">
+                    <readall ruleclass="PDCBirthAndDeath" ruleset="PDCBirthAndDeathDataRuleSet">
+                        <match retrievedattribute="caseID">
+                        <reference attribute="caseID">
+                            <reference attribute="participantDataCaseHeaderRecord" />
+                        </reference>
+                        </match>
+                    </readall>
+                </singleitem>
+            </derivation>
+        </Attribute>
+	</Class>
+</RuleSet>

@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- Copyright 2002-2009, 2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This is the home page for the web application.                         -->
+<PAGE
+  PAGE_ID="Supervisor_workQueueWorkspace"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="workQueueID"/>
+  <PAGE_PARAMETER NAME="taskOptionCode"/>
+  <PAGE_PARAMETER NAME="weekBeginDate"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorWorkQueues"
+    NAME="DISPLAY"
+    OPERATION="readWorkQueueWorkspaceDtls"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorWorkQueues"
+    NAME="ACTION"
+    OPERATION="readWorkQueueWorkspaceDtls"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="workQueueID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$workQueueID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="taskOptionCode"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$taskOption"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$details$workQueueDetails$workQueueID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$workQueueID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.TasksDueNextWeek"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="Supervisor_resolveWQWorkspace">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="workQueueID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="workQueueID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="supervisor.viewTaskOption"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskOptionCode"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.TasksDueNextMonth"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="Supervisor_resolveWQWorkspace">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="workQueueID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="workQueueID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="supervisor.viewTaskOption2"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskOptionCode"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER SHOW_LABELS="false">
+    <FIELD CONFIG="WorkQueueWorkspace.BarChart.Config">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="barChartXML"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <LIST TITLE="List.Title.Subscribers">
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+        <ACTION_CONTROL LABEL="ActionControl.Label.Unsubscribe">
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="Supervisor_unsubscribeOrgObjectFromWorkQueue"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$details$subscriptionDetailsList$dtlsList$userName"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="userName"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$details$workQueueDetails$workQueueID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="workQueueID"
+              />
+            </CONNECT>
+            <!-- BEGIN, CR00161962, NR -->
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="dtlsList$subscriberType"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="subscriberType"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$details$subscriptionDetailsList$dtlsList$userFullName"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="userFullName"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="name"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="workQueueName"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="dtlsList$unsubscribePageText"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="unsubscribePageText"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="dtlsList$pageTitle"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="pageTitle"
+              />
+            </CONNECT>
+            <!-- END, CR00161962 -->
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+      <FIELD
+        LABEL="List.Title.Name"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$subscriptionDetailsList$dtlsList$userFullName"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="Supervisor_userWorkspace">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$subscriptionDetailsList$dtlsList$userName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="supervisor.viewTaskOption"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskOptionCode"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <FIELD
+        LABEL="List.Title.Email"
+        WIDTH="25"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$subscriptionDetailsList$dtlsList$userEmailID"
+          />
+        </CONNECT>
+        <LINK
+          URI_SOURCE_NAME="DISPLAY"
+          URI_SOURCE_PROPERTY="result$details$subscriptionDetailsList$dtlsList$userEmailLink"
+        />
+      </FIELD>
+      <FIELD
+        LABEL="List.Title.PhoneNumber"
+        WIDTH="25"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$subscriptionDetailsList$dtlsList$userPhoneNumber"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00161962, BK -->
+      <FIELD
+        LABEL="List.Title.SubscriptionDate"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$subscriptionDetailsList$dtlsList$subscriptionDateTime"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+
+
+    <!-- BEGIN - Cluster to display list of org object subscribers of the workqueue  -->
+    <LIST TITLE="List.Title.OrgObjectSubscribers">
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+        <ACTION_CONTROL LABEL="ActionControl.Label.Unsubscribe">
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="Supervisor_unsubscribeOrgObjectFromWorkQueue"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="orgDtlsList$subscriberID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="subscriberID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="orgDtlsList$subscriberType"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="subscriberType"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$details$workQueueDetails$workQueueID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="workQueueID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="name"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="workQueueName"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="orgDtlsList$unsubscribePageText"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="unsubscribePageText"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="orgDtlsList$pageTitle"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="pageTitle"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+
+
+      <FIELD
+        LABEL="List.Title.Name"
+        WIDTH="55"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="orgFullName"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="Supervisor_resolveOrgObjectHome">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="orgDtlsList$subscriberID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="subscriberID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="orgDtlsList$organisationStructureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="orgStructureID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="orgDtlsList$organisationUnitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="orgDtlsList$objectType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="objectType"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="supervisor.viewTaskOption"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskOptionCode"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <FIELD
+        LABEL="List.Title.Type"
+        WIDTH="25"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="orgDtlsList$subscriberType"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="List.Title.SubscriptionDate"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="orgDtlsList$subscriptionDateTime"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+    <!-- END -->
+    <!-- END, CR00161962 -->
+  </CLUSTER>
+</PAGE>

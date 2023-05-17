@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="ProcessDefinitionTool_viewStartProcessActivity"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="StartProcessActivityAdmin"
+    NAME="DISPLAY"
+    OPERATION="readStartProcessActivity"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="processID"/>
+  <PAGE_PARAMETER NAME="processVersionNo"/>
+  <PAGE_PARAMETER NAME="activityID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="dtls$processID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processVersionNo"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="dtls$processVersionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="activityID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="dtls$activityID"
+    />
+  </CONNECT>
+  <CLUSTER
+    LABEL_WIDTH="30%"
+    NUM_COLS="2"
+  >
+    <FIELD LABEL="Field.Label.ActivityName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.SplitType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$splitType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ActivityType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$type"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST TITLE="List.OutgoingTransitions">
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="Action.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProcessDefinitionTool_editTransition"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$to$dtls$transitionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="transitionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="processID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="processID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="processVersionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="processVersionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="activityID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="activityID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="Action.Label.Reorder">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProcessDefinitionTool_reorderTransition"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$to$dtls$transitionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="transitionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="processID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="processID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="processVersionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="processVersionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD LABEL="Field.Label.TransToActivity">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$to$dtls$activityName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="ProcessDefinitionTool_resolveActivity">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processVersionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processVersionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$to$dtls$activityType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="activityType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$to$dtls$activityID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="activityID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+  </LIST>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Description"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$description"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

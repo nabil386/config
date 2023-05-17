@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                               	-->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows a user to manually search and select cases for audit	-->
+<PAGE PAGE_ID="CaseAudit_manuallySearchAndSelectCases" WINDOW_OPTIONS="width=1000" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.Title"/>
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00290965, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="informationMsgTxt"/>
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00290965 -->
+
+
+  <SERVER_INTERFACE CLASS="AuditCaseSample" NAME="DISPLAY" OPERATION="generateManuallySelectedCaseSample"/>
+
+
+  <SERVER_INTERFACE CLASS="AuditCaseSample" NAME="ACTION" OPERATION="manuallySelectCasesForAudit" PHASE="ACTION"/>
+
+
+  <PAGE_PARAMETER NAME="auditPlanID"/>
+  <PAGE_PARAMETER NAME="selectionQueryID"/>
+  <PAGE_PARAMETER NAME="externalCaseAuditDataID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="auditPlanID"/>
+    <TARGET NAME="ACTION" PROPERTY="auditPlanID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="auditPlanID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$auditPlanID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="selectionQueryID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$selectionQueryID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="externalCaseAuditDataID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$externalCaseAuditDataID"/>
+  </CONNECT>
+
+
+  <LIST TITLE="List.Title.SearchResult">
+
+
+    <CONTAINER ALIGNMENT="CENTER" WIDTH="10">
+
+
+      <WIDGET TYPE="MULTISELECT">
+
+
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$caseDtlsList$listDtls$searchDtls$caseID"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="key$caseIDList"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.CaseReference" WIDTH="25">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$caseDtlsList$listDtls$searchDtls$caseReference"/>
+      </CONNECT>
+      <LINK OPEN_MODAL="true" PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$caseDtlsList$listDtls$searchDtls$caseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PrimaryClient" WIDTH="35">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$caseDtlsList$listDtls$searchDtls$concernRoleName"/>
+      </CONNECT>
+
+
+      <LINK OPEN_MODAL="true" PAGE_ID="Participant_resolve">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$caseDtlsList$listDtls$searchDtls$concernRoleID"/>
+          <TARGET NAME="PAGE" PROPERTY="concernRoleID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$caseDtlsList$listDtls$searchDtls$concernRoleType"/>
+          <TARGET NAME="PAGE" PROPERTY="concernRoleType"/>
+        </CONNECT>
+      </LINK>
+
+
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.StartDate" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$caseDtlsList$listDtls$searchDtls$startDate"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$caseDtlsList$listDtls$searchDtls$statusCode"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+    <ACTION_CONTROL IMAGE="NextButton" LABEL="ActionControl.Label.AddSelected" TYPE="SUBMIT">
+      <LINK PAGE_ID="THIS"/>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Finish"/>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+
+
+  </ACTION_SET>
+
+
+  <LIST TITLE="List.Title.SelectedCases">
+
+
+    <CONTAINER LABEL="Container.Label.Action" WIDTH="6">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <LINK OPEN_MODAL="true" PAGE_ID="CaseAudit_confirmDeleteFromPlan">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$caseAuditDtlsList$dtls$caseAuditID"/>
+            <TARGET NAME="PAGE" PROPERTY="caseAuditID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$caseAuditDtlsList$dtls$caseAuditReference"/>
+            <TARGET NAME="PAGE" PROPERTY="caseAuditReference"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$caseAuditDtlsList$dtls$versionNo"/>
+            <TARGET NAME="PAGE" PROPERTY="versionNo"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.CaseReference" WIDTH="13">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$caseAuditDtlsList$dtls$caseRef"/>
+      </CONNECT>
+      <LINK OPEN_MODAL="true" PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$caseAuditDtlsList$dtls$caseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PrimaryClient" WIDTH="24">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$caseAuditDtlsList$dtls$caseClientFullName"/>
+      </CONNECT>
+
+
+      <LINK OPEN_MODAL="true" PAGE_ID="Participant_resolve">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$caseAuditDtlsList$dtls$caseClientConcernRoleID"/>
+          <TARGET NAME="PAGE" PROPERTY="concernRoleID"/>
+        </CONNECT>
+      </LINK>
+
+
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.StartDate" WIDTH="13">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$caseAuditDtlsList$dtls$caseStartDate"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status" WIDTH="10">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$caseAuditDtlsList$dtls$caseStatusCode"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- Copyright (c) 2003-2006, 2008, 2010 Curam Software Ltd.                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Supervisor Task Defer      -->
+<PAGE
+  PAGE_ID="Supervisor_orgUnitWorkspace"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="orgUnitID"/>
+  <PAGE_PARAMETER NAME="taskOptionCode"/>
+  <PAGE_PARAMETER NAME="orgStructureID"/>
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorOrgUnits"
+    NAME="DISPLAY"
+    OPERATION="readOrgUnitWorkspaceDetails"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorOrgUnits"
+    NAME="ACTION"
+    OPERATION="readOrgUnitWorkspaceDetails"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="orgUnitID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$orgUnitID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="taskOptionCode"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$taskOption"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="orgStructureID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$orgStructureID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$workspaceDetails$orgUnitWorkspaceDetails$orgUnitID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$orgUnitID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$workspaceDetails$orgUnitWorkspaceDetails$orgStructureID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$orgStructureID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.TasksDueNextWeek"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="Supervisor_resolveOrgUnitWorkspace">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="orgUnitID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="orgUnitID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="orgStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="orgStructureID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="supervisor.viewTaskOption"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskOptionCode"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.TasksDueNextMonth"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="Supervisor_resolveOrgUnitWorkspace">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="orgUnitID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="orgUnitID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="orgStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="orgStructureID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="supervisor.viewTaskOption2"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskOptionCode"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <!-- END, CR00123088 -->
+    <FIELD CONFIG="OrgUintWorkspace.BarChart.Config">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$workspaceDetails$orgUnitWorkspaceChartXMLString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <LIST TITLE="Cluster.Title.Members">
+
+
+      <!-- BEGIN CR00098897, PN-->
+      <FIELD
+        LABEL="Field.Title.MemberName"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$workspaceDetails$memberList$memberDetails$userFullName"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="Supervisor_userWorkspace">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$workspaceDetails$memberList$memberDetails$userName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="supervisor.viewTaskOption"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskOptionCode"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <!-- END CR00098897-->
+      <FIELD
+        LABEL="Field.Title.Position"
+        WIDTH="25"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$workspaceDetails$memberList$memberDetails$position"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Title.Email"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$workspaceDetails$memberList$memberDetails$email"
+          />
+        </CONNECT>
+        <LINK
+          URI_SOURCE_NAME="DISPLAY"
+          URI_SOURCE_PROPERTY="result$workspaceDetails$memberList$memberDetails$userEmailLink"
+        />
+      </FIELD>
+      <FIELD
+        LABEL="Field.Title.PhoneNumber"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$workspaceDetails$memberList$memberDetails$phoneNumber"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+</PAGE>

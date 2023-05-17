@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed Materials - Property of IBM Copyright IBM Corporation 2012. All Rights Reserved. US Government Users Restricted Rights - Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp. -->
+<!-- Copyright (c) 2003, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page displays a list of the codetables present in the Curam       -->
+<!-- application.                                                           -->
+<PAGE
+  PAGE_ID="System_codetableSearch"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <SERVER_INTERFACE
+    CLASS="System"
+    NAME="ACTION"
+    OPERATION="searchCodeTables"
+    PHASE="ACTION"
+  />
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="System_createCodetable"
+      />
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="PublishButton"
+      LABEL="ActionControl.Label.Publish"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="System_publishCodetable"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD LABEL="Field.Label.TableName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$codeTableSearchKey"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.TableItemName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$codeTableItemSearchKey"
+        />
+      </CONNECT>
+    </FIELD>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="System_codetableSearch"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+  <LIST
+    PAGINATED="true"
+    TITLE="List.Title.SearchResults"
+  >
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="System_viewCodetable">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="name"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="codetableName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="key$codeTableItemSearchKey"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="itemFilter"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.ChangeName">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_modifyCodetableNameFromList"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="codetableName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddCodeTableItem">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_createCodetableItem"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="codetableName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Translate">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_listLocalizableDescriptionText"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="codetableName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="displayNameId"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="displayNameId"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="DeleteButton"
+        LABEL="ActionControl.Label.Delete"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_cancelCodetable"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="codetableName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Label.TableName">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="functionalName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DefaultValue">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="defaultCodeDesc"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

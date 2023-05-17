@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="System_addPropertyNameTranslation"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="PropertyAdmin"
+    NAME="ACTION"
+    OPERATION="addPropertyDescription"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="propertyID"/>
+  <PAGE_PARAMETER NAME="currentLanguageCode"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="propertyID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$propertyID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="System_listPropertyName">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="propertyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="propertyID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="currentLanguageCode"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="currentLanguageCode"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="25">
+    <FIELD
+      LABEL="Field.Title.Language"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="12"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$languageCode"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Field.Title.Name"
+  >
+    <!-- BEGIN, CR00463142, EC -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Title.Name"
+    >
+      <!-- END, CR00463142 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$displayName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

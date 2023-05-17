@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012,2016. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="page-schema.xsd">
+    <identifier name="Create Account"/>
+    <server alias="DISPLAY" method="getTermsAndCondUrl"/>
+    <header>
+        <title id="Page.Title"/>
+        <description id="Page.Description"/>
+        <icon id="title_createanaccount"/>
+    </header>
+    <content>
+        <container conditionalSource="/DISPLAY/xmlData/url[@account-creation-enabled='true'][]" false="$empty">
+            <description id="RequiredField"/>
+            <cluster>
+                <title id="PersonalDetails.Title"/>
+                <field id="firstName" type="PAGE_PLAYER_STRING_50" mandatory="true" dynamic="true" width="50">
+                    <title id="FirstName.Label"/>
+                </field>
+                <field id="surname" type="PAGE_PLAYER_STRING_50" mandatory="true" dynamic="true" width="50">
+                    <title id="Surname.Label"/>
+                </field>
+                <field id="email" type="PAGE_PLAYER_STRING_50" mandatory="false" width="50">
+                    <title id="Email.Label"/>
+                </field>
+                <layout>
+                    <compact-layout>no</compact-layout>
+                    <num-cols>2</num-cols>
+                    <width>100</width> 
+                    <label-width>30</label-width>
+                </layout>
+            </cluster>
+            <cluster>
+                <title id="LoginDetails.Title"/>
+                <description id="LoginDetails.Description"/>
+                <field id="username" type="PAGE_PLAYER_STRING_50" mandatory="true" dynamic="true" width="20">
+                    <title id="Username.Label"/>
+                </field>
+                <field id="password" type="CW_PASSWORD" mandatory="true" dynamic="true" width="20">
+                    <title id="Password.Label"/>
+                </field>
+                <field id="confirmPassword" type="CW_PASSWORD" mandatory="true" dynamic="true" width="20">
+                    <title id="ConfirmPassword.Label"/>
+                </field>
+                <layout>
+                    <compact-layout>no</compact-layout>
+                    <num-cols>1</num-cols>
+                    <width>100</width>
+                    <label-width>15</label-width>
+                </layout>
+            </cluster>
+            <cluster>
+                <title id="PasswordHint.Title"/>
+                <description id="PasswordHint.Description"/>
+                <field id="questionType" type="SECRET_QUESTION" mandatory="true" dynamic="true" width="20">
+                    <title id="Question.Label"/>
+                </field>
+                <field id="questionAnswer" type="PAGE_PLAYER_STRING_50" mandatory="true" dynamic="true" width="20">
+                    <title id="Answer.Label"/>
+                </field>
+                <layout>
+                    <compact-layout>no</compact-layout>
+                    <num-cols>1</num-cols>
+                    <width>100</width>
+                    <label-width>15</label-width>
+                </layout>
+            </cluster>
+            <container>
+            <title id="TermsAnCond.Title"/>
+            </container>
+            <checkbox-container>
+                <checkbox id="termsAndCond" value="true" mandatory="true">
+                    <title id="TermsAnCond.Label"/>
+                </checkbox>
+            </checkbox-container>
+            <container conditionalSource="/DISPLAY/xmlData/url[@display-url='true'][]" false="$empty">
+              <link target="_blank">
+                  <title id="TermsAndCondLink.Title"/>
+                  <url source="/DISPLAY/xmlData/url"/>
+                  <link-layout>
+                      <font-size>13.5px</font-size>
+                  </link-layout>
+                  <param name="title" id="TermsAndCondLink.Title"/>
+              </link>
+            </container>
+            <navigation>
+				<nav-button name="back" type="action"/>
+				<nav-button name="next" type="action" page-type="page"/>
+            </navigation>
+        </container>
+        <container conditionalSource="/DISPLAY/xmlData/url[@account-creation-enabled='false'][]" false="$empty">
+            <container>
+                <title id="Error.Title"/>
+                <description id="Error.Description"/>
+            </container>
+            <navigation>
+                <nav-button name="home" page="ResolveCitizenHome" page-type="resolve"/>
+            </navigation>
+        </container>    
+    </content>
+</page>

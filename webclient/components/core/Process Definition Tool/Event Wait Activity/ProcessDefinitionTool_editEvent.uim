@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE PAGE_ID="ProcessDefinitionTool_editEvent" WINDOW_OPTIONS="width=500" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="processID"/>
+  <PAGE_PARAMETER NAME="processVersionNo"/>
+  <PAGE_PARAMETER NAME="activityID"/>
+  <PAGE_PARAMETER NAME="eventID"/>
+  <PAGE_PARAMETER NAME="wdoFilterType"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="result$message$dtls$message"/>
+    </CONNECT>
+  </INFORMATIONAL>
+  <SERVER_INTERFACE CLASS="EventWaitActivityAdmin" NAME="DISPLAY" OPERATION="readEventForModify" PHASE="DISPLAY"/>
+  <SERVER_INTERFACE CLASS="EventWaitActivityAdmin" NAME="ACTION" OPERATION="modifyEvent" PHASE="ACTION"/>
+
+
+  <CLUSTER LABEL_WIDTH="30%" NUM_COLS="1">
+    <FIELD LABEL="Field.Label.Event">
+      <CONNECT>
+        <INITIAL NAME="DISPLAY" PROPERTY="result$eventTypeAndClass"/>
+      </CONNECT>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$eventTypeAndClass"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="eventTypeAndClass"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EventMatchData">
+      <CONNECT>
+        <INITIAL NAME="DISPLAY" PROPERTY="result$eventMatchData"/>
+      </CONNECT>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$eventMatchData"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="eventMatchData"/>
+      </CONNECT>
+      <LINK>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="processID"/>
+          <TARGET NAME="PAGE" PROPERTY="processID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="processVersionNo"/>
+          <TARGET NAME="PAGE" PROPERTY="processVersionNo"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="activityID"/>
+          <TARGET NAME="PAGE" PROPERTY="activityID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="wdoFilterType"/>
+          <TARGET NAME="PAGE" PROPERTY="filterType"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="CONSTANT" PROPERTY="WorkflowDataObject.Attribute.Type.Filter.Long"/>
+          <TARGET NAME="PAGE" PROPERTY="workflowDataObjectAttributeType"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="CONSTANT" PROPERTY="Constant.True"/>
+          <TARGET NAME="PAGE" PROPERTY="attributeRequiredTypeExactMatchOnly"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="CONSTANT" PROPERTY="Constant.True"/>
+          <TARGET NAME="PAGE" PROPERTY="creatingEventMatchDataMapping"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+  </CLUSTER>
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Save" TYPE="SUBMIT">
+
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel">
+
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="processID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="processID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="processVersionNo"/>
+    <TARGET NAME="DISPLAY" PROPERTY="processVersionNo"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="activityID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="activityID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="versionNo"/>
+    <TARGET NAME="DISPLAY" PROPERTY="versionNo"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="eventID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="eventIdentifier$eventID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="processVersionNo"/>
+    <TARGET NAME="ACTION" PROPERTY="processVersionNo"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="activityID"/>
+    <TARGET NAME="ACTION" PROPERTY="activityID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="versionNo"/>
+    <TARGET NAME="ACTION" PROPERTY="versionNo"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="processID"/>
+    <TARGET NAME="ACTION" PROPERTY="processID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="eventID"/>
+    <TARGET NAME="ACTION" PROPERTY="eventID"/>
+  </CONNECT>
+</PAGE>

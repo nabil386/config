@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c)2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This is a search page which allows the user to search                  -->
+<!-- for the external agency branch program offerings based on the program-->
+<!--  type and address                               -->
+<PAGE
+  PAGE_ID="SearchForExternalAgencyBranchOffering"
+  WINDOW_OPTIONS="width=850,height=550"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="programType"/>
+  <PAGE_PARAMETER NAME="state"/>
+  <PAGE_PARAMETER NAME="city"/>
+  <PAGE_PARAMETER NAME="zip"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="programType"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="programType"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="zip"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="zip"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="state"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="state"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="city"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="city"
+    />
+  </CONNECT>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ExternalAgency"
+    NAME="DISPLAY"
+    OPERATION="searchExternalAgencyProgramOffering"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionControlID"
+    CLASS="ExternalAgency"
+    NAME="ACTION"
+    OPERATION="searchExternalAgencyProgramOffering"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionControlID"
+    CLASS="ExternalAgency"
+    NAME="VALIDATEACTION"
+    OPERATION="validateExternalAgencyBranchOffering"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ExternalAgency"
+    NAME="DISPLAYWIZARD"
+    OPERATION="readWizardDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.Program"
+      WIDTH="100"
+    >
+      <CONNECT>
+        <INITIAL
+          NAME="PAGE"
+          PROPERTY="programType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="programType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="programType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.State"
+      USE_BLANK="true"
+      WIDTH="100"
+    >
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="state"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="state"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="state"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.City"
+      WIDTH="70"
+    >
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="city"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="city"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="city"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Zip"
+      WIDTH="70"
+    >
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="zip"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="zip"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="zip"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      BOTTOM="false"
+    >
+
+
+      <ACTION_CONTROL
+        ACTION_ID="WAC19001"
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="SearchForExternalAgencyBranchOffering"
+          SAVE_LINK="false"
+        >
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="programType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="programType"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="state"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="state"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="city"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="city"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="zip"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="zip"
+            />
+          </CONNECT>
+
+
+        </LINK>
+
+
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="SearchForExternalAgencyBranchOffering"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.NoValue"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="programType"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.NoValue"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="state"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.NoValue"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="city"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.NoValue"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="zip"
+            />
+          </CONNECT>
+
+
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST
+    PAGINATED="false"
+    
+    TITLE="List.Title.SearchResults"
+  >
+
+
+    <CONTAINER>
+      <WIDGET TYPE="SINGLESELECT">
+        <WIDGET_PARAMETER NAME="SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="externalAgencyBranchOfferingID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="VALIDATEACTION"
+              PROPERTY="externalAgencyBranchOfferingID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.AgencyName"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="agencyName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.BranchName"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="branchName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Address"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="address"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.PhoneNumber"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="phoneNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <ACTION_SET BOTTOM="true">
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    > </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ACTION_ID="WAC19002"
+      ALIGNMENT="RIGHT"
+      IMAGE="NextButton"
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="CreateExternalAgencyReferral"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="VALIDATEACTION"
+            PROPERTY="key$externalAgencyBranchOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="externalAgencyBranchOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

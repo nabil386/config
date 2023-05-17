@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Lists removed configurations on the system.                            -->
+<PAGE
+  PAGE_ID="CREOLEPropConfig_listRemoved"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- The page title for this page -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="page.title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- Declare the 'display' server bean -->
+  <SERVER_INTERFACE
+    CLASS="RuleObjectPropagatorConfiguration"
+    NAME="DISPLAY"
+    OPERATION="listRemovedConfigurations"
+    PHASE="DISPLAY"
+  />
+
+
+  <LIST>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="CREOLEPropConfig_listConfigurationHistory">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$dtls$ruleObjectPropagatorConfigID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="configID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.View">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CREOLEPropConfig_viewSnapshotConfiguration"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$dtls$snapshotID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="snapshotID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.CreateCopy">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CREOLEPropConfig_createSandboxFromSnapshot"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$dtls$snapshotID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="snapshotID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <!--
+  <FIELD
+    LABEL="field.label.snapshotID"
+  >
+    <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$dtls$dtls$snapshotID"
+    />
+    </CONNECT>
+  </FIELD>
+  -->
+    <FIELD
+      LABEL="field.label.configName"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$configName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="field.label.actionType"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$dtls$actionType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="field.label.actionDateTime"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$dtls$actionDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <!--
+  <FIELD
+    LABEL="field.label.successionID"
+  >
+    <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$dtls$dtls$successionID"
+    />
+    </CONNECT>
+  </FIELD>
+  -->
+    <FIELD
+      LABEL="field.label.userName"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$userFullName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Organization_userHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$dtls$userName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <!--
+  <FIELD
+    LABEL="field.label.ruleObjectPropagatorConfigID"
+  >
+    <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$dtls$dtls$ruleObjectPropagatorConfigID"
+    />
+    </CONNECT>
+  </FIELD>
+  -->
+  </LIST>
+
+
+</PAGE>

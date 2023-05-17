@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2015. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Page for a case owner or supervisor to provide feedback on a case audit-->
+<PAGE PAGE_ID="CaseAudit_provideFeedback" WINDOW_OPTIONS="width=500,height=580" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText"/>
+    </CONNECT>
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="result$caseAuditReference"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="CaseAuditFindings" NAME="DISPLAY" OPERATION="readCaseAuditFeedback" PHASE="DISPLAY"/>
+
+
+  <SERVER_INTERFACE ACTION_ID_PROPERTY="details$actionIDProperty" CLASS="CaseAuditFindings" NAME="ACTION" OPERATION="modifyCaseAuditFeedback" PHASE="ACTION"/>
+
+
+  <PAGE_PARAMETER NAME="caseAuditFeedbackID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseAuditFeedbackID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$feedbackID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseAuditFeedbackID"/>
+    <TARGET NAME="ACTION" PROPERTY="details$feedbackID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="result$versionNo"/>
+    <TARGET NAME="ACTION" PROPERTY="details$versionNo"/>
+  </CONNECT>
+
+
+  <CLUSTER NUM_COLS="1" SHOW_LABELS="FALSE" TITLE="Cluster.Title.Feedback">
+    <!-- BEGIN, CR00463142, EC -->
+    <FIELD HEIGHT="329" LABEL="Cluster.Title.Feedback" WIDTH="101">
+      <!-- END, CR00463142 -->
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$feedbackText"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="feedbackText"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+    <ACTION_CONTROL ACTION_ID="SAVE" IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+    <ACTION_CONTROL ACTION_ID="SAVE_AND_COMPLETE" LABEL="ActionControl.Label.SaveAndComplete" TYPE="SUBMIT"/>
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <CLUSTER NUM_COLS="1" SHOW_LABELS="FALSE" TITLE="Cluster.Title.CaseAuditFindings">
+    <CONDITION>
+      <IS_FALSE NAME="DISPLAY" PROPERTY="result$caseAuditFindings$noFindingsYetInd"/>
+    </CONDITION>
+    <FIELD HEIGHT="4">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$caseAuditFindings$findingsText"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER NUM_COLS="1" SHOW_LABELS="FALSE" TITLE="Cluster.Title.CaseAuditFindings">
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="result$caseAuditFindings$noFindingsYetInd"/>
+    </CONDITION>
+    <CONTAINER LABEL="Container.Label.NoFindingsYet">
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="TEXT" PROPERTY="Container.Label.NoFindingsYet"/>
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.FocusAreas">
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.ViewFinding">
+      <LINK OPEN_MODAL="TRUE" PAGE_ID="CaseAudit_viewFocusAreaFinding">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$focusAreaFindings$dtls$focusAreaFindingID"/>
+          <TARGET NAME="PAGE" PROPERTY="focusAreaFindingID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <FIELD LABEL="List.Title.FocusArea" WIDTH="65">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$focusAreaFindings$dtls$focusAreaText"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="List.Title.FocusAreaSatisfied" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$focusAreaFindings$dtls$focusAreaSatisfied"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="ISO-8859-1"?><entities>
+<entity name="CREOLEAttributeAvailability"><![CDATA[@curam.logicalname Rule Attribute Availability
+
+@curam.definition The availability of a declared or inherited {@curam.entity creole.database.CREOLERuleAttribute Rule Attribute} on a {@curam.entity creole.database.CREOLERuleClass Rule Class}.
+
+@curam.description
+
+<P>A row on this entity indicates that a {@curam.entity creole.database.CREOLERuleAttribute Rule Attribute} is "in effect" on a {@curam.entity creole.database.CREOLERuleClass Rule Class}, because the rule class has either:</P>
+<UL>
+<LI>declared the {@curam.entity creole.database.CREOLERuleAttribute Rule Attribute} itself; or</LI>
+<LI>inherited the {@curam.entity creole.database.CREOLERuleAttribute Rule Attribute} from an ancestor {@curam.entity creole.database.CREOLERuleClass Rule Class}).</LI>
+</UL>
+
+<P>The declared rule attribute may or may not override an identically-named rule attribute declared on an ancestor {@curam.entity creole.database.CREOLERuleClass Rule Class}.</P>
+
+@curam.example
+<P>If rule class C extends rule class B, which in turn extends rule class A, with the following rule attributes:</P>
+<UL>
+<LI>A declares a1 and a2</LI>
+<LI>B declares b1 and overrides a2</LI>
+<LI>C declares c1 and overrides b1</LI>
+</UL>
+
+<P>...then the following rows will be stored on this entity:</P>
+
+<UL>
+<LI>A.a1 available on A (declared);</LI>
+<LI>A.a2 available on A (declared);</LI>
+
+<LI>A.a1 available on B (inherited);</LI>
+<LI>B.a2 available on B (overridden);</LI>
+<LI>B.b1 available on B (declared);</LI>
+
+<LI>C.a1 available on C (inherited);</LI>
+<LI>B.a2 available on C (inherited);</LI>
+<LI>C.b1 available on C (overridden); and</LI>
+<LI>C.c1 available on C (declared).</LI>
+</UL>
+
+@curam.technotes
+
+<P>This entity contains data which is automatically denormalized from {@curam.entity creole.database.CREOLERuleSet Rule Set}.  All locking is handled by {@curam.entity creole.database.CREOLERuleSet Rule Set} and {@curam.entity creole.database.CREOLEMigrationControl Rule Set Migration Control}.</P>
+
+<P>The data on this table may only be read or written using CREOLE APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>]]>
+<attribute fieldname="creoleAttributeAvailabilityID" key="true" description="Unique ID of this database row."/>
+<attribute fieldname="creoleRuleClassID" description="Identifier of the rule class on which the attribute is available."/>
+<attribute fieldname="availableRuleAttributeID" description="Identifier of the rule attribute which is available (i.e. declared on or inherited by) the rule class."/>
+<attribute fieldname="migrationAction" description="A marker whilst this row is being created or removed as part of rule set migration.  Outside of rule set migration the value will always be NULL."/>
+</entity>
+<entity name="CREOLEAttributeInheritance"><![CDATA[@curam.logicalname Rule Attribute Inheritance
+
+@curam.definition An inheritance relationship between two {@curam.entity creole.database.CREOLEAttributeAvailability available rule attributes}.
+
+@curam.description
+
+<P>A row on this entity indicates that a {@curam.entity creole.database.CREOLERuleAttribute Rule Attribute} that is "in effect" on a {@curam.entity creole.database.CREOLERuleClass Rule Class} is an ancestor of another {@curam.entity creole.database.CREOLERuleAttribute Rule Attribute} in effect on a descendent {@curam.entity creole.database.CREOLERuleClass Rule Class}.</P>
+<P>A {@curam.entity creole.database.CREOLERuleAttribute Rule Attribute} is an ancestor of another if it is:</P>
+<UL>
+<LI>inherited by a descendent {@curam.entity creole.database.CREOLERuleClass Rule Class}; or</LI>
+<LI>overridden by a descendent {@curam.entity creole.database.CREOLERuleClass Rule Class}.</LI>
+</UL>
+
+@curam.example
+<P>If rule class C extends rule class B, which in turn extends rule class A, with the following rule attributes:</P>
+<UL>
+<LI>A declares a1 and a2</LI>
+<LI>B declares b1 and overrides a2</LI>
+<LI>C declares c1 and overrides b1</LI>
+</UL>
+
+<P>...then the following rows will be stored on this entity:</P>
+
+<UL>
+<LI>A.a1 (available on A) ancestor of A.a1 (available on A);</LI>
+<LI>A.a1 (available on A) ancestor of A.a1 (available on B);</LI>
+<LI>A.a1 (available on A) ancestor of A.a1 (available on C);</LI>
+
+<LI>A.a2 (available on A) ancestor of A.a2 (available on A);</LI>
+<LI>A.a2 (available on A) ancestor of B.a2 (available on B);</LI>
+<LI>A.a2 (available on A) ancestor of B.a2 (available on C);</LI>
+
+<LI>A.a1 (available on B) ancestor of A.a1 (available on B);</LI>
+<LI>A.a1 (available on B) ancestor of A.a1 (available on C);</LI>
+
+<LI>B.a2 (available on B) ancestor of B.a2 (available on B);</LI>
+<LI>B.a2 (available on B) ancestor of B.a2 (available on C);</LI>
+
+<LI>B.b1 (available on B) ancestor of B.b1 (available on B);</LI>
+<LI>B.b1 (available on B) ancestor of C.b1 (available on C);</LI>
+
+<LI>A.a1 (available on C) ancestor of A.a1 (available on C);</LI>
+
+<LI>B.a2 (available on C) ancestor of B.a2 (available on C);</LI>
+
+<LI>C.b1 (available on C) ancestor of C.b1 (available on C); and</LI>
+
+<LI>C.c1 (available on C) ancestor of C.c1 (available on C).</LI>
+</UL>
+
+@curam.technotes
+
+<P>This entity contains data which is automatically denormalized from {@curam.entity creole.database.CREOLERuleSet Rule Set}.  All locking is handled by {@curam.entity creole.database.CREOLERuleSet Rule Set} and {@curam.entity creole.database.CREOLEMigrationControl Rule Set Migration Control}.</P>
+
+<P>The data on this table may only be read or written using CREOLE APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>
+
+]]>
+<attribute fieldname="creoleAttributeInheritanceID" key="true" description="Unique ID of this database row."/>
+<attribute fieldname="ancestorAttrAvailabilityID" description="Identifier of the ancestor attribute availability in the inheritance relationship."/>
+<attribute fieldname="descendantAttrAvailabilityID" description="Identifier of the descendent attribute availability in the inheritance relationship."/>
+<attribute fieldname="migrationAction" description="A marker whilst this row is being created or removed as part of rule set migration.  Outside of rule set migration the value will always be NULL."/>
+</entity>
+<entity name="CREOLEMigrationControl"><![CDATA[@curam.logicalname Rule Set Migration Control
+
+@curam.definition A single control row to ensure that no more than one process can concurrently add, modify or remove {@curam.entity creole.database.CREOLERuleSet Rule Sets}.
+
+@curam.description
+
+<P>The single control row is locked for update during any rule set migration processing.</P>
+
+@curam.technotes
+
+<P>There is no primary key defined because the entity only ever holds a single row.</P>
+<P>The single row is populated by a DMX file supplied by Curam and must not be populated from any other source.</P>
+
+]]>
+<attribute fieldname="migrationCount" description="The number of rule set migrations that have occurred."/>
+<attribute fieldname="lastMigrationDateTime" description="The date/time that the last rule set migration occurred."/>
+</entity>
+<entity name="CREOLERuleAttribute"><![CDATA[@curam.logicalname Rule Attribute
+
+@curam.definition A rule attribute defined in a {@curam.entity creole.database.CREOLERuleClass Rule Class}.
+
+@curam.description
+
+<P>A row on this entity indicates that a {@curam.entity creole.database.CREOLERuleClass Rule Class} declares a rule attribute (as opposed to inheriting an attribute from an ancestor {@curam.entity creole.database.CREOLERuleClass Rule Class}).</P>
+
+<P>The declared rule attribute may or may not override an identically-named rule attribute declared on an ancestor {@curam.entity creole.database.CREOLERuleClass Rule Class}.</P>
+
+<P>The name of the rule attribute must be unique within its declaring {@curam.entity creole.database.CREOLERuleClass Rule Class}.</P>
+
+@curam.example
+<P>If rule class A declares a rule attribute a1, then this entity will store a row for the rule attribute a1 declared on rule class A.</P>
+<P>If rule class B extends A and inherits (but does not override) rule attribute a1, then no row is stored on this entity for B's inheritance of a1.</P>
+<P>If rule class C extends A and overrides a1 by providing its own declaration of a rule attribute named "a1", then this entity will store a row for the rule attribute a1 declared on rule class C.</P>
+
+@curam.technotes
+
+<P>This entity contains data which is automatically denormalized from {@curam.entity creole.database.CREOLERuleSet Rule Set}.  All locking is handled by {@curam.entity creole.database.CREOLERuleSet Rule Set} and {@curam.entity creole.database.CREOLEMigrationControl Rule Set Migration Control}.</P>
+
+<P>The data on this table may only be read or written using CREOLE APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>
+
+]]>
+<attribute fieldname="creoleRuleAttributeID" key="true" description="Unique ID of this database row."/>
+<attribute fieldname="declaringRuleClassID" description="Identifier of the rule class which declares this rule attribute."/>
+<attribute fieldname="name" description="The unqualified name of this rule attribute."/>
+<attribute fieldname="migrationAction" description="A marker whilst this row is being created or removed as part of rule set migration.  Outside of rule set migration the value will always be NULL."/>
+</entity>
+<entity name="CREOLERuleAttributeValue"><![CDATA[@curam.logicalname Rule Attribute Value
+
+@curam.definition The value and state of a {@curam.entity creole.database.CREOLERuleAttribute Rule Attribute} on a stored {@curam.entity creole.database.CREOLERuleObject Rule Object}.
+
+@curam.description
+
+<P>A Rule Attribute Value row is stored for every {@curam.entity creole.database.CREOLERuleAttribute Rule Attribute} on {@curam.entity creole.database.CREOLERuleObject Rule Object}, i.e. for each {@curam.entity creole.database.CREOLERuleAttribute Rule Attribute} available on the {@curam.entity creole.database.CREOLERuleObject Rule Object}'s  {@curam.entity creole.database.CREOLERuleClass Rule Class}.</P>
+
+<P>Rows are only stored for {@curam.entity creole.database.CREOLERuleObject Rule Objects} which are stored.  Thus rows are not stored for rule attribute values for internal {@curam.entity creole.database.CREOLERuleObject Rule Objects}, or for CREOLE Sessions which do not use the DatabaseDataStorage strategy.</P>
+
+<P>Each Rule Attribute Value has a lifecycle, which is stored in the state column.</P>
+
+@curam.example
+<P>A client of CREOLE creates a rule object instance of rule class B, in a CREOLE Session with a DatabaseDataStorage strategy.  Rule class B extends rule class A.  Rule class A declares attributes a1 and a2, and rule class B declares attributes b1 and b2, inherits attribute a1 and overrides attribute a2.<P>
+<P>The following rows are stored on this entity, each with a state of "not yet calculated" and value of NULL:</P>
+<UL>
+<LI>value/state for attribute A.a1 on the rule object;</LI>
+<LI>value/state for attribute B.a2 on the rule object;</LI>
+<LI>value/state for attribute B.b1 on the rule object; and</LI>
+<LI>value/state for attribute B.b2 on the rule object.</LI>
+</UL>
+
+@curam.technotes
+
+<P>The data on this table may only be read or written using CREOLE APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>
+
+]]>
+<attribute fieldname="creoleRuleAttributeValueID" key="true" description="Unique ID of this database row."/>
+<attribute fieldname="creoleRuleObjectID" description="Identifier of the rule object which owns this rule attribute value."/>
+<attribute fieldname="creoleAttributeAvailabilityID" description="Identifier of the available attribute whose value is recorded in this rule attribute value."/>
+<attribute fieldname="value" description="The XML representation of the value.  If the XML representation is too long to be stored on this record, the remainder will be stored on a chain of overflow records."/>
+<attribute fieldname="hashcode" description="A computed hashcode for the value, as an optimization for searching.  Note that the hashcode computation (provided by a ValueHandler) MUST be portable across JVM vendors and versions, and so the computed hashcode may not necessarily be the same as value.hashCode().&#10;&#10;The NULL value (converted from a dtls struct value of 0) is strictly reserved for the hash code of error values only."/>
+<attribute fieldname="state" description="The state of this attribute value."/>
+<attribute fieldname="overflowID" description="An optional identifier to overflowing data which is too long to be stored in the value column."/>
+</entity>
+<entity name="CREOLERuleClassInheritance"><![CDATA[@curam.logicalname Rule Class Inheritance
+
+@curam.definition An inheritance relationship between two {@curam.entity creole.database.CREOLERuleClass Rule Classes}.
+
+@curam.description
+
+<P>A row on this entity indicates that all instances of the descendent {@curam.entity creole.database.CREOLERuleClass Rule Class} are also instances of the ancestor {@curam.entity creole.database.CREOLERuleClass Rule Class}.  Each rule class will store a row on this entity for each ancestor rule class, INCLUDING itself.</P>
+
+<P>Cycles in the rule class hierarchy are not permitted, so for two different rule classes A and B, it is possible that A is an ancestor of B, or B is an ancestor of A, but not both.  It is also possible that neither A nor B is an ancestor of the other.</P>
+
+@curam.example
+<P>If rule class C extends rule class B, which in turn extends rule class A, and there is an unrelated rule class D, then the following rows will be stored on this entity:</P>
+<UL>
+<LI>A ancestor of A;</LI>
+<LI>A ancestor of B;</LI>
+<LI>A ancestor of C;</LI>
+<LI>B ancestor of B;</LI>
+<LI>B ancestor of C;</LI>
+<LI>C ancestor of C; and</LI>
+<LI>D ancestor of D.</LI>
+</UL>
+
+@curam.technotes
+
+<P>This entity contains data which is automatically denormalized from {@curam.entity creole.database.CREOLERuleSet Rule Set}.  All locking is handled by {@curam.entity creole.database.CREOLERuleSet Rule Set} and {@curam.entity creole.database.CREOLEMigrationControl Rule Set Migration Control}.</P>
+
+<P>The data on this table may only be read or written using CREOLE APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>
+
+]]>
+<attribute fieldname="creoleRuleClassInheritanceID" key="true" description="Unique ID of this database row."/>
+<attribute fieldname="ancestorClassID" description="Identifier of the ancestor rule class in the inheritance relationship."/>
+<attribute fieldname="descendantClassID" description="Identifier of the descendent rule class in the inheritance relationship."/>
+<attribute fieldname="migrationAction" description="A marker whilst this row is being created or removed as part of rule set migration.  Outside of rule set migration the value will always be NULL."/>
+</entity>
+<entity name="CREOLERuleClass"><![CDATA[@curam.logicalname Rule Class
+
+@curam.definition A rule class defined in a {@curam.entity creole.database.CREOLERuleSet Rule Set}.
+
+@curam.description
+<P>The name of the rule class must be unique within its owning {@curam.entity creole.database.CREOLERuleSet Rule Set}.</P>
+
+@curam.example
+<P>If rule set A contains a rule class A1, then this entity will store a row for rule class A1.</P>
+
+@curam.technotes
+
+<P>This entity contains data which is automatically denormalized from {@curam.entity creole.database.CREOLERuleSet Rule Set}.  All locking is handled by {@curam.entity creole.database.CREOLERuleSet Rule Set} and {@curam.entity creole.database.CREOLEMigrationControl Rule Set Migration Control}.</P>
+
+<P>The data on this table may only be read or written using CREOLE APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>
+
+]]>
+<attribute fieldname="creoleRuleClassID" key="true" description="Unique ID of this database row."/>
+<attribute fieldname="creoleRuleSetID" description="Identifier of the rule set which owns this rule class."/>
+<attribute fieldname="name" description="The unqualified name of this rule class."/>
+<attribute fieldname="migrationAction" description="A marker whilst this row is being created or removed as part of rule set migration.  Outside of rule set migration the value will always be NULL."/>
+</entity>
+<entity name="CREOLERuleObject"><![CDATA[@curam.logicalname Rule Object
+
+@curam.definition A stored instance of a concrete {@curam.entity creole.database.CREOLERuleClass Rule Class}.
+
+@curam.description
+
+<P>A CREOLE Session may be created with a DatabaseDataStorage strategy, which will store on the database all "external" rule objects created.  External rule objects are those created by clients of CREOLE, as opposed to "internal" rule objects which are created within rules execution and are never stored.</P>
+
+@curam.example
+<P>A client of CREOLE creates a rule object instance of rule class A, in a CREOLE Session with a DatabaseDataStorage strategy.  A row is stored on this entity for the rule object.</P>
+<P>When calculating the value of an attribute, CREOLE encounters a "create" expression and creates an internal rule object.  No row is stored on this entity for the rule object, because the created rule object is internal.</P>
+<P>A client of CREOLE creates a rule object instance of rule class B, in a CREOLE Session with a InMemoryDataStorage strategy.  No row is stored on this entity for the rule object, because the DatabaseDataStorage strategy is not in use by the Session.</P>
+
+
+@curam.technotes
+
+<P>The data on this table may only be read or written using CREOLE APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>
+<P>Optimistic locking is not required as rows are never modified.</P>
+
+]]>
+<attribute fieldname="creoleRuleObjectID" key="true" description="Unique ID of this database row."/>
+<attribute fieldname="creoleRuleClassID" description="Identifier of the concrete rule class of which this rule object is an instance."/>
+</entity>
+<entity name="CREOLERuleSetDependency"><![CDATA[@curam.logicalname Rule Set Dependency
+
+@curam.definition A direct dependency of a dependent {@curam.entity creole.database.CREOLERuleSet Rule Set} on a precedent {@curam.entity creole.database.CREOLERuleSet Rule Set}.
+
+@curam.description
+
+<P>A row on this entity indicates that some part of the dependent rule set directly depends on some part of the precedent rule set.</P>
+
+<P>Note that one rule set may be both a precedent AND a dependent of another rule set, whether directly or indirectly.</P>
+
+@curam.example
+<P>If rule set A contains a rule class A1, which extends rule class B1 of rule set B, then rule set A depends on rule set B.  This entity will store a row with A as a dependent and B as a precedent.</P>
+<P>If rule set B contains a rule attribute b2 which returns an instance of rule class A1, then rule set B also depends on rule set A.  This entity will also store a row with B as a dependent and A as a precedent.</P>
+
+@curam.technotes
+
+<P>This entity contains data which is automatically denormalized from {@curam.entity creole.database.CREOLERuleSet Rule Set}.  All locking is handled by {@curam.entity creole.database.CREOLERuleSet Rule Set} and {@curam.entity creole.database.CREOLEMigrationControl Rule Set Migration Control}.</P>
+
+<P>The data on this table may only be read or written using CREOLE APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>
+
+]]>
+<attribute fieldname="creoleRuleSetDependencyID" key="true" description="Unique ID of this database row."/>
+<attribute fieldname="dependentRuleSetID" description="Identifier of the dependent rule set in this dependency relationship."/>
+<attribute fieldname="precedentRuleSetID" description="Identifier of the precedent rule set in this dependency relationship."/>
+<attribute fieldname="migrationAction" description="A marker whilst this row is being created or removed as part of rule set migration.  Outside of rule set migration the value will always be NULL."/>
+</entity>
+<entity name="CREOLERuleSetEditAction"><![CDATA[@curam.logicalname Rule Set Edit Action
+
+@curam.definition A pending addition, modification or removal of a live {@curam.entity creole.database.CREOLERuleSet Rule Set}.
+
+@curam.description
+
+<P>Rows are stored on this entity when new rule sets are added and/or existing rule sets modified or removed, prior to publication of those changes.</P>
+<P>When a set of changes are published, the changes are made to the live rule sets and the corresponding rows on this entity are removed.</P>
+
+@curam.technotes
+
+<P>The data on this table may only be read or written using CREOLE APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>
+
+]]>
+<attribute fieldname="creoleRuleSetEditActionID" key="true" description="Unique ID of this database row."/>
+<attribute fieldname="creoleRuleSetSnapshotID" description="Identifier of the rule set snapshot forming the basis of this edit action, if any."/>
+<attribute fieldname="actionType" description="The type of action being performed."/>
+<attribute fieldname="userName" description="Identifier of the user who performed the edit action."/>
+<attribute fieldname="actionDateTime" description="The date/time that this rule set edit action occurred."/>
+<attribute fieldname="ruleSetDefinition" description="The new rule set definition for the created or modified rule set, if any."/>
+<attribute fieldname="pendingPublicationInd" description="Whether this edit action has been submitted for publication."/>
+<attribute fieldname="descriptionID" description="The description of the rule set. This is localizable."/>
+</entity>
+<entity name="CREOLERuleSetGroup">
+<attribute fieldname="ruleSetGroupID" key="true" description=""/>
+<attribute fieldname="ruleSetName" description=""/>
+<attribute fieldname="groupID" description=""/>
+<attribute fieldname="groupHash" description=""/>
+</entity>
+<entity name="CREOLERuleSet"><![CDATA[@curam.logicalname Rule Set
+
+@curam.definition A rule set for Curam Express Rules.
+
+@curam.description
+
+<P>A set of rules complying with the CREOLE schema and validation constraints.</P>
+
+<P>The full XML definition of the rule set is held in the ruleSetDefinition column, but the Curam application will denormalize certain structural details of the rule set to these entities:</P>
+<UL>
+<LI>{@curam.entity creole.database.CREOLERuleSetDependency Rule Set Dependency};</LI>
+<LI>{@curam.entity creole.database.CREOLERuleClass Rule Class};</LI>
+<LI>{@curam.entity creole.database.CREOLERuleClassInheritance Rule Class Inheritance};</LI>
+<LI>{@curam.entity creole.database.CREOLERuleAttribute Rule Attribute};</LI>
+<LI>{@curam.entity creole.database.CREOLEAttributeAvailability Rule Attribute Availability}; and</LI>
+<LI>{@curam.entity creole.database.CREOLEAttributeInheritance Rule Attribute Inheritance}.</LI>
+</UL>
+
+
+@curam.technotes
+
+<P>Other than uploading data via DMX files, the data on this table may only be read or written using CREOLE APIs.  Rule sets uploaded via DMX data will have their structural details denormalized by the Curam application when it first accesses the uploaded rule set.</P>
+
+<P>The following constraints apply to rule sets uploaded via DMX files:</P>
+<UL>
+<LI>the value for the ruleSetVersion column must be NULL;</LI>
+<LI>the value for the migrationAction column must be NULL; and</LI>
+<LI>the value for the name column must match the rule set name declared in the XML for the ruleSetDefinition column;</LI>
+</UL>
+
+]]>
+<attribute fieldname="creoleRuleSetID" key="true" description="Unique ID of this database row."/>
+<attribute fieldname="name" description="The name of this rule set."/>
+<attribute fieldname="ruleSetDefinition" description="The XML definition of this rule set.  Allows NULLs in order to work with the LOB Manager."/>
+<attribute fieldname="ruleSetVersion" description="The number of revisions made to this live rule set."/>
+<attribute fieldname="migrationAction" description="A marker whilst this row is being created or removed as part of rule set migration.  Outside of rule set migration the value will always be NULL."/>
+<attribute fieldname="descriptionID" description="The description of the rule set. This is localizable."/>
+</entity>
+<entity name="CREOLERuleSetSnapshot"><![CDATA[@curam.logicalname Rule Set Snapshot
+
+@curam.definition A snapshot of a historical version of a {@curam.entity creole.database.CREOLERuleSet Rule Set}.
+
+@curam.description
+
+<P>A row is stored on this entity for each version of a published {@curam.entity creole.database.CREOLERuleSet Rule Set}.</P>
+<P>These historical snapshots allow the Curam application to access the historical rules that were used to calculate values, even if the live rule set has since been modified or removed.</P>
+
+@curam.technotes
+
+<P>There is no foreign key constraint on the creoleRuleSetID, because the live rule set may have been deleted, and might be subsequently restored (using the same creoleRuleSetID).</P>
+
+<P>The data on this table may only be read or written using CREOLE APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>
+
+<P>Rule sets uploaded via DMX data will have an initial snapshot created by the Curam application when it first accesses the uploaded rule set.</P>
+
+
+]]>
+<attribute fieldname="creoleRuleSetSnapshotID" key="true" description="Unique ID of this database row."/>
+<attribute fieldname="ruleSetDefinition" description="The snapshot of the rule set definition."/>
+<attribute fieldname="snapshotDateTime" description="The date/time that this snapshot was taken."/>
+<attribute fieldname="creoleRuleSetID" description="Identifier of the rule set for this snapshot."/>
+<attribute fieldname="ruleSetVersion" description="The version number of the rule set being snapshotted."/>
+<attribute fieldname="userName" description="The name of the user whose actions led to this snapshot being created."/>
+<attribute fieldname="actionType" description="The type of edit action which led to this snapshot being created."/>
+<attribute fieldname="descriptionID" description="The description of the rule set. This is localizable."/>
+</entity>
+<entity name="CREOLEValueOverflow"><![CDATA[@curam.logicalname Value Overflow
+
+@curam.definition A link in a chain of records to store a long XML representation of a value.
+
+@curam.technotes
+
+<P>The data on this table may only be read or written using CREOLE APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>
+<P>No optimistic locking is required as the lock is held by the record that points to the head of the chain.</P>
+
+]]>
+<attribute fieldname="creoleValueOverflowID" key="true" description="Unique ID of this database row."/>
+<attribute fieldname="value" description="A segment of XML data for the value being stored.  The XML must be reconstituted by concatenating the values from the full chain of value records.&#10;&#10;The value permits nulls because strings have trailing spaces removed prior to storage, and it is possible that an overflow segment in the middle of a chain contains entirely spaces (and thus would be trimmed down to an empty string, which is stored as a null value)."/>
+<attribute fieldname="moreOverflowID" description="An optional link to (even more) overflowing data, i.e. the next record in the chain, if any."/>
+</entity>
+<entity name="Dependency"><![CDATA[@curam.logicalname Dependency
+
+@curam.definition The reliance of a dependent (identified by its type and ID) on a precedent (identified by its type and ID).
+
+@curam.description
+
+<P>When a client of the Dependency Manager identifies that one data item (a "dependent") depends on another (a "precedent"), then that client can request that the Dependency Manager stores the dependency as a row on this entity.<P>
+
+<P>The Dependency Manager uses the data on this entity to identify which dependents are affected by changes in one or more precedents, as stored as {@curam.entity dependency.PrecedentChangeItem Precedent Change Items} in a {@curam.entity dependency.PrecedentChangeSet Precedent Change Set}.</P>
+
+@curam.example
+<P>The Eligibility and Entitlement Engine identifies that a determination result for {@curam.entity core.ProductDelivery Product Delivery} 123 depends on:</P>
+<UL>
+<LI>data from the claimant's row on the {@curam.entity core.Person Person} entity;</LI>
+<LI>active evidence from the parent integrated case 122; and</LI>
+<LI>product configuration data stored on {@curam.entity core.sl.infrastructure.assessment.CREOLEProduct CREOLE Product}.</LI>
+</UL>
+
+<P>The Eligibility and Entitlement Engine requests the Dependency Manager to store a row on this entity for each of the three dependencies identified above.</P>
+
+<P>Later, change of circumstances evidence is activated on integrated case 122, and the Dependency Manager uses the data on this entity to identify that {@curam.entity core.ProductDelivery Product Delivery} 123 must be reassessed.</P>
+
+@curam.technotes
+
+<P>The data on this table may only be read or written using Dependency Manager APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>
+<P>Optimistic locking is not required as rows are never modified.</P>
+
+<P>The Dependency Manager has no inherent understanding of the dependent and precedent referred to by a row on this entity.  As such:</P>
+<UL>
+<LI>it is the responsibility of clients of the Dependency Manager to request storage of dependencies that make sense to the client, and to request the removal of dependency records for dependents which no longer exist; and</LI>
+<LI>the dependentType, dependentyID, precedentType and precedentID attributes on this entity are not constrained by foreign keys, since the Dependency Manager intentionally does not maintain any lists of known dependents or precedents in the system.</LI>
+</UL>
+
+
+
+]]>
+<attribute fieldname="dependencyID" key="true" description="Unique identifier of this record."/>
+<attribute fieldname="dependentType" description="The type of the dependent."/>
+<attribute fieldname="dependentID" description="The identifier of the dependent (within its dependentType)."/>
+<attribute fieldname="precedentType" description="The type of the precedent."/>
+<attribute fieldname="precedentID" description="The identifier of the precedent (within its precedentType)."/>
+<attribute fieldname="dependentIDHash" description="A numeric hashcode of the 1000 character dependentID field"/>
+<attribute fieldname="precedentIDHash" description="A numeric hashcode of the 1000 character precedentID field"/>
+</entity>
+<entity name="DependencyTrace">
+<attribute fieldname="dependencyTraceID" key="true" description="An ascending number uniquely identifying the record"/>
+<attribute fieldname="pcsID" description="Change set ID, if applicable"/>
+<attribute fieldname="pcsID2" description="Secondary change set ID, if applicable"/>
+<attribute fieldname="timestamp1" description="Time stamp of this event&#10;"/>
+<attribute fieldname="status1" description="Status code of the PCS, if applicable"/>
+<attribute fieldname="status2" description="Secondary status code of the PCS, if applicable&#10;"/>
+<attribute fieldname="instDataID" description="The instance data ID if applicable"/>
+<attribute fieldname="traceType" description="The type of this trace record. Can be:&#10;- link determination to PCS&#10;- link PCS to child PCS&#10;- link PCI in batch to its original PCS&#10;"/>
+<attribute fieldname="txType" description="The transaction type, corresponding to what would appear on the AuditTrail table.&#10;Can be online/deferred/batch/other.&#10;"/>
+<attribute fieldname="ticketID" description="The instance data ID if applicable"/>
+<attribute fieldname="instanceID" description="The instance data ID if applicable"/>
+<attribute fieldname="caseID" description="The case ID, if applicable"/>
+<attribute fieldname="determinationID" description="Determination ID, if applicable"/>
+<attribute fieldname="count1" description="General purpose count field 1.&#10; "/>
+<attribute fieldname="count2" description="General purpose count field 2.&#10; "/>
+<attribute fieldname="txID" description="Identifier for current transaction.&#10; "/>
+</entity>
+<entity name="PrecedentChangeItem"><![CDATA[@curam.logicalname Precedent Change Item
+
+@curam.definition  An item in a {@curam.entity dependency.PrecedentChangeSet Precedent Change Set}, i.e. details of a precedent which has changed (identified by its type and ID).
+
+@curam.description
+
+<P>When a client of the Dependency Manager identifies that data that may have been used in a calculation has changed, then that client can request that the Dependency Manager must identify and recalculate dependent values affected by the change.<P>
+
+<P>If the Dependency Manager is configured to defer the identification/recalculation work to another transaction (e.g. by enqueuing a deferred process request or by waiting until the Dependency Manager batch suite is next run), then the Dependency Manager must record the changed precedent data in a {@curam.entity dependency.PrecedentChangeSet Precedent Change Set}.  Each item of changed precedent data is stored as a row on this entity, linking to its owning {@curam.entity dependency.PrecedentChangeSet Precedent Change Set}.</P>
+
+@curam.example
+<P>The Eligibility and Entitlement Engine identifies that a determination result for {@curam.entity core.ProductDelivery Product Delivery} 123 depends on:</P>
+<UL>
+<LI>data from the claimant's row on the {@curam.entity core.Person Person} entity;</LI>
+<LI>active evidence from the parent integrated case 122; and</LI>
+<LI>product configuration data stored on {@curam.entity core.sl.infrastructure.assessment.CREOLEProduct CREOLE Product}.</LI>
+</UL>
+
+<P>Later, change of circumstances evidence is activated on integrated case 122, and the Eligibility and Entitlement Engine notifies the Dependency Manager that there has been a change to the precedent data of type "active evidence" for case 122.  The Dependency Manager:</P>
+<UL>
+<LI>stores a new {@curam.entity dependency.PrecedentChangeSet Precedent Change Set} row;</LI>
+<LI>stores a new row on this entity identifying the data that changed and ties to the precedent change set row stored above; and</LI>
+<LI>submits the precedent change set for deferred processing.</LI>
+</UL>
+
+<P>When the deferred processing request is later dequeued, the Dependency Manager uses the precedent change item stored in the precedent change set together with the {@curam.entity dependency.Dependency Dependency} rows to identify that {@curam.entity core.ProductDelivery Product Delivery} 123 must be reassessed.</P>
+
+@curam.technotes
+
+<P>The data on this table may only be read or written using Dependency Manager APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>
+<P>Optimistic locking is not required as rows are never modified.</P>
+
+<P>The Dependency Manager has no inherent understanding of the precedent referred to by a row on this entity.  As such the precedentType and precedentID attributes on this entity are not constrained by foreign keys, since the Dependency Manager intentionally does not maintain any lists of known precedents in the system.</P>
+
+
+]]>
+<attribute fieldname="precedentChangeItemID" key="true" description="Unique identifier of this record."/>
+<attribute fieldname="precedentChangeSetID" description="The identifier of the Precedent Change Set to which this Precedent Change Item belongs."/>
+<attribute fieldname="precedentType" description="The type of the precedent that changed."/>
+<attribute fieldname="precedentID" description="The identifier of the precedent that changed (within its precedentType)."/>
+<attribute fieldname="changedByUserName" description="The identifier of the user whose transaction caused the precedent to change."/>
+<attribute fieldname="changedDateTime" description="The date and time that the precedent changed."/>
+<attribute fieldname="precedentIDHash" description="A numeric hashcode of the 1000 character precedentID field"/>
+</entity>
+<entity name="PrecedentChangeSetBatchCtrl"><![CDATA[@curam.logicalname Precedent Change Set Batch Control
+
+@curam.definition  Controls the currently-open and submitted {@curam.entity dependency.PrecedentChangeSet Precedent Change Sets} for batch processing.
+
+@curam.description
+
+<P>When a client of the Dependency Manager identifies that data that may have been used in a calculation has changed, then that client can request that the Dependency Manager must identify and recalculate dependent values affected by the change.<P>
+
+<P>If the Dependency Manager is configured to defer the identification/recalculation work to the next run of the Dependency Manager batch suite, then the Dependency Manager stores new {@curam.entity dependency.PrecedentChangeItem Precedent Change Items} in the currently-open {@curam.entity dependency.PrecedentChangeSet Precedent Change Set} for batch processing.  This {@curam.entity dependency.PrecedentChangeSet Precedent Change Set} is identified by the row on this entity which has the key value for the "Open" status.</P>
+
+
+<P>When the Dependency Manager batch suite starts, then:</P>
+<UL>
+<LI>the currently-open batch {@curam.entity dependency.PrecedentChangeSet Precedent Change Set} becomes submitted, and the "Submitted" row on this entity is updated to point to it; and</LI>
+<LI>a new open batch {@curam.entity dependency.PrecedentChangeSet Precedent Change Set} is stored, and the "Open" row on this entity is updated to point to it.</LI>
+</UL>
+
+<P>The dependent identification phase of the Dependency Manager batch suite can now identify the submitted batch {@curam.entity dependency.PrecedentChangeSet Precedent Change Set} by retrieving the "Submitted" row from this entity.</P>
+
+<P>When the Dependency Manager batch suite completes, the submitted  {@curam.entity dependency.PrecedentChangeSet Precedent Change Set}  transitions to "Complete", and the "Submitted" row on this entity is updated so that it no longer points to any {@curam.entity dependency.PrecedentChangeSet Precedent Change Set}.</P>
+
+@curam.technotes
+
+<P>The data on this table may only be read or written using Dependency Manager APIs - no direct access to the underlying data is supported.  Custom DMX files and/or database scripts must not be used to populate this entity.  The DMX file for this entity included with the application MUST be used to create the initial control rows required by the application.</P>
+
+]]>
+<attribute fieldname="status" key="true" description="The status of the batch Precedent Change Set."/>
+<attribute fieldname="precedentChangeSetID" description="The identifier of the current Precedent Change Set for batch processing in this status, if any."/>
+</entity>
+<entity name="PrecedentChangeSet"><![CDATA[@curam.logicalname Precedent Change Set
+
+@curam.definition A set of changes to precedent data.
+
+@curam.description
+
+<P>When a client of the Dependency Manager identifies that data that may have been used in a calculation has changed, then that client can request that the Dependency Manager must identify and recalculate dependent values affected by the change.<P>
+
+<P>If the Dependency Manager is configured to defer the identification/recalculation work to another transaction (e.g. by enqueuing a deferred process request or by waiting until the Dependency Manager batch suite is next run), then the Dependency Manager must record the changed precedent data in a precedent change set.  Each precedent change set has a header record stored as a row on this entity.</P>
+
+<P>By default, most rows on this entity relate to precedent change sets which are processed in deferred processing.  However, at all times there is a single open precedent change set which records precedent change items to be processed in batch, as identified by the "open" record on the {@curam.entity dependency.PrecedentChangeSetBatchCtrl Precedent Change Set Batch Control} entity.</P>
+
+<P>Each precedent change set goes through this lifecycle as stored in the status attribute:</P>
+<UL>
+<LI>Open. The state of a precedent change set when it is initially created. In
+this state new precedent change items can be added to the precedent
+change set.</LI>
+<LI>Submitted. The precedent change set has been submitted into dependent-identfication processing. No more precedent change items can be added to the precedent change set.</LI>
+<LI>Complete. The recalculation of all dependents affected by the precedent
+changes has been completed. The precedent change set is kept for historical purposes only.</LI>
+</UL>
+
+
+@curam.example
+<P>The Eligibility and Entitlement Engine identifies that a determination result for {@curam.entity core.ProductDelivery Product Delivery} 123 depends on:</P>
+<UL>
+<LI>data from the claimant's row on the {@curam.entity core.Person Person} entity;</LI>
+<LI>active evidence from the parent integrated case 122; and</LI>
+<LI>product configuration data stored on {@curam.entity core.sl.infrastructure.assessment.CREOLEProduct CREOLE Product}.</LI>
+</UL>
+
+<P>Later, change of circumstances evidence is activated on integrated case 122, and the Eligibility and Entitlement Engine notifies the Dependency Manager that there has been a change to the precedent data of type "active evidence" for case 122.  The Dependency Manager:</P>
+<UL>
+<LI>stores a new row on this entity to open a new precedent change set;</LI>
+<LI>stores a 
+{@curam.entity dependency.PrecedentChangeItem Precedent Change Item} identifying the data that changed and  ties to the precedent change set row on this entity; and</LI>
+<LI>submits the precedent change set for deferred processing by enqueuing a deferred processing request and transitioning the status on the precedent change set from "Open" to "Submitted".</LI>
+</UL>
+
+<P>When the deferred processing request is later dequeued, the Dependency Manager uses the information in the precedent change set together with the {@curam.entity dependency.Dependency Dependency} rows to identify that {@curam.entity core.ProductDelivery Product Delivery} 123 must be reassessed.  After triggering reassessment for the case, the Dependency Manager closes the precedent change set by transitioning the status on the row from "Submitted" to "Closed".</P>
+
+@curam.technotes
+
+<P>The data on this table may only be read or written using Dependency Manager APIs - no direct access to the underlying data is supported.  Custom DMX files and/or database scripts must not be used to populate this entity.  The DMX file for this entity included with the application MUST be used to create a row for the initial precedent change set required by the application.</P>
+
+<P>It is perfectly possible for the Dependency Manager to be notified of changes in data, where that data has never been used in any calculation, and thus the data is not identified as a precedent in any {@curam.entity dependency.Dependency Dependency} row.  In such circumstances the Dependency Manager will identify that no dependents are affected by the changes in data.</P>
+
+
+]]>
+<attribute fieldname="precedentChangeSetID" key="true" description="Unique identifier of this record."/>
+<attribute fieldname="status" description="The status of this Precedent Change Set."/>
+<attribute fieldname="createdDateTime" description="The date and time that this Precedent Change Set was created."/>
+<attribute fieldname="submittedDateTime" description="The date and time that this Precedent Change Set was submitted for processing, if any."/>
+<attribute fieldname="completedDateTime" description="The date and time that this Precedent Change Set completed processing, if any."/>
+</entity>
+</entities>

@@ -1,0 +1,713 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2023. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant properties file for Curam projects.
+  It contains all projects used by the application build.
+
+-->
+<project name="app_properties">
+
+<!--  *******************************  -->
+<!--  ***  Load from Environment  ***  -->
+<!--  *******************************  -->
+
+<property environment="sysenv."/>
+
+  <!-- ============================================================ -->
+  <!--
+   ! GLOBAL PROPERTIES AND PATHS
+   !
+   ! Property name conventions:
+   !   dir.xxx - directory
+   !   jar.xxx - jar file
+   !   pgm.xxx - executable program or script
+   !   fil.xxx - other files
+   !   prp.xxx - other properties
+   !   prm.xxx - parameters to antcall task
+   !-->
+
+  <!-- Environment Settings -->
+  <property name="JAVA_HOME" value="${sysenv.JAVA_HOME}"/>
+  <property name="J2EE_JAR" value="${sysenv.J2EE_JAR}"/>
+  <property name="WLS_HOME" value="${sysenv.WLS_HOME}"/>
+  <property name="WAS_HOME" value="${sysenv.WAS_HOME}"/>
+  <property name="WLP_HOME" value="${sysenv.WLP_HOME}"/>
+  <property name="WSAD_HOME" value="${sysenv.WSAD_HOME}"/>
+  <property name="DB2JCC_LICENSE_CISUZ_JAR" value="${sysenv.DB2JCC_LICENSE_CISUZ_JAR}"/>
+
+  <property name="ant.home" value="${sysenv.ANT_HOME}"/>
+
+  <property name="SERVER_COMPONENT_ORDER" value="${sysenv.SERVER_COMPONENT_ORDER}"/>
+
+  <!-- project directories and files -->
+  <property name="SERVER_MODEL_NAME" value="${sysenv.SERVER_MODEL_NAME}"/>
+  <property name="SERVER_DIR" value="${sysenv.SERVER_DIR}"/>
+  <property name="SERVER_LOCALE_LIST" value="${sysenv.SERVER_LOCALE_LIST}"/>
+  <property name="CLIENT_DIR" value="${sysenv.CLIENT_DIR}"/>
+  <property name="CLIENT_PROJECT_NAME" value="${sysenv.CLIENT_PROJECT_NAME}"/>
+
+  <condition property="LAYER_NAME" value="${sysenv.LAYER_NAME}">
+    <isset property="sysenv.LAYER_NAME" />
+  </condition>
+  <property name="LAYER_NAME" value="${SERVER_MODEL_NAME}"/>
+
+  <property name="base.dir" value="${SERVER_DIR}"/>
+  <property name="client.dir" value="${CLIENT_DIR}"/>
+  <property name="dir.release" value="${base.dir}/release"/>
+  <property name="dir.base.project" value="${base.dir}/project"/>
+  <property name="dir.project.config" value="${dir.base.project}/config"/>
+  <property name="datamanager.config.file" value="${dir.project.config}/datamanager_config.xml"/>
+  <property name="webservices2.config.file" value="ws_outbound.xml"/>
+  <property name="deployment.packaging.file" value="${dir.project.config}/deployment_packaging.xml"/>
+  <property name="secure.webservices.config" value="${dir.project.config}/wss"/>
+  <property name="dir.project.properties" value="${dir.base.project}/properties"/>
+  <property name="dir.base.components" value="${base.dir}/components"/>
+  <property name="dir.bld" value="${base.dir}/build"/>
+  <property name="fil.xml.project" value="${dir.bld}/${SERVER_MODEL_NAME}.xml"/>
+  <property name="dir.bld.web" value="${dir.bld}/web"/>
+  <property name="dir.bld.ddl" value="${dir.bld}/ddl"/>
+  <property name="dir.bld.web.cls" value="${dir.bld.web}/cls"/>
+  <property name="dir.bld.deploy" value="${dir.bld}/deploy"/>
+  <property name="dir.bld.log" value="${base.dir}/buildlogs"/>
+  <property name="dir.bld.svr" value="${dir.bld}/svr"/>
+  <property name="dir.bld.datamanager" value="${dir.bld}/datamanager"/>
+  <property name="dir.bld.rulesimport" value="${dir.bld}/rulesimport"/>
+  <property name="dir.bld.tab" value="${dir.bld}/tab"/>
+  <property name="dir.bld.temp" value="${dir.bld}/temp"/>
+  <property name="dir.ear" value="${dir.bld}/ear"/>
+  <property name="dir.ear2" value="${dir.bld}/ear2"/>
+  <property name="dir.ear.tmp" value="${dir.ear}/temp"/>
+  <property name="dir.ear.combined" value="${dir.ear}/combined"/>
+  <property name="dir.ear.client" value="${dir.ear}/client"/>
+  <property name="dir.ear.extrajars" value="${dir.ear.tmp}/extrajars"/>
+  <property name="dir.bld.svr.wsc" value="${dir.bld.svr}/wsc"/>
+  <property name="dir.bld.svr.wsc.jav" value="${dir.bld.svr.wsc}/jav"/>
+  <property name="dir.bld.svr.wsc.mdl" value="${dir.bld.svr.wsc}/mdl"/>
+  <property name="dir.bld.svr.wsc2" value="${dir.bld.svr}/wsc2"/>
+  <property name="dir.bld.svr.wsc2.jav" value="${dir.bld.svr}/wsc2/jav"/>
+  <property name="dir.bld.svr.ctx.scp" value="${dir.bld.svr}/codetable/scp"/>
+  <property name="dir.bld.svr.msg.scp" value="${dir.bld.svr}/message/scp"/>
+  <property name="dir.bld.svr.evx.scp" value="${dir.bld.svr}/events/scp"/>
+  <property name="dir.bld.svr.web" value="${dir.bld.svr}/webservices"/>
+  <property name="dir.bld.svr.web2" value="${dir.bld.svr}/webservices2"/>
+  <property name="dir.bld.svr.gen" value="${dir.bld.svr}/gen"/>
+  <property name="dir.bld.svr.components" value="${dir.bld.svr}/components"/>
+  <property name="dir.bld.svr.gen.ddl" value="${dir.bld.svr.gen}/ddl"/>
+  <property name="dir.bld.svr.gen.int" value="${dir.bld.svr.gen}/int"/>
+  <property name="dir.bld.svr.gen.wsc2" value="${dir.bld.svr.gen}/wsc2"/>
+  <property name="dir.bld.svr.gen.int.ejb" value="${dir.bld.svr.gen.int}/ejb"/>
+  <property name="dir.bld.svr.gen.int.ws" value="${dir.bld.svr.gen.int}/ws"/>
+  <property name="dir.bld.svr.gen.int.ws_axis2" value="${dir.bld.svr.gen.int}/ws_axis2"/>
+  <property name="dir.bld.svr.cls" value="${dir.bld.svr}/cls"/>
+  <property name="dir.bld.svr.msg.cls" value="${dir.bld.svr}/message/cls"/>
+  <property name="dir.bld.svr.ctx.cls" value="${dir.bld.svr}/codetable/cls"/>
+  <property name="dir.bld.svr.evx.cls" value="${dir.bld.svr}/events/cls"/>
+  <property name="dir.bld.svr.cls.tests" value="${dir.bld.svr}/tests/cls"/>
+  <property name="dir.bld.jar" value="${dir.bld}/jar"/>
+  <property name="dir.test.results" value="${dir.bld}/testresults"/>
+  <property name="dir.bld.svr.gen.int.rules" value="${dir.bld.svr.gen.int}/rules"/>
+  <property name="dir.bld.svr.gen.int.rules.clob" value="${dir.bld.svr.gen.int.rules}/clob"/>
+  <property name="dir.bld.svr.ctx.sql" value="${dir.bld.svr}/codetable/sql"/>
+
+  <!-- SDE directories and files -->
+  <property name="dir.sde" value="${sysenv.CURAMSDEJ}"/>
+  <property name="dir.sde.bin" value="${dir.sde}/bin"/>
+  <property name="dir.sde.drivers" value="${dir.sde}/drivers"/>
+  <property name="dir.sde.ear" value="${dir.sde}/ear"/>
+  <property name="dir.sde.lib" value="${dir.sde}/lib"/>
+  <property name="dir.sde.lib.axis2" value="${dir.sde}/lib/axis2"/>
+  <property name="dir.sde.scripts" value="${dir.sde}/scripts"/>
+  <property name="dir.templates" value="${dir.sde.ear}/templates"/>
+  <property name="dir.ddtemplates" value="${dir.templates}/deployment"/>
+  <property name="dir.sde.xmlserver" value="${dir.sde}/xmlserver"/>
+  <property name="rangeawareserver.config.file" value="${dir.sde.scripts}/config/rangeawareserver_config.xml"/>
+
+  <property name="dir.cde" value="${sysenv.CURAMCDEJ}"/>
+  <property name="dir.cde.ear" value="${dir.cde}/ear"/>
+
+  <property name="jar.coreinf" value="${dir.sde.lib}/coreinf.jar"/>
+  <property name="jar.coreinf.rmi" value="${dir.sde.lib}/coreinf-rmi.jar"/>
+  <property name="jar.coreinf.ejb.interfaces" value="${dir.sde.lib}/coreinf-ejb-interfaces.jar"/>
+  <property name="jar.rules" value="${dir.sde.lib}/rules.jar:${dir.sde.lib}/rules_debugger.jar"/>
+  <property name="jar.appinf" value="${dir.sde.lib}/appinf.jar"/>
+  <property name="jar.appinf_internal" value="${dir.sde.lib}/appinf_internal.jar"/>
+  <property name="jar.tools" value="${dir.sde.lib}/tools.jar"/>
+  <property name="jar.registry" value="${dir.sde.lib}/Registry.jar"/>
+  <property name="jar.wlp.registry" value="${dir.sde.lib}/WLPRegistry.jar"/>
+  <property name="jar.wlstcontrol" value="${dir.sde.lib}/wlstcontrol.jar"/>
+  <property name="jar.commons" value="${dir.sde.lib}/jde-commons.jar"/>
+  <property name="jar.coreinf.ejb" value="${dir.sde.lib}/coreinf-ejb.jar"/>
+  <property name="jar.security.inf" value="${dir.sde.lib}/security-inf.jar"/>
+
+  <property name="version.prop.file" value="${dir.sde.lib}/third_party_version.properties"/>
+  <property file="${version.prop.file}"/>
+
+  <property name="jar.ehcachecore"         value="${dir.sde.lib}/ehcache-core-${version-ehcache-core}.jar"/>
+  <property name="jar.slf4japi"            value="${dir.sde.lib}/slf4j-api-${version-slf4j-api}.jar"/>
+  <property name="jar.slf4jjdk14"          value="${dir.sde.lib}/slf4j-jdk14-${version-slf4j-jdk14}.jar"/>
+  <property name="jar.cglib.nodep"         value="${dir.sde.lib}/cglib-nodep-${version-cglib-nodep}.jar"/>
+
+  <property name="jar.commonsbeanutils" value="${dir.sde.lib}/commons-beanutils-${version-commons-beanutils}.jar"/>
+  <property name="jar.commonsdigester" value="${dir.sde.lib}/commons-digester-${version-commons-digester}.jar"/>
+  <property name="jar.commonsvalidator" value="${dir.sde.lib}/commons-validator-${version-commons-validator}.jar"/>
+  <property name="jar.commonsio" value="${dir.sde.lib}/commons-io-${version-commons-io}.jar"/>
+  <property name="jar.commonscollections4" value="${dir.sde.lib}/commons-collections4-${version-commons-collections4}.jar"/>
+  <property name="jar.commonscollections" value="${dir.sde.lib}/commons-collections-${version-commons-collections}.jar"/>
+  <property name="jar.commonslogging" value="${dir.sde.lib}/commons-logging-${version-commons-logging}.jar"/>
+  <property name="jar.commonspool" value="${dir.sde.lib}/commons-pool-${version-commons-pool}.jar"/>
+  <property name="jar.commonscodec" value="${dir.sde.lib}/commons-codec-${version-commons-codec}.jar"/>
+  <property name="jar.commonslang" value="${dir.sde.lib}/commons-lang-${version-commons-lang}.jar"/>
+  <property name="jar.commonstext" value="${dir.sde.lib}/commons-text-${version-commons-text}.jar"/>
+  <property name="jar.commonsnet" value="${dir.sde.lib}/commons-net-${version-commons-net}.jar"/>
+  <property name="jar.fscontext" value="${dir.sde.lib}/fscontext-${version-fscontext}.jar"/>
+  <property name="jar.gson"      value="${dir.sde.lib}/gson-${version-gson}.jar"/>
+  <property name="jar.javacup" value="${dir.sde.lib}/java_cup-${version-java_cup}.jar"/>
+  <property name="jar.antlr" value="${dir.sde.lib}/antlr-${version-antlr}.jar"/>
+  <property name="jar.dom4j" value="${dir.sde.lib}/dom4j-${version-dom4j}.jar"/>
+  <property name="jar.jaxen" value="${dir.sde.lib}/axis2/jaxen-1.1.1.jar"/>
+  
+  <property name="jar.log4j.2.core" value="${dir.sde.lib}/log4j-core-${version-log4j}.jar"/>
+  <property name="jar.log4j.2.api" value="${dir.sde.lib}/log4j-api-${version-log4j}.jar"/>
+  <property name="jar.log4j2.config" value="${dir.sde.lib}/log4j2-config.jar"/>
+  <property name="jar.providerutil" value="${dir.sde.lib}/providerutil-${version-providerutil}.jar"/>
+  <property name="jar.xerces" value="${dir.sde.lib}/xerces-${version-xerces}.jar"/>
+  <property name="jar.serializer" value="${dir.sde.lib}/serializer-${version-serializer}.jar"/>
+  <property name="jar.xalan" value="${dir.sde.lib}/xalan-${version-xalan}.jar"/>
+  <property name="jars.allxml" value="${jar.xalan}${path.separator}${jar.serializer}${path.separator}${jar.xerces}"/>
+  <property name="jar.commonsdiscovery" value="${dir.sde.lib}/commons-discovery-${version-commons-discovery}.jar"/>
+  <property name="jar.wsdl4j" value="${dir.sde.lib}/wsdl4j-${version-wsdl4j}.jar"/>
+  <property name="jar.castor" value="${dir.sde.lib}/castor-xml-${version-castor}.jar"/>
+  <property name="jar.wss4j" value="${dir.sde.lib}/wss4j-${version-wss4j}.jar"/>
+  <property name="jar.xmlsec" value="${dir.sde.lib}/xmlsec-${version-xmlsec}.jar"/>
+  <property name="jar.guice" value="${dir.sde.lib}/guice-${version-guice}.jar"/>
+  <property name="jar.guava" value="${dir.sde.lib}/guava-${version-guava}.jar"/>
+  <property name="jar.failureaccess" value="${dir.sde.lib}/failureaccess-${version-failureaccess}.jar"/>  
+  <property name="jar.javax.inject" value="${dir.sde.lib}/javax.inject-${version-javax-inject}.jar"/>
+  <property name="jar.guice-assistedinject" value="${dir.sde.lib}/guice-assistedinject-${version-guice-assistedinject}.jar"/>
+  <property name="jar.guice-multibindings" value="${dir.sde.lib}/guice-multibindings-${version-guice-multibindings}.jar"/>
+  <property name="jar.guice-throwingproviders" value="${dir.sde.lib}/guice-throwingproviders-${version-guice-throwingproviders}.jar"/>
+  <property name="jar.aopalliance" value="${dir.sde.lib}/aopalliance.jar"/>
+  <property name="jar.json" value="${dir.sde.lib}/JSON4J_Apache.jar"/>
+  <property name="jar.xmlservercommon" value="${dir.sde.lib}/xmlservercommon.jar"/>
+  <property name="jar.bcel" value="${dir.sde.lib}/bcel-${version-bcel}.jar"/>
+  <property name="jar.javassist" value="${dir.sde.lib}/javassist-${version-javassist}.jar"/>
+  <property name="jar.icu4j" value="${dir.sde.lib}/icu4j-${version-icu4j}.jar" />
+  <property name="jar.jackson.annotations" value="${dir.sde.lib}/jackson-annotations-${version-jackson-annotations}.jar"/>
+  <property name="jar.jackson.core" value="${dir.sde.lib}/jackson-core-${version-jackson-core}.jar"/>
+  <property name="jar.jackson.databind" value="${dir.sde.lib}/jackson-databind-${version-jackson-databind}.jar"/>
+  <property name="jar.license.metric.logger" value="${dir.sde.lib}/license_metric_logger_${version-license-metric-logger}.jar"/>
+  <property name="jar.liberty-ant-tasks"     value="${dir.sde.lib}/liberty-ant-tasks-${version-liberty-ant-tasks}.jar"/>
+  <property name="jar.jsoup" value="${dir.sde.lib}/jsoup-${version-jsoup}.jar" />
+  <property name="jar.java-jwt" value="${dir.sde.lib}/java-jwt-${version-java-jwt}.jar" />
+
+  <!-- Application server setting -->
+  <property name="appserver.failonerror" value="true"/>
+
+  <!-- GSS -->
+  <property name="jar.gss" value="${dir.sde.lib}/gss.jar"/>
+  <property name="jar.commons-dbcp" value="${dir.sde.lib}/commons-dbcp-${version-commons-dbcp}.jar"/>
+  <property name="jar.compass.gss" value="${dir.sde.lib}/compass.jar"/>
+  <property name="jar.lucene-core" value="${dir.sde.lib}/lucene-core-${version-lucene-core}.jar"/>
+  <property name="jar.lucene-analyzers" value="${dir.sde.lib}/lucene-analyzers-${version-lucene-analyzers}.jar"/>
+
+  <!-- Axis2 -->
+  <property name="jar.axis2-kernel" value="${dir.sde.lib}/axis2/axis2-kernel-1.6.2.jar"/>
+  <property name="jar.axis2-adb" value="${dir.sde.lib}/axis2/axis2-adb-1.6.2.jar"/>
+  <property name="jar.axiom-api" value="${dir.sde.lib}/axis2/axiom-api-1.2.13-1.jar"/>
+  <property name="jar.axis2-saaj" value="${dir.sde.lib}/axis2/axis2-saaj-1.6.2.jar"/>
+
+  <!-- XML Unit Core -->
+  <property name="jar.xmlunit-core" value="${dir.sde.lib}/xmlunit-core-${version-xmlunit-core}.jar"/>
+
+  <property name="sde.lib.axis2.list" value="
+        axis2/axiom-api-1.2.13-1.jar
+        axis2/axiom-dom-1.2.13.jar
+        axis2/axiom-impl-1.2.13.jar
+        axis2/axis2-adb-1.6.2.jar
+        axis2/axis2-adb-codegen-1.6.2.jar
+        axis2/axis2-ant-plugin-1.8.0.jar
+        axis2/axis2-clustering-1.6.2.jar
+        axis2/axis2-codegen-1.6.2.jar
+        axis2/axis2-corba-1.6.2.jar
+        axis2/axis2-fastinfoset-1.6.2.jar
+        axis2/axis2-java2wsdl-1.6.2.jar
+        axis2/axis2-jaxbri-1.6.2.jar
+        axis2/axis2-jaxws-1.6.2.jar
+        axis2/axis2-jibx-1.6.2.jar
+        axis2/axis2-json-1.6.2.jar
+        axis2/jsr311-api-1.0.jar
+        axis2/axis2-kernel-1.6.2.jar
+        axis2/axis2-metadata-1.6.2.jar
+        axis2/axis2-mtompolicy-1.6.2.jar
+        axis2/axis2-saaj-1.6.2.jar
+        axis2/axis2-spring-1.6.2.jar
+        axis2/axis2-transport-http-1.6.2.jar
+        axis2/axis2-transport-local-1.6.2.jar
+        axis2/axis2-xmlbeans-1.6.2.jar
+        axis2/commons-fileupload-1.3.3.jar
+        axis2/commons-httpclient-3.1.jar
+        axis2/commons-io-2.8.0.jar
+        axis2/httpcore-4.0.jar
+        axis2/jaxen-1.1.1.jar
+        axis2/jibx-bind-1.2.jar
+        axis2/jibx-run-1.2.jar
+        axis2/mex-1.6.2-impl.jar
+        axis2/neethi-3.0.2.jar
+        axis2/axis2-soapmonitor-servlet-1.6.2.jar
+        axis2/opensaml-2.6.1-2.jar
+        axis2/joda-time-1.6.2.jar
+        axis2/openws-1.4.2-1.jar
+        axis2/esapi-2.4.0.0.jar
+        axis2/woden-api-1.0M9.jar
+        axis2/woden-impl-dom-1.0M9.jar
+        axis2/wstx-asl-3.2.9.jar
+        axis2/XmlSchema-1.4.7.jar
+        axis2/xmlbeans-3.1.0.jar"/>
+
+  <!-- Axis2 Rampart/WS-Security -->
+  <property name="sde.lib.axis2.rampart.list" value="
+        axis2/joda-time-1.6.2.jar
+        axis2/opensaml-2.6.1-2.jar
+        axis2/openws-1.4.2-1.jar
+        axis2/rampart-core-1.6.2.jar
+        axis2/rampart-policy-1.6.2.jar
+        axis2/rampart-trust-1.6.2.jar
+        axis2/velocity-engine-core-2.3.jar
+        axis2/xmltooling-1.4.4.jar"/>
+
+
+  <property name="fil.xml.genmaps" value="${dir.sde.lib}/GeneratorMappingsEJB.xml"/>
+
+  <!-- Set external library properties -->
+  <property name="jar.ant" value="${ant.home}/lib/ant.jar"/>
+  <property name="jar.clover" value="${ant.home}/lib/clover.jar"/>
+
+  <!--  *** Oracle ***  -->
+  <property name="jar.oracle" value="${dir.sde.drivers}/ojdbc8.jar"/>
+  <property name="jar.oracle.sqlj.run" value="${dir.sde.drivers}/runtime12.jar"/>
+  <property name="jar.oracle.sqlj.trans" value="${dir.sde.drivers}/translator.jar"/>
+
+  <!--  *** DB2 ***  -->
+  <property name="jar.db2" value="${DB2JCC_LICENSE_CISUZ_JAR}:
+
+                                             ${sysenv.DB2DIR}/jcc/classes/db2jcc4.jar:
+
+                                             ${sysenv.DB2DIR}/classes/db2jcc4.jar:
+
+                                             ${dir.sde.drivers}/db2jcc4.jar:
+
+                                             ${dir.sde.drivers}/db2jcc_license_cu.jar"/>
+  <property name="jar.db2.sqlj" value="${dir.sde.drivers}/sqlj4.zip"/>
+
+  <!-- *** H2 *** -->
+  <property name="jar.h2" value="${dir.sde.drivers}/h2-${version-h2}.jar"/>
+
+  <property name="prop.file.location" value="${dir.project.properties}"/>
+  <property name="crypto.prop.file.location" value="${dir.project.properties}"/>
+  <property name="crypto.prop.file"          value="CryptoConfig.properties"/>
+  <property name="prop.file" value="${prop.file.location}/Bootstrap.properties"/>
+  <property file="${prop.file}"/>
+  <property name="project.package" value="curam"/>
+  <property name="app.prop.file" value="AppServer.properties"/>
+  <property name="curam.security.credentials.ws.username" value="WEBSVCS"/>
+  <property name="curam.security.credentials.ws.password" value="HlIxprF/66CsSSm6PON5+A=="/>
+  <property name="curam.db2.ssl" value="false"/>
+  <property name="curam.db2.ssl.truststore.location" value=""/>
+  <property name="curam.db2.ssl.truststore.password" value=""/>
+
+  <property name="app.prop.location" value="${prop.file.location}/${app.prop.file}"/>
+  <property name="jar.j2ee" value="${J2EE_JAR}"/>
+  <property name="jar.javatools" value="${JAVA_HOME}/lib/tools.jar"/>
+  <property name="jar.doccheck" value="${sysenv.DOCCHECK_HOME}/lib/doccheck.jar"/>
+  <property name="crypto.jar.file" value="CryptoConfig.jar"/>
+  <condition property="jar.junit" value="${sysenv.JUNIT_JAR}">
+    <isset property="sysenv.JUNIT_JAR"/>
+  </condition>
+
+  <property name="crypto.ks.file" value="CuramSample.keystore"/>
+  <condition property="crypto.ext.dir" value="${sysenv.JAVA_HOME}/lib/ext">
+    <os family="z/os"/>
+  </condition>
+  <property name="crypto.jvm.vendor" value="ibm"/>
+  <property name="crypto.ext.dir" value="${sysenv.JAVA_HOME}/jre/lib/ext"/>
+
+  <property name="jar.junit" value="${sysenv.JUNIT_HOME}/junit.jar"/>
+  <property name="junit.fork.mode" value="once"/>
+  <property name="jmx.prop.file" value="jmx_config.properties"/>
+  <property name="jmx.prop.location" value="${prop.file.location}/${jmx.prop.file}"/>
+  <property name="jar.mail" value="${sysenv.JAVAMAIL_HOME}/mail.jar"/>
+  <property name="jar.activation" value="${sysenv.JAVAMAIL_HOME}/activation.jar"/>
+
+
+  <!-- Properties related to the infrastructure customisation -->
+  <property name="prp.maxcodetablecodelength" value="10"/>
+  <property name="prp.maxcodetablenamelength" value="25"/>
+  <property name="prp.maxcodetabledescriptionlength" value="500"/>
+  <property name="prp.maxeventclassnamelength" value="75"/>
+  <property name="prp.maxeventtypenamelength" value="75"/>
+
+  <!-- Default properties related to optional build settings -->
+  <property name="prp.noninternedstrings" value="true"/>
+
+  <!-- Properties related to JWT -->
+  <property name="jwt.keystore.prop.file.name" value="JWTKeystore.properties" />
+  <property name="jwt.keystore.prop.file.location" value="${dir.project.properties}" />
+
+<!--  *******************************  -->
+<!--  ***  JAVA/JAVAC TASK FLAGS  ***  -->
+<!--  *******************************  -->
+
+  <property name="java.fork" value="true"/>
+  <property name="java.maxmemory" value="1g"/>
+  <property name="java.maxpermsize" value="512m"/>
+  <property name="java.minpermsize" value="${java.maxpermsize}"/>
+  <property name="java.failonerror" value="true"/>
+
+  <condition property="java.console.encoding" value="Cp1047">
+      <os family="z/os"/>
+  </condition>
+  <property name="java.console.encoding" value="UTF-8"/>
+  <property name="java.file.encoding" value="UTF-8"/>
+
+  <!-- A fake setting is necessary on Unix platforms rather than an empty string -->
+  <property name="java.jvmargs" value="-Dfake.property=1"/>
+  <property name="cmp.fork" value="true"/>
+  <property name="cmp.debug" value="on"/>
+  <property name="cmp.maxmemory" value="2g"/>
+  <property name="cmp.nowarn" value="off"/>
+  <property name="cmp.optimize" value="off"/>
+  <condition property="cmp.deprecation" value="${curam.deprecation.reporting}" else="true">
+    <isset property="curam.deprecation.reporting"/>
+  </condition>
+  <property name="cmp.verbose" value="false"/>
+  <property name="cmp.includeAntRuntime" value="yes"/>
+  <property name="cmp.includeJavaRuntime" value="no"/>
+  <property name="cmp.failonerror" value="true"/>
+  <property name="cmp.listfiles" value="no"/>
+  <property name="depend.closure" value="true"/>
+  <property name="cmp.maxwarnings" value="10000"/>
+  <property name="cmp.gc" value="-J-XX:+UseG1GC"/>
+  <property name="cmp.compilerarg" value=""/>
+
+  <!-- Other properties and custom tasks -->
+  <property name="prp.loglevel" value="info"/>
+  <property name="prp.time.format" value="HH:mm:ss"/>
+  <property name="prp.forcegen" value=""/>
+  <property name="prp.warningstoerrors" value="false"/>
+
+  <property name="jar.compression" value="0"/>
+  <property name="jar.beans" value="${dir.bld.jar}/beans.jar"/>
+  <property name="jar.application" value="${dir.bld.jar}/application.jar"/>
+  <property name="jar.implementation" value="${dir.bld.jar}/implementation.jar"/>
+  <property name="jar.message" value="${dir.bld.jar}/messages.jar"/>
+  <property name="jar.message.properties" value="${dir.bld.jar}/message_properties.jar"/>
+  <property name="jar.codetable" value="${dir.bld.jar}/codetable.jar"/>
+  <property name="jar.events" value="${dir.bld.jar}/events.jar"/>
+  <property name="jar.struct" value="${dir.bld.jar}/struct.jar"/>
+  <property name="jar.appwebservices" value="${dir.bld.jar}/appwebservices.jar"/>
+  <property name="jar.axis2.wsc.proxy" value="${dir.bld.jar}/axis2-wsc-proxy.jar"/>
+  <property name="prp.nogenschemavalidation" value="false"/>
+
+  <!-- Properties affecting Java compilation -->
+  <property name="j.src" value="${dir.base.components}"/>
+  <property name="j.gen" value="${dir.bld.svr.gen}"/>
+  <property name="j.gen.codetable" value="${dir.bld.svr}/codetable/gen"/>
+  <property name="j.gen.message" value="${dir.bld.svr}/message/gen"/>
+  <property name="j.gen.events" value="${dir.bld.svr}/events/gen"/>
+  <property name="j.gen.properties" value="${dir.bld.svr}/properties/gen"/>
+  <property name="j.gen.rulesfunctionsmetadata" value="${dir.bld.svr.gen}/${project.package}/rules/rdo/MergedFunctionMetaData.xml"/>
+  <property name="j.dst" value="${dir.bld.svr.cls}"/>
+  <property name="j.dst.codetable" value="${dir.bld.svr.ctx.cls}"/>
+  <property name="j.dst.message" value="${dir.bld.svr.msg.cls}"/>
+  <property name="j.dst.events" value="${dir.bld.svr.evx.cls}"/>
+  <property name="j.dst.web" value="${dir.bld.web.cls}"/>
+
+  <!-- Establish Java 8 as compilation level if not otherwise specified. -->
+  <condition property="ant.build.javac.source" value="1.8">
+    <not>
+      <isset property="ant.build.javac.source"/>
+    </not>
+  </condition>
+  <condition property="ant.build.javac.target" value="1.8">
+    <not>
+      <isset property="ant.build.javac.target"/>
+    </not>
+  </condition>
+
+  <!-- Property to disable callback mechanism -->
+  <property name="disable.database.callback.flag" value="-disable.database.callback"/>
+
+  <!-- Property to force dbtojms standalone disablement -->
+  <property name="force.disable.in.standalone.flag" value="-force.disable.in.standalone"/>
+
+  <!-- EJB DD generator properties -->
+  <property name="xdoclet.force" value="false"/>
+
+  <!-- Checksum filename -->
+  <property name="fil.jar.checksum" value="ClassChecksums.txt"/>
+
+  <path id="bld.jars.classpath">
+    <pathelement path="${jar.application}"/>
+    <pathelement path="${jar.codetable}"/>
+    <pathelement path="${jar.events}"/>
+    <pathelement path="${jar.implementation}"/>
+    <pathelement path="${jar.message}"/>
+    <pathelement path="${jar.message.properties}"/>
+    <pathelement path="${jar.struct}"/>
+    <pathelement path="${jar.axis2.wsc.proxy}"/>
+    <pathelement path="${jar.appwebservices}"/>
+  </path>
+  <property name="prop.bld.jars.classpath" refid="bld.jars.classpath"/>
+
+  <path id="bld.cls.classpath">
+    <pathelement path="${dir.bld.svr.cls}"/>
+    <pathelement path="${dir.bld.svr.ctx.cls}"/>
+    <pathelement path="${dir.bld.svr.msg.cls}"/>
+  </path>
+  <property name="prop.bld.cls.classpath" refid="bld.cls.classpath"/>
+
+  <path id="wsconnector.only.third.party.jars.classpath">
+    <pathelement path="${jar.commonsdiscovery}"/>
+    <pathelement path="${jar.wsdl4j}"/>
+    <pathelement path="${jar.axis2-saaj}"/>
+    <pathelement path="${jar.axis2-adb}"/>
+    <pathelement path="${jar.axiom-api}"/>
+  </path>
+  <property name="prop.wsconnector.only.third.party.jars.classpath" refid="wsconnector.only.third.party.jars.classpath"/>
+
+  <path id="axis2.classpath">
+    <fileset dir="${dir.sde.lib}" includes="${sde.lib.axis2.list}"/>
+    <path refid="wsconnector.only.third.party.jars.classpath"/>
+  </path>
+
+  <path id="database.jars.classpath">
+    <pathelement path="${jar.db2}"/>
+    <pathelement path="${jar.oracle}"/>
+    <pathelement path="${jar.h2}"/>
+  </path>
+
+  <path id="third.party.jars.classpath">
+    <pathelement path="${jar.antlr}"/>
+    <pathelement path="${jar.ant}"/>
+    <pathelement path="${jar.castor}"/>
+    <pathelement path="${jar.clover}"/>
+    <pathelement path="${jar.guice}"/>
+    <pathelement path="${jar.guava}"/>
+    <pathelement path="${jar.failureaccess}"/>    
+    <pathelement path="${jar.javax.inject}"/>
+    <pathelement path="${jar.guice-assistedinject}"/>
+    <pathelement path="${jar.guice-multibindings}"/>
+    <pathelement path="${jar.guice-throwingproviders}"/>
+    <pathelement path="${jar.aopalliance}"/>
+    <pathelement path="${jar.commons-dbcp}"/>
+    <pathelement path="${jar.compass.gss}"/>
+    <pathelement path="${jar.lucene-core}"/>
+  <pathelement path="${jar.lucene-analyzers}"/>
+    <path refid="axis2.classpath"/>
+  </path>
+  <property name="prop.third.party.jars.classpath" refid="third.party.jars.classpath"/>
+
+  <path id="common.third.party.jars.classpath">
+    <pathelement path="${jar.axis2-kernel}"/>
+    <pathelement path="${jar.commonscodec}"/>
+    <pathelement path="${jar.commonspool}"/>
+    <pathelement path="${jar.commonscollections4}"/>
+    <pathelement path="${jar.commonscollections}"/>
+    <pathelement path="${jar.commonslogging}"/>
+    <pathelement path="${jar.commonsbeanutils}"/>
+    <pathelement path="${jar.commonsdigester}"/>
+    <pathelement path="${jar.commonsvalidator}"/>
+    <pathelement path="${jar.icu4j}"/>
+    <pathelement path="${jar.dom4j}"/>
+    <pathelement path="${jar.json}"/>
+    <pathelement path="${jar.jackson.annotations}"/>
+    <pathelement path="${jar.jackson.core}"/>
+    <pathelement path="${jar.jackson.databind}"/>
+    <pathelement path="${jar.junit}"/>
+    <pathelement path="${jar.log4j.2.core}"/>
+    <pathelement path="${jar.log4j.2.api}"/>
+    <pathelement path="${jar.soap}"/>
+    <pathelement path="${jar.wss4j}"/>
+    <pathelement path="${jar.xmlsec}"/>
+    <pathelement path="${jars.allxml}"/>
+    <pathelement path="${jar.guice}"/>
+    <pathelement path="${jar.guava}"/>
+    <pathelement path="${jar.failureaccess}"/>    
+    <pathelement path="${jar.javax.inject}"/>
+    <pathelement path="${jar.aopalliance}"/>
+    <pathelement path="${jar.guice-assistedinject}"/>
+    <pathelement path="${jar.guice-multibindings}"/>
+    <pathelement path="${jar.guice-throwingproviders}"/>
+    <pathelement path="${jar.mail}"/>
+    <pathelement path="${jar.activation}"/>
+    <pathelement path="${jar.xmlunit-core}"/>
+    <pathelement path="${jar.j2ee}"/>
+    <pathelement path="${jar.jsoup}"/>
+  	<pathelement path="${jar.java-jwt}"/>
+    <pathelement path="${jar.gson}"/>
+  </path>
+  <property name="prop.common.third.party.jars.classpath" refid="common.third.party.jars.classpath"/>
+
+   <path id="jde.commons.jars.classpath">
+    <pathelement path="${jar.cglib.nodep}"/>
+    <pathelement path="${jar.ehcachecore}"/>
+    <pathelement path="${jar.slf4japi}"/>
+    <pathelement path="${jar.slf4jjdk14}"/>
+    <pathelement path="${jar.commonslang}"/>
+    <pathelement path="${jar.commonstext}"/>
+    <pathelement path="${jar.commonscodec}"/>
+    <pathelement path="${jar.commonspool}"/>
+    <pathelement path="${jar.commonsio}"/>
+    <pathelement path="${jar.commonscollections4}"/>
+    <pathelement path="${jar.commonscollections}"/>
+  </path>
+  <property name="prop.jde.commons.jars.classpath" refid="jde.commons.jars.classpath"/>
+
+  <path id="jde.jars.classpath">
+    <pathelement path="${jar.appinf_internal}"/>
+    <pathelement path="${jar.appinf}"/>
+    <pathelement path="${jar.gss}"/>
+    <pathelement path="${jar.commons}"/>
+    <pathelement path="${jar.coreinf}"/>
+    <pathelement path="${jar.coreinf.rmi}"/>
+    <pathelement path="${jar.coreinf.ejb}"/>
+    <pathelement path="${jar.coreinf.ejb.interfaces}"/>
+    <pathelement path="${jar.xmlservercommon}"/>
+    <pathelement path="${jar.rules}"/>
+    <pathelement path="${jar.tools}"/>
+	<pathelement path="${jar.security.inf}"/>
+    <pathelement path="${prop.jde.commons.jars.classpath}"/>
+  </path>
+  <property name="prop.jde.jars.classpath" refid="jde.jars.classpath"/>
+
+  <!-- dependency check class path -->
+  <path id="dependency.check.classpath">
+    <pathelement path="${prop.bld.cls.classpath}"/>
+    <pathelement path="${dir.bld.svr.evx.cls}"/>
+    <pathelement path="${prop.jde.jars.classpath}"/>
+    <pathelement path="${prop.third.party.jars.classpath}"/>
+    <pathelement path="${prop.common.third.party.jars.classpath}"/>
+    <pathelement path="${prop.wsconnector.only.third.party.jars.classpath}"/>
+  </path>
+  <property name="prop.dependency.check.classpath" refid="dependency.check.classpath"/>
+
+  <!--  **********************************  -->
+  <!--  ***  Common Compile Classpath  ***  -->
+  <!--  **********************************  -->
+  <path id="j.cp">
+    <pathelement path="${sysenv.PRE_CLASSPATH}"/>
+    <path refid="bld.cls.classpath"/>
+    <path refid="bld.jars.classpath"/>
+
+    <fileset dir="${base.dir}/components">
+      <include name="*/lib/**/*.jar"/>
+    </fileset>
+
+    <path refid="jde.jars.classpath"/>
+    <path refid="third.party.jars.classpath"/>
+    <path refid="common.third.party.jars.classpath"/>
+    <path refid="database.common.classpath"/>
+
+    <path refid="liberty.j2ee"/>
+
+    <pathelement path="${sysenv.POST_CLASSPATH}"/>
+  </path>
+
+  <path id="tests.cp">
+    <pathelement location="${dir.bld.svr}/tests/cls"/>
+    <pathelement path="${dir.bld.jar}/tests.jar"/>
+    <fileset dir="${base.dir}/components">
+      <include name="*/tests/*.jar"/>
+    </fileset>
+    <path refid="j.cp"/>
+  </path>
+
+  <!-- class path for building custom web service connectors -->
+  <path id="wsconnector.classpath">
+    <pathelement path="${sysenv.PRE_CLASSPATH}"/>
+    <pathelement path="${dir.bld.svr.cls}"/>
+    <pathelement path="${jar.coreinf}"/>
+    <pathelement path="${jde.commons.jars.classpath}"/>
+    <pathelement path="${jar.rules}"/>
+    <pathelement path="${jar.appinf}"/>
+    <pathelement path="${jar.commons}"/>
+    <pathelement path="${jar.appinf_internal}"/>
+    <pathelement path="${jar.tools}"/>
+    <pathelement path="${jar.coreinf.ejb.interfaces}"/>
+    <pathelement path="${prop.common.third.party.jars.classpath}"/>
+    <pathelement path="${prop.wsconnector.only.third.party.jars.classpath}"/>
+    <pathelement path="${jar.wss4j}"/>
+    <pathelement path="${jar.xmlsec}"/>
+    <pathelement path="${sysenv.POST_CLASSPATH}"/>
+  </path>
+
+
+  <!--  ***********************************  -->
+  <!--  ***  Common Database Classpath  ***  -->
+  <!--  ***********************************  -->
+  <path id="database.common.classpath">
+
+    <pathelement location="${dir.bld.svr.cls}"/>
+    <pathelement location="${prop.file.location}"/>
+    <pathelement location="${crypto.prop.file.location}"/>
+    <pathelement location="${dir.project.properties}"/>
+
+    <path refid="database.jars.classpath"/>
+    <pathelement location="${jar.dom4j}"/>
+    <pathelement location="${jar.jaxen}"/>
+    <pathelement path="${jars.allxml}"/>
+    <pathelement location="${jar.tools}"/>
+    <pathelement location="${jar.coreinf}"/>
+    <pathelement location="${jar.coreinf.rmi}"/>
+    <pathelement location="${jar.coreinf.ejb.interfaces}"/>
+    <pathelement location="${jar.log4j.2.core}"/>
+    <pathelement location="${jar.log4j.2.api}"/>
+    <pathelement location="${jar.log4j2.config}"/>
+    <pathelement location="${jar.ant}"/>
+    <pathelement location="${jar.clover}"/>
+    <pathelement location="${jar.providerutil}"/>
+    <pathelement location="${jar.fscontext}"/>
+    <pathelement path="${jar.commons}"/>
+    <path refid="jde.commons.jars.classpath"/>
+    <pathelement location="${jar.j2ee}"/>
+    <path refid="liberty.j2ee"/>
+  </path>
+
+  <path id="lob.manager.classpath">
+    <pathelement path="${jar.appinf}"/>
+    <pathelement path="${jar.appinf_internal}"/>
+    <pathelement path="${jar.rules}"/>
+    <pathelement path="${jar.castor}"/>
+    <pathelement path="${jar.commons}"/>
+    <path refid="jde.commons.jars.classpath"/>
+    <path refid="third.party.jars.classpath"/>
+    <path refid="database.common.classpath"/>
+  </path>
+
+  <condition property="liberty.home" value="${sysenv.WLP_HOME}">
+    <isset property="sysenv.WLP_HOME"/>
+  </condition>
+
+  <path id="liberty.j2ee">
+    <fileset dir="${liberty.home}/dev/api/spec" erroronmissingdir="false">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+  
+  <!-- A boolean used to enable or disable the secure URLs solution -->
+  <condition property="enable.secure.urls" value="${sysenv.ENABLE_SECURE_URLS}" else="false">
+    <and>
+      <isset property="sysenv.ENABLE_SECURE_URLS"/>
+      <matches pattern="(true|false)" string="${sysenv.ENABLE_SECURE_URLS}"/>
+    </and>
+  </condition>
+
+</project>

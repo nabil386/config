@@ -1,0 +1,916 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- 
+  Copyright 2010 Curam Software Ltd.
+  All rights reserved.
+  
+  This software is the confidential and proprietary information of Curam
+  Software, Ltd. ("Confidential Information").  You shall not disclose such
+  Confidential Information and shall use it only in accordance with the
+  terms of the license agreement you entered into with Curam Software.
+-->
+<!-- This file contains the application build script extensions for CREOLE. -->
+<project name="CREOLEBuild">
+
+
+  <!--  ****************  -->
+  <!--  ***  CREOLE  ***  -->
+  <!--  ****************  -->
+
+
+  <property
+    name="creole.ruleset.dir.name"
+    value="CREOLE_Rule_Sets"
+  />
+
+
+  <property
+    name="creole.resource.name"
+    value="Resource"
+  />
+
+
+  <property
+    name="creole.resource.dir.name"
+    value="${creole.ruleset.dir.name}/${creole.resource.name}"
+  />
+
+
+  <property
+    location="${sysenv.SERVER_DIR}/build/svr/creole.gen/"
+    name="creole.basegen.dir"
+  />
+
+
+  <property
+    name="pattern.rules.consolidated"
+    value="build/svr/creole.gen/Rules"
+  />
+
+
+  <property
+    location="${sysenv.SERVER_DIR}/${pattern.rules.consolidated}"
+    name="creole.ruleset.consolidate.dir"
+  />
+
+
+  <property
+    location="${creole.basegen.dir}/Resource"
+    name="creole.resource.consolidate.dir"
+  />
+
+
+  <property
+    location="${creole.basegen.dir}/ruledoc"
+    name="creole.ruledoc.dir"
+  />
+
+
+  <property
+    location="${sysenv.SERVER_DIR}/components/CREOLEInfrastructure"
+    name="dir.creole"
+  />
+
+
+  <property
+    location="${sysenv.SERVER_DIR}/build/svr/creoleArtifacts.timestamps"
+    name="creoleArtifacts.timestamps"
+  />
+  <fileset
+    dir="${sysenv.SERVER_DIR}/components"
+    id="creoleArtifacts.inputs"
+    includes="*/CREOLE_Rule_Sets/**/*.*"
+  />
+
+
+  <property
+    location="${sysenv.SERVER_DIR}/build/svr/creole.tmp"
+    name="dir.creole.gen.tmp"
+  />
+
+
+  <!-- BEGIN, CEF-12620, CW -->
+  <property
+    location="${creole.basegen.dir}/SortedRuleSets"
+    name="dir.rulesets.sorted.tmp"
+  />
+  <!-- END, CEF-12620 -->
+
+
+  <import
+    file="${dir.creole}/script/prepareApplicationData.xml"
+    optional="true"
+  />
+  <import
+    file="${dir.creole}/script/app_rulesdataextractor.xml"
+    optional="true"
+  />
+  <import
+    file="${dir.creole}/script/app_ruleobjectsdataextractor.xml"
+    optional="true"
+  />
+
+
+  <!--
+    Runs a target from the CREOLE Build infrastructure
+  -->
+
+
+  <!-- BEGIN, CEF-12620, CW -->
+  <!--
+    Sorts the CREOLE rule sets according to component order to ${dir.rulesets.sorted.tmp}
+    where a rule set in a preceding component will override a rule set with the same name in a component 
+	that is lower in the server component order. 
+	Targets can then reference location ${dir.rulesets.sorted.tmp} for rule sets fileset.
+  -->
+  <target name="sortRuleSetsForComponentOrder">
+
+
+    <antcall
+      inheritAll="false"
+      target="dispmsg"
+    >
+      <param
+        name="prm.msg"
+        value="Sorting CREOLE rule sets by server component order..."
+      />
+    </antcall>
+    <delete dir="${dir.rulesets.sorted.tmp}"/>
+    <mkdir dir="${dir.rulesets.sorted.tmp}"/>
+
+
+    <!-- Copy the rule sets one component at a time, but not copying a file if it already exists  -->
+    <java
+      classname="curam.creole.script.SortRuleSets"
+      classpathref="j.cp"
+      failonerror="${java.failonerror}"
+      fork="${java.fork}"
+      maxmemory="${java.maxmemory}"
+      taskname="dataextractor"
+    >
+      <sysproperty
+        key="curam.disable.dynamic.properties"
+        value="true"
+      />
+      <jvmarg value="${java.jvmargs}"/>
+      <jvmarg value="-Xms${java.maxmemory}"/>
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}"/>
+      <classpath path="${jar.creole}"/>
+      <arg line="-servercomponentorder"/>
+      <arg value="${SERVER_COMPONENT_ORDER}"/>
+      <arg line="-serverlocalelist"/>
+      <arg value="${SERVER_LOCALE_LIST}"/>
+      <arg line="-serverdirectory ${sysenv.SERVER_DIR}"/>
+      <arg line="-outdir ${dir.rulesets.sorted.tmp}"/>
+    </java>
+
+
+  </target>
+
+
+  <target
+    depends="creole.consolidate.resource, sortRuleSetsForComponentOrder"
+    name="-runCREOLETarget"
+  >
+
+
+    <path id="path.creole.gen.classpath">
+      <pathelement location="${prop.file.location}"/>
+      <pathelement path="${creole.resource.consolidate.dir}"/>
+      <path refid="j.cp"/>
+      <pathelement path="${jar.fscontext}"/>
+      <pathelement path="${jar.providerutil}"/>
+      <pathelement path="${jar.oracle}"/>
+      <pathelement path="${jar.db2}"/>
+      <pathelement path="${jar.h2}"/>
+    </path>
+
+
+    <property
+      location="${dir.creole}/script/rules.xml"
+      name="file.script.rules"
+    />
+
+
+    <fileset
+      dir="${dir.rulesets.sorted.tmp}"
+      id="rulesets"
+    >
+      <include name="*/*.xml"/>
+    </fileset>
+    <!-- END, CEF-12620 -->
+
+
+    <ant
+      antfile="${file.script.rules}"
+      inheritall="true"
+      inheritrefs="true"
+      target="${prp.creole.target}"
+    />
+
+
+  </target>
+
+
+  <target
+    depends="creole.consolidate.resource"
+    description="Copies resource files for CREOLE rule sets into the build\svr\cls directory."
+    name="creole.copyresourceto.cls"
+  >
+
+
+    <copy todir="${sysenv.SERVER_DIR}/build/svr/cls">
+      <fileset dir="${creole.resource.consolidate.dir}">
+        <include name="**/*.properties"/>
+      </fileset>
+    </copy>
+
+
+  </target>
+
+
+  <!--
+  Consolidates together resource bundles for CREOLE rule sets
+   - Classpaths can then reference location ${creole.resource.consolidate.dir}
+  -->
+  <target
+    description="Consolidates together resource bundles for CREOLE rule sets."
+    name="creole.consolidate.resource"
+  >
+
+
+    <property
+      location="${creole.basegen.dir}/datamanager/gen/properties"
+      name="dir.datamanager.final.properties"
+    />
+
+
+    <delete dir="${creole.resource.consolidate.dir}"/>
+    <mkdir dir="${creole.resource.consolidate.dir}"/>
+
+
+    <copy todir="${creole.resource.consolidate.dir}">
+      <fileset dir="${sysenv.SERVER_DIR}/components/">
+        <include name="*/${creole.resource.dir.name}/**/*.properties"/>
+        <exclude name="*/${creole.resource.dir.name}/*.*"/>
+      </fileset>
+      <regexpmapper
+        from="^(.*)\/${creole.resource.dir.name}/(.*)"
+        handledirsep="yes"
+        to="\2"
+      />
+    </copy>
+  </target>
+
+
+  <target
+    description="Inlines any included CREOLE rule sets and consolidates the rule sets into one build directory."
+    name="creole.consolidate.rulesets"
+  >
+
+
+    <antcall
+      inheritAll="false"
+      target="dispmsg"
+    >
+      <param
+        name="prm.msg"
+        value="Consolidating CREOLE rule sets ..."
+      />
+    </antcall>
+
+
+    <property
+      location="${dir.creole.gen.tmp}/consolidated"
+      name="dir.consolidated.tmp"
+    />
+    <property
+      name="creole.ruleset.consolidated.dir.name"
+      value="${creole.ruleset.dir.name}.consolidated"
+    />
+
+
+    <delete dir="${dir.consolidated.tmp}"/>
+    <mkdir dir="${dir.consolidated.tmp}"/>
+
+
+    <antcall target="-runCREOLETarget">
+      <param
+        name="prp.creole.target"
+        value="consolidateRuleSets"
+      />
+      <param
+        location="${dir.creole.gen.tmp}"
+        name="dir.creole.gen.out"
+      />
+
+
+    </antcall>
+
+
+    <!-- Delete the build/svr/creole.gen/Rules/ directories from the build folder -->
+
+
+    <delete includeemptydirs="true">
+      <!-- delete the files -->
+      <fileset dir="${sysenv.SERVER_DIR}">
+        <include name="${pattern.rules.consolidated}/**/*"/>
+      </fileset>
+      <!-- delete the directories themselves -->
+      <dirset dir="${sysenv.SERVER_DIR}">
+        <include name="${pattern.rules.consolidated}"/>
+      </dirset>
+    </delete>
+
+
+    <!-- BEGIN, CEF-12620, CW -->
+    <!-- copy the consolidated rule sets to their corresponding data directories within the build folder -->
+    <copy todir="${creole.ruleset.consolidate.dir}/components">
+      <fileset dir="${dir.consolidated.tmp}"/>
+    </copy>
+    <!-- END, CEF-12620 -->
+
+
+    <!-- clean up temp directory -->
+    <delete dir="${dir.creole.gen.tmp}"/>
+
+
+  </target>
+
+
+  <target
+    depends="creole.consolidate.rulesets"
+    description="Uploads new CREOLE rule sets and/or changes to existing CREOLE rule sets to the database."
+    name="creole.upload.rulesets"
+  >
+
+
+    <antcall
+      inheritAll="false"
+      target="dispmsg"
+    >
+      <param
+        name="prm.msg"
+        value="Uploading CREOLE rule sets ..."
+      />
+    </antcall>
+
+
+    <antcall target="-runCREOLETarget">
+      <param
+        name="prp.creole.target"
+        value="uploadRuleSets"
+      />
+      <param
+        location="${creole.basegen.dir}/datamanager/gen"
+        name="dir.datamanager.gen"
+      />
+      <param
+        location="${creole.ruleset.consolidate.dir}"
+        name="dir.consolidated.out"
+      />
+
+
+    </antcall>
+
+
+    <!-- BEGIN, CEF-12620, CW -->
+    <!-- clean up temp directory -->
+    <delete dir="${dir.creole.gen.tmp}"/>
+    <!-- END, CEF-12620 -->
+  </target>
+
+
+  <target
+    name="creoleArtifacts.uptodate"
+    unless="disable.uptodate.check"
+  >
+    <taskdef
+      classname="curam.util.persistence.generator.common.CheckFileSetTimestampsChanges"
+      name="CheckFileSetTimestampsChanges"
+    >
+      <classpath refid="j.cp"/>
+    </taskdef>
+
+
+    <CheckFileSetTimestampsChanges
+      property="creoleArtifacts.notRequired"
+      timestampsFile="${creoleArtifacts.timestamps}"
+    >
+      <fileset refid="creoleArtifacts.inputs"/>
+    </CheckFileSetTimestampsChanges>
+
+
+  </target>
+
+
+  <target
+    if="creoleArtifacts.notRequired"
+    name="creoleArtifacts.echo"
+  >
+    <echo
+      level="info"
+      message="Skipping generation of CREOLE test classes because all files are up-to-date."
+    />
+  </target>
+
+
+  <target
+    depends="creoleArtifacts.uptodate, creoleArtifacts.echo"
+    description="Generates test classes from the CREOLE rule sets."
+    name="creole.generate.test.classes"
+    unless="creoleArtifacts.notRequired"
+  >
+
+
+    <taskdef
+      classname="curam.util.persistence.generator.common.WriteFileSetTimestamps"
+      name="WriteFileSetTimestamps"
+    >
+      <classpath refid="j.cp"/>
+    </taskdef>
+    <antcall
+      inheritAll="false"
+      target="dispmsg"
+    >
+      <param
+        name="prm.msg"
+        value="Generating test classes from the CREOLE rule sets ..."
+      />
+    </antcall>
+
+
+    <property
+      location="${sysenv.SERVER_DIR}/build/svr/gen/curam/creole"
+      name="dir.svr.gen.creole"
+    />
+
+
+    <antcall target="-runCREOLETarget">
+      <param
+        name="outputRuleSetsClassName"
+        value="curam.creole.impl.TestRuleSets"
+      />
+      <param
+        name="prp.creole.target"
+        value="codegen"
+      />
+      <param
+        location="${creole.basegen.dir}"
+        name="dir.creole.gen.out"
+      />
+
+
+    </antcall>
+
+
+    <antcall
+      inheritAll="false"
+      target="dispmsg"
+    >
+      <param
+        name="prm.msg"
+        value="Copying generated test classes to the source location ..."
+      />
+    </antcall>
+
+
+    <copy
+      failonerror="false"
+      todir="${dir.svr.gen.creole}"
+    >
+      <fileset dir="${creole.basegen.dir}/source/curam/creole">
+        <different
+          ignoreFileTimes="true"
+          targetdir="${dir.svr.gen.creole}"
+        />
+      </fileset>
+    </copy>
+
+
+    <property
+      location="${dir.svr.gen.creole}/ruleclass"
+      name="dir.gen.ruleclass"
+    />
+
+
+    <!-- ensure directory exists so that <delete> does not fail if the <fileset> dir is missing -->
+    <mkdir dir="${dir.gen.ruleclass}"/>
+
+
+    <!-- remove any unwanted generated output from the compile location -->
+    <delete>
+      <fileset dir="${dir.gen.ruleclass}">
+        <present
+          present="srconly"
+          targetdir="${creole.basegen.dir}/source/curam/creole/ruleclass"
+        />
+      </fileset>
+    </delete>
+
+
+    <WriteFileSetTimestamps timestampsFile="${creoleArtifacts.timestamps}">
+      <fileset refid="creoleArtifacts.inputs"/>
+    </WriteFileSetTimestamps>
+
+
+  </target>
+
+
+  <target
+    description="Compiles the test classes generated from the CREOLE rule sets."
+    name="creole.compile.test.classes"
+  >
+
+
+    <antcall
+      inheritAll="false"
+      target="dispmsg"
+    >
+      <param
+        name="prm.msg"
+        value="Compiling the test classes generated from the CREOLE rule sets..."
+      />
+    </antcall>
+
+
+    <!-- remove any classes no longer required -->
+    <delete>
+      <fileset
+        dir="${sysenv.SERVER_DIR}/build/svr/cls"
+        includes="curam/creole/ruleclass/**/*.class"
+      >
+        <or>
+          <present
+            present="srconly"
+            targetdir="${creole.basegen.dir}/source"
+          >
+            <mapper
+              from="^(.*)\$(.*)\.class$"
+              to="\1.java"
+              type="regexp"
+            />
+          </present>
+          <present
+            present="srconly"
+            targetdir="${creole.basegen.dir}/source"
+          >
+            <mapper
+              from="^([^$]*)\.class$"
+              to="\1.java"
+              type="regexp"
+            />
+          </present>
+        </or>
+      </fileset>
+    </delete>
+
+
+    <javac
+      classpathref="j.cp"
+      deprecation="true"
+      destdir="${sysenv.SERVER_DIR}/build/svr/cls"
+      includeantruntime="false"
+      srcdir="${creole.basegen.dir}/source"
+    />
+
+
+  </target>
+
+
+  <target
+    depends="creole.check.initial.database"
+    name="creole.post.insertlobdata"
+  />
+
+
+  <!--
+  Checks the structure of rule set XML data uploaded from DMX files and runs lax validation.
+
+  Should be called as part of any full automated build.
+  -->
+  <target
+    description="Checks the structure of rule set XML data uploaded from DMX files and runs lax validation."
+    name="creole.check.initial.database"
+  >
+
+
+    <antcall
+      inheritAll="false"
+      target="dispmsg"
+    >
+      <param
+        name="prm.msg"
+        value="Checking CREOLE rule sets uploaded from DMX files..."
+      />
+    </antcall>
+
+
+    <antcall target="-runCREOLETarget">
+      <param
+        name="prp.creole.target"
+        value="checkInitialDatabase"
+      />
+    </antcall>
+
+
+    <!-- BEGIN, CEF-12620, CW -->
+    <!-- clean up temp directory -->
+    <delete dir="${dir.creole.gen.tmp}"/>
+    <!-- END, CEF-12620 -->
+  </target>
+
+
+  <!--
+  Performs full validation on CREOLE rule sets.
+
+  Should be called as part of any full automated build (otherwise only lax validation will performed against rule sets during test class generation).
+
+  Requires database access and full server target to have run.
+  -->
+  <target
+    description="Performs full validation of all CREOLE rule sets."
+    name="creole.validate.rulesets"
+  >
+
+
+    <antcall
+      inheritAll="false"
+      target="dispmsg"
+    >
+      <param
+        name="prm.msg"
+        value="Validating CREOLE rule sets..."
+      />
+    </antcall>
+
+
+    <antcall target="-runCREOLETarget">
+      <param
+        name="prp.creole.target"
+        value="validateRuleSets"
+      />
+    </antcall>
+
+
+  </target>
+
+
+  <!--
+  Generates rule documentation for all CREOLE rule sets.
+
+  Requires database access and full server target to have run.
+  -->
+  <target
+    description="Generates rule documentation for all CREOLE rule sets."
+    name="creole.generate.ruledoc"
+  >
+
+
+    <antcall
+      inheritAll="false"
+      target="dispmsg"
+    >
+      <param
+        name="prm.msg"
+        value="Generating CREOLE rule documentation..."
+      />
+    </antcall>
+
+
+    <antcall target="-runCREOLETarget">
+      <param
+        name="prp.creole.target"
+        value="ruledoc"
+      />
+      <param
+        location="${creole.basegen.dir}"
+        name="dir.creole.gen.out"
+      />
+
+
+    </antcall>
+
+
+  </target>
+
+
+  <!--
+  Generates an XML schema file for CREOLE rule sets.
+
+  Requires database access and full server target to have run.
+  -->
+  <target
+    description="Generates an XML schema file for CREOLE rule sets."
+    name="creole.generate.schema"
+  >
+
+
+    <antcall
+      inheritAll="false"
+      target="dispmsg"
+    >
+      <param
+        name="prm.msg"
+        value="Generating XML schema file for CREOLE rule sets..."
+      />
+    </antcall>
+
+
+    <antcall target="-runCREOLETarget">
+      <param
+        name="prp.creole.target"
+        value="assembleRuleSetSchema"
+      />
+      <param
+        location="${creole.basegen.dir}"
+        name="dir.creole.gen.out"
+      />
+    </antcall>
+
+
+  </target>
+
+
+  <!--
+  Generates an XML catalog file for CREOLE rule sets.
+
+  Requires database access and full server target to have run.
+  -->
+  <target
+    description="Generates an XML catalog file for CREOLE rule sets."
+    name="creole.generate.catalog"
+  >
+
+
+    <antcall
+      inheritAll="false"
+      target="dispmsg"
+    >
+      <param
+        name="prm.msg"
+        value="Generating XML catalog file for CREOLE rule sets..."
+      />
+    </antcall>
+
+
+    <property
+      location="${creole.basegen.dir}/schema"
+      name="dir.schema"
+    />
+    <property
+      location="${dir.schema}/RuleSet.xsd"
+      name="file.schema"
+    />
+    <property
+      location="${creole.basegen.dir}/catalog"
+      name="dir.catalog"
+    />
+    <property
+      location="${dir.catalog}/CREOLECatalog.xml"
+      name="file.catalog"
+    />
+
+
+    <antcall target="-runCREOLETarget">
+      <param
+        name="prp.creole.target"
+        value="createCatalog"
+      />
+
+
+      <param
+        location="${creole.basegen.dir}"
+        name="dir.creole.gen.out"
+      />
+      <param
+        location="${dir.creole}/xsd/curam/creole/xsd"
+        name="dir.creole.rules.xsd"
+      />
+      <param
+        location="${file.schema}"
+        name="file.schema"
+      />
+      <param
+        location="${file.catalog}"
+        name="file.catalog"
+      />
+
+
+    </antcall>
+
+
+  </target>
+
+
+  <!--
+  Reports CREOLE rule attributes which are not used directly by any other rule attributes.
+
+  Requires database access and full server target to have run.
+  -->
+  <target
+    description="Reports CREOLE rule attributes which are not used directly by any other rule attributes."
+    name="creole.report.unused.attributes"
+  >
+
+
+    <antcall
+      inheritAll="false"
+      target="dispmsg"
+    >
+      <param
+        name="prm.msg"
+        value="Reporting CREOLE rule attributes which are not used directly by any other rule attributes..."
+      />
+    </antcall>
+
+
+    <antcall target="-runCREOLETarget">
+      <param
+        name="prp.creole.target"
+        value="unused"
+      />
+      <param
+        location="${creole.basegen.dir}"
+        name="dir.creole.gen.out"
+      />
+
+
+    </antcall>
+
+
+  </target>
+
+
+  <!--
+  Reports CREOLE rule set coverage information gathered from CREOLE rule executions.
+
+  Requires coverage information to have been previously gathered in a log file.
+  -->
+  <target
+    description="Reports CREOLE rule set coverage information gathered from CREOLE rule executions."
+    name="creole.report.coverage"
+  >
+
+
+    <fail
+      message="The property file.coverage.log must be set to the location of the coverage log file."
+      unless="file.coverage.log"
+    />
+
+
+    <antcall
+      inheritAll="false"
+      target="dispmsg"
+    >
+      <param
+        name="prm.msg"
+        value="Reporting CREOLE rule set coverage information gathered from CREOLE rule executions..."
+      />
+    </antcall>
+
+
+    <antcall target="-runCREOLETarget">
+      <param
+        name="prp.creole.target"
+        value="coverage"
+      />
+      <param
+        location="${creole.basegen.dir}"
+        name="dir.creole.gen.out"
+      />
+
+
+    </antcall>
+
+
+  </target>
+
+
+  <target name="release.creole">
+
+
+    <!-- Copy CREOLE rule sets and properties, and CREOLE Infrastructure scripts -->
+    <copy
+      includeEmptyDirs="false"
+      todir="${dir.release}/components"
+    >
+      <fileset dir="${dir.base.components}">
+        <include name="*/${creole.ruleset.dir.name}/**/*.xml"/>
+        <include name="*/${creole.ruleset.dir.name}/**/*.properties"/>
+        <include name="CREOLEInfrastructure/script/*.*"/>
+      </fileset>
+    </copy>
+
+
+  </target>
+
+
+</project>

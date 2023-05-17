@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- 
+  Copyright 2008 Curam Software Ltd.
+  All rights reserved.
+  
+  This software is the confidential and proprietary information
+  of Curam Software, Ltd. ("Confidential Information").  You
+  shall not disclose such Confidential Information and shall use
+  it only in accordance with the terms of the license agreement
+  you entered into with Curam Software.
+-->
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+  name="ScreeningInterfaceRuleSet">
+  
+  <!-- This class must be extended by all rule sets invoked by
+    the Citizen Portal screening results processing. -->
+  <Class name="AbstractScreeningResult" abstract="true">
+    
+    <Initialization>
+      <Attribute name="calculationDate">
+        <type>
+          <javaclass name="curam.util.type.Date"/>
+        </type>
+      </Attribute>
+    </Initialization>
+    
+    <!-- The programs supported by this Screening Ruleset. -->
+    <Attribute name="programs">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="AbstractProgram"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <!-- Subclasses of AbstractScreeningResult must override
+          this attribute to create a list of the Programs
+          supported by the rule set. -->
+        <abstract/>
+      </derivation>
+    </Attribute>
+    
+  </Class>
+  
+  <!-- This class must be extended by all programs supported
+    in the rule set. -->
+  <Class name="AbstractProgram" abstract="true">
+    
+    <!-- Identifies the program as configured in the Citizen
+      Portal administration application. -->
+    <Attribute name="programTypeReference">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    
+    <!-- Whether the claimant is eligible for this program. -->
+    <Attribute name="eligible">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    
+    <!-- The localizable explanation as to why the claimant is
+      or is not eligible for this program.  May contain HTML
+      formatting/hyperlinks/etc. -->
+    <Attribute name="explanation">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+  </Class>
+  
+</RuleSet>

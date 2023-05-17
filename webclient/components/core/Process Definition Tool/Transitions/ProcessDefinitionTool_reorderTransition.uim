@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="ProcessDefinitionTool_reorderTransition"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="fromActivityName"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Separator"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="result$toActivityName"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="message"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <ACTION_SET>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+  <SERVER_INTERFACE
+    CLASS="TransitionAdmin"
+    NAME="DISPLAY"
+    OPERATION="readTransitionForReorder"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="TransitionAdmin"
+    NAME="ACTION"
+    OPERATION="reorderTransition"
+    PHASE="ACTION"
+  />
+  <PAGE_PARAMETER NAME="transitionID"/>
+  <PAGE_PARAMETER NAME="processID"/>
+  <PAGE_PARAMETER NAME="processVersionNo"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="processID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processVersionNo"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="processVersionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="transitionID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="transitionKey$transitionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="processID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processVersionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="processVersionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="transitionID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="transitionID"
+    />
+  </CONNECT>
+  <CLUSTER
+    DESCRIPTION="Cluster.Description"
+    LABEL_WIDTH="30%"
+  >
+    <FIELD
+      LABEL="Field.Label.InsertTransition"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$dtls$dtls$transitionID"
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$dtls$toActivityName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="insertBeforeTransitionID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant model build file for Curam projects.
+  It includes tasks to extract and generate the application's model.
+
+-->
+<project name="Curam Generic Search Server Targets">
+
+  <!-- App server specific properties -->
+  <property file="${app.prop.location}"/>
+
+  <condition property="SERVICE" value="${sysenv.SERVICE}" else="">
+    <isset property="sysenv.SERVICE"/>
+  </condition>
+  <condition property="STREAM" value="${sysenv.STREAM}" else="">
+    <isset property="sysenv.STREAM"/>
+  </condition>
+
+  <condition property="java.extra.jvmargs" value="-Xnoargsconversion">
+    <os family="z/os"/>
+  </condition>
+  <property name="java.extra.jvmargs" value="-Dfake.property=1"/>
+
+  <!-- Profile default value on z/OS must be default -->
+  <condition property="profile.name" value="default">
+    <os family="z/os"/>
+  </condition>
+  <property name="profile.name"   value="AppSrv01"/>
+
+  <target name="set.ejb.paths" if="sysenv.WAS_HOME">
+
+    <path id="ejb.classpath">
+      <pathelement location="${WAS_HOME}/profiles/${profile.name}/properties"/>
+      <fileset dir="${WAS_HOME}">
+        <include name="runtimes/com.ibm.ws.ejb.thinclient*.jar"/>
+        <include name="plugins/com.ibm.ws.runtime.jar"/>
+        <include name="plugins/com.ibm.ws.emf.jar"/>
+        <include name="plugins/com.ibm.ws.runtime.ws390_*.jar"/>
+        <include name="lib/bootstrap.jar"/>
+        <include name="lib/bootstrapws390.jar"/>
+        <include name="lib/wasupgradews390.jar"/>
+        <include name="runtimes/com.ibm.ws.admin.client_*.jar"/>
+      </fileset>
+    </path>
+
+  </target>
+
+  <path id="ejb.classpath">
+    <pathelement location="${WLS_HOME}/lib/weblogic.jar"/>
+  </path>
+
+  <target name="runExtractor" depends="check.directory.type.set">
+
+    <java
+      classname="curam.core.impl.DataBaseSearchExtractor"
+      classpathref="j.cp"
+      failonerror="${java.failonerror}"
+      fork="${java.fork}"
+      maxmemory="${java.maxmemory}"
+      taskname="databasesearchextractor"
+    >
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}" />
+      <jvmarg value="-Xms${java.maxmemory}" />
+      <jvmarg line="${java.jvmargs}" />
+      <jvmarg line="${java.extra.jvmargs}"/>
+      <jvmarg value="-Dconsole.encoding=${java.console.encoding}"/>
+      <arg value="${SERVICE}"/>
+      <arg value="${STREAM}"/>
+    </java>
+
+  </target>
+
+  <target name="runPersist" depends="check.directory.type.set">
+
+    <java
+      classname="curam.core.impl.DataBaseIndexPersist"
+      classpathref="j.cp"
+      failonerror="${java.failonerror}"
+      fork="${java.fork}"
+      maxmemory="${java.maxmemory}"
+      taskname="databaseindexpersist"
+    >
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}" />
+      <jvmarg value="-Xms${java.maxmemory}" />
+      <jvmarg line="${java.jvmargs}" />
+      <jvmarg value="-Dconsole.encoding=${java.console.encoding}"/>
+      <jvmarg value="-DFSDIRSTORE=${sysenv.FSDIRSTORE}"/>
+      <arg value="${SERVICE}"/>
+      <arg value="${STREAM}"/>
+    </java>
+
+  </target>
+
+  <target name="startupSearchServer" depends="check.directory.type.set, set.ejb.paths">
+
+    <path id="classpath.gss.startup">
+      <path refid="ejb.classpath"/>
+      <path refid="j.cp"/>
+    </path>
+
+    <java
+      classname="curam.core.impl.admin.RunStartupProcess"
+      classpathref="classpath.gss.startup"
+      failonerror="${java.failonerror}"
+      fork="${java.fork}"
+      maxmemory="${java.maxmemory}"
+      taskname="startupsearchserver"
+    >
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}" />
+      <jvmarg value="-Xms${java.maxmemory}" />
+      <jvmarg line="${java.jvmargs}" />
+      <jvmarg value="-Dconsole.encoding=${java.console.encoding}"/>
+      <jvmarg value="-Dcom.ibm.CORBA.ConfigURL=file:${WAS_HOME}/profiles/${profile.name}/properties/sas.client.props"/>
+      <jvmarg value="-Dcom.ibm.SSL.ConfigURL=file:${WAS_HOME}/profiles/${profile.name}/properties/ssl.client.props"/>
+    </java>
+  </target>
+
+   <!--  ******************************************************  -->
+   <!--  ***  Targets for checking JDBC directory type set  ***  -->
+   <!--  ******************************************************  -->
+   <target name="check.directory.type.set" unless="enable.jdbc.directory.type">
+      <condition property="prop.jdbc.directoy.type.set">
+         <equals arg1="${curam.searchserver.directory.type}" arg2="jdbc" casesensitive="false"/>
+      </condition>
+    <antcall target="check.directory.type.supported"/>
+   </target>
+
+   <target name="check.directory.type.supported" if="prop.jdbc.directoy.type.set">
+      <echo>JDBC indexing type is not supported, please use either FILE or RAM indexing.
+    Refer to Generic Search Server guide for more details.</echo>
+      <fail> </fail>
+   </target>
+
+</project>
+
+

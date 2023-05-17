@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- This jsp redirects the user to the correct resolver page               -->
+<!-- depending on the case type                                             -->
+<PAGE PAGE_ID="Participant_resolveParticipantHome">
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <!--BEGIN, CR00096593 MC-->
+  <JSP_SCRIPTLET>
+    
+        
+      
+      String IC_CASE="IC";
+      String INTEGRATED_CASE="INTEGRATED";
+      String url="";
+      // BEGIN, CR00103528, AK
+      String resolvePage ="Case_resolveParticipantHome";
+      // END, CR00103528
+      curam.omega3.request.RequestHandler 
+      rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+      String context = request.getContextPath() + "/";
+      
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      
+      // BEGIN, CR00231912, ZV
+      String caseID = request.getParameter("caseID");
+      
+      curam.interfaces.CasePkg.Case_resolveCaseHomePageName_TH
+        th = new curam.interfaces.CasePkg.Case_resolveCaseHomePageName_TH();
+        
+      th.setFieldValue(th.key$caseID_idx,caseID);
+
+      th.callServer();
+     
+      String caseHome = th.getFieldValue("result$homePageName");
+      // END, CR00231912
+      
+      String concernRoleID = request.getParameter("concernRoleID");
+      String caseParticipantRoleID  = request.getParameter("caseParticipantRoleID");
+      
+            
+      if(caseHome.startsWith(IC_CASE)  || caseHome.startsWith(INTEGRATED_CASE)) {
+         resolvePage="IntegratedCase_resolveParticipantHome";
+      }
+      
+     
+      url= context+resolvePage+"Page.do?caseID="+curam.omega3.request.RequestUtils.escapeURL(caseID)+"&amp;caseParticipantRoleID="+curam.omega3.request.RequestUtils.escapeURL(caseParticipantRoleID)+"&amp;concernRoleID="+curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+      url += "&amp;" + rh.getSystemParameters();
+
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+      
+    
+    </JSP_SCRIPTLET>
+
+
+  <!--END, CR00096593 -->
+</PAGE>

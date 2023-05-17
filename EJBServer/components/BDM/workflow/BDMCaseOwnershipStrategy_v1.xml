@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow-process creationDate="20220202T175511" createdBy="admin" category="PC14" released="true" language-version="1.0" process-version="1" id="1126999418470912">
+  <name>BDMCaseOwnershipStrategy</name>
+  <process-display-name>
+    <localized-text>
+      <locale language="en">BDMCaseOwnershipStrategy</locale>
+    </localized-text>
+  </process-display-name>
+  <enactment-mappings>
+    <mapping>
+      <source-attribute name="caseID" struct-name="curam.core.struct.CaseHeaderKey" />
+      <target-attribute name="caseID" wdo-name="CaseOwnershipWDO" />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo initialize-attributes="false" is-list-wdo="false">
+      <wdo-name>CaseOwnershipWDO</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">CaseOwnershipWDO</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>caseID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">caseID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="1">
+      <name>
+        <localized-text>
+          <locale language="en">Start Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The start process activity</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="1" />
+      </split>
+    </start-process-activity>
+    <end-process-activity id="2">
+      <name>
+        <localized-text>
+          <locale language="en">End Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="none" />
+    </end-process-activity>
+    <automatic-activity category="AC1" id="3">
+      <name>
+        <localized-text>
+          <locale language="en">Assign Case</locale>
+        </localized-text>
+      </name>
+      <join type="none" />
+      <split type="none">
+        <transition-id idref="2" />
+      </split>
+      <bpo-mapping method-name="assignCase" interface-name="curam.ca.gc.bdm.sl.organization.intf.BDMCaseOwnershipStrategy">
+        <formal-parameters>
+          <formal-parameter index="0">
+            <struct type="curam.core.sl.struct.CaseIDKey">
+              <field name="caseID">
+                <base-type type="INT64">
+                  <wdo-attribute name="caseID" wdo-name="CaseOwnershipWDO" />
+                </base-type>
+              </field>
+            </struct>
+          </formal-parameter>
+        </formal-parameters>
+      </bpo-mapping>
+    </automatic-activity>
+  </activities>
+  <transitions>
+    <transition to-activity-idref="3" from-activity-idref="1" id="1" />
+    <transition to-activity-idref="2" from-activity-idref="3" id="2" />
+  </transitions>
+</workflow-process>
+

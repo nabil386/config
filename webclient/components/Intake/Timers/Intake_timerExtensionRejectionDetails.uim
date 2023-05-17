@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Timer Extension rejection Details                                       -->
+<PAGE
+  PAGE_ID="Intake_timerExtensionRejectionDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="milestoneWaiverRequestID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="milestoneWaiverRequestID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$milestoneWaiverRequestID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="IntakeTimers"
+    NAME="DISPLAY"
+    OPERATION="showRejectionDetails"
+  />
+
+
+  <CLUSTER>
+
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="result$isEnableCluster"
+      />
+    </CONDITION>
+
+
+    <CLUSTER
+      NUM_COLS="1"
+      TITLE="Cluster.Label.RejectionDetails"
+    >
+      <FIELD
+        LABEL="Field.Label.RejectionReason"
+        WIDTH="50"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$rejectionReason"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+
+
+    <CLUSTER
+      NUM_COLS="1"
+      TITLE="Field.Label.RejectionComments"
+    >
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$rejectionComments"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+</PAGE>

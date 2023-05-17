@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003, 2008 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This script opens the view page for the specified location             -->
+<!-- holiday from the calendar page.                                        -->
+<PAGE
+  PAGE_ID="Organization_resolveViewLocationHoliday"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+        
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String locationHolidayID = request.getParameter("ID");
+      String locationStructureID = request.getParameter("locationStructureID");
+      String locationID = request.getParameter("locationID");
+      
+      
+      String url = "";
+
+      if (locationHolidayID == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "ID");
+       System.out.println(e);
+       throw e;
+       
+      } else {
+
+        url = context
+          + "Organization_viewLocationHolidayFromCalendarPage.do?locationHolidayID="
+            + curam.omega3.request.RequestUtils.escapeURL(locationHolidayID) 
+            + "&amp;locationStructureID=" + curam.omega3.request.RequestUtils.escapeURL(locationStructureID)
+            + "&amp;locationID=" + curam.omega3.request.RequestUtils.escapeURL(locationID);
+      }
+     // END, CR00110216
+      url += "&amp;" + rh.getSystemParameters();
+      response.sendRedirect(response.encodeRedirectURL(url));
+
+    
+  </JSP_SCRIPTLET>
+</PAGE>

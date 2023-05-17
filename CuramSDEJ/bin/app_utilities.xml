@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2018. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant utilities file for Curam projects.
+  It contains any utility tasks used by the application build.
+
+-->
+<project name="app_utilities" default="ini.directories">
+
+  <!--  *********************************************  -->
+  <!--  ***  Targets for checking properties set  ***  -->
+  <!--  *********************************************  -->
+  <target name="check.props.inside.file" unless="prop.file.inside.available">
+    <echo>Properties are missing from your ${prop.file}</echo>
+    <echo>The following minimum properties should be setup: </echo>
+    <echo>curam.db.type=DB2 or ORA</echo>
+    <echo>curam.db.username=a valid database username</echo>
+    <echo>curam.db.password=a valid database password</echo>
+    <echo>curam.db.name=database name or curam.db.oracle.servicename=database service name</echo>
+    <echo>curam.db.servername=a valid database machine name</echo>
+    <echo>curam.db.serverport=port the database is listening on</echo>
+    <echo>If curam.db.type=ZOS then curam.db.zos.dbname and curam.db.zos.32ktablespace must be set</echo>
+    <fail> </fail>
+  </target>
+  
+  <target name="check.curam.environment.bindings.location.isset" if="curam.environment.bindings.location.isset">
+	<!-- if it is set, then call to ensure it is a valid location -->
+    <antcall target="check.curam.environment.bindings.location.valid"/>
+  </target>
+  
+  <target name="check.curam.environment.bindings.location.valid" unless="curam.environment.bindings.location.available">
+    <echo>The file path specified for (curam.environment.bindings.location) property in ${prop.file} does not exist and will therefore not be used. </echo>
+  </target>
+
+  <!--  *******************************************  -->
+  <!--  ***  C H E C K   F I L E   E X I S T S  ***  -->
+  <!--  *******************************************  -->
+  <target name="check.prop.file" unless="prop.file.available">
+    <echo>A ${prop.file} file needs to be placed in your properties directory</echo>
+    <fail> </fail>
+  </target>
+
+  <!--  **************************************************************************  -->
+  <!--  ***  Test a named property to check its non-blank, and fail otherwise  ***  -->
+  <!--  ***  Parameters: prm.property - name of property to be tested          ***  -->
+  <!--  **************************************************************************  -->
+  <target name="check.prop"
+    unless="${prm.prop}">
+    <echo>Property ${prm.var} is not defined. Use ant -D${prm.var}=&lt;value&gt;</echo>
+    <echo>Alternatively set ${prm.var} as an environment variable</echo>
+    <antcall target="ini.setup.fail" inheritAll="false"/>
+  </target>
+
+  <!-- Fail because of bad configuration settings -->
+  <target name="ini.setup.fail">
+    <fail message="
+There is a problem with your settings. Maybe you are invoking
+this build procedure incorrectly ?
+" />
+  </target>
+
+  <!--  ****************************************************************  -->
+  <!--  ***  Check whether certain runtime properties have been set. ***  -->
+  <!--  ****************************************************************  -->
+  <!-- Print message if application.name property has not been set. -->
+  <target name="check.application.name" unless="application.name">
+    <fail message="The property 'application.name' must be set." />
+  </target>
+
+  <!-- Print message if server.name property has not been set. -->
+  <target name="check.server.name" unless="server.name">
+    <fail message="The property 'server.name' must be set." />
+  </target>
+
+  <!-- Print message if ear.file property has not been set. -->
+  <target name="check.ear.file" unless="ear.file">
+    <fail message="The property 'ear.file' must be set." />
+  </target>
+
+  <!--  ***************************************  -->
+  <!--  ***  Display a timestamped message  ***  -->
+  <!--  ***************************************  -->
+  <target name="dispmsg">
+  <!-- Display a timestamped message
+       Parameters: prm.msg - the message to be displayed
+  -->
+    <tstamp><format property="tim.now" pattern="${prp.time.format}"/></tstamp>
+    <echo message="${tim.now} ${prm.msg}"/>
+
+  </target>
+
+  <!--  *********************************************  -->
+  <!--  ***  Create required project directories  ***  -->
+  <!--  *********************************************  -->
+  <target name="ini.directories">
+
+    <mkdir dir="${dir.base.components}" />
+    <mkdir dir="${dir.bld}" />
+    <mkdir dir="${dir.bld.jar}" />
+    <mkdir dir="${dir.bld.svr}" />
+    <mkdir dir="${dir.bld.svr.gen}" />
+    <mkdir dir="${dir.bld.svr.components}" />
+    <mkdir dir="${dir.bld.svr.web}" />
+    <mkdir dir="${dir.bld.svr.cls}" />
+
+  </target>
+
+  <!--  ***********************************  -->
+  <!--  ***  C H E C K   D B   T Y P E  ***  -->
+  <!--  ***********************************  -->
+  <target name="check.db.type" >
+
+    <condition property="usingdb2">
+       <contains string="${curam.db.type}" substring="db2" casesensitive="No"/>
+    </condition>
+
+    <condition property="usingoracle">
+       <contains string="${curam.db.type}" substring="ora" casesensitive="No"/>
+    </condition>
+
+    <condition property="usingzos">
+       <contains string="${curam.db.type}" substring="zos" casesensitive="No"/>
+    </condition>
+
+    <condition property="usingh2">
+       <contains string="${curam.db.type}" substring="h2" casesensitive="No"/>
+    </condition>
+
+    <condition property="prop.file.inside.available">
+      <and>
+        <isset property="curam.db.username"/>
+        <isset property="curam.db.password"/>
+        <or>
+          <isset property="curam.db.name"/>
+          <isset property="curam.db.oracle.servicename"/>
+        </or>
+        <or>
+          <equals arg1="${curam.db.type}" arg2="h2" casesensitive="false"/>
+          <and>
+            <not><equals arg1="${curam.db.type}" arg2="h2" casesensitive="false"/></not>
+            <isset property="curam.db.servername"></isset>
+            <isset property="curam.db.serverport"></isset>
+          </and>
+        </or>
+        <or>
+          <not><equals arg1="${curam.db.type}" arg2="zos" casesensitive="false"/></not>
+          <and>
+            <equals arg1="${curam.db.type}" arg2="zos" casesensitive="false"/>
+            <isset property="curam.db.zos.dbname"></isset>
+            <isset property="curam.db.zos.32ktablespace"></isset>
+          </and>
+        </or>
+      </and>
+    </condition>
+
+    <condition property="servicename.available">
+       <isset property="curam.db.oracle.servicename"/>
+    </condition>
+
+    <antcall target="check.props.inside.file"/>
+
+    <condition property="curam.environment.bindings.location.available">
+      <available file="${curam.environment.bindings.location}" type="dir"/>
+    </condition>
+    <condition property="curam.environment.bindings.location.isset">
+      <isset property="curam.environment.bindings.location"/>
+    </condition>
+    <antcall target="check.curam.environment.bindings.location.isset"/>
+
+  </target>
+
+  <!--  *****************************  -->
+  <!--  ***  R U N  D D L  O R A  ***  -->
+  <!--  *****************************  -->
+
+  <target name="run.database.ora" if="usingoracle" depends="ora.use.servicename">
+
+    <property name="db.driver"        value="oracle.jdbc.OracleDriver"/>
+    <property name="db.url"           value="jdbc:oracle:thin:@${curam.db.servername}:${curam.db.serverport}:${curam.db.name}"/>
+    <property name="transaction"      value="ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD-HH24.MI.SS';"/>
+    <property name="sqlj.classpath"   value="${jar.oracle}${path.separator}${jar.oracle.sqlj.trans}${path.separator}${jar.oracle.sqlj.run}"/>
+
+  </target>
+
+  <target name="ora.use.servicename" if="servicename.available">
+     <property name="db.url"          value="jdbc:oracle:thin:/@//${curam.db.servername}:${curam.db.serverport}/${curam.db.oracle.servicename}"/>
+  </target>
+
+  <!--  *****************************  -->
+  <!--  ***  R U N  D D L  D B 2  ***  -->
+  <!--  *****************************  -->
+
+  <target name="run.database.db2" if="usingdb2">
+
+    <property name="db.driver"   value="com.ibm.db2.jcc.DB2Driver"/>
+    <property name="db.url"      value="jdbc:db2://${curam.db.servername}:${curam.db.serverport}/${curam.db.name}"/>
+    <property name="transaction" value=""/>
+    <property name="sqlj.classpath" value="${jar.db2}${path.separator}${jar.db2.sqlj}"/>
+
+  </target>
+
+  <!--  *****************************  -->
+  <!--  ***  R U N  D D L  3 9 0  ***  -->
+  <!--  *****************************  -->
+
+  <target name="run.database.zos" if="usingzos">
+
+    <property name="db.driver"   value="com.ibm.db2.jcc.DB2Driver"/>
+    <property name="db.url"      value="jdbc:db2://${curam.db.servername}:${curam.db.serverport}/${curam.db.name}"/>
+    <property name="transaction" value="set CURRENT RULES = 'STD'"/>
+    <property name="sqlj.classpath" value="${jar.db2}${path.separator}${jar.db2.sqlj}"/>
+
+  </target>
+
+  <!--  ***********************************  -->
+  <!--  ***  R U N  D D L  H 2          ***  -->
+  <!--  ***********************************  -->
+
+  <target name="run.database.h2" if="usingh2" depends="get.decrypted.db.password">
+
+    <property name="db.driver"   value="org.h2.Driver"/>
+    <property name="transaction" value=""/>
+    <property name="sqlj.classpath" value=""/>
+
+    <condition property="db.h2.directory"          value="file:${curam.db.h2.directory}/">
+     <and>
+      <isset property="curam.db.h2.directory"/>
+      <not><equals arg1="${curam.db.h2.directory}" arg2="" casesensitive="false" /></not>
+     </and>
+    </condition>
+    <property name="db.h2.directory" value="~/"/>
+
+    <condition property="db.url"          value="jdbc:h2:${db.h2.directory}${curam.db.name};schema=${curam.db.username};FILE_LOCK=SOCKET">
+       <equals arg1="${curam.db.h2.mode}" arg2="embedded" casesensitive="false" />
+    </condition>
+    <condition property="db.url.noschema" value="jdbc:h2:${db.h2.directory}${curam.db.name};FILE_LOCK=SOCKET">
+       <equals arg1="${curam.db.h2.mode}" arg2="embedded" casesensitive="false" />
+    </condition>
+
+    <property name="db.url"           value="jdbc:h2:tcp://localhost/${db.h2.directory}${curam.db.name};schema=${curam.db.username};FILE_LOCK=SOCKET"/>
+    <property name="db.url.noschema"  value="jdbc:h2:tcp://localhost/${db.h2.directory}${curam.db.name};FILE_LOCK=SOCKET"/>
+
+    <sql
+        driver="${db.driver}"
+        url="${db.url.noschema}"
+        userid="${curam.db.username}"
+        password="${decrypted.db.password}"
+        autocommit="false">
+        <transaction>
+           CREATE SCHEMA IF NOT EXISTS ${curam.db.username} AUTHORIZATION ${curam.db.username}
+        </transaction>
+        <classpath>
+           <path refid="database.common.classpath"/>
+        </classpath>
+    </sql>
+
+  </target>
+
+  <!--  *****************************  -->
+  <!--  ***  GET.LOWERCASE.MODEL  ***  -->
+  <!--  *****************************  -->
+
+  <target name="get.lowercase.model">
+
+    <!-- Compute the lowercase project name, and the project model and xml file names -->
+    <taskdef name="antstring" classname="curam.util.tools.AntStrings"
+      classpath="${jar.coreinf}:${jar.tools}"/>
+    <antstring to="prp.projname.lower" from="${SERVER_MODEL_NAME}" type="lowercase" />
+
+  </target>
+
+  <!--  **************************************  -->
+  <!--  ***  GET.REPLACED.PROJECT.PACKAGE  ***  -->
+  <!--  **************************************  -->
+
+  <target name="get.replaced.project.package">
+
+    <!-- Compute the lowercase project name, and the project model and xml file names -->
+    <taskdef name="antstring" classname="curam.util.tools.AntStrings"
+      classpath="${jar.coreinf}:${jar.tools}"/>
+    <antstring to="prog.package.replace"
+          oldchar="/"
+          newchar="."
+          from="${project.package}"
+          type="replace" />
+
+  </target>
+
+  <!--  *****************************************  -->
+  <!--  ***  GET.DECRYPTED.DB.PASSWORD  ***  -->
+  <!--  *****************************************  -->
+
+  <target name="get.decrypted.db.password">
+
+    <taskdef name="decrypt" classname="curam.util.tools.AntStrings"
+      classpath="${crypto.prop.file.location}:${jar.coreinf}:${jar.tools}"/>
+    <decrypt to="decrypted.db.password" from="${curam.db.password}" type="decrypt" />
+
+  </target>
+
+   <!--  *****************************************  -->
+   <!--  ***  GET.DECRYPTED.APPSERVER.PASSWORD  ***  -->
+   <!--  *****************************************  -->
+
+  <target name="get.decrypted.appserver.password">
+
+    <taskdef name="checkEncrypt" classname="curam.util.tools.AntStrings"
+              classpath="${crypto.prop.file.location}:${jar.coreinf}:${jar.tools}"/>
+    <!--checkEncrypt to="encrypted.appserver.password" from="${security.password}" type="checkEncrypt" /-->
+
+    <taskdef name="decrypt" classname="curam.util.tools.AntStrings"
+      classpath="${crypto.prop.file.location}:${jar.coreinf}:${jar.tools}"/>
+    <decrypt to="decrypted.appserver.password" from="${security.password}" type="decrypt" />
+
+  </target>
+
+
+  <!--  ************************  -->
+  <!--  ***  GET.RUNNING.OS  ***  -->
+  <!--  ************************  -->
+
+  <target name="get.running.os">
+
+    <!-- Check to see if running on Windows -->
+    <condition property="os.windows">
+      <os family="windows"/>
+    </condition>
+
+    <!-- Check to see if running on Unix -->
+    <condition property="os.unix">
+      <os family="unix"/>
+    </condition>
+
+    <!-- Check to see if running on z/OS -->
+    <condition property="os.zos">
+      <os family="z/os"/>
+    </condition>
+
+  </target>
+
+  <!--  *****************************************************  -->
+  <!--  *** LOADS SOME CONTENTS FROM BOOTSTRAP.PROPERTIES *** -->
+  <!--  *****************************************************  -->
+  <target name="import.bootstrap.properties">
+
+      <echo message="importing bootstrap from...'${prop.file}', writing to '${output.file}'." />
+
+      <!-- Load bootstrap properties, filtering some entries out. -->
+      <loadfile property="all.properties"
+                failonerror="true"
+                srcFile="${prop.file}">
+        <filterchain>
+         <tokenfilter>
+           <replaceregex pattern="#(.*)" replace=""/>
+           <replaceregex pattern="(.*)curam.db.username(.*)" replace=""/>
+           <replaceregex pattern="(.*)curam.db.password(.*)" replace=""/>
+           <replaceregex pattern="(.*)curam.db.servername(.*)" replace=""/>
+           <replaceregex pattern="(.*)curam.db.serverport(.*)" replace=""/>
+           <replaceregex pattern="(.*)curam.db.name(.*)" replace=""/>
+           <replaceregex pattern="(.*)curam.db.type(.*)" replace=""/>
+           <replaceregex pattern="(.*)curam.rmi.java.naming.factory.initial(.*)" replace=""/>
+           <replaceregex pattern="(.*)curam.rmi.java.naming.provider.url(.*)" replace=""/>
+           <replaceregex pattern="(.*)curam.db.java.naming.provider.url(.*)" replace=""/>
+           <replaceregex pattern="(.*)curam.db.java.naming.factory.initial(.*)" replace=""/>
+           <replaceregex pattern="(.*)curam.db.datasource.jndi(.*)" replace=""/>
+           <replaceregex pattern="(.*)curam.environment.as.vendor(.*)" replace=""/>
+           <replaceregex pattern="(.*)curam.environment.tnameserv.port(.*)" replace=""/>
+           <replaceregex pattern="(.*)curam.environment.bindings.location(.*)" replace=""/>
+          </tokenfilter>
+        </filterchain>
+      </loadfile>
+
+
+      <echo file="${output.file}">
+${extra.arg.1}
+${extra.arg.2}
+${all.properties}
+      </echo>
+
+
+  </target>
+
+  <target name="police.access.restrictions" description="Creates a report of Access Restriction voilations.">
+
+    <path id="accessleveltool.cp">
+      <pathelement path="${jar.javassist}"/>
+      <path refid="j.cp"/>
+    </path>
+
+    <path id="search.cp">
+      <fileset dir="${dir.base.components}">
+        <include name="*/lib/**/*.jar"/>
+      </fileset>
+    </path>
+    <property name="search.classpath" refid="search.cp"/>
+
+    <java
+      classname="curam.util.tools.accesslevel.AccessLevelViolationTask"
+      classpathref="accessleveltool.cp"
+      fork="${java.fork}"
+      failonerror="${java.failonerror}"
+      maxmemory="${java.maxmemory}"
+      taskname="accesslevelviolationtask"
+    >
+      <arg value="${jar.implementation}" />
+      <arg value="${dir.bld}/accesslevelreport.xml" />
+      <arg value="${search.classpath}" />
+    </java>
+
+    <xslt in="${dir.bld}/accesslevelreport.xml" out="${dir.bld}/accesslevelreport.html"
+      style="${dir.sde.lib}/accesslevel.xsl"/>
+    <echo message="The access level report can be found at ${dir.bld}/accesslevelreport.html"/>
+
+  </target>
+  
+  <target name="create.class.checksum" if="${curam.jar.checksum}">
+    <property name="fil.jar.checksum" value="ClassChecksums.txt"/>
+    <!-- Set Property to true if fileset is not empty -->
+    <pathconvert refid="${checksumpath}" property="checksum.fileset.notempty" setonempty="false"/>
+    <!-- Call do.checksum and pass params in again -->
+    <antcall target="do.checksum">
+      <reference refid="${checksumpath}" />
+    </antcall>
+  </target>
+  
+  <target name="do.checksum" if="checksum.fileset.notempty">
+    <checksum algorithm="SHA-512" todir="${checksumbasedir}/sha" fileext=".sha512" pattern="{2}={0}">
+      <path refid="${checksumpath}" />
+    </checksum>
+    <concat destfile="${checksumbasedir}/${fil.jar.checksum}">
+        <fileset dir="${checksumbasedir}/sha" includes="**/*.class.sha512"/>
+    </concat>
+    <available file="${checksumbasedir}/${fil.jar.checksum}" property="checksum.exists"/>
+    <antcall target="update.checksum.file"/>
+  	<delete dir="${checksumbasedir}/sha" />
+  </target>
+
+  <target name="update.checksum.file" if="checksum.exists">
+    <replace file="${checksumbasedir}/${fil.jar.checksum}" token="../" value=""/>
+  </target> 
+
+</project>

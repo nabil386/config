@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--  BEGIN CR00168004 , AK  -->
+<workflow-process
+  category="PC1"
+  id="105"
+  language-version="1.0"
+  process-version="1"
+  released="true"
+>
+  <!-- END CR00168004 -->
+  <name>USERSSUPERVISORNOTIFICATION</name>
+  <!--BEGIN, CR00361282, CL -->
+  <process-display-name>
+    <localized-text>
+      <locale language="en">Users Supervisor Notification</locale>
+    </localized-text>
+  </process-display-name>
+  <!--END, CR00361282 -->
+  <!-- BEGIN, CR00306684, AKr -->
+  <description>
+    <localized-text>
+      <locale language="en">
+        Sends a notification to a specified users supervisor(s).
+         Note that this workflow process is not currently being initiated by any
+         OOTB processing.
+      </locale>
+    </localized-text>
+  </description>
+  <!-- END, CR00306684 -->
+  <enactment-mappings>
+    <mapping>
+      <source-attribute
+        name="userName"
+        struct-name="curam.core.sl.impl.NotificationWDOStruct"
+      />
+      <target-attribute
+        name="username"
+        wdo-name="NotificationWDOStruct"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="subject"
+        struct-name="curam.core.sl.impl.NotificationWDOStruct"
+      />
+      <target-attribute
+        name="subject"
+        wdo-name="NotificationWDOStruct"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="body"
+        struct-name="curam.core.sl.impl.NotificationWDOStruct"
+      />
+      <target-attribute
+        name="body"
+        wdo-name="NotificationWDOStruct"
+      />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo>
+      <wdo-name>NotificationWDOStruct</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale
+            country=""
+            language="en"
+          >NotificationWDOStruct</locale>
+        </localized-text>
+      </display-name>
+      <description>
+        <localized-text>
+          <locale
+            country=""
+            language="en"
+          >WDO to hold notification data</locale>
+        </localized-text>
+      </description>
+      <attributes>
+        <attribute>
+          <attribute-name>username</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale
+                country=""
+                language="en"
+              >username</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+        </attribute>
+        <attribute>
+          <attribute-name>subject</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale
+                country=""
+                language="en"
+              >subject</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+        </attribute>
+        <attribute>
+          <attribute-name>body</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale
+                country=""
+                language="en"
+              >body</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="30465">
+      <name>
+        <localized-text>
+          <locale
+            country=""
+            language="en"
+          >StartProcessActivity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale
+            country=""
+            language="en"
+          >The start process activity</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="30468"/>
+      </split>
+    </start-process-activity>
+    <end-process-activity id="30466">
+      <name>
+        <localized-text>
+          <locale
+            country=""
+            language="en"
+          >EndProcessActivity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale
+            country=""
+            language="en"
+          >The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+    </end-process-activity>
+    <route-activity
+      category="AC1"
+      id="30467"
+    >
+      <name>
+        <localized-text>
+          <locale
+            country=""
+            language="en"
+          >Notification</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale
+            country=""
+            language="en"
+          >Dummy activity to send the Notification</locale>
+        </localized-text>
+      </description>
+      <notification delivery-mechanism="DM1">
+        <subject>
+          <message>
+            <message-text>
+              <localized-text>
+                <locale
+                  country=""
+                  language="en"
+                >%1s</locale>
+              </localized-text>
+            </message-text>
+            <message-parameters>
+              <wdo-attribute
+                name="subject"
+                wdo-name="NotificationWDOStruct"
+              />
+            </message-parameters>
+          </message>
+        </subject>
+        <body>
+          <message>
+            <message-text>
+              <localized-text>
+                <locale
+                  country=""
+                  language="en"
+                >%1s</locale>
+              </localized-text>
+            </message-text>
+            <message-parameters>
+              <wdo-attribute
+                name="body"
+                wdo-name="NotificationWDOStruct"
+              />
+            </message-parameters>
+          </message>
+        </body>
+        <allocation-strategy
+          identifier="curam.core.sl.intf.NotificationAllocationFunction.usersSupervisorStrategy"
+          type="function"
+        >
+          <function-mappings>
+            <formal-parameters>
+              <formal-parameter index="0">
+                <base-type type="STRING">
+                  <wdo-attribute
+                    name="username"
+                    wdo-name="NotificationWDOStruct"
+                  />
+                </base-type>
+              </formal-parameter>
+            </formal-parameters>
+          </function-mappings>
+        </allocation-strategy>
+        <actions>
+          <action
+            page-id="Organization_userHome"
+            principal-action="false"
+          >
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale
+                    country=""
+                    language="en"
+                  >Users Home Page</locale>
+                </localized-text>
+              </message-text>
+            </message>
+          </action>
+        </actions>
+      </notification>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="30469"/>
+      </split>
+    </route-activity>
+  </activities>
+  <transitions>
+    <transition
+      from-activity-idref="30465"
+      id="30468"
+      to-activity-idref="30467"
+    />
+    <transition
+      from-activity-idref="30467"
+      id="30469"
+      to-activity-idref="30466"
+    />
+  </transitions>
+</workflow-process>

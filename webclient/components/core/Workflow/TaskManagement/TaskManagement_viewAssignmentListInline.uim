@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Displays all the assigments of a task.                                 -->
+<PAGE
+  PAGE_ID="TaskManagement_viewAssignmentListInline"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewTask"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="TaskManagement_taskHomeInline"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="taskKey$taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.TaskHistory"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="TaskManagement_viewHistoryTextInline">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="taskKey$taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.AssignmentList"
+      STYLE="in-page-current-link"
+    >
+      <LINK PAGE_ID="TaskManagement_viewAssignmentListInline">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="taskKey$taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.GraphicalView"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="TaskManagement_visualiseProcessInstanceInline">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="taskKey$taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="taskID"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="TaskManagement"
+    NAME="DISPLAY"
+    OPERATION="viewAssignmentsForTask"
+  />
+  <PAGE_PARAMETER NAME="taskID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="taskID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="taskKey$taskID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+    <FIELD
+      LABEL="Field.Title.AssignedTo"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$assignedTo"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.AssigneeType"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$assigneeType"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

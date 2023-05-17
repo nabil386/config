@@ -1,0 +1,883 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2022. All rights reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.  
+-->
+
+<!-- Incident Contact Log search page. -->
+<PAGE
+  PAGE_ID="IncidentContactLog_searchContactLogLucene"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionControlID"
+    CLASS="Incidents"
+    NAME="ACTION"
+    OPERATION="searchContactLogs"
+    PHASE="ACTION"
+  />
+
+  <!-- Checks if the subject field is enabled for contact logs -->
+  <!-- The result of this check is used to control conditional -->
+  <!-- lists within this page								   -->
+  <SERVER_INTERFACE
+    CLASS="Case"
+    NAME="DISPLAY_SUBJECT"
+    OPERATION="checkContactLogSubjectEnabled"
+    PHASE="DISPLAY"
+  />
+
+  <SERVER_INTERFACE
+    CLASS="Incidents"
+    NAME="DISPLAY"
+    OPERATION="listIncidentContactLogAttendee"
+    PHASE="DISPLAY"
+  />
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="dtls$actionControlID"
+    CLASS="Incidents"
+    NAME="PREVIEW"
+    OPERATION="previewIncidentContactLogDetails"
+    PHASE="ACTION"
+  />
+
+  <PAGE_PARAMETER NAME="incidentID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$linkID"
+    />
+  </CONNECT>
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="incidentID"
+    />
+  </CONNECT>
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentID"
+    />
+    <TARGET
+      NAME="PREVIEW"
+      PROPERTY="incidentID"
+    />
+  </CONNECT>
+
+  <!-- Search by fields -->
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    BOTTOM="FALSE"
+  >
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="IncidentContactLogWizard_createContact"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+    <ACTION_CONTROL
+      ACTION_ID="ACID2001"
+      IMAGE="PreviewButton"
+      LABEL="ActionControl.Label.Preview"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="IncidentContactLog_previewContactLogsView"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PREVIEW"
+            PROPERTY="multiSelectStr"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="multiSelectStr"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+  <!-- If subject is enabled, the box for entering the search  -->
+  <!-- text is entitled Subject and Narrative				   -->						
+  <CLUSTER
+    TITLE="Cluster.Title.SearchCriteria"
+  >  
+  <CLUSTER>
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY_SUBJECT"
+        PROPERTY="result$contactLogSubjectEnabledInd"
+      />
+    </CONDITION>
+    <FIELD
+      LABEL="Field.Label.Subject"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$key$key$searchText"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  
+  <CLUSTER>
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY_SUBJECT"
+        PROPERTY="result$contactLogSubjectEnabledInd"
+      />
+    </CONDITION>
+    
+    <FIELD
+      LABEL="Field.Label.Narrative"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$key$key$searchText"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+    
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+  >
+    <FIELD
+      LABEL="Field.Label.ContactParticipant"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$attendeeList$dtlsList$contactLogAttendeeID"
+          NAME="DISPLAY"
+          PROPERTY="result$attendeeList$dtlsList$attendeeName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$contactLogAttendeeID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Type"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$contactLogType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.StartDateTime"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$startDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Purpose"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$purpose"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Method"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$method"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Location"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$location"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EndDateTime"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$endDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+   </CLUSTER>
+  </CLUSTER>
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      BOTTOM="FALSE"
+    >
+      <ACTION_CONTROL
+        ACTION_ID="ACID2000"
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="IncidentContactLog_searchContactLogLucene">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="incidentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="incidentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+  <!-- The List for the Search Results when the Subject field is enabled -->
+  <!-- The first column in this instance shows the Subject and Narrative -->
+  <!-- with the matches highlighted                                      -->
+  <LIST TITLE="List.Title.SearchResults">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY_SUBJECT"
+        PROPERTY="result$contactLogSubjectEnabledInd"
+      />
+    </CONDITION>
+    <CONTAINER>
+      <!-- BEGIN, CR00407986, AC-->
+      <WIDGET
+        HAS_CONFIRM_PAGE="true"
+        TYPE="MULTISELECT"
+      >
+        <!-- END, CR00407986-->
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="contactLogID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="PREVIEW"
+              PROPERTY="multiSelectStr"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="IncidentContactLog_modifyContactLogFromList1"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="contactLogID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contactLogID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddParticipant">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="IncidentContactLog_addContactLogContact"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="incidentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="incidentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="contactLogID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contactLogID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddAttachment">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CaseContactLog_addAttachment"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="contactLogID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="linkID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+      <ACTION_CONTROL
+        IMAGE="DeleteButton"
+        LABEL="ActionControl.Label.Delete"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="IncidentContactLog_cancelContactLog1"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="incidentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="incidentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="contactLogID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contactLogID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+	<FIELD
+      LABEL="Field.Label.Subject"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtlsList$dtls$subjectRichText"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- The following field gets mapped and displayed as an icon-->
+    <FIELD WIDTH="5" >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="narrativeEditStatusOpt"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="12"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtlsList$dtls$contactLogType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Date"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtlsList$dtls$dateOpt"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Purpose"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtlsList$dtls$purpose"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Location"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtlsList$dtls$location"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Method"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtlsList$dtls$method"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="IncidentContactLog_viewNarrativeLucene">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="contactLogID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contactLogID"
+          />
+        </CONNECT>
+         <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="key$key$key$searchText"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="narrativeSearchText"
+          />
+        </CONNECT>
+        
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$dtlsList$dtls$resultInNarrativeIndOpt"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="resultInNarrativeInd"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+  
+  <!-- The List for the Search Results when the Subject field is disabled  -->
+  <!-- The Narrative is shown as the final column in the list              -->
+  <!-- with the matches highlighted                                        -->
+  <LIST TITLE="List.Title.SearchResults">
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY_SUBJECT"
+        PROPERTY="result$contactLogSubjectEnabledInd"
+      />
+    </CONDITION>
+    <CONTAINER>
+      <WIDGET
+        HAS_CONFIRM_PAGE="true"
+        TYPE="MULTISELECT"
+      >
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="contactLogID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="PREVIEW"
+              PROPERTY="multiSelectStr"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="IncidentContactLog_modifyContactLogFromList1"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="contactLogID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contactLogID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddParticipant">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="IncidentContactLog_addContactLogContact"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="incidentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="incidentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="contactLogID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contactLogID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddAttachment">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CaseContactLog_addAttachment"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="contactLogID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="linkID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+      <ACTION_CONTROL
+        IMAGE="DeleteButton"
+        LABEL="ActionControl.Label.Delete"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="IncidentContactLog_cancelContactLog1"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="incidentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="incidentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="contactLogID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contactLogID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtlsList$dtls$contactLogType"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- The following field gets mapped and displayed as an icon-->
+    <FIELD WIDTH="5" >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="narrativeEditStatusOpt"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Date"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtlsList$dtls$dateOpt"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Purpose"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtlsList$dtls$purpose"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Location"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtlsList$dtls$location"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Method"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtlsList$dtls$method"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD
+      LABEL="Field.Label.Narrative"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtlsList$dtls$subjectRichText"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="IncidentContactLog_viewNarrativeLucene">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="contactLogID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contactLogID"
+          />
+        </CONNECT>
+         <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="key$key$key$searchText"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="narrativeSearchText"
+          />
+        </CONNECT>
+        
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$dtlsList$dtls$resultInNarrativeIndOpt"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="resultInNarrativeInd"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+
+</PAGE>

@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to enter search criteria and                 -->
+<!-- search for registered users with two possible roleNames                -->
+<!-- AUDITCOORDINATOR and AUDITOR.                                          -->
+<PAGE
+  PAGE_ID="CaseAudit_createAuditors"
+  WINDOW_OPTIONS="width=875"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00266672, GD -->
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="details$actionIDProperty"
+    CLASS="Auditor"
+    NAME="ACTION"
+    OPERATION="searchExistingAuditorsOrCreateNewAuditor"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00266672 -->
+
+
+  <PAGE_PARAMETER NAME="auditPlanID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="auditPlanID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="auditPlanID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+
+
+    <FIELD LABEL="Field.Label.FirstName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="criteria$firstname"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.OrganisationUnit">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="criteria$organisationUnitID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.LastName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="criteria$surname"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+
+
+      <ACTION_CONTROL
+        ACTION_ID="SEARCH"
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="CaseAudit_createAuditors"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="auditPlanID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="auditPlanID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+
+
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="5"
+    >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$username"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="selectedUsers"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Title.FirstName"
+      WIDTH="24"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$firstname"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.LastName"
+      WIDTH="24"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$surname"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Position"
+      WIDTH="24"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$positionName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.OrganisationUnit"
+      WIDTH="23"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$organisationUnitName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      ACTION_ID="SELECTANDADD"
+      LABEL="ActionControl.Label.SaveAndAddToAuditTeam"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="CaseAudit_createAuditorsAndAddToTeam"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="selectedUsers"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="selectedUsers"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ACTION_ID="SELECT"
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+  </ACTION_SET>
+
+
+</PAGE>

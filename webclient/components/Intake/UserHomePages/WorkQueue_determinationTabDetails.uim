@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                                        -->
+<!-- All rights reserved.                                                                                          -->
+<!-- This software is the confidential and proprietary information of Curam         -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose                -->
+<!-- such Confidential Information and shall use it only in accordance with          -->
+<!-- the terms of the license agreement you entered into with Curam                 -->
+<!-- Software.                                                                                                        -->
+<PAGE
+  PAGE_ID="WorkQueue_determinationTabDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="typeAction"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="WorkQueueSearch"
+    NAME="DISPLAY"
+    OPERATION="searchWorkQueueForEligibilityWorker"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="IntakeApplicationSearch"
+    NAME="DISPLAYDEADLINE"
+    OPERATION="listProcessingDeadLine"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="WorkQueueSearch"
+    NAME="ACTION"
+    OPERATION="searchWorkQueueForEligibilityWorker"
+    PHASE="ACTION"
+  />
+
+
+  <CLUSTER
+    NUM_COLS="4"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <CLUSTER TITLE="Container.Label.ProcessingDeadline">
+      <FIELD HEIGHT="5">
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="result$dtls$processingDeadLineCode"
+            NAME="DISPLAYDEADLINE"
+            PROPERTY="result$dtls$description"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$processDeadlineType"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="LEFT"
+      BOTTOM="false"
+    >
+      <ACTION_CONTROL
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"> </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <JSP_SCRIPTLET> if (request.getParameter("typeAction")!=null) { </JSP_SCRIPTLET>
+  <INCLUDE FILE_NAME="WorkQueue_listResultsView.vim"/>
+  <JSP_SCRIPTLET> } else { </JSP_SCRIPTLET>
+  <INCLUDE FILE_NAME="WorkQueue_listResultsActionView.vim"/>
+  <JSP_SCRIPTLET> } </JSP_SCRIPTLET>
+
+
+</PAGE>

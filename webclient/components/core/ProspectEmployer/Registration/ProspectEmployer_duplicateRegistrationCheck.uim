@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to check if the employer or prospect employer-->
+<!-- has already been registered. -->
+<!-- BEGIN, CR00232757, GD -->
+<?curam-deprecated Since Curam 6.0, replaced by AddProspectEmployerWizard_duplicateCheck.uim?>
+<!-- END, CR00232757 -->
+<PAGE
+  PAGE_ID="ProspectEmployer_duplicateRegistrationCheck"
+  WINDOW_OPTIONS="width=975"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="relatedConcernID"/>
+
+
+  <PAGE_TITLE DESCRIPTION="PageTitle.Description">
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProspectEmployer"
+    NAME="ACTION"
+    OPERATION="searchEmployersAndProspectEmployers"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL
+      IMAGE="ContinueButton"
+      LABEL="ActionControl.Label.ContinueRegistration"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        OPEN_MODAL="false"
+        PAGE_ID="ProspectEmployer_register"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="relatedConcernID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="relatedConcernID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="39"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="prospectEmployerSearchKey$referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.TradingName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="prospectEmployerSearchKey$tradingName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.AddressLineOne">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="prospectEmployerSearchKey$businessAddress"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.RegisteredName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="prospectEmployerSearchKey$registeredName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.City">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="prospectEmployerSearchKey$businessCity"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="LEFT"
+      BOTTOM="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="ProspectEmployer_duplicateRegistrationCheck"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <!-- List 2 to display Employer records-->
+  <LIST>
+    <TITLE>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="List.Title.Employers"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$employerIndicator"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.Label.SearchResultsClosingParanthesis"
+        />
+      </CONNECT>
+    </TITLE>
+
+
+    <CONTAINER
+      LABEL="Container.Label.AlternativeRegistration"
+      WIDTH="9"
+    >
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="eDetails$dtls$altRegistrationIndicator"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="Employer_home">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="eDetails$dtls$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </CONTAINER>
+
+
+    <CONTAINER
+      LABEL="Container.Label.ReferenceNumber"
+      WIDTH="17"
+    >
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="eDetails$dtls$referenceNumber"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="ProspectEmployer_resolveDuplicateRegistrationCheck">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="eDetails$dtls$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="eDetails$dtls$concernRoleType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleType"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="eDetails$dtls$altRegistrationIndicator"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="altRegistrationIndicator"
+            />
+          </CONNECT>
+
+
+        </LINK>
+      </FIELD>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.TradingName"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="eDetails$dtls$tradingName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.RegisteredName"
+      WIDTH="18"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="eDetails$dtls$registeredName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AddressLineOne"
+      WIDTH="18"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="eDetails$dtls$businessAddress"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.City"
+      WIDTH="18"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="eDetails$dtls$businessCity"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <!-- List 2 to display Prospect Employers records-->
+  <LIST>
+    <TITLE>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="List.Title.ProspectEmployers"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$prospectEmployerIndicator"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.Label.SearchResultsClosingParanthesis"
+        />
+      </CONNECT>
+    </TITLE>
+
+
+    <CONTAINER
+      LABEL="Container.Label.AlternativeRegistration"
+      WIDTH="9"
+    >
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="peDetails$dtls$altRegistrationIndicator"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="Employer_home">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="peDetails$dtls$employerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </CONTAINER>
+
+
+    <CONTAINER
+      LABEL="Container.Label.ReferenceNumber"
+      WIDTH="17"
+    >
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="peDetails$dtls$referenceNumber"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="ProspectEmployer_resolveDuplicateRegistrationCheck">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="peDetails$dtls$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="peDetails$dtls$concernRoleType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleType"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="peDetails$dtls$altRegistrationIndicator"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="altRegistrationIndicator"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.TradingName"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="peDetails$dtls$tradingName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.RegisteredName"
+      WIDTH="18"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="peDetails$dtls$registeredName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AddressLineOne"
+      WIDTH="18"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="peDetails$dtls$businessAddress"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.City"
+      WIDTH="18"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="peDetails$dtls$businessCity"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+</PAGE>

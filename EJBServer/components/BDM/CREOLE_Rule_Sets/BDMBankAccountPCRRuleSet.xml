@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<RuleSet
+  name="BDMBankAccountPCRRuleSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+>
+
+
+  <Class
+    extends="AbstractPCR"
+    extendsRuleSet="PCRRuleSet"
+    name="BDMBankAccountPCR"
+  >
+<Annotations>
+  <Label label-id="BDMBankAccountPCR.label.1" name="BDM Bank Account Integrity Rules PCR Rules Class"/>
+</Annotations>
+<Attribute name="caseID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+    <Attribute name="priorityRate">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+
+    <Attribute name="priorityReason">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+
+    <Attribute name="complexityRate">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+
+    <Attribute name="complexityReason">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <null/>
+      </derivation>
+    </Attribute>
+
+    <Attribute name="riskRate">
+		<type>
+			<javaclass name="Number"/>        
+		</type>
+		<derivation>
+			<choose>
+				<type>
+					<javaclass name="Number"/>
+				</type>
+				<when>
+					<condition>
+						<reference attribute="bankAccountNumberUseCountAboveThreshold"/>
+					</condition>
+					<value>
+						<Number value="2"/>
+					</value>
+				</when>
+				<otherwise>
+					<value>
+						<Number value="0"/>
+					</value>
+				</otherwise>
+			</choose>
+		</derivation>
+	</Attribute>
+
+    <Attribute name="riskReason">
+		<type>
+			<javaclass name="curam.creole.value.Message"/>        
+		</type>
+		<derivation>
+			<choose>
+				<type>
+					<javaclass name="curam.creole.value.Message"/>
+				</type>
+				<when>
+					<condition>
+						<reference attribute="bankAccountNumberUseCountAboveThreshold"/>
+					</condition>
+					<value>
+						<XmlMessage>Bank Account number failing first limit</XmlMessage>
+					</value>
+				</when>
+				<otherwise>
+					<value>
+						<XmlMessage>Bank Account number passing first limit</XmlMessage>
+					</value>
+				</otherwise>
+			</choose>
+		</derivation>
+	</Attribute>
+	
+	<Attribute name="bankAccountNumberUseCountAboveThreshold">
+		<Annotations>
+		  <Label label-id="BDMBankAccountPCR.label.2" name="BDM Bank Account Integrity Rules IntegrityRule0001 - Banking"/>
+		</Annotations>
+		<type>
+			<javaclass name="Boolean"/>
+		</type>
+		<derivation>
+			<compare comparison="&gt;=">
+				<reference attribute="bankAccountNumberUseCount"/>
+				<reference attribute="bankAccountCountThresholdLimit"/>							  
+			</compare>
+		</derivation>
+	</Attribute>
+		
+	<Attribute name="bankAccountNumberUseCount">
+		<type>
+			<javaclass name="Number"/>        
+		</type>
+		<derivation>
+			<choose>
+				<type>
+					<javaclass name="Number"/>
+				</type>
+				<when>
+					<condition>
+						<not>
+							<equals>
+								<reference attribute="bankAccountEvidenceRecord"/>									
+								<null />
+							</equals>
+						</not>
+					</condition>
+					<value>
+						<call class="curam.ca.gc.bdm.creole.impl.BDMVerificationStatics" method="getBankAccountNumberUseCount">
+							<type>
+								<javaclass name="Number"/>  
+							</type>
+								<arguments>
+									<reference attribute="accountNumber">
+										<reference attribute="bankAccountEvidenceRecord"/>
+									</reference>
+									<reference attribute="sortCode">
+										<reference attribute="bankAccountEvidenceRecord"/>
+									</reference>
+								</arguments>
+							</call>
+					</value>
+				</when>
+				<otherwise>
+					<value>
+						<Number value="0"/>
+					</value>
+				</otherwise>
+			</choose>
+		</derivation>
+	</Attribute>
+		
+	<Attribute name="bankAccountEvidenceRecord">
+		<type>
+			<ruleclass name="PDCBankAccount" ruleset="PDCBankAccountDataRuleSet"/>        
+		</type>
+		<derivation>
+			<singleitem onMultiple="returnFirst" onEmpty="returnNull">
+				<readall ruleclass="PDCBankAccount" ruleset="PDCBankAccountDataRuleSet">
+					<match retrievedattribute="caseID">
+						<reference attribute="caseID"/>                                
+					</match>
+				</readall>
+			</singleitem>
+		</derivation>
+	</Attribute>
+		
+	<Attribute name="bankAccountCountThresholdLimit">
+		<type>
+			<javaclass name="Number"/>        
+		</type>
+		<derivation>
+			<call class="curam.ca.gc.bdm.creole.impl.BDMVerificationStatics" method="getBankAccountCountLimit">
+			<type>
+				<javaclass name="Number"/>  
+			</type>
+			<arguments/>
+			</call>
+		</derivation>
+	</Attribute>
+  </Class>
+
+</RuleSet>

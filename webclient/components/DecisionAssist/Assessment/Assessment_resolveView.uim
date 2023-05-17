@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This jsp redirects the user to a Latest Questionnaire Page.-->
+<PAGE
+  PAGE_ID="Assessment_resolveView"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <JSP_SCRIPTLET>
+    
+    curam.omega3.request.RequestHandler rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+    
+    String context = request.getContextPath() + "/";
+    context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+    
+    String url = "";
+
+    String CaseID = request.getParameter("caseID");
+    
+    
+   // context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+    
+   // curam.omega3.texthelper.TextHelper th1 = ( curam.omega3.texthelper.TextHelper)pageContext.findAttribute("READ_ASSESSMENT");
+    
+    
+    
+   // String homePageIdentifier = th1.getFieldValue("result$dtls$dtls$homePageIdentifier");  
+      
+       curam.interfaces.ResourcePkg.Resource_getAssessmentConfigurationHomePageIdentifierByAssessmentCaseID_TH
+          th = new curam.interfaces.ResourcePkg.Resource_getAssessmentConfigurationHomePageIdentifierByAssessmentCaseID_TH();
+
+        th.setFieldValue(th.key$dtls$dtls$caseID_idx,CaseID);     
+            
+       th.callServer();
+       
+       String homePageIdentifier = th.getFieldValue(th.result$dtls$dtls$homePageIdentifier_idx);
+       
+     url= context+ homePageIdentifier +"Page.do?caseID="+curam.omega3.request.RequestUtils.escapeURL(CaseID);
+
+    url += "&amp;" + rh.getSystemParameters();
+
+      response.sendRedirect(response.encodeRedirectURL(url));
+     
+    </JSP_SCRIPTLET>
+</PAGE>

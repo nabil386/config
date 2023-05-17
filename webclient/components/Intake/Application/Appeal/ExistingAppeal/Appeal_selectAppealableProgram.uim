@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- It allows the user to select denied program application(s) to be appealed  -->
+<PAGE
+  PAGE_ID="Appeal_selectAppealableProgram"
+  WINDOW_OPTIONS="width=760,height=480"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_PARAMETER NAME="applicationID"/>
+  <PAGE_PARAMETER NAME="appealCaseID"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationAppeal"
+    NAME="DISPLAY"
+    OPERATION="listAppealablePrograms"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationAppeal"
+    NAME="ACTION"
+    OPERATION="formatAppealObjectData"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="applicationID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="appealCaseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="appealCaseID"
+    />
+  </CONNECT>
+
+
+  <LIST
+    
+    TITLE="List.Title.ProgramDenials"
+  >
+    <CONTAINER
+      LABEL="Field.Label.Select"
+      WIDTH="10"
+    >
+
+
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$list$programAppID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+
+
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="selectedPrograms"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD LABEL="Field.Title.Program">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="programType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.RequestDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="requestDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.DisposedOn">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="disposedOn"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <ACTION_SET TOP="false">
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      IMAGE="QuitButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="RIGHT"
+      IMAGE="Continue"
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="Appeal_addObjectsToCase"
+        SAVE_LINK="FALSE"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="appealCaseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="appealCaseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$appealObjString"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="appealObjectsDelimitedList"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

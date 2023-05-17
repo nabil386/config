@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009, 2010 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows a user to view the details of a milestone waiver      -->
+<PAGE
+  PAGE_ID="ICInvestigationDelivery_viewMilestoneWaiverRequest"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="milestoneDeliveryID"/>
+  <PAGE_PARAMETER NAME="description"/>
+  <PAGE_PARAMETER NAME="waiverApprovalRequestID"/>
+  <!-- BEGIN, CR00147167, SAI -->
+  <PAGE_PARAMETER NAME="caseID"/>
+  <!-- END, CR00147167 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainWaiverApprovalRequest"
+    NAME="DISPLAY"
+    OPERATION="readMilestoneWaiverRequests"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="waiverApprovalRequestID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="waiverApprovalRequestID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+  >
+
+
+    <FIELD LABEL="Field.Label.MilestoneName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.OriginalExpectedStartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="originalExpStartDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.RequestedBy">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="requestedByUserFullName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="requestedByUser"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.OriginalExpectedEndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="originalExpEndDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.RequestComments"
+  >
+    <FIELD HEIGHT="4">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="requestComments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="isWaiverApproved"
+      />
+    </CONDITION>
+    <CLUSTER
+      NUM_COLS="2"
+      TITLE="Cluster.Title.ApprovalDetails"
+    >
+      <FIELD LABEL="Field.Label.ApprovedExpectedStartDate">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="approvedExpStartDate"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.ApprovalDate">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="approvalDecisionDate"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.ApprovedExpectedEndDate">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="approvedExpEndDate"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.ApprovedBy">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="approvedByUserFullName"
+          />
+        </CONNECT>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_viewUserDetails"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="approvalDecisionByUser"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.ApprovalComments"
+    >
+      <FIELD HEIGHT="4">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="approvalComments"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="isWaiverRejected"
+      />
+    </CONDITION>
+    <CLUSTER TITLE="Cluster.Title.RejectionDetails">
+      <FIELD LABEL="Field.Label.RejectionReason">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="rejectionReason"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.RejectionComments"
+    >
+      <FIELD HEIGHT="4">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="rejectionComments"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+</PAGE>

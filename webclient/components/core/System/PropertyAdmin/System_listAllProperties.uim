@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="System_listAllProperties"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="PropertyAdmin"
+    NAME="ACTION"
+    OPERATION="readAllProperties"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddProperty">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="System_createProperty"
+      />
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Publish">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="System_publishProperties"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <!--BEGIN CR00092975,GBA-->
+  <CLUSTER
+    BEHAVIOR="NONE"
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    TITLE="Cluster.Filter.Title"
+  >
+    <!--END CR00092975-->
+
+
+    <!--BEGIN CR00092975,GBA-->
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="75"
+    >
+      <!--END CR00092975-->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$nameOrDescription"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Category"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$category"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      BOTTOM="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="System_listAllProperties"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST
+    STYLE="property-admin-search-result-list"
+    TITLE="List.Title.SearchResults"
+  >
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_editProperty"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$propertyID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="propertyID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$displayName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="displayName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.ResetToDefault">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_resetProperties"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$propertyID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="propertyID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$defaultValue"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="defaultValue"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$dynamic"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="dynamic"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!--
+      <ACTION_CONTROL LABEL="ActionControl.Label.Translate">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_translateProperty"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$propertyID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="propertyID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$languageCode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="languageCode"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    -->
+
+
+      <ACTION_CONTROL
+        IMAGE="DeleteButton"
+        LABEL="ActionControl.Label.Delete"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_deleteProperty"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$propertyID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="propertyID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Title.Display"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$displayName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Value"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$value"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Description"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$description"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Category"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$category"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="System_viewProperty">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$propertyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="propertyID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$displayName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="displayName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$languageCode"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="languageCode"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+</PAGE>

@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+
+<!-- root element, namespace and form definitions -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:re="http://ws.curam/EvidenceReadWS"
+  elementFormDefault="qualified" attributeFormDefault="unqualified"
+  targetNamespace="http://ws.curam/EvidenceReadWS">
+  
+  
+  <!-- BEGIN builtintypes -->
+  <!-- No Blob support - it's tricky and could be expensive -->
+  <xs:simpleType name="date">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type date.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:date"/>
+  </xs:simpleType>   
+
+  <xs:simpleType name="string">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type string.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="boolean">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type boolean.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:boolean"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="datetime">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type date time.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:dateTime"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="double">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type double.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:double"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="float">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type float.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:float"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="int16">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type int16.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:short"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="int32">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type int32.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:int"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="int64">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type int64.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:long"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="int8">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type int8.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:byte"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="char">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type char.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:length value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="frequencypattern">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type frequency pattern.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{9}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="money">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram builtin type money.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:decimal">
+      <xs:fractionDigits value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!-- END     builtintypes -->
+
+  <!-- BEGIN domaintypes -->
+  <xs:simpleType name="CaseID">
+    <xs:annotation>
+      <xs:documentation>This should be the C\u00FAram Case ID.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="re:InternalID"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="InternalID">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram Internal ID.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:long"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="AlternateID">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram Atlernate ID.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="ConcernRoleID">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram ConcernRole ID.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="EvidenceFieldName">
+    <xs:annotation>
+      <xs:documentation>The name of the evidence field (column) in C\u00FAram.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="CodetableCode">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram code table code.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="10"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="EvidenceType">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram Evidence Type code table code.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="re:CodetableCode"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="ProductProviderID">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram Product Provider ID.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="re:ConcernRoleID"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="ProductDeliveryPatternID">
+    <xs:annotation>
+      <xs:documentation>C\u00FAram Product Delivery Pattern ID.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="re:ConcernRoleID"/>
+  </xs:simpleType>
+  <!-- END domaintypes -->
+
+  <!-- BEGIN semtypes -->
+  <xs:simpleType name="caseIdentifier">
+    <xs:annotation>
+      <xs:documentation>This should be the C\u00FAram Case ID.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="re:CaseID"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="evidenceIdentifier">
+    <xs:annotation>
+      <xs:documentation>This should be the C\u00FAram Evidence Identifier
+        evidence.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="re:InternalID"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="evidenceDescriptorIdentifier">
+    <xs:annotation>
+      <xs:documentation>This should be the C\u00FAram Evidence Descriptor Identifier
+        evidence.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="re:InternalID"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="evidenceType">
+    <xs:annotation>
+      <xs:documentation>This should be the C\u00FAram Evidence Type of an Evidence record.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="re:EvidenceType"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="evidenceName">
+    <xs:annotation>
+      <xs:documentation>This should be the name used in C\u00FAram for this evidence item, it must
+        match the name of the field used to store it.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="re:EvidenceFieldName"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="participantIdentifier">
+    <xs:annotation>
+      <xs:documentation>This should be the participant ID for this evidence 
+        item.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="re:InternalID"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="providerIdentifier">
+    <xs:annotation>
+      <xs:documentation>This should be the C\u00FAram based 
+        Provider id.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="re:ProductProviderID"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="clientIdentifier">
+    <xs:annotation>
+      <xs:documentation>This should be the C\u00FAram type used for this
+        evidence.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="re:ConcernRoleID"/>
+  </xs:simpleType>
+
+  <xs:complexType name="concernIdentifier">
+    <xs:choice maxOccurs="1" minOccurs="1">
+      <xs:element name="concernID" type="re:InternalID">
+        <xs:annotation>
+          <xs:documentation>This should be the C\u00FAram Concern ID.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <xs:element name="concernRoleID" type="re:InternalID">
+        <xs:annotation>
+          <xs:documentation>This should be the C\u00FAram Concern Role ID.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <xs:element name="alternateID" type="re:AlternateID">
+        <xs:annotation>
+          <xs:documentation>This should be the primary alternate ID of the Concern. e.g.
+            their SSN.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+  <!-- END semtypes -->
+
+  <xs:group name="evidenceIDandType">
+  
+    <xs:sequence>
+    
+      <xs:annotation>
+        <xs:documentation>
+          This group should contain the Evidence identifier
+          and the evidence Type.
+        </xs:documentation>
+      </xs:annotation>
+      
+      <xs:element name="evidenceID" type="re:evidenceIdentifier"
+        minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>
+            This should be an Evidence identifier to idenify
+            the evidence record to be read.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+      <xs:element name="evidenceType" type="re:evidenceType"
+        minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>
+            This should be the Evidence Type code of the
+            evidence record to be read.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      
+    </xs:sequence>
+    
+  </xs:group>
+
+  <xs:element name="evidence" type="re:EvidenceReadRequest"/>
+  
+  <xs:complexType name="EvidenceReadRequest">
+    
+    <xs:annotation>
+      <xs:documentation>
+        This evidence message, this can be composed of one or
+        more evidence read identifiers.
+      </xs:documentation>
+    </xs:annotation>
+    
+      <xs:sequence>
+        <xs:element name="evidenceRead" minOccurs="1"
+          maxOccurs="unbounded" type="re:evidenceRead"></xs:element>
+      </xs:sequence>
+    
+  </xs:complexType>
+  
+  <xs:complexType name="evidenceRead">
+    <xs:annotation>
+      <xs:documentation>
+        The Evidence read identifiers. The read identifier must be either 
+        the combination of the Evidence identifier and Evidence Type code 
+        or an entry of the Evidence Descriptor identifier
+      </xs:documentation>
+    </xs:annotation>
+    
+    <xs:choice>
+
+      <xs:group ref="re:evidenceIDandType" minOccurs="1"
+        maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>
+            This should be the grouping of the Evidence identifier
+            and the Evidence Type code.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:group>
+
+      <xs:element name="evidenceDescriptorID"
+        type="re:evidenceDescriptorIdentifier" minOccurs="1"
+        maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>
+            This should be the Evidence
+            Descriptor identifier for a
+            particular piece of evidence.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
+    </xs:choice>
+    
+  </xs:complexType>
+  
+  
+  <xs:element name="response" type="re:EvidenceReadResponse"/>
+    
+  <xs:complexType name="EvidenceReadResponse">
+    <xs:sequence>
+      <xs:element name="evidenceRead" type="re:evidenceRead2"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="evidenceRead2">
+    <xs:sequence>
+      <xs:element name="caseID" type="re:caseIdentifier" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="evidenceType" type="re:evidenceType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="evidenceDescriptorID" type="re:evidenceDescriptorIdentifier" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="effectiveDate" type="re:date" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="dataObjects" type="re:dataObjects"/>
+    </xs:sequence>
+    <xs:attribute name="success" use="required" type="xs:boolean"/>
+  </xs:complexType>
+  
+  <xs:complexType name="dataObjects">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" name="dataItem" type="re:dataItem"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="dataItem">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="name" use="required" type="re:evidenceName"/>
+        <xs:attribute name="type" use="required" type="xs:NCName"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>  
+  
+</xs:schema>

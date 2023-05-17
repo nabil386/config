@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+    * Copyright 2008, 2010-2011 Curam Software Ltd.
+    * All rights reserved.
+    *
+    * This software is the confidential and proprietary information of Curam
+    * Software, Ltd. ("Confidential Information"). You shall not disclose
+    * such Confidential Information and shall use it only in accordance with
+    * the terms of the license agreement you entered into with Curam
+    * Software.
+    *
+    * Description
+    * ===========
+    * This page is used to create a new legal action
+    *
+-->
+<PAGE
+  PAGE_ID="AdminLegalStatus_viewConfiguredCaseType"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file:\\Curam\CuramUIMSchema"
+>
+
+
+  <!-- The page title for this page -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="caseTypeCode"/>
+  <PAGE_PARAMETER NAME="relatedID"/>
+
+
+  <!-- Declare the 'display' server bean -->
+  <SERVER_INTERFACE
+    CLASS="AdminLegalStatus"
+    NAME="DISPLAY"
+    OPERATION="viewAssociatedCaseType"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- Declare the 'display' server bean -->
+  <SERVER_INTERFACE
+    CLASS="AdminLegalStatus"
+    NAME="DISPLAYLIST"
+    OPERATION="listAllSelectedLegalStatuses"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- connection parameters required for display bean -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseTypeCode"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="ctKey$associatedCaseTypeCode"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="relatedID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="ctKey$relatedID"
+    />
+  </CONNECT>
+
+
+  <!-- connection parameters required for display bean -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseTypeCode"
+    />
+    <TARGET
+      NAME="DISPLAYLIST"
+      PROPERTY="associatedCaseTypeCode"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="relatedID"
+    />
+    <TARGET
+      NAME="DISPLAYLIST"
+      PROPERTY="relatedID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00248028, SS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00248028 -->
+    <CONTAINER
+      LABEL="Field.Label.Multiple"
+      WIDTH="75"
+    >
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="linkDetails$multipleLegalStatusInd"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Field.Label.Change"
+          />
+        </CONNECT>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="AdminLegalStatus_confirmChange"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="linkDetails$multipleLegalStatusInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="multipleLegalStatusInd"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="linkDetails$multipleCaseLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="multipleCaseLinkID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00248028, SS -->
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Delete"
+        TYPE="ACTION"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="AdminLegalStatus_deleteCaseTypeLink"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAYLIST"
+              PROPERTY="legalStatusCaseTypeLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="legalStatusCaseTypeLinkID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Cluster.Selected">
+      <!-- END, CR00249028 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYLIST"
+          PROPERTY="legalStatusTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

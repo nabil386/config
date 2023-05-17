@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page is used to display a list of decisions for a determination   -->
+<!-- on a case, where the case event being viewed is a Case Approval.       -->
+<PAGE
+  PAGE_ID="ProductDelivery_listCaseApprovalEventCreoleDecisions"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+  <PAGE_PARAMETER NAME="approvalID"/>
+  <PAGE_PARAMETER NAME="determinationID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$determinationID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseID"
+    />
+  </CONNECT>
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="approvalID"
+    />
+    <TARGET
+      NAME="READAPPROVALEVENT"
+      PROPERTY="caseApprovalID"
+    />
+  </CONNECT>
+  
+  <SERVER_INTERFACE
+    CLASS="Case"
+    PHASE="DISPLAY"
+    NAME="READAPPROVALEVENT"
+    OPERATION="readApprovalEvent"
+   />
+
+  <SERVER_INTERFACE
+    CLASS="CaseDetermination"
+    NAME="DISPLAY"
+    OPERATION="listDecisionPeriodsForDetermination"
+  />
+  
+  <CLUSTER
+      NUM_COLS="2"
+      LABEL_WIDTH="25"
+    >
+
+      <FIELD LABEL="Field.Label.ApproverType">
+        <CONNECT>
+          <SOURCE
+            NAME="READAPPROVALEVENT"
+            PROPERTY="approverTypeCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.ApprovalDate">
+        <CONNECT>
+          <SOURCE
+            NAME="READAPPROVALEVENT"
+            PROPERTY="approvalDate"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Method">
+        <CONNECT>
+          <SOURCE
+            NAME="READAPPROVALEVENT"
+            PROPERTY="approvalMethod"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.UserName">
+        <CONNECT>
+          <SOURCE
+            NAME="READAPPROVALEVENT"
+            PROPERTY="fullUserName"
+          />
+        </CONNECT>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_viewUserDetails"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="READAPPROVALEVENT"
+              PROPERTY="userName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Outcome">
+        <CONNECT>
+          <SOURCE
+            NAME="READAPPROVALEVENT"
+            PROPERTY="approvalOutcome"
+          />
+        </CONNECT>
+      </FIELD>
+
+  </CLUSTER>
+  
+  <LIST TITLE="Cluster.Title.DeterminationResults">
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProductDelivery_resolveDecisionSummary">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$determinationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="decisionFromDate"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="displayDate"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <FIELD
+      LABEL="Field.Label.CoverPeriod"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="coverPeriod"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="ProductDelivery_resolveDecisionDisplayTab">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$determinationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="decisionFromDate"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="displayDate"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Decision"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="resultCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Summary"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="summary"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+</PAGE>

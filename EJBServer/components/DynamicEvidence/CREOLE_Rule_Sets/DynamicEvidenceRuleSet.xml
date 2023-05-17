@@ -1,0 +1,667 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012,2015. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- 
+  Copyright 2009-2010 Curam Software Ltd.
+  All rights reserved.
+  This software is the confidential and proprietary information of Curam
+  Software, Ltd. ("Confidential Information").  You shall not disclose such
+  Confidential Information and shall use it only in accordance with the
+  terms of the license agreement you entered into with Curam Software.
+-->
+<!--
+  This Rule Set defines the Base Rule Classes for the Processing and
+  Eligibility and Entitlement Data Rule Sets generated for all Dynamic Evidence
+  Types. Also, utility classes, for deriving the Rule Object given the primary
+  key ID, are provided for Address and Case Participant Role.
+-->
+<RuleSet
+  name="DynamicEvidenceRuleSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../build/svr/creole.gen/schema/RuleSet.xsd"
+>
+
+
+  <!-- Base Class for all generated Processing Rule Class -->
+  <Class
+    abstract="true"
+    name="DynamicEvidence"
+  >
+
+
+    <!-- Unique identifier for the evidence record. -->
+    <Attribute name="evidenceID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Unique identifier for the metadata version used. -->
+    <Attribute name="metadataID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Unique identifier for the correction set. -->
+    <Attribute name="correctionSetID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The identifier of the succession set to which this evidence version belongs. -->
+    <Attribute name="successionID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+
+
+      <!-- Case ID. -->
+    </Attribute>
+    <Attribute name="caseID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Evidence Type Codetable code. -->
+    <Attribute name="type">
+      <type>
+        <codetableentry table="EvidenceType"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Evidence Received Date. -->
+    <Attribute name="receivedDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Evidence Effective Date of Change. -->
+    <Attribute name="effectiveFrom">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Evidence Record status: In Edit, Active, Superceded, Canceled etc., -->
+    <Attribute name="status">
+      <type>
+        <codetableentry table="EvidenceDescriptorStatus"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Case Header record of the case for which the Evidence is recorded. -->
+    <Attribute name="caseRecord">
+      <type>
+        <ruleclass
+          name="CaseHeader"
+          ruleset="CaseEntitiesRuleSet"
+        />
+      </type>
+      <derivation>
+        <singleitem
+          onEmpty="error"
+          onMultiple="error"
+        >
+          <readall
+            ruleclass="CaseHeader"
+            ruleset="CaseEntitiesRuleSet"
+          >
+            <match retrievedattribute="caseID">
+              <reference attribute="caseID"/>
+            </match>
+          </readall>
+        </singleitem>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Description for this Rule Class. -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="DynamicEvidenceRow.description"
+          resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules"
+        >
+          <reference attribute="type"/>
+          <reference attribute="correctionSetID"/>
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <!--
+    Base Class for all generated Data Rule Class. This Base Class is used
+    when Active Evidence Rows are used in Determination Rule Sets.
+  -->
+  <Class
+    abstract="true"
+    extends="ActiveEvidenceRow"
+    extendsRuleSet="PropagatorRuleSet"
+    name="ActiveDynamicEvidenceRow"
+  >
+
+
+    <Attribute name="evidenceID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Description for this Rule Class. -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="ActiveDynamicEvidenceRow.description"
+          resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules"
+        >
+          <reference attribute="correctionSetID"/>
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <!--
+    Base Class for all generated Data Rule Class. This Base Class is used
+    when Active Succession Sets are used in Determination Rule Sets.
+  -->
+  <Class
+    abstract="true"
+    extends="ActiveSuccessionSet"
+    extendsRuleSet="PropagatorRuleSet"
+    name="ActiveDynamicEvidenceSuccessionSet"
+  >
+    <Attribute name="evidenceID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <!-- Description for this Rule Class. -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="DynamicEvidenceSuccessionSet.description"
+          resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules"
+        >
+          <reference attribute="successionID"/>
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <!--
+    Rule Objects of Participant and Case Related Rule Classes defined in
+    Participant and Case Entities Rule Sets, are stored in the DB. The
+    following Rule Classes are created to provide In-Memory couterparts
+    for corresponding classes in Participant and Case Entities Rule Sets, as
+    Dynamic Evidence Rule Object Storage uses Rule Class names to decide if a
+    Rule Object needs to be persisted in DB. These Rule Classes are used to
+    represent CPR, Concern Role and Address information while calling Validation
+    and Calculated Attributes Rule Sets before the evidence record is created.
+  -->
+
+
+  <Class
+    extends="ConcernRole"
+    extendsRuleSet="ParticipantEntitiesRuleSet"
+    name="ConcernRole"
+  />
+
+
+  <Class
+    extends="Address"
+    extendsRuleSet="ParticipantEntitiesRuleSet"
+    name="Address"
+  />
+
+
+  <Class
+    extends="CaseParticipantRole"
+    extendsRuleSet="CaseEntitiesRuleSet"
+    name="CaseParticipantRole"
+  />
+
+
+  <!-- *************************************************************** -->
+  <!-- 
+    AddressCalculator Rule Class.
+    This class is a utility class to derive a Address Record Rule Object
+    given the Address ID.
+  -->
+  <!-- *************************************************************** -->
+  <Class name="AddressCalculator">
+
+
+    <!--Initializes the addressID-->
+    <Initialization>
+      <Attribute name="addressID">
+        <type>
+          <javaclass name="Number"/>
+        </type>
+      </Attribute>
+    </Initialization>
+
+
+    <!-- Retrieves the Address Record for the given Address ID -->
+    <Attribute name="addressRecord">
+      <type>
+        <ruleclass
+          name="Address"
+          ruleset="ParticipantEntitiesRuleSet"
+        />
+      </type>
+      <derivation>
+        <singleitem
+          onEmpty="returnNull"
+          onMultiple="error"
+        >
+          <readall
+            ruleclass="Address"
+            ruleset="ParticipantEntitiesRuleSet"
+          >
+            <match retrievedattribute="addressID">
+              <reference attribute="addressID"/>
+            </match>
+          </readall>
+        </singleitem>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Description for this Rule Class. -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="AddressCalculator.description"
+          resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules"
+        >
+          <reference attribute="addressID"/>
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <!-- *************************************************************** -->
+  <!-- 
+    AddressTimelineCalculator Rule Class.
+    This class is a utility class to derive a Timeline of Address Record
+    Rule Objects given a Timeline of Address IDs.
+  -->
+  <!-- *************************************************************** -->
+  <Class name="AddressTimelineCalculator">
+
+
+    <!-- Initializes the addressIDTimeline -->
+    <Initialization>
+      <Attribute name="addressIDTimeline">
+        <type>
+          <javaclass name="curam.creole.value.Timeline">
+            <javaclass name="Number"/>
+          </javaclass>
+        </type>
+      </Attribute>
+    </Initialization>
+
+
+    <!--
+      Retrieves the Address Record Timeline for the given Address ID Timeline.
+    -->
+    <Attribute name="addressRecordTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <ruleclass
+            name="Address"
+            ruleset="ParticipantEntitiesRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <timelineoperation>
+          <reference attribute="addressRecord">
+            <create ruleclass="AddressCalculator">
+              <intervalvalue>
+                <reference attribute="addressIDTimeline"/>
+              </intervalvalue>
+            </create>
+          </reference>
+        </timelineoperation>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Description for this Rule Class. -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="AddressTimelineCalculator.description"
+          resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules"
+        >
+          <reference attribute="addressIDTimeline"/>
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <!-- *************************************************************** -->
+  <!-- 
+    CaseParticipantRoleCalculator Rule Class.
+    This class is a utility class to derive a Case Participant Role
+    Rule Object given a Case Participant Role ID.
+  -->
+  <!-- *************************************************************** -->
+  <Class name="CaseParticipantRoleCalculator">
+
+
+    <!-- Initialiazes the Case Participant Role ID -->
+    <Initialization>
+      <Attribute name="caseParticipantRoleID">
+        <type>
+          <javaclass name="Number"/>
+        </type>
+      </Attribute>
+    </Initialization>
+
+
+    <!--
+      Retrieves the Case Participant Role Record for the given
+      Case Participant ID.
+    -->
+    <Attribute name="caseParticipantRoleRecord">
+      <type>
+        <ruleclass
+          name="CaseParticipantRole"
+          ruleset="CaseEntitiesRuleSet"
+        />
+      </type>
+      <derivation>
+        <singleitem
+          onEmpty="error"
+          onMultiple="error"
+        >
+          <readall
+            ruleclass="CaseParticipantRole"
+            ruleset="CaseEntitiesRuleSet"
+          >
+            <match retrievedattribute="caseParticipantRoleID">
+              <reference attribute="caseParticipantRoleID"/>
+            </match>
+          </readall>
+        </singleitem>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Description for this Rule Class. -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="CaseParticipantRoleCalculator.description"
+          resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules"
+        >
+          <reference attribute="caseParticipantRoleID"/>
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <!-- *************************************************************** -->
+  <!-- 
+    CaseParticipantRoleTimelineCalculator Rule Class.
+    This class is a utility class to derive a Timeline of Case Participant Role
+    Rule Objects given a Timeline of Case Participant Role IDs.
+  -->
+  <!-- *************************************************************** -->
+  <Class name="CaseParticipantRoleTimelineCalculator">
+
+
+    <!-- Initializes the caseParticipantIDTimeline -->
+    <Initialization>
+      <Attribute name="caseParticipantIDTimeline">
+        <type>
+          <javaclass name="curam.creole.value.Timeline">
+            <javaclass name="Number"/>
+          </javaclass>
+        </type>
+      </Attribute>
+    </Initialization>
+
+
+    <!--
+      Retrieves the Case Participant Role Record Timeline for the given
+      Case Participant ID Timeline.
+    -->
+    <Attribute name="caseParticipantRecordTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <ruleclass
+            name="CaseParticipantRole"
+            ruleset="CaseEntitiesRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <timelineoperation>
+          <reference attribute="caseParticipantRoleRecord">
+            <create ruleclass="CaseParticipantRoleCalculator">
+              <intervalvalue>
+                <reference attribute="caseParticipantIDTimeline"/>
+              </intervalvalue>
+            </create>
+          </reference>
+        </timelineoperation>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Description for this Rule Class. -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="CaseParticipantRoleTimelineCalculator.description"
+          resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules"
+        >
+          <reference attribute="caseParticipantIDTimeline"/>
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <Class name="EvidenceAttributeAvailability">
+    <Initialization>
+      <Attribute name="evidence">
+        <type>
+          <ruleclass name="DynamicEvidence"/>
+        </type>
+      </Attribute>
+      <Attribute name="attributeName">
+        <type>
+          <javaclass name="String"/>
+        </type>
+      </Attribute>
+    </Initialization>
+
+
+    <Attribute name="isAttributeAvailable">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <call
+          class="curam.dynamicevidence.cer.impl.DynamicEvidenceStatics"
+          method="isAttributeAvailable"
+        >
+          <type>
+            <javaclass name="Boolean"/>
+          </type>
+          <arguments>
+            <reference attribute="evidence"/>
+            <reference attribute="attributeName"/>
+          </arguments>
+        </call>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="EvidenceAttributeAvailability.description"
+          resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules"
+        >
+          <reference attribute="attributeName"/>
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+  <!-- *************************************************************** -->
+  <!-- 
+      EmploymentCalculator Rule Class.
+      This class is a utility class to derive a Employment Rule Object 
+      given a Employment ID.
+    -->
+  <!-- *************************************************************** -->
+  <Class name="EmploymentCalculator">
+
+
+    <!-- Initialiazes the Employment ID -->
+    <Initialization>
+      <Attribute name="employmentID">
+        <type>
+          <javaclass name="Number"/>
+        </type>
+      </Attribute>
+    </Initialization>
+
+
+    <!--
+        Retrieves the Employment Record for the given Employment ID.
+      -->
+    <Attribute name="employmentRecord">
+      <type>
+        <ruleclass
+          name="Employment"
+          ruleset="ParticipantEntitiesRuleSet"
+        />
+      </type>
+      <derivation>
+        <singleitem
+          onEmpty="error"
+          onMultiple="error"
+        >
+          <readall
+            ruleclass="Employment"
+            ruleset="ParticipantEntitiesRuleSet"
+          >
+            <match retrievedattribute="employmentID">
+              <reference attribute="employmentID"/>
+            </match>
+          </readall>
+        </singleitem>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Description for this Rule Class. -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="EmploymentCalculator.description"
+          resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules"
+        >
+          <reference attribute="employmentID"/>
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+  </Class>
+</RuleSet>

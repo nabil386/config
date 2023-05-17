@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2003, 2013. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2006, 2008, 2010 Curam Software Ltd.                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!--      -->
+<!-- BEGIN, CR00372642, SG -->
+<?curam-deprecated Since Curam 6.0.5.1, replaced by Supervisor_forwardTasksNotReservedByUserSearch.
+  This page is deprecated because the task forward functionality has been changed to
+  include search criteria. See release note CR00372642.?>
+<!-- END, CR00372642 -->
+<PAGE PAGE_ID="Supervisor_forwardTasksNotReservedByUser" WINDOW_OPTIONS="width=1000,height=420" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE NAME="ACTION" PROPERTY="informationMsgTxt"/>
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="userName"/>
+  <PAGE_PARAMETER NAME="taskOptionCode"/>
+  <PAGE_PARAMETER NAME="userFullName"/>
+
+
+  <SERVER_INTERFACE CLASS="MaintainSupervisorUsers" NAME="ASSIGNEDTASKSDISPLAY" OPERATION="listTasksAssignedToUser" PHASE="DISPLAY"/>
+  <SERVER_INTERFACE CLASS="MaintainSupervisorUsers" NAME="USERSDISPLAY" OPERATION="listSupervisorUsers" PHASE="DISPLAY"/>
+  <SERVER_INTERFACE CLASS="MaintainSupervisorOrgUnits" NAME="ORGUNITDISPLAY" OPERATION="listSupervisorOrgUnits" PHASE="DISPLAY"/>
+  <SERVER_INTERFACE CLASS="MaintainSupervisorUsers" NAME="ACTION" OPERATION="forwardTasksNotReservedByUser" PHASE="ACTION"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="userName"/>
+    <TARGET NAME="ACTION" PROPERTY="userName"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="userName"/>
+    <TARGET NAME="ASSIGNEDTASKSDISPLAY" PROPERTY="key$key$userName"/>
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL DEFAULT="true" IMAGE="SaveButton" LABEL="ActionControl.SaveButton.label" TYPE="SUBMIT"/>
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.CancelButton.label"/>
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="30" NUM_COLS="2">
+    <FIELD LABEL="Field.Label.MyUsers" USE_BLANK="true">
+      <CONNECT>
+        <INITIAL HIDDEN_PROPERTY="userName" NAME="USERSDISPLAY" PROPERTY="fullName"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="forwardToUser"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.MyOrgUnits" USE_BLANK="true">
+      <CONNECT>
+        <INITIAL HIDDEN_PROPERTY="orgUnitID" NAME="ORGUNITDISPLAY" PROPERTY="orgUnitName"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="forwardToOrgUnit"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER LABEL_WIDTH="15">
+    <CONTAINER LABEL="Container.Title.ForwardTo">
+      <FIELD USE_BLANK="true" WIDTH="20">
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="forwardToType"/>
+        </CONNECT>
+      </FIELD>
+      <FIELD WIDTH="40">
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="forwardToID"/>
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+
+
+  <LIST TITLE="Cluster.Title.AssignedTasks">
+    <CONTAINER ALIGNMENT="CENTER" LABEL="List.MultiSelect.Select" WIDTH="5">
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE NAME="ASSIGNEDTASKSDISPLAY" PROPERTY="taskID"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="assignedTaskIDList"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.AssignedTaskID" WIDTH="10">
+      <CONNECT>
+        <SOURCE NAME="ASSIGNEDTASKSDISPLAY" PROPERTY="taskID"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.AssignedSubject" WIDTH="30">
+      <CONNECT>
+        <SOURCE NAME="ASSIGNEDTASKSDISPLAY" PROPERTY="subject"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.AssignedPriority" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="ASSIGNEDTASKSDISPLAY" PROPERTY="priority"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Assigned" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="ASSIGNEDTASKSDISPLAY" PROPERTY="assignedDateTime"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.AssignedDeadline" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="ASSIGNEDTASKSDISPLAY" PROPERTY="deadlineDateTime"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Title.Comments">
+    <FIELD HEIGHT="4" LABEL="Field.Label.Comments">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="comments"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

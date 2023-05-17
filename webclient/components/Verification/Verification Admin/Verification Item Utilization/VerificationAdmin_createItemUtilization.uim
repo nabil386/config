@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2003, 2012, 2015. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2006, 2008, 2010 Curam Software Ltd.                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to create a Verification Item record.        -->
+<PAGE PAGE_ID="VerificationAdmin_createItemUtilization" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00348311, SSK -->
+  <SERVER_INTERFACE CLASS="VerificationAdministration" NAME="ACTION" OPERATION="createNewVerificationItemUtilization" PHASE="ACTION"/>
+  <!-- END, CR00348311 -->
+
+
+  <SERVER_INTERFACE CLASS="VerificationAdministration" NAME="DISPLAY1" OPERATION="readVerifiableDataItemName"/>
+
+
+  <SERVER_INTERFACE CLASS="VerificationAdministration" NAME="DISPLAY" OPERATION="readAllVerificationItemNames"/>
+
+
+  <PAGE_PARAMETER NAME="verifiableDataItemName"/>
+  <PAGE_PARAMETER NAME="verifiableDataItemID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="verifiableDataItemID"/>
+    <TARGET NAME="DISPLAY1" PROPERTY="key$dtls$verifiableDataItemID"/>
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT">
+      <LINK PAGE_ID="VerificationAdmin_listItemUtilization1">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="verifiableDataItemID"/>
+          <TARGET NAME="PAGE" PROPERTY="verifiableDataItemID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="SaveAndNewButton" LABEL="ActionControl.Label.SaveAndNew" TYPE="SUBMIT">
+      <!-- BEGIN,CR00050935,GSP -->
+      <!-- BEGIN,HARP 61263,SRK -->
+      <LINK PAGE_ID="VerificationAdmin_resolveCreateItemUtilization">
+        <!-- END,HARP 61263 -->
+        <!-- END,CR00050935 -->
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="verifiableDataItemID"/>
+          <TARGET NAME="PAGE" PROPERTY="verifiableDataItemID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="verifiableDataItemName"/>
+          <TARGET NAME="PAGE" PROPERTY="verifiableDataItemName"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="verifiableDataItemID"/>
+    <TARGET NAME="ACTION" PROPERTY="dtls$dtls$createDtls$verifiableDataItemID"/>
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00348311, SSK -->
+  <CLUSTER LABEL_WIDTH="50" NUM_COLS="2">
+
+
+    <FIELD LABEL="Field.Label.VerificationItem">
+      <CONNECT>
+        <INITIAL HIDDEN_PROPERTY="result$dtls$listDtls$dtls$verificationItemID" NAME="DISPLAY" PROPERTY="result$dtls$listDtls$dtls$name"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="dtls$dtls$createDtls$verificationItemID"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.UsageType">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="usageType"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.FromDate">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="fromDate"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.SuppliedByClient">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="clientSupplied"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.AddSecurityID">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="addSID"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+    <FIELD LABEL="Field.Label.Level" WIDTH="32">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="verificationLevel"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Todate" USE_DEFAULT="false">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="toDate"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Mandatory">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="mandatory"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.RemoveSecurityID">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="removeSID"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <!-- END, CR00348311 -->
+  <!-- BEGIN, CR 3140, RK -->
+  <CLUSTER LABEL_WIDTH="50" NUM_COLS="2" TITLE="Cluster.Title.ExpiryDetails">
+    <FIELD LABEL="Field.Label.ExpiryDays" WIDTH="32">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="expiryDays"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ExpiryDateFrom">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="expiryDateFrom"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.WarningDays" WIDTH="32">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="warningDays"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ExpiryDateEvent">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="expiryDateEvent"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR 3140 -->
+
+
+  <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Title.Description">
+    <!-- BEGIN, CR00463142, EC -->
+    <FIELD HEIGHT="4" LABEL="Cluster.Title.Description">
+      <!-- END, CR00463142 -->
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="comments"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

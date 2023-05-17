@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view the details of a questionnaire.      -->
+<PAGE
+  PAGE_ID="DecisionAssistAdmin_editTypicalAnswersForQuestion"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_PARAMETER NAME="typicalPictureName"/>
+  <PAGE_PARAMETER NAME="typicalPictureVersionNumber"/>
+  <PAGE_PARAMETER NAME="questionnaireVersionID"/>
+  <PAGE_PARAMETER NAME="questionnaireID"/>
+  <PAGE_PARAMETER NAME="typicalPictureAnswerID"/>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="Questionnaire"
+    NAME="READ_QUESTIONNAIRE_VERSION"
+    OPERATION="readLatestQuestionnaireVersionDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionnaireVersionID"
+    />
+    <TARGET
+      NAME="READ_QUESTIONNAIRE_VERSION"
+      PROPERTY="key$dtls$questionnaireVersionID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="TypicalPicture"
+    NAME="EDIT_TYPICAL_ANSWERS"
+    OPERATION="readTypicalAnswerForQuestion"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="typicalPictureAnswerID"
+    />
+    <TARGET
+      NAME="EDIT_TYPICAL_ANSWERS"
+      PROPERTY="key$key$typicalPictureAnswerID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="TypicalPicture"
+    NAME="SAVE_TYPICAL_ANSWERS"
+    OPERATION="saveTypicalAnswerForQuestion"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="EDIT_TYPICAL_ANSWERS"
+      PROPERTY="result$typicalPictureVersionID"
+    />
+    <TARGET
+      NAME="SAVE_TYPICAL_ANSWERS"
+      PROPERTY="dtls$typicalPictureVersionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="EDIT_TYPICAL_ANSWERS"
+      PROPERTY="result$typicalPictureAnswerID"
+    />
+    <TARGET
+      NAME="SAVE_TYPICAL_ANSWERS"
+      PROPERTY="dtls$typicalPictureAnswerID"
+    />
+  </CONNECT>
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    > </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    > </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- BEGIN, CR00226313, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00226313 -->
+    <FIELD LABEL="Field.Label.QuestionnaireName">
+      <CONNECT>
+        <SOURCE
+          NAME="READ_QUESTIONNAIRE_VERSION"
+          PROPERTY="result$latestVersionDtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireVersionNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="READ_QUESTIONNAIRE_VERSION"
+          PROPERTY="result$latestVersionDtls$versionNumber"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.EditTypicalAnswers"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="EDIT_TYPICAL_ANSWERS"
+          PROPERTY="result$typicalPictureEditorXml"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="SAVE_TYPICAL_ANSWERS"
+          PROPERTY="dtls$typicalPictureEditorXml"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

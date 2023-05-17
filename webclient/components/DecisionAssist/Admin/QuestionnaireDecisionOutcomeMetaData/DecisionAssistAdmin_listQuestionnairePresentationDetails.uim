@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information"). You                 -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows you view a list of presentation details.              -->
+<PAGE
+  PAGE_ID="DecisionAssistAdmin_listQuestionnairePresentationDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="DeterminationPackage"
+    NAME="MENUCONTEXT"
+    OPERATION="viewDeterminationPackageMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationPackageVersionID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="key$key$key$determinationPackageVersionID"
+    />
+  </CONNECT>
+  <PAGE_PARAMETER NAME="determinationPackageVersionID"/>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="QUESTIONHEADER"
+        PROPERTY="result$headerDtls$dtls$dPackageName"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.Hypne"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="QUESTIONHEADER"
+        PROPERTY="result$headerDtls$dtls$questionnaireName"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="QuestionnaireDecisionOutcomeMetaData"
+    NAME="LIST_QUESTIONNAIREPRESENTATIONDATA"
+    OPERATION="listPresentationData"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="QuestionnaireDecisionOutcomeMetaData"
+    NAME="QUESTIONHEADER"
+    OPERATION="readPresentationDataHeaderDetails"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="dpQuestionnaireLinkID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="dpQuestionnaireLinkID"
+    />
+    <TARGET
+      NAME="QUESTIONHEADER"
+      PROPERTY="key$key$key$dpQuestionnaireLinkID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="dpQuestionnaireLinkID"
+    />
+    <TARGET
+      NAME="LIST_QUESTIONNAIREPRESENTATIONDATA"
+      PROPERTY="key$key$key$dpQuestionnaireLinkID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00237410, AK -->
+  <LIST TITLE="List.Title.Presentation">
+    <CONDITION>
+      <IS_TRUE
+        NAME="QUESTIONHEADER"
+        PROPERTY="result$headerDtls$dtls$inEditStatusInd"
+      />
+    </CONDITION>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Edit"
+        TYPE="ACTION"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DecisionAssistAdmin_modifyPresentationData"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="LIST_QUESTIONNAIREPRESENTATIONDATA"
+              PROPERTY="result$list$list$dtls$presentationDataID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="presentationDataID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="dpQuestionnaireLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="dpQuestionnaireLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="determinationPackageVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="determinationPackageVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Delete"
+        TYPE="ACTION"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DecisionAssistAdmin_deletePresentationData"
+          WINDOW_OPTIONS="width=500"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="LIST_QUESTIONNAIREPRESENTATIONDATA"
+              PROPERTY="result$list$list$dtls$presentationDataID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="presentationDataID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="dpQuestionnaireLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="dpQuestionnaireLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="determinationPackageVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="determinationPackageVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.DecisionMatrix"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="LIST_QUESTIONNAIREPRESENTATIONDATA"
+          PROPERTY="result$list$list$dtls$decisionMatrixName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Outcome"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="LIST_QUESTIONNAIREPRESENTATIONDATA"
+          PROPERTY="result$list$list$dtls$outcomeName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Presentation"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="LIST_QUESTIONNAIREPRESENTATIONDATA"
+          PROPERTY="result$list$list$dtls$questionnairePresentationCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="DecisionAssistAdmin_viewPresentationData">
+        <CONNECT>
+          <SOURCE
+            NAME="LIST_QUESTIONNAIREPRESENTATIONDATA"
+            PROPERTY="result$list$list$dtls$presentationDataID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="presentationDataID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="dpQuestionnaireLinkID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="dpQuestionnaireLinkID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+  <LIST TITLE="List.Title.Presentation">
+    <CONDITION>
+      <IS_FALSE
+        NAME="QUESTIONHEADER"
+        PROPERTY="result$headerDtls$dtls$inEditStatusInd"
+      />
+    </CONDITION>
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.DecisionMatrix"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="LIST_QUESTIONNAIREPRESENTATIONDATA"
+          PROPERTY="result$list$list$dtls$decisionMatrixName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Outcome"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="LIST_QUESTIONNAIREPRESENTATIONDATA"
+          PROPERTY="result$list$list$dtls$outcomeName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Presentation"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="LIST_QUESTIONNAIREPRESENTATIONDATA"
+          PROPERTY="result$list$list$dtls$questionnairePresentationCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="DecisionAssistAdmin_viewPresentationData">
+        <CONNECT>
+          <SOURCE
+            NAME="LIST_QUESTIONNAIREPRESENTATIONDATA"
+            PROPERTY="result$list$list$dtls$presentationDataID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="presentationDataID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="dpQuestionnaireLinkID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="dpQuestionnaireLinkID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00237410 -->
+  </LIST>
+</PAGE>

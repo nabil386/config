@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- BEGIN Feature 106244: Manage NRT  -->
+<EvidenceTypeVersion correctionOnly="true"
+	modifiable="true" relatedParticipant="caseParticipantRoleID"
+	businessStartDate="startDate" businessEndDate="endDate"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../../../../../../DynamicEvidenceMetadata.xsd">
+	<Model>
+		<Attributes>
+			<Attribute>
+				<RelatedCPAttribute cpRoleType="MEM"
+					name="caseParticipantRoleID" participantType="Person"
+					mandatory="true">
+					<CPSearchType code="PRI" />
+					<CPSearchType code="MEM" />
+				</RelatedCPAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="correctionReason">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMOASNRTCorrectionReason" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="false" name="country">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMSourceCountry" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="false" name="percentage">
+					<DomainType dataType="Integer">
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="startDate">
+					<DomainType dataType="Date">
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="endDate" >
+					<DomainType dataType="Date">
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<CommentsAttribute name="comments" />
+			</Attribute>
+		</Attributes>
+		<Relationships />
+	</Model>
+	<Validations>
+		<PatternValidations>
+			<Validator>
+				<ComparisonValidator
+					operator="GreaterThanOrEqualTo" shallow="false" source="endDate"
+					target="startDate" useClause="false" useLiteral="false">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_START_DATE_CAN_NOT_BE_AFTER_END_DATE" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</ComparisonValidator>
+			</Validator>
+		</PatternValidations>
+		<CustomRulesValidation
+			ruleSetName="BDMOASNRTCorrectionValidationRuleSet" />
+	</Validations>
+	<SummaryInformation>
+		<SummaryRuleset
+			ruleSetName="BDMOASNRTCorrectionSummaryRuleSet" />
+	</SummaryInformation>
+	<UserInterface>
+		<Cluster>
+			<RelCPCluster defaultToBlank="false"
+				enableMultiMemberUpdates="false" fullCreateParticipant="false"
+				isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true"
+				modifyOption="no" showParticipantTypeFilter="true"
+				useSingleName="true">
+				<StandardField source="caseParticipantRoleID" />
+				<ClusterName id="Related.Participant.Cluster.ID1" />
+				<LabelName id="Name.Label.ID1" />
+				<FirstName id="First.Name.Label.ID1" />
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true" labelWidth="40"
+				numberOfColumns="2">
+				<Title id="Cluster.Title.NonResidentTaxCorrectionDetails" />
+				<StandardClusterField>
+					<StandardField modifiable="false"
+						source="correctionReason" useBlank="true" useDefault="false">
+						<Label id="Field.Label.CorrectionReason" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="false" source="country"
+						useBlank="true" useDefault="false">
+						<Label id="Field.Label.Country" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="percentage"
+						useBlank="true" useDefault="false">
+						<Label id="Field.Label.Percentage" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<SkipField />
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="startDate" useBlank="true"
+						useDefault="false">
+						<Label id="Field.Label.StartDate" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="endDate"
+						useDefault="false">
+						<Label id="Field.Label.EndDate" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<CommentsCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true">
+				<Title id="Comments.Cluster.Title.ID2" />
+				<StandardField source="comments" />
+			</CommentsCluster>
+		</Cluster>
+	</UserInterface>
+</EvidenceTypeVersion>

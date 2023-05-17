@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Feature 72660: Manage World Income Evidence -->
+<RuleSet name="BDMOASWorldIncomeSummaryRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class extends="DefaultEvidenceSummary"
+		extendsRuleSet="EvidenceSummaryRuleSet" name="SummaryInformation">
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="BDMOASWorldIncome"
+					ruleset="BDMOASWorldIncomeRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="summary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Message" />
+					</type>
+					<when>
+						<condition>
+							<reference attribute="isMissingValues" />
+						</condition>
+						<value>
+							<ResourceMessage key="MissingValues.SummaryMessage"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASWorldIncomeSummaryRuleSet" />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<reference attribute="valueSummary" />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="isMissingValues">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<any>
+					<fixedlist>
+						<listof>
+							<javaclass name="Boolean" />
+						</listof>
+						<members>
+							<equals>
+								<null />
+								<reference attribute="overThreshold">
+									<reference attribute="evidence" />
+								</reference>
+							</equals>
+							<equals>
+								<null />
+								<reference attribute="threshold">
+									<reference attribute="evidence" />
+								</reference>
+							</equals>
+						</members>
+					</fixedlist>
+				</any>
+			</derivation>
+		</Attribute>
+		<Attribute name="valueSummary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Message" />
+					</type>
+					<test>
+						<reference attribute="overThreshold">
+							<reference attribute="evidence" />
+						</reference>
+					</test>
+					<when>
+						<condition>
+							<Code table="BDMOASYesNoNA">
+								<String value="YNNA1" />
+							</Code>
+						</condition>
+						<value>
+							<ResourceMessage key="OverThreshold.SummaryMessage"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASWorldIncomeSummaryRuleSet">
+								<reference attribute="threshold">
+									<reference attribute="evidence" />
+								</reference>
+							</ResourceMessage>
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="BDMOASYesNoNA">
+								<String value="YNNA2" />
+							</Code>
+						</condition>
+						<value>
+							<ResourceMessage key="UnderThreshold.SummaryMessage"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASWorldIncomeSummaryRuleSet">
+								<reference attribute="threshold">
+									<reference attribute="evidence" />
+								</reference>
+							</ResourceMessage>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<ResourceMessage key="NotApplicable.SummaryMessage"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASWorldIncomeSummaryRuleSet">
+								<reference attribute="threshold">
+									<reference attribute="evidence" />
+								</reference>
+							</ResourceMessage>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

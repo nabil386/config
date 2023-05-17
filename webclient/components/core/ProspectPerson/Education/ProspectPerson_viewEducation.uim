@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2002, 2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view an education record.                 -->
+<PAGE
+  PAGE_ID="ProspectPerson_viewEducation"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewEducation"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="ProspectPerson_viewEducation"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="educationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="educationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.History"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ProspectPerson_listEducationHistory"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="educationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="educationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Person"
+    NAME="DISPLAY"
+    OPERATION="readEducation"
+  />
+
+
+  <PAGE_PARAMETER NAME="educationID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="educationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="educationReadKey$educationID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Address"
+  >
+    <FIELD LABEL="Field.Label.Address">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="formattedAddressdata"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Label.Comments"
+  >
+    <!-- BEGIN, CR00416277, VT -->
+    <FIELD LABEL="Field.Label.Comments">
+      <!-- END, CR00416277 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

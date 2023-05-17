@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007, 2009-2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view details of a third party deduction.  -->
+<!-- BEGIN, CR00238748, GD -->
+<?curam-deprecated Since Curam 6.0, replaced by ProductDelivery_viewThirdPartyDeductionDetails1.uim?>
+<!-- END, CR00238748 -->
+<PAGE
+  PAGE_ID="ProductDelivery_viewThirdPartyDeductionDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewDeduction"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="ProductDelivery_viewThirdPartyDeductionDetails"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseDeductionItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseDeductionItemID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.History"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ProductDelivery_listThirdPartyDeductionHistory"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseDeductionItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseDeductionItemID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="pageDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- BEGIN, CR00069948, GBA -->
+  <!-- END, CR00069948 -->
+  <SERVER_INTERFACE
+    CLASS="ProductDelivery"
+    NAME="DISPLAY"
+    OPERATION="readDeduction"
+  />
+  <PAGE_PARAMETER NAME="caseDeductionItemID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseDeductionItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseDeductionItemID"
+    />
+  </CONNECT>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="deductionName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Nominee">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseNomineeConcernRoleName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Amount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="amount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AccountName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="customerAccName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DateCreated">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="createdDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Priority">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="priorityPosition"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ActionType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="actionType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ThirdParty">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="thirdPartyConcernRoleName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Participant_resolveRoleHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="thirdPartyConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="thirdPartyConcernRoleType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="participantType"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Component">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$rulesObjectiveType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Percentage">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="rate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AccountNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="customerAccNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RecordStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.BusinessStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="businessStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00416277, VT -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00416277 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

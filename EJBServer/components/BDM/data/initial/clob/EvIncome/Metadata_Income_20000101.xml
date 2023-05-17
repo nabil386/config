@@ -1,0 +1,194 @@
+<EvidenceTypeVersion correctionOnly="true" modifiable="false">
+  <Model>
+    <Attributes>
+      <Attribute>
+        <DataAttribute name="year" mandatory="true">
+          <DomainType dataType="String"/>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute name="income" mandatory="true">
+          <DomainType dataType="Money"/>
+        </DataAttribute>
+      </Attribute>
+      <!-- BEGIN - User Story 21834 - Added Attestee Case Participant -->
+		<Attribute>
+			<RelatedCPAttribute cpRoleType="MEM" name="attesteeCaseParticipant" participantType="Person"/>
+		</Attribute>
+		<!-- END - User Story 21834 - Added Attestee Case Participant -->
+      <!-- BEGIN - User Story 21834 - Added Attestation Agree Drop Down -->
+      <Attribute>
+        <DataAttribute name="bdmAgreeAttestation">
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="BDMAgreeAttestation"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <!-- END - User Story 21834 - Added Attestation Agree Drop Down -->
+      <!-- BEGIN - User Story 21834 - Added Attestation Date -->
+      <Attribute>
+        <DataAttribute name="attestationDate">
+           <DomainType dataType="Date"/>
+        </DataAttribute>
+      </Attribute>
+      <!-- END - User Story 21834 - Added Attestation Date -->
+      <Attribute>
+        <RelatedCPAttribute cpRoleType="MEM" name="caseParticipant" participantType="Person" mandatory="true"/>
+      </Attribute>
+      <Attribute>
+        <CommentsAttribute name="comments"/>
+      </Attribute>
+    </Attributes>
+    <Relationships/>
+  </Model>
+  <Validations>
+  <!-- TASK-10566 adding new duplicate validation for income evidence -->
+   <!-- BEGIN TASK 23416 Issue in Income Meatadata.-->
+  <PatternValidations>
+      <Validator>
+        <DuplicateValidator>
+          <DuplicateAttributes conjunction="AND">
+            <DuplicateAttribute name="caseParticipant"/>
+            <DuplicateAttribute name="year"/>
+            <ValidationMessageInformation>
+              <ValidationMessageMapping>
+                <ValidationMessage>               
+                <parameter name="year"/>
+                  <ValidationMessageResource id="ERR_INCOME_YEAR_DUPLICATE"/>                                  	
+                </ValidationMessage>
+              </ValidationMessageMapping>
+            </ValidationMessageInformation>
+          </DuplicateAttributes>
+        </DuplicateValidator>
+      </Validator>
+    </PatternValidations>
+   <CustomRulesValidation ruleSetName="BDMIncomeValidationRuleSet"/>
+  </Validations>
+  <!-- END TASK 23416 Issue in Income Meatadata.-->  
+    <!-- TASK-10566 adding new duplicate validation for income evidence -->
+  <!--START: TASK : 9981 Summary  -->
+	<SummaryInformation>
+		<SummaryMapping>
+			<Summary>
+				<parameter name="year" />
+				<parameter name="income" />
+				<SummaryResource id="Income.SummaryMessage" />
+			</Summary>
+		</SummaryMapping>
+	</SummaryInformation>
+
+ <!--END : TASK : 9981 Summary  -->
+  <UserInterface>
+    <Cluster>
+      <RelCPCluster defaultToBlank="false" enableMultiMemberUpdates="false" fullCreateParticipant="false" isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" modifyOption="no" showParticipantTypeFilter="true" useSingleName="false">
+        <StandardField source="caseParticipant" modifiable="false"/>
+        <ClusterName id="Related.Participant.Cluster.ID2"/>
+        <LabelName id="Name.Label.ID2"/>
+        <RelCpPfx id="Participant.Description.ID2"/>
+        <FirstName id="First.Name.Label.ID2"/>
+        <SecondName id="Second.Name.Label.ID2"/>
+      </RelCPCluster>
+    </Cluster>
+    <Cluster>
+      <StandardCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" labelWidth="40" numberOfColumns="2">
+        <Title id="Cluster.Title.ID1"/>
+        <StandardClusterField>
+          <StandardField modifiable="true" source="year" useDefault="true">
+            <Label id="Field.Label.ID1"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField modifiable="true" source="income" useDefault="true">
+            <Label id="Field.Label.ID2"/>
+          </StandardField>
+        </StandardClusterField>
+      </StandardCluster>
+    </Cluster>
+     <!-- BEGIN: Attestation -->
+   <Cluster>
+      <StandardCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" labelWidth="40" numberOfColumns="2">
+        <Title id="Cluster.Title.Attestation"/>
+        <Description id="Cluster.Field.Attestation.Text1"/>
+        <StandardClusterField>
+          <SkipField/>
+        </StandardClusterField>
+      </StandardCluster>
+    </Cluster>
+	<Cluster>
+      <StandardCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" labelWidth="40" numberOfColumns="2">
+        <Description id="Cluster.Field.Attestation.Text2"/>
+        <StandardClusterField>
+          <SkipField/>
+        </StandardClusterField>
+      </StandardCluster>
+    </Cluster>
+    <Cluster>
+      <StandardCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" labelWidth="40" numberOfColumns="2">
+        <Description id="Cluster.Field.Attestation.Text3"/>
+        <StandardClusterField>
+          <SkipField/>
+        </StandardClusterField>
+      </StandardCluster>
+    </Cluster>
+    <Cluster>
+      <StandardCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" labelWidth="40" numberOfColumns="2">
+        <Description id="Cluster.Field.Attestation.Text4"/>
+        <StandardClusterField>
+          <SkipField/>
+        </StandardClusterField>
+      </StandardCluster>
+    </Cluster>
+    <Cluster>
+      <StandardCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" labelWidth="40" numberOfColumns="2">
+        <Description id="Cluster.Field.Attestation.Text5"/>
+        <StandardClusterField>
+          <SkipField/>
+        </StandardClusterField>
+      </StandardCluster>
+    </Cluster>
+     <Cluster>
+      <StandardCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" labelWidth="40" numberOfColumns="2">
+        <Description id="Cluster.Field.Attestation.Text6"/>
+         <StandardClusterField>
+          <StandardField modifiable="true" source="bdmAgreeAttestation" useBlank="true">
+            <Label id="Field.Label.bdmAttestationAgree"/>
+          </StandardField>
+        </StandardClusterField>
+      </StandardCluster>
+    </Cluster>
+     <!-- END: Attestation -->
+       <!-- BEGIN: Attestee Cluster-->
+     <Cluster>
+      <RelCPCluster defaultToBlank="false" enableMultiMemberUpdates="false" fullCreateParticipant="false" isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" modifyOption="multiple" showParticipantTypeFilter="true" useSingleName="false">
+        <StandardField source="attesteeCaseParticipant" modifiable="false"/>
+        <ClusterName id="Related.Participant.Cluster.ID4"/>
+        <LabelName id="Name.Label.ID4"/>
+        <RelCpPfx id="Participant.Description.ID4"/>
+        <FirstName id="First.Name.Label.ID4"/>
+        <SecondName id="Second.Name.Label.ID4"/>
+      </RelCPCluster>
+    </Cluster>
+    <Cluster>
+		<StandardCluster isOnCreatePage="false"
+			isOnModifyPage="false" isOnViewPage="true" labelWidth="40"
+			numberOfColumns="1">
+			<StandardClusterField>
+				<SkipField />
+			</StandardClusterField>
+			<StandardClusterField>
+				<StandardField modifiable="false"
+					source="attestationDate" useDefault="true">
+					<Label id="Field.Label.AttestationDate" />
+				</StandardField>
+			</StandardClusterField>
+		</StandardCluster>
+	</Cluster>
+    <!-- END: Attestee Cluster-->
+    <Cluster>
+      <CommentsCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true">
+        <Title id="Comments.Cluster.Title.ID3"/>
+        <StandardField source="comments"/>
+      </CommentsCluster>
+    </Cluster>
+  </UserInterface>
+</EvidenceTypeVersion>

@@ -1,0 +1,5 @@
+﻿/**
+ * @license Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or http://ckeditor.com/licensePortions Copyright IBM Corp., 2009-2016.
+ */
+CKEDITOR.plugins.setLang("uploadwidget","de",{abort:"Hochladen durch den Benutzer abgebrochen.",doneOne:"Datei erfolgreich hochgeladen.",doneMany:"%1 Dateien erfolgreich hochgeladen.",uploadOne:"Datei wird hochgeladen ({percentage}%)...",uploadMany:"Dateien werden hochgeladen, {current} von {max} abgeschlossen ({percentage}%)..."});

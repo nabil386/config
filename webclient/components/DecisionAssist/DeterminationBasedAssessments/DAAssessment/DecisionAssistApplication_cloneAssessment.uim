@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to clone a determination-based assessment.   -->
+<PAGE
+  PAGE_ID="DecisionAssistApplication_cloneAssessment"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="assessmentCaseID"/>
+  <SERVER_INTERFACE
+    CLASS="DAAssessment"
+    NAME="ASSESSMENTCONTEXT"
+    OPERATION="viewAssessmentContextDescription"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="DAAssessment"
+    NAME="CLONE_ASSESSMENT"
+    OPERATION="cloneAssessment"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="assessmentCaseID"
+    />
+    <TARGET
+      NAME="CLONE_ASSESSMENT"
+      PROPERTY="dtls$dtls$assessmentCaseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="assessmentCaseID"
+    />
+    <TARGET
+      NAME="ASSESSMENTCONTEXT"
+      PROPERTY="key$dtls$dtls$assessmentCaseID"
+    />
+  </CONNECT>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- BEGIN, CR00217013, PS -->
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="1"
+  >
+    <!-- END, CR00217013 -->
+    <FIELD LABEL="Field.Label.EffectiveDate">
+      <CONNECT>
+        <TARGET
+          NAME="CLONE_ASSESSMENT"
+          PROPERTY="dtls$dtls$effectiveDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+    </ACTION_CONTROL>
+    <!-- BEGIN, CR00213213, PS -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+    <!-- END, CR00213213 -->
+  </ACTION_SET>
+</PAGE>

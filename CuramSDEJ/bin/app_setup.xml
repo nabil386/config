@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant setup file for setting up Curam projects.
+  It is used to bootstrap a project.
+
+  You can use "ant -projecthelp" to get information about the important targets in this
+  build file.
+
+-->
+<project name="app_setup" default="main">
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="./app_properties.xml" />
+
+  <!--  **************************  -->
+  <!--  ***  Import Utilities  ***  -->
+  <!--  **************************  -->
+  <import file="./app_utilities.xml" />
+
+  <!--  ***************************  -->
+  <!--  ***  SETUP NEW PROJECT  ***  -->
+  <!--  ***************************  -->
+  <!-- Set up directories and build script for a new project -->
+  <target name="main">
+    <!-- Check for a CuramSDEJ installation -->
+    <antcall target="check.prop" inheritall="false">
+      <param name="prm.var" value="CURAMSDEJ"/>
+      <param name="prm.prop" value="sysenv.CURAMSDEJ"/>
+    </antcall>
+    <condition property="os.windows">
+      <os family="windows"/>
+    </condition>
+    <antcall target="setupproject.windows"/>
+    <antcall target="setupproject.nonwindows"/>
+
+    <!-- Create required directories -->
+    <antcall target="ini.directories" inheritAll="false"/>
+
+  </target>
+
+  <target name="setupproject.windows" if="os.windows" depends="get.lowercase.model">
+    <!-- Set up a new project on windows -->
+    <echo file="${SERVER_DIR}/build.bat" >
+echo off
+ant -buildfile %CURAMSDEJ%/bin/build.xml -Dproject.package=${prp.projname.lower} %*
+    </echo>
+    <echo file="${SERVER_DIR}/buildhelp.bat"
+      message="ant -buildfile %CURAMSDEJ%/bin/build.xml -Dproject.package=${prp.projname.lower} -projecthelp"/>
+    <echo file="${SERVER_DIR}/configtest.bat"
+      message="ant -buildfile %CURAMSDEJ%/bin/build.xml -Dproject.package=${prp.projname.lower} configtest"/>
+    <echo message="Type 'buildhelp' for help, 'build &lt;target&gt;' to build"/>
+  </target>
+
+  <target name="setupproject.nonwindows" unless="os.windows">
+    <fail message="The 'setupproject' target is currently only supported on Windows(tm)"/>
+  </target>
+
+</project>
+

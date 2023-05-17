@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright (c) 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="WorkspaceServices_viewServiceArea" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+    <PAGE_TITLE>
+        <CONNECT> 
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+        </CONNECT>
+        <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="name" />
+        </CONNECT>
+    </PAGE_TITLE>
+    <SERVER_INTERFACE CLASS="ServiceArea" NAME="DISPLAY" OPERATION="readServiceArea" />
+    <SERVER_INTERFACE CLASS="ServiceArea" NAME="DISPLAYZIP" OPERATION="listZipsForServiceArea" />
+    <SERVER_INTERFACE CLASS="ServiceArea" NAME="DISPLAYCOUNTY" OPERATION="listCountiesForServiceArea" />
+    <PAGE_PARAMETER NAME="serviceAreaID" />
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="serviceAreaID" />
+        <TARGET NAME="DISPLAY" PROPERTY="key$serviceAreaID" />
+    </CONNECT>
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="serviceAreaID" />
+        <TARGET NAME="DISPLAYZIP" PROPERTY="key$serviceAreaID" />
+    </CONNECT>
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="serviceAreaID" />
+        <TARGET NAME="DISPLAYCOUNTY" PROPERTY="key$serviceAreaID" />
+    </CONNECT>
+     
+  <CLUSTER NUM_COLS="2" STYLE="outer-cluster-borderless">
+    <LIST TITLE="List.Title.Counties">
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+        <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+          <LINK PAGE_ID="WorkspaceServices_removeCountyFromServiceArea" OPEN_MODAL="true">
+            <CONNECT>
+              <SOURCE NAME="DISPLAYCOUNTY" PROPERTY="serviceAreaLinkID" />
+              <TARGET NAME="PAGE" PROPERTY="serviceAreaLinkID" />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE NAME="DISPLAYCOUNTY" PROPERTY="codeDescription" />
+              <TARGET NAME="PAGE" PROPERTY="name" />
+            </CONNECT>               
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+      <FIELD LABEL="Field.Title.County" WIDTH="100">
+        <CONNECT>
+          <SOURCE NAME="DISPLAYCOUNTY" PROPERTY="codeDescription" />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+    <LIST TITLE="List.Title.ZipCodes">
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+        <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+          <LINK PAGE_ID="WorkspaceServices_removeZipFromServiceArea" OPEN_MODAL="true">
+            <CONNECT>
+              <SOURCE NAME="DISPLAYZIP" PROPERTY="serviceAreaLinkID" />
+              <TARGET NAME="PAGE" PROPERTY="serviceAreaLinkID" />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE NAME="DISPLAYZIP" PROPERTY="codeDescription" />
+              <TARGET NAME="PAGE" PROPERTY="name" />
+            </CONNECT>            
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+      <FIELD LABEL="Field.Title.ZipCode" WIDTH="100">
+        <CONNECT>
+          <SOURCE NAME="DISPLAYZIP" PROPERTY="codeDescription" />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>     
+    
+   
+
+
+</PAGE>

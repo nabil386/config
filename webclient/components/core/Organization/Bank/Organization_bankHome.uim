@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  PID 5725-H26
+
+	Copyright IBM Corporation 2007, 2013. All rights reserved.
+
+	US Government Users Restricted Rights - Use, duplication or disclosure
+	restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Bank home page.                                                        -->
+<PAGE
+  PAGE_ID="Organization_bankHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- BEGIN, CR00388421, MV -->
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAY1"
+    OPERATION="isBankBranchSearchenabled"
+  />
+  <!-- END, CR00388421 -->
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.BankHome"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="Organization_bankHome"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="bankID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="bankID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- BEGIN, CR00388421, MV -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.BankBranch"
+      STYLE="in-page-link"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY1"
+          PROPERTY="isBankBranchSearchenabled"
+        />
+      </CONDITION>
+      <LINK
+        PAGE_ID="Organization_SearchAndListBankBranch"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="bankID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="bankID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.BankBranch"
+      STYLE="in-page-link"
+    >
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY1"
+          PROPERTY="isBankBranchSearchenabled"
+        />
+      </CONDITION>
+      <!-- END, CR00388421 -->
+      <LINK
+        PAGE_ID="Organization_listBankBranch"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="bankID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="bankID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- BEGIN, CR00071552, GBA -->
+  <!-- END, CR00071552 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAY"
+    OPERATION="readBank"
+  />
+
+
+  <SHORTCUT_TITLE ICON="bank.icon">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="name"
+      />
+    </CONNECT>
+  </SHORTCUT_TITLE>
+
+
+  <PAGE_PARAMETER NAME="bankID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="bankID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="bankKeyStruct$bankID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="25"
+    NUM_COLS="2"
+  >
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Website">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="websiteAddress"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.BankStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="bankStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

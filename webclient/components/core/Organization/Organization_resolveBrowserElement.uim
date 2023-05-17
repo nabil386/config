@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002-2004, 2008 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This jsp redirects the user to the Organization Structure browser.-->
+<!-- Each element type value is matched to an org structure browser.-->
+<PAGE
+  PAGE_ID="Organization_resolveBrowserElement"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String organisationStructureID = request.getParameter("organisationStructureID");    
+      String organisationUnitID = request.getParameter("organisationUnitID");     
+      String url = "";
+  
+      if(organisationStructureID == null) 
+        { 
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "organisationStructureID");
+       System.out.println(e);
+       throw e;
+       // END, CR00110216 
+       }    
+
+      if (organisationUnitID == null) {
+  
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "ID");
+       System.out.println(e);
+       throw e;
+               
+      
+      } else {
+      
+        url = context + 
+        
+           "Organization_orgStructureBrowserPage.do?organisationStructureID="
+            + curam.omega3.request.RequestUtils.escapeURL(organisationStructureID) + "&amp;elementID="
+            + curam.omega3.request.RequestUtils.escapeURL(organisationUnitID) + "&amp;elementType=ELT1" ;
+      
+      }
+      // END, CR00110216 
+      response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+</PAGE>

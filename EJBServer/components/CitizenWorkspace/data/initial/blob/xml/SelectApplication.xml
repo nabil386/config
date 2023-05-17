@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2016. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="page-schema.xsd">
+    <identifier name="Select Application" />
+    <server alias="DISPLAY" method="listApplicationsByCategory" />
+    <header>
+        <title id="Page.Title" />
+        <description id="SelectApplication.Description" />
+        <icon id="title_selectprogram" />
+    </header>
+    <content>
+        <container conditionalSource="/DISPLAY/xmlString/showPrintApplicationFormsLink" false="false">
+          <container style="cw-text-pluggable" conditionalSource="/DISPLAY/xmlString/formsExist">
+            <description id="Print.Label"/>
+            
+            <field source="/PAGE/id" type="CW_HYPERLINKS">
+                <title id="Print.Link.Label" />
+                <param name="in-description" value="true" />
+                <param name="uri-prefix" value="PlayerPage.do?page=PrintApplicationForms%26id="/>
+                <param name="open-new" value="false"/>
+                <param name="title" id="Print.Link.Label"/>
+            </field> 
+          </container>
+        </container>
+        <container>
+            <title id="Applications.Title" />
+            <description id="Applications.Description" />
+            <help id="Applications.Help" />
+            <iterator>
+                <list source="/DISPLAY/xmlString/applications[]">
+                    <title source="/DISPLAY/xmlString/applications[]/title" />
+                    <description source="/DISPLAY/xmlString/applications[]/description" />
+                    <param name="title-link-url" source="/DISPLAY/xmlString/applications[]/url" />
+                    <param name="title-link-label" id="Applications.More.Info" />
+                    <param name="title-link-title-param" source="/DISPLAY/xmlString/applications[]/title"/>
+                    <param name="title-link-title" id="Applications.More.Info"/>
+                    <field source="/DISPLAY/xmlString/applications[]/application[]/id" target="/ans/applicationID" type="CW_APPLICATION_SELECT" width="3">
+                        <title source="/DISPLAY/xmlString/applications[]/application[]/title" />
+                        <description source="/DISPLAY/xmlString/applications[]/application[]/description" />
+                        <help source="/DISPLAY/xmlString/applications[]/application[]/url" />
+                        <param name="help-label" id="Applications.More.Info" />
+                        <param name="labelClass" value="label-highlight" />
+                        <param name="title-param-separator" value=" for "/>
+                    </field>
+                </list>
+            </iterator>
+        </container>
+    </content>
+    <navigation>
+		<nav-button name="exit" page="ResolveCitizenHome" page-type="resolve" />
+		<nav-button name="next" type="action" />
+    </navigation>
+</page>

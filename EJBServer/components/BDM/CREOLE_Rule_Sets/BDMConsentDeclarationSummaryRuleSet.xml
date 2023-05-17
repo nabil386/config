@@ -1,0 +1,490 @@
+<RuleSet name="BDMConsentDeclarationSummaryRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class extends="DefaultEvidenceSummary"
+		extendsRuleSet="EvidenceSummaryRuleSet" name="SummaryInformation">
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="BDMConsentDeclaration"
+					ruleset="BDMConsentDeclarationRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+        <Attribute name="summary">
+          <type>
+            <javaclass name="curam.creole.value.Message" />
+          </type>
+          <derivation>
+            <choose>
+                <type>
+                    <javaclass name="curam.creole.value.Message" />
+                </type>
+                <when>
+                    <condition>
+                        <reference attribute="mandatoryFieldsMissing" />
+                    </condition>
+                    <value>
+                        <ResourceMessage key="MandatoryFieldsMissing.Message"
+                            resourceBundle="curam.ca.gc.bdm.evidence.BDMConsentDeclarationSummaryRuleSet">
+                        </ResourceMessage>
+                    </value>
+                </when>
+                <when>
+                    <condition>
+                        <reference attribute="signedWithMarkWitnessNotPresent" />
+                    </condition>
+                    <value>
+                        <ResourceMessage key="MarkedWitnessMissing.Message"
+                            resourceBundle="curam.ca.gc.bdm.evidence.BDMConsentDeclarationSummaryRuleSet">
+                        </ResourceMessage>
+                    </value>
+                </when>
+                <when>
+                    <condition>
+                        <reference attribute="notSignedWitnessNotPresent" />
+                    </condition>
+                    <value>
+                        <ResourceMessage key="NotSignedWitnessMissing.Message"
+                            resourceBundle="curam.ca.gc.bdm.evidence.BDMConsentDeclarationSummaryRuleSet">
+                        </ResourceMessage>
+                    </value>
+                </when>
+                <when>
+                    <condition>
+                        <reference attribute="conditionalFieldsMissing" />
+                    </condition>
+                    <value>
+                        <ResourceMessage key="MandatoryFieldsMissing.Message"
+                            resourceBundle="curam.ca.gc.bdm.evidence.BDMConsentDeclarationSummaryRuleSet">
+                        </ResourceMessage>
+                    </value>
+                </when>
+                <when>
+                    <condition>
+                        <reference attribute="signedWithMarkWitnessPresent" />
+                    </condition>
+                    <value>
+                        <ResourceMessage key="Marked.Message"
+                            resourceBundle="curam.ca.gc.bdm.evidence.BDMConsentDeclarationSummaryRuleSet">
+                            <reference attribute="dateSigned">
+                                <reference attribute="evidence" />
+                            </reference>
+                            <reference attribute="witnessName" />
+                        </ResourceMessage>
+                    </value>
+                </when>
+                <when>
+                    <condition>
+                        <reference attribute="notSignedWitnessPresent" />
+                    </condition>
+                    <value>
+                        <ResourceMessage key="NotSigned.Message"
+                            resourceBundle="curam.ca.gc.bdm.evidence.BDMConsentDeclarationSummaryRuleSet">
+                            <reference attribute="witnessName" />
+                            <reference attribute="witnessDateSigned">
+                                <reference attribute="evidence" />
+                            </reference>
+                        </ResourceMessage>
+                    </value>
+                </when>
+                <otherwise>
+                    <value>
+                        <ResourceMessage key="Signed.Message"
+                            resourceBundle="curam.ca.gc.bdm.evidence.BDMConsentDeclarationSummaryRuleSet">
+                            <reference attribute="dateSigned">
+                                <reference attribute="evidence" />
+                            </reference>
+                        </ResourceMessage>
+                    </value>
+                </otherwise>
+            </choose>
+          </derivation>
+        </Attribute>
+        <Attribute name="mandatoryFieldsMissing">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <any>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <equals>
+                                <null/>
+                                <reference attribute="participant">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                            <equals>
+                                <Number value="0" />
+                                <reference attribute="participant">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                            <equals>
+                                <null/>
+                                <reference attribute="signatureType">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                        </members>
+                    </fixedlist>
+                </any>
+            </derivation>
+        </Attribute>
+        <Attribute name="signedWithMarkWitnessNotPresent">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <all>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <equals>
+                                <Code table="BDMSignatureType">
+                                    <String value="SST2" />
+                                </Code>
+                                <reference attribute="signatureType">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                            <equals>
+                                <null/>
+                                <reference attribute="witness">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                        </members>
+                    </fixedlist>
+                </all>
+            </derivation>
+        </Attribute>
+        <Attribute name="signedWithMarkWitnessPresent">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <all>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <equals>
+                                <Code table="BDMSignatureType">
+                                    <String value="SST2" />
+                                </Code>
+                                <reference attribute="signatureType">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                            <not>
+                                <equals>
+                                    <null/>
+                                    <reference attribute="witness">
+                                        <reference attribute="evidence" />
+                                    </reference>
+                                </equals>
+                            </not>
+                        </members>
+                    </fixedlist>
+                </all>
+            </derivation>
+        </Attribute>
+        <Attribute name="notSignedWitnessNotPresent">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <all>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <equals>
+                                <Code table="BDMSignatureType">
+                                    <String value="SST3" />
+                                </Code>
+                                <reference attribute="signatureType">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                            <equals>
+                                <null/>
+                                <reference attribute="witness">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                        </members>
+                    </fixedlist>
+                </all>
+            </derivation>
+        </Attribute>
+        <Attribute name="notSignedWitnessPresent">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <all>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <equals>
+                                <Code table="BDMSignatureType">
+                                    <String value="SST3" />
+                                </Code>
+                                <reference attribute="signatureType">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                            <not>
+                                <equals>
+                                    <null/>
+                                    <reference attribute="witness">
+                                        <reference attribute="evidence" />
+                                    </reference>
+                                </equals>
+                            </not>
+                        </members>
+                    </fixedlist>
+                </all>
+            </derivation>
+        </Attribute>
+        <Attribute name="conditionalFieldsMissing">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <any>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <reference attribute="dateSignedMissing" />
+                            <reference attribute="isWitnessFalseForSignedWithMark" />
+                            <reference attribute="isSigningOnBehalfFalseForNotSigned" />
+                            <reference attribute="witnessDateSignedMissing" />
+                            <reference attribute="witnessRelationshipMissing" />
+                        </members>
+                    </fixedlist>
+                </any>
+            </derivation>
+        </Attribute>
+        <Attribute name="dateSignedMissing">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <all>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <any>
+                                <fixedlist>
+                                    <listof>
+                                        <javaclass name="Boolean" />
+                                    </listof>
+                                    <members>
+                                        <equals>
+                                            <Code table="BDMSignatureType">
+                                                <String value="SST1" />
+                                            </Code>
+                                            <reference attribute="signatureType">
+                                                <reference attribute="evidence" />
+                                            </reference>
+                                        </equals>
+                                        <equals>
+                                            <Code table="BDMSignatureType">
+                                                <String value="SST2" />
+                                            </Code>
+                                            <reference attribute="signatureType">
+                                                <reference attribute="evidence" />
+                                            </reference>
+                                        </equals>
+                                    </members>
+                                </fixedlist>
+                            </any>
+                            <equals>
+                                <null/>
+                                <reference attribute="dateSigned">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                        </members>
+                    </fixedlist>
+                </all>
+            </derivation>
+        </Attribute>
+        <Attribute name="isWitnessFalseForSignedWithMark">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <all>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <equals>
+                                <Code table="BDMSignatureType">
+                                    <String value="SST2" />
+                                </Code>
+                                <reference attribute="signatureType">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                            <equals>
+                                <false/>
+                                <reference attribute="isWitness">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                        </members>
+                    </fixedlist>
+                </all>
+            </derivation>
+        </Attribute>
+        <Attribute name="isSigningOnBehalfFalseForNotSigned">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <all>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <equals>
+                                <Code table="BDMSignatureType">
+                                    <String value="SST3" />
+                                </Code>
+                                <reference attribute="signatureType">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                            <equals>
+                                <false/>
+                                <reference attribute="isSigningOnBehalf">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                        </members>
+                    </fixedlist>
+                </all>
+            </derivation>
+        </Attribute>
+        <Attribute name="witnessDateSignedMissing">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <all>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <not>
+                                <equals>
+                                    <null/>
+                                    <reference attribute="witness">
+                                        <reference attribute="evidence" />
+                                    </reference>
+                                </equals>
+                            </not>
+                            <not>
+                                <equals>
+                                    <Number value="0" />
+                                    <reference attribute="witness">
+                                        <reference attribute="evidence" />
+                                    </reference>
+                                </equals>
+                            </not>
+                            <equals>
+                                <null/>
+                                <reference attribute="witnessDateSigned">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                        </members>
+                    </fixedlist>
+                </all>
+            </derivation>
+        </Attribute>
+        <Attribute name="witnessRelationshipMissing">
+            <type>
+                <javaclass name="Boolean" />
+            </type>
+            <derivation>
+                <all>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="Boolean" />
+                        </listof>
+                        <members>
+                            <not>
+                                <equals>
+                                    <null/>
+                                    <reference attribute="witness">
+                                        <reference attribute="evidence" />
+                                    </reference>
+                                </equals>
+                            </not>
+                            <not>
+                                <equals>
+                                    <Number value="0" />
+                                    <reference attribute="witness">
+                                        <reference attribute="evidence" />
+                                    </reference>
+                                </equals>
+                            </not>
+                            <equals>
+                                <null/>
+                                <reference attribute="relationshipType">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                        </members>
+                    </fixedlist>
+                </all>
+            </derivation>
+        </Attribute>
+        <Attribute name="witnessName">
+            <type>
+                <javaclass name="String" />
+            </type>
+            <derivation>
+                <reference attribute="concernRoleName">
+                    <singleitem onEmpty="error" onMultiple="error">
+                        <readall ruleclass="ConcernRole"
+                            ruleset="ParticipantEntitiesRuleSet">
+                            <match retrievedattribute="concernRoleID">
+                                <reference attribute="participantRoleID">
+                                    <reference
+                                        attribute="related_witness">
+                                        <reference attribute="evidence" />
+                                    </reference>
+                                </reference>
+                            </match>
+                        </readall>
+                    </singleitem>
+                </reference>
+            </derivation>
+        </Attribute>
+	</Class>
+</RuleSet>

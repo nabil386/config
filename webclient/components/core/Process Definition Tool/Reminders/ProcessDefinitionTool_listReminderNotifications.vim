@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<VIEW
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Separator"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="activityName"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="processID"/>
+  <PAGE_PARAMETER NAME="processVersionNo"/>
+  <PAGE_PARAMETER NAME="activityID"/>
+  <PAGE_PARAMETER NAME="activityType"/>
+  <SERVER_INTERFACE
+    CLASS="ReminderAdmin"
+    NAME="DISPLAY"
+    OPERATION="listReminderNotifications"
+    PHASE="DISPLAY"
+  />
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.New"
+      TYPE="ACTION"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProcessDefinitionTool_createReminderNotification"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processVersionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processVersionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="activityName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="activityName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="activityID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="activityID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="processID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processVersionNo"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="processVersionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="activityID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="activityID"
+    />
+  </CONNECT>
+  <LIST>
+    <FIELD LABEL="Field.Label.NotificationSubjectName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="notificationSubject"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DeliveryTime">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="listReminderDeliveryTime"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</VIEW>

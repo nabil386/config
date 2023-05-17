@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view Report Configuration details.        -->
+<PAGE
+  PAGE_ID="System_viewReportConfiguration"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="ReportConfiguration"
+    NAME="DISPLAY"
+    OPERATION="readReportConfigurationViewDetails"
+  />
+
+
+  <PAGE_PARAMETER NAME="biReportConfigurationID"/>
+  <PAGE_PARAMETER NAME="reportName"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="biReportConfigurationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$biReportConfigurationID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="28"
+    NUM_COLS="2"
+  >
+    <FIELD LABEL="Field.Title.ReportServlet">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reportServlet"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Parameters"
+  >
+    <FIELD LABEL="Field.Title.Width">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="width"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.Scrolling">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="scrolling"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.Height">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="height"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.ReportFrameborder">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reportFrameborder"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Description"
+  >
+    <FIELD HEIGHT="4">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.ReportParameters">
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.EditParameter">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_modifyConfigurationParameter"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="reportParamDtlsList$biReportParameterID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="biReportParameterID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.DeleteParameter">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_deleteConfigurationParameter"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="reportParamDtlsList$biReportParameterID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="biReportParameterID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="34"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reportParamDtlsList$name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Value"
+      WIDTH="66"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reportParamDtlsList$value"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

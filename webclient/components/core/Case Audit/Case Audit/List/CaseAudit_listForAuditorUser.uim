@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Page for display the list of Case Audits for a given Auditor.          -->
+<PAGE
+  PAGE_ID="CaseAudit_listForAuditorUser"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00290965, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="SEARCH"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00290965 -->
+
+
+  <PAGE_PARAMETER NAME="assignedToList"/>
+  <PAGE_PARAMETER NAME="auditStatusList"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="CaseAudit"
+    NAME="DISPLAY"
+    OPERATION="listInProgressCaseAuditStatuses"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Auditor"
+    NAME="DISPLAYASSIGNED"
+    OPERATION="listAuditorAndTeams"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="CaseAudit"
+    NAME="SEARCH"
+    OPERATION="listCaseAuditsForCurrentUser"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="CaseAudit"
+    NAME="ACTION"
+    OPERATION="getMyCaseAuditsListKey"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="assignedToList"
+    />
+    <TARGET
+      NAME="SEARCH"
+      PROPERTY="key$assignedToList"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="auditStatusList"
+    />
+    <TARGET
+      NAME="SEARCH"
+      PROPERTY="key$auditStatusList"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    SHOW_LABELS="false"
+    STYLE="cluster-cpr-grey-background"
+    TITLE="Cluster.SearchDetails.Title"
+  >
+
+
+    <LIST >
+
+
+      <CONTAINER
+        ALIGNMENT="CENTER"
+        WIDTH="10"
+      >
+
+
+        <WIDGET TYPE="MULTISELECT">
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAYASSIGNED"
+                PROPERTY="result$auditorDtlsList$dtls$auditorID"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="key$assignedToList"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+            <CONNECT>
+              <SOURCE
+                NAME="SEARCH"
+                PROPERTY="key$assignedToList"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+
+
+      </CONTAINER>
+
+
+      <FIELD LABEL="Field.Label.AssignedTo">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAYASSIGNED"
+            PROPERTY="result$auditorDtlsList$dtls$name"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </LIST>
+
+
+    <LIST >
+
+
+      <CONTAINER
+        ALIGNMENT="CENTER"
+        WIDTH="10"
+      >
+
+
+        <WIDGET TYPE="MULTISELECT">
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$availableStatuses$dtlsList$caseAuditCode"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="key$auditStatusList"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+            <CONNECT>
+              <SOURCE
+                NAME="SEARCH"
+                PROPERTY="key$auditStatusList"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+
+
+      </CONTAINER>
+
+
+      <FIELD LABEL="Field.Label.AuditStatus">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$availableStatuses$dtlsList$description"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </LIST>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="FALSE"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <!-- BEGIN, CR00266099, GD -->
+        <LINK PAGE_ID="CaseAudit_listForAuditorUser">
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$assignedToList"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="assignedToList"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$auditStatusList"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="auditStatusList"
+            />
+          </CONNECT>
+
+
+        </LINK>
+        <!-- END, CR00266099 -->
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="CaseAudit_resolveListForAuditorUser">
+        
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+    <FIELD
+      LABEL="List.Title.AuditReference"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="SEARCH"
+          PROPERTY="result$dtls$caseAuditReference"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="CaseAudit_resolveCaseAuditHome">
+        <CONNECT>
+          <SOURCE
+            NAME="SEARCH"
+            PROPERTY="result$dtls$caseAuditID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseAuditID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="List.Title.CaseReference"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="SEARCH"
+          PROPERTY="result$dtls$caseRef"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE
+            NAME="SEARCH"
+            PROPERTY="result$dtls$caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="List.Title.AuditItem"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="SEARCH"
+          PROPERTY="result$dtls$caseTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="List.Title.ClientName"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="SEARCH"
+          PROPERTY="result$dtls$caseClientFullName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Person_resolveHomePage"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="SEARCH"
+            PROPERTY="result$dtls$caseClientConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="List.Title.DateAssigned"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="SEARCH"
+          PROPERTY="result$dtls$dateAssigned"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="List.Title.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="SEARCH"
+          PROPERTY="result$dtls$caseAuditStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

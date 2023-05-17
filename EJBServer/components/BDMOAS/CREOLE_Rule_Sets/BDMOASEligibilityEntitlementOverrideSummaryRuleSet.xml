@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Feature 70518: Manage Override Evidence -->
+<RuleSet name="BDMOASEligibilityEntitlementOverrideSummaryRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class extends="DefaultEvidenceSummary"
+		extendsRuleSet="EvidenceSummaryRuleSet" name="SummaryInformation">
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="BDMOASEligibilityEntitlementOverride"
+					ruleset="BDMOASEligibilityEntitlementOverrideRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="summary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Message" />
+					</type>
+					<test>
+						<reference attribute="overrideValue">
+							<reference attribute="evidence"></reference>
+						</reference>
+					</test>
+					<when>
+						<condition>
+							<Code table="BDMOASOverrideValue">
+								<String value="OVGEN1" />
+							</Code>
+						</condition>
+						<value>
+							<reference attribute="considered60Summary" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="BDMOASOverrideValue">
+								<String value="OVGEN2" />
+							</Code>
+						</condition>
+						<value>
+							<reference attribute="datelessGeneralSummary" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="BDMOASOverrideValue">
+								<String value="OVGEN3" />
+							</Code>
+						</condition>
+						<value>
+							<reference attribute="datelessGeneralSummary" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="BDMOASOverrideValue">
+								<String value="OVELG1" />
+							</Code>
+						</condition>
+						<value>
+							<reference attribute="eligibleSummary" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="BDMOASOverrideValue">
+								<String value="OVELG2" />
+							</Code>
+						</condition>
+						<value>
+							<reference attribute="ineligibleSummary" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="BDMOASOverrideValue">
+								<String value="OVENT1" />
+							</Code>
+						</condition>
+						<value>
+							<reference attribute="entitlementAmountSummary" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="BDMOASOverrideValue">
+								<String value="OVENT2" />
+							</Code>
+						</condition>
+						<value>
+							<reference attribute="numberAmountSummary" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="BDMOASOverrideValue">
+								<String value="OVENT4" />
+							</Code>
+						</condition>
+						<value>
+							<reference attribute="numberAmountSummary" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="BDMOASOverrideValue">
+								<String value="OVENT8" />
+							</Code>
+						</condition>
+						<value>
+							<reference attribute="sqfSummary" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="BDMOASOverrideValue">
+								<String value="OVENT7" />
+							</Code>
+						</condition>
+						<value>
+							<reference attribute="paymentIncomeSummary" />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<reference attribute="genericSummary" />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="considered60Summary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="ConsideredSixty.SummaryMessage"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASEligibilityEntitlementOverrideSummaryRuleSet">
+					<reference attribute="fromDate">
+						<reference attribute="evidence"></reference>
+					</reference>
+					<reference attribute="reason">
+						<reference attribute="evidence"></reference>
+					</reference>
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="datelessGeneralSummary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="DatelessGeneral.SummaryMessage"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASEligibilityEntitlementOverrideSummaryRuleSet">
+					<reference attribute="overrideValue">
+						<reference attribute="evidence"></reference>
+					</reference>
+					<reference attribute="reason">
+						<reference attribute="evidence"></reference>
+					</reference>
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="eligibleSummary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="IsEligible.SummaryMessage"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASEligibilityEntitlementOverrideSummaryRuleSet">
+					<reference attribute="benefitType">
+						<reference attribute="evidence"></reference>
+					</reference>
+					<reference attribute="reason">
+						<reference attribute="evidence"></reference>
+					</reference>
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="ineligibleSummary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="Ineligible.SummaryMessage"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASEligibilityEntitlementOverrideSummaryRuleSet">
+					<reference attribute="benefitType">
+						<reference attribute="evidence"></reference>
+					</reference>
+					<reference attribute="reason">
+						<reference attribute="evidence"></reference>
+					</reference>
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="entitlementAmountSummary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="EntitlementAmount.SummaryMessage"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASEligibilityEntitlementOverrideSummaryRuleSet">
+					<reference attribute="dollarAmount">
+						<reference attribute="evidence"></reference>
+					</reference>
+					<reference attribute="benefitType">
+						<reference attribute="evidence"></reference>
+					</reference>
+					<reference attribute="reason">
+						<reference attribute="evidence"></reference>
+					</reference>
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="numberAmountSummary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="NumberAmount.SummaryMessage"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASEligibilityEntitlementOverrideSummaryRuleSet">
+					<reference attribute="numberAmount">
+						<reference attribute="evidence"></reference>
+					</reference>
+					<reference attribute="overrideValue">
+						<reference attribute="evidence"></reference>
+					</reference>
+					<reference attribute="reason">
+						<reference attribute="evidence"></reference>
+					</reference>
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="sqfSummary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="SQF.SummaryMessage"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASEligibilityEntitlementOverrideSummaryRuleSet">
+					<reference attribute="numberAmount">
+						<reference attribute="evidence"></reference>
+					</reference>
+					<reference attribute="benefitType">
+						<reference attribute="evidence"></reference>
+					</reference>
+					<reference attribute="reason">
+						<reference attribute="evidence"></reference>
+					</reference>
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="paymentIncomeSummary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="PaymentIncome.SummaryMessage"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASEligibilityEntitlementOverrideSummaryRuleSet">
+					<reference attribute="dollarAmount">
+						<reference attribute="evidence"></reference>
+					</reference>
+					<reference attribute="benefitType">
+						<reference attribute="evidence"></reference>
+					</reference>
+					<reference attribute="reason">
+						<reference attribute="evidence"></reference>
+					</reference>
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="genericSummary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="Generic.SummaryMessage"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASEligibilityEntitlementOverrideSummaryRuleSet">
+					<reference attribute="overrideValue">
+						<reference attribute="evidence"></reference>
+					</reference>
+					<reference attribute="benefitType">
+						<reference attribute="evidence"></reference>
+					</reference>
+					<reference attribute="reason">
+						<reference attribute="evidence"></reference>
+					</reference>
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

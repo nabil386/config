@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<workflow-process id="28478" process-version="1" language-version="1.0" released="true" category="WKSRV" createdBy="admin" creationDate="20080721T172637"> 
+  <name>ProcessIntakeApplication</name>  
+  <process-display-name> 
+    <localized-text> 
+      <locale language="fr">Traitement des demandes d'admission</locale>  
+      <locale language="en">Process Intake Application</locale>
+    </localized-text> 
+  </process-display-name>  
+  <description> 
+    <localized-text> 
+      <locale language="fr">Ce flux de travaux traite les demandes d'admission reçues en ligne.</locale>  
+      <locale language="en">This workflow processes Intake Applications received online.</locale>
+    </localized-text> 
+  </description>  
+  <enactment-mappings> 
+    <mapping> 
+      <source-attribute struct-name="curam.workspaceservices.workflow.struct.ProcessIntakeApplicationEnactmentDetails" name="intakeApplicationID"/>  
+      <target-attribute wdo-name="IntakeApplicationDetails" name="intakeApplicationID"/> 
+    </mapping>  
+    <mapping> 
+      <source-attribute struct-name="curam.workspaceservices.workflow.struct.ProcessIntakeApplicationEnactmentDetails" name="curamProgramTypesAppliedForInd"/>  
+      <target-attribute wdo-name="IntakeApplicationDetails" name="curamProgramTypesAppliedFor"/> 
+    </mapping>  
+    <mapping> 
+      <source-attribute struct-name="curam.workspaceservices.workflow.struct.ProcessIntakeApplicationEnactmentDetails" name="legacyProgramTypesAppliedForInd"/>  
+      <target-attribute wdo-name="IntakeApplicationDetails" name="legacyProgramTypesAppliedFor"/> 
+    </mapping> 
+  </enactment-mappings>  
+  <wdos> 
+    <wdo is-list-wdo="false" initialize-attributes="false"> 
+      <wdo-name>IntakeApplicationDetails</wdo-name>  
+      <display-name> 
+        <localized-text> 
+          <locale language="fr">IntakeApplicationDetails</locale>  
+          <locale language="en">IntakeApplicationDetails</locale>
+        </localized-text> 
+      </display-name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Détails de IntakeApplication</locale>  
+          <locale language="en">IntakeApplication Details</locale>
+        </localized-text> 
+      </description>  
+      <attributes> 
+        <attribute> 
+          <attribute-name>intakeApplicationID</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">intakeApplicationID</locale>  
+              <locale language="en">intakeApplicationID</locale>
+            </localized-text> 
+          </display-name>  
+          <type>INT64</type>  
+          <required-at-enactment>true</required-at-enactment>  
+          <process-output>false</process-output> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>curamProgramTypesAppliedFor</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">curamProgramTypesAppliedFor</locale>  
+              <locale language="en">curamProgramTypesAppliedFor</locale>
+            </localized-text> 
+          </display-name>  
+          <type>BOOLEAN</type>  
+          <required-at-enactment>true</required-at-enactment>  
+          <process-output>false</process-output> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>legacyProgramTypesAppliedFor</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">legacyProgramTypesAppliedFor</locale>  
+              <locale language="en">legacyProgramTypesAppliedFor</locale>
+            </localized-text> 
+          </display-name>  
+          <type>BOOLEAN</type>  
+          <required-at-enactment>true</required-at-enactment>  
+          <process-output>false</process-output> 
+        </attribute> 
+      </attributes> 
+    </wdo> 
+  </wdos>  
+  <activities> 
+    <start-process-activity id="1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité de processus de début</locale>  
+          <locale language="en">Start Process Activity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de début</locale>  
+          <locale language="en">The start process activity</locale>
+        </localized-text> 
+      </description>  
+      <split type="none"> 
+        <transition-id idref="1"/> 
+      </split> 
+    </start-process-activity>  
+    <end-process-activity id="2"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de fin</locale>  
+          <locale language="en">End Process Activity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de fin</locale>  
+          <locale language="en">The end process activity</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/> 
+    </end-process-activity>  
+    <automatic-activity id="3" category="AC1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Créer un PDF d'admission</locale>  
+          <locale language="en">Create Intake PDF</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Permet de créer un PDF représentant les données d'admission et de les associer à l'enregistrement IntakeApplication.</locale>  
+          <locale language="en">Create a PDF representing the intake data and associate it with the IntakeApplication record</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/>  
+      <split type="xor"> 
+        <transition-id idref="2"/>  
+        <transition-id idref="3"/> 
+      </split>  
+      <bpo-mapping interface-name="curam.workspaceservices.workflow.intf.WSWorkflowHelper" method-name="createIntakeDataPDF"> 
+        <formal-parameters> 
+          <formal-parameter index="0"> 
+            <struct type="curam.workspaceservices.workflow.struct.ProcessApplicationKey"> 
+              <field name="intakeApplicationID"> 
+                <base-type type="INT64"> 
+                  <wdo-attribute wdo-name="IntakeApplicationDetails" name="intakeApplicationID"/> 
+                </base-type> 
+              </field>  
+              <field name="processInstanceID"> 
+                <base-type type="INT64"> 
+                  <wdo-attribute wdo-name="Context_RuntimeInformation" name="processInstanceID"/> 
+                </base-type> 
+              </field> 
+            </struct> 
+          </formal-parameter> 
+        </formal-parameters> 
+      </bpo-mapping> 
+    </automatic-activity>  
+    <automatic-activity id="4" category="AC1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">InvokeWorkspaceServices</locale>  
+          <locale language="en">InvokeWorkspaceServices</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Permet d'appeler le traitement de demande de services Web.</locale>  
+          <locale language="en">Invokes the web services application processing.</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="11"/> 
+      </split>  
+      <bpo-mapping interface-name="curam.workspaceservices.workflow.intf.WSWorkflowHelper" method-name="mapFromDataStoreToCuram"> 
+        <formal-parameters> 
+          <formal-parameter index="0"> 
+            <struct type="curam.workspaceservices.workflow.struct.ProcessApplicationKey"> 
+              <field name="intakeApplicationID"> 
+                <base-type type="INT64"> 
+                  <wdo-attribute wdo-name="IntakeApplicationDetails" name="intakeApplicationID"/> 
+                </base-type> 
+              </field>  
+              <field name="processInstanceID"> 
+                <base-type type="INT64"> 
+                  <wdo-attribute wdo-name="Context_RuntimeInformation" name="processInstanceID"/> 
+                </base-type> 
+              </field> 
+            </struct> 
+          </formal-parameter> 
+        </formal-parameters> 
+      </bpo-mapping> 
+    </automatic-activity>  
+    <automatic-activity id="5" category="AC1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">InvokeLegacySystemProcessig</locale>  
+          <locale language="en">InvokeLegacySystemProcessig</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Permet d'appeler le ou les systèmes en vigueur pour transmettre les données de demande d'admission pour traitement.</locale>  
+          <locale language="en">Invokes legacy system(s) to pass them the intake application data for processing.</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="13"/> 
+      </split>  
+      <bpo-mapping interface-name="curam.workspaceservices.workflow.intf.WSWorkflowHelper" method-name="sendApplicationToExternalSystem"> 
+        <formal-parameters> 
+          <formal-parameter index="0"> 
+            <struct type="curam.workspaceservices.workflow.struct.ProcessApplicationKey"> 
+              <field name="intakeApplicationID"> 
+                <base-type type="INT64"> 
+                  <wdo-attribute wdo-name="IntakeApplicationDetails" name="intakeApplicationID"/> 
+                </base-type> 
+              </field>  
+              <field name="processInstanceID"> 
+                <base-type type="INT64"> 
+                  <wdo-attribute wdo-name="Context_RuntimeInformation" name="processInstanceID"/> 
+                </base-type> 
+              </field> 
+            </struct> 
+          </formal-parameter> 
+        </formal-parameters> 
+      </bpo-mapping> 
+    </automatic-activity>  
+    <route-activity id="7" category="AC1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">WSRoute</locale>  
+          <locale language="en">WSRoute</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Cette activité d'acheminement permet d'équilibrer la divergence créée par l'appel conditionnel de l'activité de services d'espace de travail.</locale>  
+          <locale language="en">This route activity is used to balance the divergence created by conditionally invoking the workspace services activity</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="12"/> 
+      </split> 
+    </route-activity>  
+    <route-activity id="8" category="AC1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">ConvergenceRoute</locale>  
+          <locale language="en">ConvergenceRoute</locale>
+        </localized-text> 
+      </name>  
+      <join type="xor"/>  
+      <split type="xor"> 
+        <transition-id idref="6"/>  
+        <transition-id idref="7"/> 
+      </split> 
+    </route-activity>  
+    <route-activity id="9" category="AC1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">LegacyRoute</locale>  
+          <locale language="en">LegacyRoute</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="14"/> 
+      </split> 
+    </route-activity>  
+    <route-activity id="10"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">ConvergeBeforeEnd</locale>  
+          <locale language="en">ConvergeBeforeEnd</locale>
+        </localized-text> 
+      </name>  
+      <join type="xor"/>  
+      <split type="none"> 
+        <transition-id idref="15"/> 
+      </split> 
+    </route-activity> 
+  </activities>  
+  <transitions> 
+    <transition id="1" from-activity-idref="1" to-activity-idref="3"/>  
+    <transition id="2" from-activity-idref="3" to-activity-idref="4"> 
+      <condition> 
+        <expression id="1" data-item-lhs="IntakeApplicationDetails.curamProgramTypesAppliedFor" operation="==" data-item-rhs="true" conjunction="and"/> 
+      </condition> 
+    </transition>  
+    <transition id="3" from-activity-idref="3" to-activity-idref="7"/>  
+    <transition id="6" from-activity-idref="8" to-activity-idref="5"> 
+      <condition> 
+        <expression id="1" data-item-lhs="IntakeApplicationDetails.legacyProgramTypesAppliedFor" operation="==" data-item-rhs="true" conjunction="and"/> 
+      </condition> 
+    </transition>  
+    <transition id="7" from-activity-idref="8" to-activity-idref="9"/>  
+    <transition id="11" from-activity-idref="4" to-activity-idref="8"/>  
+    <transition id="12" from-activity-idref="7" to-activity-idref="8"/>  
+    <transition id="13" from-activity-idref="5" to-activity-idref="10"/>  
+    <transition id="14" from-activity-idref="9" to-activity-idref="10"/>  
+    <transition id="15" from-activity-idref="10" to-activity-idref="2"/> 
+  </transitions> 
+</workflow-process>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="GANTT_CONFIG">
+    <xs:annotation>
+      <xs:documentation>Root element of configuration file.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence maxOccurs="unbounded">
+        <xs:element ref="CONFIG"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CONFIG">
+    <xs:annotation>
+      <xs:documentation>Configuration details for a particular gantt chart.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="PLAN_GROUP"/>
+        <xs:element ref="SUBGOAL"/>
+        <xs:element ref="PLAN_ITEM"/>
+        <xs:element ref="DELIVERY" minOccurs="0"/>
+        <xs:element ref="MILESTONE"/>
+      </xs:sequence>
+      <xs:attribute name="ID" type="xs:string" use="required"/>
+      <xs:attribute name="HEIGHT" type="xs:string" use="optional" default="94"/>
+      <xs:attribute name="HEIGHT_OFFSET" type="xs:string" use="optional" default="120"/>
+      <xs:attribute name="GOAL_CODETABLE" type="xs:string" use="required"/>
+      <xs:attribute name="SUB_GOAL_CODETABLE" type="xs:string" use="required"/>
+      <xs:attribute name="OPEN_LINK_IN_NEW_WINDOW" type="xs:boolean" use="optional" default="true"/>
+      <xs:attribute name="STATUS_CODETABLE" type="xs:string" use="optional"/>
+      <xs:attribute name="TYPE" use="optional" default="TRACKING">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="BASELINE"/>
+            <xs:enumeration value="TRACKING"/>
+            <xs:enumeration value="STATEMENT"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PLAN_GROUP">
+    <xs:annotation>
+      <xs:documentation>Hyperlink configuration for Plan Group elements</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attributeGroup ref="GANTT_ELEMENT_ATTR_GROUP"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SUBGOAL">
+    <xs:annotation>
+      <xs:documentation>Hyperlink configuration for SubGoal elements</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attributeGroup ref="GANTT_ELEMENT_ATTR_GROUP"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PLAN_ITEM">
+    <xs:annotation>
+      <xs:documentation>Hyperlink configuration for Plan Item elements</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attributeGroup ref="GANTT_ELEMENT_ATTR_GROUP"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:attribute name="HOME_PAGE_ID">
+    <xs:annotation>
+      <xs:documentation>ID of home page for Gantt element.</xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attributeGroup name="GANTT_ELEMENT_ATTR_GROUP">
+    <xs:annotation>
+      <xs:documentation>Attribute group for Gantt elements.</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="HOME_PAGE_ID" type="xs:string" use="required"/>
+    <xs:attribute name="ID_PARAM_NAME" type="xs:string" use="required"/>
+    <xs:attribute name="STATUS_CODETABLE" type="xs:string" use="optional"/>
+  </xs:attributeGroup>
+  <xs:element name="DELIVERY">
+    <xs:complexType>
+      <xs:attribute name="HOME_PAGE_ID" type="xs:string" use="required"/>
+      <xs:attribute name="PLAN_ITEM_ID_PARAM_NAME" type="xs:string" use="required"/>
+      <xs:attribute name="DATE_PARAM_NAME" type="xs:string" use="required"/>
+      <xs:attribute name="SERVICE_UNIT_TYPE_CODETABLE" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MILESTONE">
+    <xs:annotation>
+      <xs:documentation>Hyperlink configuration for Milestone elements</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attributeGroup ref="GANTT_ELEMENT_ATTR_GROUP"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

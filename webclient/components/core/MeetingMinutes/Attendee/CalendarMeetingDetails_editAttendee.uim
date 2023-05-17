@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007, 2010-2011 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Update the meeting attendees -->
+<PAGE PAGE_ID="CalendarMeetingDetails_editAttendee" WINDOW_OPTIONS="width=500" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="MeetingMinutesManagement" NAME="DISPLAY" OPERATION="readMeetingAttendee"/>
+  <SERVER_INTERFACE CLASS="MeetingMinutesManagement" NAME="ACTION" OPERATION="modifyMeetingAttendee" PHASE="ACTION"/>
+
+
+  <PAGE_PARAMETER NAME="meetingAttendeeID"/>
+  <PAGE_PARAMETER NAME="meetingID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="meetingAttendeeID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$meetingAttendeeID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="meetingAttendeeID"/>
+    <TARGET NAME="ACTION" PROPERTY="attendeeDetails$meetingAttendeeID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$attendeeType"/>
+    <TARGET NAME="ACTION" PROPERTY="attendeeDetails$attendeeType"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$relatedID"/>
+    <TARGET NAME="ACTION" PROPERTY="attendeeDetails$relatedID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$recordStatus"/>
+    <TARGET NAME="ACTION" PROPERTY="attendeeDetails$recordStatus"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="meetingID"/>
+    <TARGET NAME="ACTION" PROPERTY="attendeeDetails$meetingID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$versionNo"/>
+    <TARGET NAME="ACTION" PROPERTY="attendeeDetails$versionNo"/>
+  </CONNECT>
+
+
+  <CLUSTER LABEL_WIDTH="27">
+    <FIELD LABEL="Field.Label.Invitee" USE_BLANK="true">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$attendeeFullName"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Acceptance" WIDTH="50">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$invitationAcceptanceStatus"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="attendeeDetails$invitationAcceptanceStatus"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Attended">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$attendedInd"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="attendeeDetails$attendedInd"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD HEIGHT="5" LABEL="Field.Label.Comment">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$comments"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="attendeeDetails$comments"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+    <ACTION_CONTROL DEFAULT="true" LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel" TYPE="ACTION"/>
+  </ACTION_SET>
+</PAGE>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Resolver to find the request to add fields page     -->
+<PAGE
+  PAGE_ID="SummaryView_resolveAddField"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+    curam.omega3.request.RequestHandler 
+    rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+    
+    String context = request.getContextPath() + "/";
+    context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+    
+    String summaryViewGroupDefinitionID = request.getParameter("summaryViewGroupDefinitionID"); 
+	summaryViewGroupDefinitionID = curam.omega3.request.RequestUtils.escapeURL(summaryViewGroupDefinitionID);	
+    String ruleSetID = request.getParameter("ruleSetID");   
+	ruleSetID = curam.omega3.request.RequestUtils.escapeURL(ruleSetID);
+    String productID = request.getParameter("productID"); 
+	productID = curam.omega3.request.RequestUtils.escapeURL(productID);	
+    String groupType = request.getParameter("groupType");   
+	groupType = curam.omega3.request.RequestUtils.escapeURL(groupType);		
+    
+    String url = "";
+    
+    if (groupType.equals("SVGT4001")) {       
+    url = context + "SummaryView_addFieldPage.do?summaryViewGroupDefinitionID=" 
+    + summaryViewGroupDefinitionID
+    + "&amp;ruleSetID=" + ruleSetID
+    + "&amp;groupType=" + groupType       
+    + "&amp;productID=" + productID;    
+    } 
+    else if (groupType.equals("SVGT4002")) {
+    url = context + "SummaryView_addFieldForListGroupPage.do?summaryViewGroupDefinitionID=" 
+    + summaryViewGroupDefinitionID
+    + "&amp;ruleSetID=" + ruleSetID 
+    + "&amp;groupType=" + groupType      
+    + "&amp;productID=" + productID;        
+    }
+    else if (groupType.equals("SVGT4003")) {
+    url = context + "SummaryView_addFieldToLinkedGroupPage.do?summaryViewGroupDefinitionID=" 
+    + summaryViewGroupDefinitionID
+    + "&amp;ruleSetID=" + ruleSetID 
+    + "&amp;groupType=" + groupType       
+    + "&amp;productID=" + productID;    
+    } 
+    url += "&amp;" + rh.getSystemParameters();  
+    
+    response.sendRedirect(response.encodeRedirectURL(url));   
+    
+  </JSP_SCRIPTLET>
+</PAGE>

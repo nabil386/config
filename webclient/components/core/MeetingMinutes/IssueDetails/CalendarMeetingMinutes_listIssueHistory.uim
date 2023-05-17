@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010-2011 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page displays the issue history for a meeting. -->
+<PAGE PAGE_ID="CalendarMeetingMinutes_listIssueHistory" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="MeetingMinutesManagement" NAME="DISPLAY" OPERATION="getIssueDetails" PHASE="DISPLAY"/>
+
+
+  <PAGE_PARAMETER NAME="meetingID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="meetingID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$meetingID"/>
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close">
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <LIST TITLE="List.Title">
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.View" TYPE="FILE_DOWNLOAD">
+        <LINK>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$issueList$attachmentLinkDetails$attachmentLinkDtls$attachmentLinkID"/>
+            <TARGET NAME="PAGE" PROPERTY="attachmentLinkID"/>
+          </CONNECT>
+
+
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Label.IssuedDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$issueList$issueTime"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.IssuedTo">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$issueList$issuedTo"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+</PAGE>

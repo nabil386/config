@@ -1,0 +1,333 @@
+<EvidenceTypeVersion modifiable="true" correctionOnly="true"
+	relatedParticipant="participant"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/DynamicEvidenceSchema.xsd">
+	<Model>
+		<Attributes>
+			<Attribute>
+				<RelatedCPAttribute cpRoleType="MEM" name="participant"
+					participantType="Person">
+					<CPSearchType code="PRI" />
+					<CPSearchType code="MEM" />
+				</RelatedCPAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="signatureType">
+					<DomainType dataType="Codetable">
+						<CodetableOptions codetableName="BDMSignatureType" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="dateSigned">
+					<DomainType dataType="Date">
+						<DateOptions currentDate="LessThanOrEqualTo">
+							<ValidationMessageInformation>
+								<ValidationMessageMapping>
+									<ValidationMessage>
+										<ValidationMessageResource
+											id="ERR_DATE_SIGNED_CURRENT_DATE" />
+									</ValidationMessage>
+								</ValidationMessageMapping>
+							</ValidationMessageInformation>
+						</DateOptions>
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<RelatedCPAttribute name="witness"
+					cpRoleType="BDMWITNESS" participantType="Unknown">
+					<CPSearchType code="BDMWITNESS" />
+				</RelatedCPAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="isWitness">
+					<DomainType dataType="Boolean" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="isSigningOnBehalf">
+					<DomainType dataType="Boolean" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<CommentsAttribute name="comments" />
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="relationshipType">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMWitnessRelationship" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="witnessDateSigned">
+					<DomainType dataType="Date">
+						<DateOptions currentDate="LessThanOrEqualTo">
+							<ValidationMessageInformation>
+								<ValidationMessageMapping>
+									<ValidationMessage>
+										<ValidationMessageResource
+											id="ERR_WITNESS_DATE_SIGNED_CURRENT_DATE" />
+									</ValidationMessage>
+								</ValidationMessageMapping>
+							</ValidationMessageInformation>
+						</DateOptions>
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+		</Attributes>
+		<Relationships />
+	</Model>
+	<Validations>
+		<PatternValidations>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="signatureType" sourceLiteral="Signed"
+					target="dateSigned" unidirectional="true" useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_DATE_SIGNED_REQUIRED_SIGNED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="signatureType"
+					sourceLiteral="Signed with a mark" target="dateSigned"
+					unidirectional="true" useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_DATE_SIGNED_REQUIRED_MARKED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="signatureType"
+					sourceLiteral="Signed with a mark" target="witness" unidirectional="true"
+					useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_WITNESS_REQUIRED_MARKED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="signatureType" sourceLiteral="Not signed"
+					target="witness" unidirectional="true" useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_WITNESS_REQUIRED_NOT_SIGNED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="signatureType"
+					sourceLiteral="Signed with a mark" target="isWitness" unidirectional="true"
+					useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_IS_WITNESS_REQUIRED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="signatureType" sourceLiteral="Not signed"
+					target="isSigningOnBehalf" unidirectional="true" useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_SIGNING_ON_BEHALF_REQUIRED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="witness" target="witnessDateSigned"
+					unidirectional="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_WITNESS_DATE_SIGNED_REQUIRED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+                    dependency="MustNotEnter" source="signatureType" sourceLiteral="Signed"
+                    target="isSigningOnBehalf" unidirectional="true" useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_SIGNING_ON_BEHALF_FORBIDDEN" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+                    dependency="MustNotEnter" source="signatureType" sourceLiteral="Signed"
+                    target="witness" unidirectional="true" useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_WITNESS_FORBIDDEN_SIGNED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+            <Validator>
+                <DependentAttributeValidator
+                    dependency="MustEnter" source="witness" target="relationshipType"
+                    unidirectional="true">
+                    <ValidationMessageInformation>
+                        <ValidationMessageMapping>
+                            <ValidationMessage>
+                                <ValidationMessageResource
+                                    id="ERR_WITNESS_RELATIONSHIP_REQUIRED" />
+                            </ValidationMessage>
+                        </ValidationMessageMapping>
+                    </ValidationMessageInformation>
+                </DependentAttributeValidator>
+            </Validator>
+			<Validator>
+				<DuplicateValidator>
+					<DuplicateAttributes conjunction="OR">
+						<DuplicateAttribute name="participant" />
+						<ValidationMessageInformation>
+							<ValidationMessageMapping>
+								<ValidationMessage>
+									<ValidationMessageResource id="ERR_SINGLETON" />
+								</ValidationMessage>
+							</ValidationMessageMapping>
+						</ValidationMessageInformation>
+					</DuplicateAttributes>
+				</DuplicateValidator>
+			</Validator>
+		</PatternValidations>
+		<CustomRulesValidation
+			ruleSetName="BDMConsentDeclarationValidationRuleSet" />
+	</Validations>
+	<SummaryInformation>
+		<SummaryRuleset
+			ruleSetName="BDMConsentDeclarationSummaryRuleSet" />
+	</SummaryInformation>
+	<UserInterface>
+		<Cluster>
+			<RelCPCluster defaultToBlank="true"
+				enableMultiMemberUpdates="false" fullCreateParticipant="false"
+				isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true"
+				modifyOption="no" showParticipantTypeFilter="true" useSingleName="false">
+				<StandardField source="participant" />
+				<ClusterName id="Cluster.Title.Participant" />
+				<LabelName id="Field.Label.ParticipantName" />
+				<FirstName id="First.Name.Label.ID2" />
+				<SecondName id="Second.Name.Label.ID2" />
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true" isOnModifyPage="true"
+				isOnViewPage="true" labelWidth="40" numberOfColumns="2">
+				<Title id="Cluster.Title.SignatureDetails" />
+				<StandardClusterField>
+					<StandardField modifiable="true" source="signatureType"
+						useBlank="true" useDefault="false">
+						<Label id="Field.Label.SignatureType" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="dateSigned"
+						useDefault="false">
+						<Label id="Field.Label.DateSigned" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<RelCPCluster defaultToBlank="false"
+				enableMultiMemberUpdates="false" fullCreateParticipant="true"
+				isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true"
+				modifyOption="single" showParticipantTypeFilter="true" useSingleName="true">
+				<StandardField source="witness" />
+				<ClusterName id="Related.Participant.Cluster.Witness" />
+				<LabelName id="Name.Label.ID5" />
+                <DescriptionName id="Related.Participant.Witness.Description" />
+				<RelCpPfx id="Participant.Description.ID5" />
+				<FirstName id="First.Name.Label.ID5" />
+				<SecondName id="Second.Name.Label.ID5" />
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true" isOnModifyPage="true"
+				isOnViewPage="true" labelWidth="40" numberOfColumns="2">
+				<Title id="Cluster.Title.WitnessSignatureDetails" />
+				<StandardClusterField>
+					<StandardField modifiable="true" source="isWitness"
+						useDefault="false">
+						<Label id="Field.Label.IsWitness" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="isSigningOnBehalf"
+						useDefault="false">
+						<Label id="Field.Label.IsSigningOnBehalf" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="relationshipType"
+						useBlank="true" useDefault="false">
+						<Label id="Field.Label.Relationship" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="witnessDateSigned"
+						useDefault="false">
+						<Label id="Field.Label.WitnessDateSigned" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<CommentsCluster isOnCreatePage="true" isOnModifyPage="true"
+				isOnViewPage="true">
+				<Title id="Comments.Cluster.Title" />
+				<StandardField source="comments" />
+			</CommentsCluster>
+		</Cluster>
+	</UserInterface>
+</EvidenceTypeVersion>

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2003, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2003-2005, 2010-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows a user to modify a hearing case.  -->
+<PAGE
+  PAGE_ID="Appeal_modifyHearingCase"
+  WINDOW_OPTIONS="width=650"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="HearingCase"
+    NAME="DISPLAY"
+    OPERATION="readHearingCaseForModify"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="HearingCase"
+    NAME="ACTION"
+    OPERATION="modifyHearingCase"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    />
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$hearingCaseModifyKey$hearingCaseID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$hearingCaseModifyDetails$appealModifyDetails$appealModifyReadDetails$caseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$appealModifyDetails$appealModifyReadDetails$caseID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$hearingCaseModifyDetails$appealModifyDetails$appealModifyReadDetails$appealID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$appealModifyDetails$appealModifyReadDetails$appealID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$hearingCaseModifyDetails$appealModifyDetails$appealModifyReadDetails$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$appealModifyDetails$appealModifyReadDetails$versionNo"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$hearingCaseModifyDetails$appealModifyDetails$appealModifyReadDetails$caseHeaderVersionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$appealModifyDetails$appealModifyReadDetails$caseHeaderVersionNo"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00198210, PS -->
+  <CLUSTER
+    LABEL_WIDTH="47"
+    NUM_COLS="2"
+    SHOW_LABELS="true"
+  >
+    <!-- END, CR00198210 -->
+    <FIELD LABEL="Field.Label.ReceiptDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$hearingCaseModifyDetails$appealModifyDetails$appealModifyReadDetails$receivedDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$appealModifyDetails$appealModifyReadDetails$receivedDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Difficulty"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$hearingCaseModifyDetails$appealModifyDetails$appealModifyReadDetails$difficultyCode"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$appealModifyDetails$appealModifyReadDetails$difficultyCode"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00198210,CR00407812, PS, RB -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00198210,CR00407812 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$hearingCaseModifyDetails$appealModifyDetails$appealModifyReadDetails$comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$appealModifyDetails$appealModifyReadDetails$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

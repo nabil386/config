@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012,2019. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the supervisor to assign task redirection to his/her  -->
+<!-- users.                                                                 -->
+<PAGE
+  PAGE_ID="Supervisor_redirectTasksToUsers"
+  WINDOW_OPTIONS="height=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- BEGIN, CR00216807 MN -->
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorUsers"
+    NAME="DISPLAY"
+    OPERATION="listTaskRedirectionHistory"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00216807-->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorUsers"
+    NAME="DISPLAY1"
+    OPERATION="listSupervisorUsers"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00225492 MN -->
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorUsers"
+    NAME="ACTION"
+    OPERATION="taskRedirectionsToUser"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00225492-->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$userName"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$dtls$fromUserName"
+    />
+  </CONNECT>
+  <PAGE_PARAMETER NAME="userFullName"/>
+  <PAGE_PARAMETER NAME="userName"/>
+
+
+  <!--Begin, CR00039906, SS-->
+  <!-- BEGIN, CR00161962, BK -->
+  <CLUSTER
+    LABEL_WIDTH="20"
+    NUM_COLS="1"
+  >
+
+
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.RedirectToUser"
+      USE_BLANK="true"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="userName"
+          NAME="DISPLAY1"
+          PROPERTY="fullName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$dtls$toUserNameInSupervisorGroup"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER
+      ALIGNMENT="LEFT"
+      LABEL="Container.Label.RedirectTo"
+    >
+      <FIELD
+        ALIGNMENT="LEFT"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+        WIDTH="40"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="toRedirectType"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        ALIGNMENT="LEFT"
+        WIDTH="60"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="toRedirectID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+
+    <CLUSTER
+      LABEL_WIDTH="20"
+      NUM_COLS="1"
+    >
+      <FIELD
+        ALIGNMENT="LEFT"
+        LABEL="Field.Label.StartDate"
+        USE_DEFAULT="false"
+        WIDTH="38"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$dtls$startDateTime"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        ALIGNMENT="LEFT"
+        LABEL="Field.Label.EndDate"
+        USE_DEFAULT="false"
+        WIDTH="38"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$dtls$endDateTime"
+          />
+        </CONNECT>
+      </FIELD>
+      <!--End, CR00039906-->
+
+
+  </CLUSTER>
+  <!-- END, CR00161962 -->
+
+
+  <!--Begin, CR00039906, SS-->
+  <LIST
+    
+    TITLE="List.Title.ActiveAndPendingRedirections"
+  >
+    <!--End, CR00039906-->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Clear">
+        <LINK
+          DISMISS_MODAL="false"
+          OPEN_MODAL="true"
+          PAGE_ID="Supervisor_clearTaskRedirection"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirectionDetails$activeAndPendingDetails$taskRedirectionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="redirectedTaskID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirectionDetails$activeAndPendingDetails$startDateTime"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="startDateTime"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirectionDetails$activeAndPendingDetails$endDateTime"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="endDateTime"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirectionDetails$activeAndPendingDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNum"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userFullName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <!-- BEGIN, CR00161962, NR -->
+    <FIELD
+      LABEL="Field.Label.ActivePendingRedirectTo"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="activeAndPendingDetails$targetObjectName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.RedirectType"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="activeAndPendingDetails$toRedirectType"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00161962 -->
+
+
+    <FIELD
+      LABEL="Field.Label.ActivePendingStartDate"
+      WIDTH="18"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirectionDetails$activeAndPendingDetails$startDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ActivePendingEndDate"
+      WIDTH="18"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirectionDetails$activeAndPendingDetails$endDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ActivePendingStatus"
+      WIDTH="14"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$redirectionDetailsList$activeAndPendingTaskRedirectionDetails$activeAndPendingDetails$redirectionStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <!--Begin, CR00039906, SS-->
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="FALSE"
+  >
+    <ACTION_CONTROL
+      DEFAULT="true"
+      IMAGE="SaveButton"
+      LABEL="ActionControl.SaveButton.label"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.CancelButton.label"
+    />
+  </ACTION_SET>
+  <!--End, CR00039906-->
+</PAGE>

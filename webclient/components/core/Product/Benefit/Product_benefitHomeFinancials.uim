@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Displays the details of a benefit product. -->
+<PAGE
+  PAGE_ID="Product_benefitHomeFinancials"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Details"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="Product_benefitHome1"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Financials"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="Product_benefitHomeFinancials"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Participants"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="Product_benefitHomeParticipants"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Security"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="Product_benefitHomeSecurity"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <SHORTCUT_TITLE ICON="benefitproduct.icon">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="name"
+      />
+    </CONNECT>
+  </SHORTCUT_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Product"
+    NAME="DISPLAY"
+    OPERATION="readBenefitProduct1"
+  />
+
+
+  <PAGE_PARAMETER NAME="productID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="productID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="productID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="53"
+    NUM_COLS="2"
+  >
+    <FIELD LABEL="Field.Label.MinPaymentAmount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="minimumPmtAmt"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AdjustmentRequired">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="adjustmentInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MaxDeductionRate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="maxDeductionRate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Cost">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="unitCost"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AdjustmentFrequency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="adjustmentFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MinDeductionAmount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="minDeductionAmount"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00241190, KH -->
+  <CLUSTER
+    LABEL_WIDTH="53"
+    NUM_COLS="2"
+  >
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="cerProductInd"
+      />
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.DateList">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateListType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RerateFrequency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="rerateFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00241190 -->
+
+
+  <CLUSTER
+    LABEL_WIDTH="53"
+    NUM_COLS="2"
+    TITLE="Cluster.Label.UnderOverCaseProcessing"
+  >
+    <FIELD LABEL="Field.Label.AutoUnderPaymentCase">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="autoUnderpaymentCaseInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.OverPaymentProcessing">
+      <!-- BEGIN, CR00230245, CW -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reassessmentActionType"
+        />
+      </CONNECT>
+      <!-- END, CR00230245 -->
+    </FIELD>
+    <FIELD LABEL="Field.Label.RolledUpReassessmentProducts">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="rolledUpReassessment"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="53"
+    NUM_COLS="2"
+    TITLE="Cluster.Label.Certification"
+  >
+    <FIELD LABEL="Field.Label.CertificationRequired">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="certificationRequiredInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CertificationFrequency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="certificationFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.GracePeriod">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="certGracePeriod"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

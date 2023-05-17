@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<ieg-script xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ieg-schema.xsd"
+finish-page="CommonIntake_finishInternalIntakeScript" 
+	quit-page="CommonIntake_quitInternalIntakeScript"	
+	show-sections="true"
+	show-progress-bar="true"
+	validate-save-and-exit="false"
+	>
+		
+	<identifier id="BDMOASGISApplicationCP" scriptversionnumber="V1" type="Intake" />
+
+	<section>
+
+		<title id="Section.Title.MaritalStatus">
+			<![CDATA[Marital Status ]]>
+		</title>
+
+		<icon enabled-image="sample_about_you"
+			current-image="sample_about_you" />
+	
+			<question-page 
+				id="MaritalStatusInfo" 
+				entity="Person"
+				progress="0" 
+				show-back-button="true" 
+				show-exit-button="true"
+ 				criteria="isPrimaryParticipant==true"				
+				>
+				<set-attribute expression="isNotNull(MaritalStatusInfo.currentMaritalStatus)" id="Person.maritalStatusSetInd" />				
+				<title id="QuestionPage.Title.MaritalStatusInfo">
+					<![CDATA[Marital Status Information]]>
+				</title>
+				
+				<description id="QuestionPage.Description.MandatoryFields">
+					<![CDATA[All fields marked with * are mandatory.]]>
+				</description>			
+	
+				<cluster entity="MaritalStatusInfo">
+					<title id="Cluster.Title.MaritalStatus">
+						<![CDATA[Marital Status]]>
+					</title>
+					<question id="currentMaritalStatus" mandatory="true">
+						<label id="Question.Label.CurrentMaritalStatus">
+							<![CDATA[Marital Status]]>
+						</label>
+						<layout>
+							<type>radio</type>
+						</layout>						
+					</question>						
+				</cluster>	
+				
+				<condition expression="isNotNull(MaritalStatusInfo.currentMaritalStatus) and MaritalStatusInfo.currentMaritalStatus!=&quot;MS1&quot;">
+					<cluster entity="MaritalStatusInfo">
+						<question id="maritalDate" mandatory="true">
+							<label id="Question.Label.Date">
+								<![CDATA[Date]]>
+							</label>
+							<layout>
+	                    		<type>date-picker</type>
+	                    	</layout>
+		                    <hint-text id="Question.Date.Hint">
+								<![CDATA[YYYY-MM-DD]]>
+							</hint-text> 							
+						</question>		
+					</cluster>
+				</condition>
+				
+				
+
+			<condition expression="MaritalStatusInfo.currentMaritalStatus==&quot;MS3&quot;  or MaritalStatusInfo.currentMaritalStatus==&quot;MS5&quot; or MaritalStatusInfo.currentMaritalStatus==&quot;MS6&quot;" >
+				<cluster entity="MaritalStatusInfo">
+					<title id="Cluster.Title.LivingApartReasons">
+						<![CDATA[Living apart for reasons beyond control]]>
+					</title>
+					<question id="isSeparated" mandatory="true" show-field-help="true">
+						<label id="Question.Label.LivingApartReasonsBeyondControl">
+							<![CDATA[Are you and your spouse/common-law partner living apart for reasons beyond your control?]]>
+						</label>
+						<layout>
+							<width>60</width>							
+						</layout>
+						<help-text id="Question.LivingApart.Help]">
+							<![CDATA[This is when you are living apart from your spouse or common-law partner for reasons beyond your control (for example, one or both individuals are living in a long-term care facility).]]>
+						</help-text> 																		
+					</question>						
+				</cluster>	
+		  </condition>									
+
+			<condition expression="MaritalStatusInfo.isSeparated==&quot;YN1&quot;">
+				<cluster entity="MaritalStatusInfo">
+					<question id="seperationDate" mandatory="true">
+						<label id="Question.Label.SeparatedDate">
+							<![CDATA[Date]]>
+						</label>
+						<layout>
+	                    	<type>date-picker</type>
+	                    </layout>
+						<hint-text id="Question.SeparatedDate.Hint">
+							<![CDATA[YYYY-MM-DD. Select the date when you started living apart from your spouse/common-law partner for reasons beyond your control.]]>
+						</hint-text>   						
+					</question>		
+				</cluster>
+			</condition>			
+									
+	   </question-page>		
+	</section>
+</ieg-script>

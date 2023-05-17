@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed Materials - Property of IBM
+    
+    Copyright IBM Corporation 2012. All Rights Reserved.
+    
+    US Government Users Restricted Rights - Use, duplication or disclosure 
+    restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE PAGE_ID="CitizenWorkspaceAdmin_editLifeEventMapping" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+    >
+
+    <PAGE_PARAMETER NAME="configurationID" />
+    <PAGE_PARAMETER NAME="programName" />
+    <PAGE_PARAMETER NAME="intakeApplicationTypeName" />
+    <PAGE_PARAMETER NAME="schemaName" />
+    <PAGE_PARAMETER NAME="relatedCaseTypeCode" />
+    <PAGE_PARAMETER NAME="lifeEventName" />
+    <PAGE_PARAMETER NAME="caseConfigurationID" />
+
+    <JSP_SCRIPTLET>
+        <![CDATA[
+          curam.omega3.request.RequestHandler rh
+            = curam.omega3.request.RequestHandlerFactory
+              .getRequestHandler(request);
+
+		  String userLocale = curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale().toString();
+		  String relatedCaseTypeCode = request.getParameter("relatedCaseTypeCode");
+		  String caseConfigurationID = request.getParameter("caseConfigurationID");
+		  String configurationID = request.getParameter("configurationID");
+          String schemaName = request.getParameter("schemaName");
+
+          // Set default values
+          if(relatedCaseTypeCode == null){
+            relatedCaseTypeCode = "";
+          }
+          if(configurationID == null){
+            configurationID = "0";
+          }
+          if(schemaName == null){
+            schemaName = "";
+          }
+          if(userLocale == null){
+            userLocale = "";
+          }
+
+          StringBuffer flashVars = new StringBuffer();
+
+          flashVars.append("configurationID")
+             .append("=")
+             .append(curam.omega3.request.RequestUtils.escapeURL(configurationID))
+             .append("&");                       
+          flashVars.append("schemaName")
+             .append("=")
+             .append(curam.omega3.request.RequestUtils.escapeURL(schemaName))
+             .append("&");
+          flashVars.append("relatedCaseTypeCode")
+             .append("=")
+             .append(curam.omega3.request.RequestUtils.escapeURL(relatedCaseTypeCode))
+             .append("&");
+          flashVars.append("caseConfigurationID")
+             .append("=")
+             .append(curam.omega3.request.RequestUtils.escapeURL(caseConfigurationID))
+             .append("&");
+          flashVars.append("userLocale")
+             .append("=")
+             .append(curam.omega3.request.RequestUtils.escapeURL(userLocale));
+
+          out.print("<html lang=\"en\">");
+          out.print("<head>");
+
+          out.print("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>");
+          out.print("<title>CDME Editor</title>");
+
+          out.print("<script type=\"text/javascript\">");
+          out.print("");
+          out.print("</script>");
+
+          out.print("<script  type=\"text/javascript\" src=\"../CER/AC_OETags.js\"></script><style>");
+          out.print("body { margin: 0px; overflow:hidden }</style>");
+
+          out.print("<script type=\"text/javascript\">");
+
+          out.print(" var requiredMajorVersion = 9;");
+          out.print(" var requiredMinorVersion = 0;");
+          out.print(" var requiredRevision = 0;");
+
+          out.print("</script></head>");
+
+          out.print("<body scroll=\"no\">");
+
+          out.print("<script type=\"text/javascript\">");
+
+          out.print(" var hasRequestedVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);");
+
+          out.print(" if (hasRequestedVersion) {");
+
+          out.print("AC_FL_RunContent(\"src\", \"../CDME/CDMEEditor\",");
+          out.print("\"movie\",\"../CDME/CDMEEditor\",");
+          out.print("\"flashvars\",\"" + flashVars + "\",");
+          out.print("\"width\",\"100%\",");
+          out.print("\"height\",\"100%\",");
+          out.print("\"align\",\"middle\",");
+          out.print("\"id\",\"CDMEEditor\",");
+          out.print("\"quality\",\"high\",");
+          out.print("\"bgcolor\",\"white\",");
+
+          out.print("\"name\",\"CDMEEditor\",");
+          out.print("\"allowScriptAccess\",\"sameDomain\",");
+          out.print("\"type\",\"application/x-shockwave-flash\",");
+          out.print("\"pluginspage\",\"http://www.adobe.com/go/getflashplayer\",");
+          out.print("\"wmode\",\"opaque\"");
+          out.print(");");
+
+          out.print("} else {");
+          out.print("var alternateContent = 'Alternate HTML content should be placed here.");
+          out.print(" This content requires the Adobe Flash Player.");
+          out.print(" <a href=\"http://www.adobe.com/go/getflash\">Get Flash</a>';");
+          out.print("document.write(alternateContent);");
+          out.print("}"); 
+          out.print("</script>");
+
+
+          // EMBEDDING THE CDME EDITOR SWF
+          out.print("<noscript>");
+          out.print("<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\"");
+          out.print(" id=\"CDMEEditor\" width=\"90%\" height=\"90%\"");
+          out.print(" codebase=\"http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab\">");
+          out.print("<param name=\"movie\" value=\"CDMEEditor.swf\" />");
+          out.print("<param name=\"quality\" value=\"high\" />");
+          out.print("<param name=\"wmode\" value=\"opaque\" />");
+          out.print("<param name=\"bgcolor\" value=\"white\" />");
+          out.print("<param name=\"allowScriptAccess\" value=\"sameDomain\" />");
+          out.print("<embed src=\"../CER/CDMEEditor.swf\" wmode=\"opaque\" quality=\"high\" bgcolor=\"white\"");
+          out.print(" width=\"100%\" height=\"100%\" name=\"CDMEEditor\" align=\"middle\"");
+          out.print(" play=\"true\"");
+          out.print(" loop=\"false\"");
+          out.print(" quality=\"high\"");
+          out.print(" allowScriptAccess=\"sameDomain\"");
+          out.print(" type=\"application/x-shockwave-flash\"");
+          out.print(" pluginspage=\"http://www.adobe.com/go/getflashplayer\">");
+          out.print("</embed></object>");
+          out.print("</noscript>");
+          out.print("</body></html>");
+       ]]>
+    </JSP_SCRIPTLET>
+</PAGE>

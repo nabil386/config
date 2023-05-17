@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="bdc_initialize">
+
+	<property environment="sysenv."/>
+
+	<target name="check.release.zip" unless="zip.file">
+		<fail message="The full path of the zip file must be set. eg: build archive -Dzip.file=C:\archive\CuramSPM8020iFix2.zip"/>
+	</target>
+	
+	<!-- downloads the ootb files from the blob storage into the current path, clears old artifacts and extracts from archive -->
+	<target name="download.extract.curam" description="Downloads the OOTB archive from Azure Blob Storage and does a clean extract. Usage: build download.extract.curam">
+		<antcall target="download.curam" />
+	 
+		<antcall target="clean.extract.curam">
+			<param name="zip.file" value="${sysenv.ARCHIVE_NAME}.zip"/>
+		</antcall>
+	</target>
+	
+	<target name="check.download.path" unless="zip.path">
+		<fail message="Please enter the full path of the directory where the archive needs to be downloaded. eg: build download -Dzip.path=C:\archive"/>
+	</target>
+	
+	<!-- downloads the ootb files from the blob storage into the path specified -->
+	<target name="download.curam" description="Downloads the OOTB archive from Azure Blob Storage. Usage: build download.curam">
+		<echo message="Downloading the archive from... https://esdcoasspmsourcesstg.blob.core.windows.net/spm/${sysenv.ARCHIVE_NAME}.zip  to ${basedir}\${sysenv.ARCHIVE_NAME}.zip"/>
+		<exec executable="curl">
+			<arg value="https://esdcoasspmsourcesstg.blob.core.windows.net/spm/${sysenv.ARCHIVE_NAME}.zip" />
+			<arg value="--output" />
+			<arg value="${basedir}\${sysenv.ARCHIVE_NAME}.zip"/>
+		</exec>
+	</target>
+
+	<!-- downloads the ootb files from the blob storage into the current path, clears old artifacts and extracts from archive -->
+	<target name="download.extract.foundations" description="Downloads the OOTB archive from Azure Blob Storage and extracts them. Usage: build download.extract.foundations">
+		<antcall target="download.foundations" />
+
+		<antcall target="clean.extract.foundations">
+			<param name="zip.file" value="${sysenv.FOUNDATIONS_ARCHIVE_NAME}.zip"/>
+		</antcall>
+	</target>
+
+	<!-- downloads the ootb files from the blob storage into the path specified -->
+	<target name="download.foundations" description="Downloads the OOTB archive from Azure Blob Storage. Usage: build download.foundations">
+		<echo message="Downloading the archive from... https://esdcoasspmsourcesstg.blob.core.windows.net/foundations/${sysenv.FOUNDATIONS_ARCHIVE_NAME}.zip  to ${basedir}\${sysenv.FOUNDATIONS_ARCHIVE_NAME}.zip"/>
+		<exec executable="curl">
+			<arg value="https://esdcoasspmsourcesstg.blob.core.windows.net/foundations/${sysenv.FOUNDATIONS_ARCHIVE_NAME}.zip" />
+			<arg value="--output" />
+			<arg value="${basedir}\${sysenv.FOUNDATIONS_ARCHIVE_NAME}.zip"/>
+		</exec>
+	</target>
+
+	<!-- delete OOTB artifacts and extract from zip-->
+	<target name="clean.extract.curam" depends="check.release.zip" description="Usage: build clean.extract.curam -Dzip.file=[full path to zip]">
+		<!-- delete directories -->
+		<echo message="Deleting OOTB artifacts before extracting....this may take a while!"/>
+		 <delete includeemptydirs="true" verbose="true">
+			<fileset dir="${basedir}">
+				<include name="BIApp/**"/>
+				<include name="BIContent/**"/>
+				<include name="CuramCDEJ/**"/>
+				<exclude name="CuramSDEJ/xmlserver/img/**"/>
+				<exclude name="CuramSDEJ/xmlserver/*.png"/>
+				<include name="CuramSDEJ/**"/>
+				<exclude name="EJBServer/BDMLocalBuild.xml"/>
+				<exclude name="EJBServer/BDMBuild.xml"/>
+				<exclude name="EJBServer/BDMDeploy.xml"/>
+				<exclude name="EJBServer/deprecationreport.xml"/>
+				<exclude name="EJBServer/components/BDM/**"/>
+				<exclude name="EJBServer/components/BDM_fr/**"/>
+				<exclude name="EJBServer/components/BDMOAS/**"/>
+				<exclude name="EJBServer/components/BDMOAS_fr/**"/>
+				<exclude name="EJBServer/project/**"/>
+				<exclude name="EJBServer/build.*"/>
+				<exclude name="EJBServer/buildhelp.*"/>
+				<exclude name="EJBServer/.project"/>
+				<exclude name="EJBServer/build/**"/>
+				<include name="EJBServer/**"/>
+				<exclude name="webclient/components/BDM/**"/>
+				<exclude name="webclient/components/BDM_fr/**"/>
+				<exclude name="webclient/components/BDMOAS/**"/>
+				<exclude name="webclient/components/BDMOAS_fr/**"/>
+				<exclude name="webclient/build.*"/>
+				<exclude name="webclient/buildhelp.*"/>
+				<exclude name="webclient/.project"/>
+				<exclude name="webclient/.tomcatplugin"/>
+				<exclude name="webclient/JavaSource/**"/>
+				<exclude name="webclient/build/**"/>
+				<exclude name="webclient/WebContent/**"/>
+				<include name="webclient/**"/>
+				<include name="Doc/**"/>
+				<include name="iso-swid/**"/>
+				<include name="license/**"/>
+				<include name="SpellChecker/**"/>
+				<include name="Tools/**"/>
+				<include name="Uninstaller/**"/> 
+			</fileset>
+		</delete> 	
+		
+		<mkdir dir="${basedir}/EJBServer/eclipsebuild" />
+        <mkdir dir="${basedir}/webclient/work" />
+                              
+        <!-- unzip file passed in -->
+        <unzip src="${zip.file}" dest="${basedir}" overwrite="true" />
+
+	</target>
+
+	<!-- delete OOTB artifacts and extract from zip-->
+	<target name="clean.extract.foundations" depends="check.release.zip" description="Usage: build extract -Dzip.file=[full path to zip]">
+		<!-- delete directories -->
+		<echo message="Deleting foundations artifacts before extracting....this may take a while!"/>
+		 <delete includeemptydirs="true" verbose="true">
+			<fileset dir="${basedir}">
+				<include name="EJBServer/components/BDM/**"/>
+				<include name="EJBServer/components/BDM_fr/**"/>
+				<include name="webclient/components/BDM/**"/>
+				<include name="webclient/components/BDM_fr/**"/>
+			</fileset>
+		</delete> 	
+                              
+        <!-- unzip file passed in -->
+        <unzip src="${zip.file}" dest="${basedir}" overwrite="true" />
+
+	</target>
+
+	<target name="extract" depends="check.release.zip" description="Usage: build extract.foundations -Dzip.file=[full path].zip">
+		<!-- delete directories -->
+		<echo message="Extracting code from the zip.................."/>
+                              
+        <!-- unzip file passed in -->
+        <unzip src="${zip.file}" dest="${basedir}" overwrite="true" />
+
+	</target>
+</project>

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- ====================================================================== -->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ====================================================================== -->
+<!-- This page allows user to list applications Types configured	  	    -->
+<!-- in the Application configuration. 										-->
+<PAGE
+  PAGE_ID="Intake_listApplicationTypes"
+  WINDOW_OPTIONS="width=1200,height=600"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Application"
+    NAME="DISPLAY"
+    OPERATION="readStartApplication"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Application"
+    NAME="ACTION"
+    OPERATION="validateSelectApplicationTypes"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="programTypeID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="concernRole$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET TOP="false">
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      IMAGE="QuitButton"
+      LABEL="ActionControl.Label.Quit"
+      STYLE="screening-link"
+    >
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="RIGHT"
+      IMAGE="NextButton"
+      LABEL="ActionControl.Label.Next"
+      STYLE="screening-next-link"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ResolveApplicationProgramsForApplication"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="applicationTypeKey$applicationTypeCode"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="intakeApplicationTypeID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="programTypeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="programTypeID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST
+    
+    STYLE="screening-select-list"
+  >
+    <CONTAINER SEPARATOR="Container.Separator">
+      <WIDGET
+        ALIGNMENT="CENTER"
+        TYPE="SINGLESELECT"
+        WIDTH="100"
+        WIDTH_UNITS="PERCENT"
+      >
+        <WIDGET_PARAMETER NAME="SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="applicationTypeKey$applicationTypeCode"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+
+
+        <WIDGET_PARAMETER NAME="SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$list$applicationTypeCode"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$list$description"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER
+      LABEL="Field.Label.Description"
+      WIDTH="80"
+    >
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Field.Label.ApplicationFor"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="listProgramsForApplicationType"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+  </LIST>
+
+
+</PAGE>

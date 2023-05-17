@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2004-2008, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<PAGE
+  PAGE_ID="Appeal_createIssueDecisionAttachment"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="DecisionAttachment"
+    NAME="ACTION"
+    OPERATION="createExternal"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CreateMSWordButton"
+      LABEL="ActionControl.Label.CreateMSWord"
+      TYPE="ACTION"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Appeal_createMSWord"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="appealCaseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="appealCaseID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+
+
+      </LINK>
+
+
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+
+
+
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="appealCaseID"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="appealCaseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="appealCaseID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Document"
+  >
+    <FIELD LABEL="Field.Label.Reference">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fileReference"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Location">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fileLocation"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Attachment"
+  >
+    <WIDGET TYPE="FILE_UPLOAD">
+      <WIDGET_PARAMETER NAME="CONTENT">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="attachmentContents"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+
+
+      <WIDGET_PARAMETER NAME="FILE_NAME">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="attachmentName"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+
+
+    </WIDGET>
+  </CLUSTER>
+
+
+</PAGE>

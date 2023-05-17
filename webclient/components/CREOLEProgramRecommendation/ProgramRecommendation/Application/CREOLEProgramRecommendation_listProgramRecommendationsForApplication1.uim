@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description: Lists all program recommendations for an application.     -->
+<!-- Shows progress bar if there is eligibility check currently running for -->
+<!-- the application.                                                       -->
+<!-- ===========                                                            -->
+<PAGE
+  PAGE_ID="CREOLEProgramRecommendation_listProgramRecommendationsForApplication1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="CREOLEProgramRecommendation"
+    NAME="DISPLAY"
+    OPERATION="listProgramRecommendationsForApplication1"
+  />
+
+
+  <SCRIPT
+    ACTION="onLoadHandler()"
+    EVENT="ONLOAD"
+    SCRIPT_FILE="refreshProgramRecommendation.js"
+  />
+
+
+  <PAGE_PARAMETER NAME="applicationID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$applicationID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="progRecInProgressInd"
+      />
+    </CONDITION>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Run">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="CREOLEProgramRecommendation_selectProgramsForApplication"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER>
+
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="progRecInProgressInd"
+      />
+    </CONDITION>
+
+
+    <CONTAINER>
+      <IMAGE
+        IMAGE="Icon.ProgRec.InProgress"
+        LABEL="Icon.ProgRec.Loading"
+      />
+    </CONTAINER>
+
+
+    <CLUSTER STYLE="eligibility-in-progress-label">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Label.ProgRec.InProgress"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <CLUSTER NUM_COLS="1">
+
+
+    <LIST>
+
+
+      <DETAILS_ROW>
+
+
+        <INLINE_PAGE PAGE_ID="CREOLEProgramRecommendation_listEligibleSimulatedDeterminations">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$list$creoleProgramRecommendationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="creoleProgramRecommendationID"
+            />
+          </CONNECT>
+
+
+        </INLINE_PAGE>
+
+
+      </DETAILS_ROW>
+
+
+      <FIELD LABEL="Field.Label.Date">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$list$dateTime"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.CheckedBy">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$list$createdByUser"
+          />
+        </CONNECT>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_viewUserDetails"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="userName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <FIELD LABEL="Field.Label.ProgramsChecked">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$list$programsChecked"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.EligiblePrograms">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$list$eligiblePrograms"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+
+
+  </CLUSTER>
+
+
+</PAGE>

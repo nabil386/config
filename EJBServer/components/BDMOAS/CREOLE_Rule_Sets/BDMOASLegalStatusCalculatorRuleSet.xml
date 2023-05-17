@@ -1,0 +1,198 @@
+<RuleSet name="BDMOASLegalStatusCalculatorRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class name="BDMOASLegalStatusCalculator">
+		<Initialization>
+			<Attribute name="caseParticipantRoleID">
+				<type>
+					<javaclass name="Number" />
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="caseParticipantData">
+			<type>
+				<ruleclass name="BDMOASCaseParticipantData"
+					ruleset="BDMOASDataRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="BDMOASCaseParticipantData"
+					ruleset="BDMOASDataRuleSet">
+					<reference attribute="caseParticipantRoleID" />
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="isAnyLegalStatusPresent">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<compare comparison="&gt;">
+					<property name="size">
+						<object>
+							<reference attribute="legalStatusRecordList">
+								<reference attribute="caseParticipantData" />
+							</reference>
+						</object>
+					</property>
+					<Number value="0" />
+				</compare>
+			</derivation>
+		</Attribute>
+		<Attribute name="earliestLegalStatusStartDate">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<reference attribute="startDate">
+					<singleitem onMultiple="returnFirst" onEmpty="error">
+						<sort>
+							<list>
+								<reference attribute="legalStatusRecordList">
+									<reference attribute="caseParticipantData" />
+								</reference>
+							</list>
+							<sortorder>
+								<sortitem direction="ascending">
+									<reference attribute="startDate">
+										<current />
+									</reference>
+								</sortitem>
+							</sortorder>
+						</sort>
+					</singleitem>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="isValidLegalStatusTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Timeline">
+							<javaclass name="Boolean" />
+						</javaclass>
+					</type>
+					<when>
+						<condition>
+							<reference attribute="isAnyLegalStatusPresent" />
+						</condition>
+						<value>
+							<timelineoperation>
+								<any>
+									<fixedlist>
+										<listof>
+											<javaclass name="Boolean" />
+										</listof>
+										<members>
+											<intervalvalue>
+												<existencetimeline>
+													<intervaltype>
+														<javaclass name="Boolean" />
+													</intervaltype>
+													<intervalfromdate>
+														<null />
+													</intervalfromdate>
+													<intervaltodate>
+														<reference
+															attribute="earliestLegalStatusStartDate" />
+													</intervaltodate>
+													<preExistenceValue>
+														<false />
+													</preExistenceValue>
+													<existenceValue>
+														<property name="valueOn">
+															<object>
+																<reference
+																	attribute="rawIsValidLegalStatusTimeline" />
+															</object>
+															<arguments>
+																<reference
+																	attribute="earliestLegalStatusStartDate" />
+															</arguments>
+														</property>
+													</existenceValue>
+													<postExistenceValue>
+														<false />
+													</postExistenceValue>
+												</existencetimeline>
+											</intervalvalue>
+											<intervalvalue>
+												<reference
+													attribute="rawIsValidLegalStatusTimeline" />
+											</intervalvalue>
+										</members>
+									</fixedlist>
+								</any>
+							</timelineoperation>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<reference attribute="rawIsValidLegalStatusTimeline" />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="rawIsValidLegalStatusTimeline">
+			<Annotations>
+				<Documentation
+					documentation-id="BDMOASLegalStatusCalculator.rawIsValidLegalStatusTimeline"
+					text="Raw existence timeline of valid legal status records. Currently only returns the bare existence timeline pending implementation of legal status verifications." />
+				<tags>
+					<tag value="Eligibility" />
+				</tags>
+			</Annotations>
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Timeline">
+							<javaclass name="Boolean" />
+						</javaclass>
+					</type>
+					<when>
+						<condition>
+							<reference attribute="isAnyLegalStatusPresent" />
+						</condition>
+						<value>
+							<timelineoperation>
+								<any>
+									<dynamiclist>
+										<list>
+											<reference attribute="legalStatusRecordList">
+												<reference attribute="caseParticipantData" />
+											</reference>
+										</list>
+										<listitemexpression>
+											<intervalvalue>
+												<reference attribute="exists">
+													<current />
+												</reference>
+											</intervalvalue>
+										</listitemexpression>
+									</dynamiclist>
+								</any>
+							</timelineoperation>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<timelineoperation>
+								<false />
+							</timelineoperation>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

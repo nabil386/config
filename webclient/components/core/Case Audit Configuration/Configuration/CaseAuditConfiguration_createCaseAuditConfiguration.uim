@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2009, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose   	-->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows an administrator to create an audit case configuration-->
+<!-- BEGIN, CR00332478, GA -->
+<PAGE PAGE_ID="CaseAuditConfiguration_createCaseAuditConfiguration" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+<!-- END, CR00332478 -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="CaseAuditConfiguration" NAME="DISPLAY" OPERATION="getAvailableFocusAreasAndQueries"/>
+
+
+  <SERVER_INTERFACE CLASS="CaseAuditConfiguration" NAME="ACTION" OPERATION="createAuditCaseConfiguration" PHASE="ACTION"/>
+
+
+  <PAGE_PARAMETER NAME="caseType"/>
+  <PAGE_PARAMETER NAME="caseCategory"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseCategory"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$caseCategory"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseType"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$caseType"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseType"/>
+    <TARGET NAME="ACTION" PROPERTY="details$configDtls$dtls$caseType"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseCategory"/>
+    <TARGET NAME="ACTION" PROPERTY="details$configDtls$dtls$caseCategory"/>
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL IMAGE="SaveAndNewButton" LABEL="ActionControl.Label.SaveAndNew" TYPE="SUBMIT">
+      <LINK DISMISS_MODAL="false" PAGE_ID="CaseAuditConfiguration_selectCaseTypeAndCategory" SAVE_LINK="false"/>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT">
+      <LINK PAGE_ID="CaseAuditConfiguration_listCaseAuditConfigurations"/>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel">
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER NUM_COLS="1">
+
+
+    <CLUSTER LABEL_WIDTH="40" NUM_COLS="2" STYLE="cluster-cpr-no-border">
+
+
+      <FIELD LABEL="Field.Label.CaseCategory">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$caseCategory"/>
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Algorithm" USE_BLANK="true" USE_DEFAULT="false">
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="details$configDtls$dtls$auditAlgorithm"/>
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+
+
+    <CLUSTER LABEL_WIDTH="25" NUM_COLS="1" STYLE="cluster-cpr-no-border">
+
+
+      <FIELD LABEL="Field.Label.CaseAuditTypeSID" WIDTH="55">
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="details$configDtls$dtls$caseAuditTypeSID"/>
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+
+   <!-- BEGIN, CR00332478, GA -->
+    <CLUSTER NUM_COLS="1" STYLE="cluster-cpr-no-border" LABEL_WIDTH="50">
+    <!-- END, CR00332478 -->
+      <FIELD LABEL="Field.Label.AllowManSelectInd">
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="details$configDtls$dtls$manCaseSelectInd"/>
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <LIST PAGINATED="false" TITLE="List.DynamicQueries.Title">
+
+
+      <CONTAINER WIDTH="5">
+        <WIDGET TYPE="SINGLESELECT">
+          <WIDGET_PARAMETER NAME="SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE NAME="DISPLAY" PROPERTY="result$availableDynamicQueries$dtls$queryID"/>
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="SELECT_TARGET">
+            <CONNECT>
+              <TARGET NAME="ACTION" PROPERTY="details$dynamicQueryID"/>
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+      <FIELD LABEL="Field.Label.DynamicQuery">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$availableDynamicQueries$dtls$queryName"/>
+        </CONNECT>
+      </FIELD>
+    </LIST>
+
+
+    <!-- BEGIN, CR00212784, GD -->
+    <LIST PAGINATED="false" TITLE="List.FixedQueries.Title">
+      <!-- END, CR00212784 -->
+
+
+      <CONDITION>
+        <IS_TRUE NAME="DISPLAY" PROPERTY="result$displayFixedQueries"/>
+      </CONDITION>
+
+
+      <DETAILS_ROW>
+        <INLINE_PAGE PAGE_ID="SelectionQuery_listCriteria">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$availableFixedQueries$dtls$queryID"/>
+            <TARGET NAME="PAGE" PROPERTY="selectionQueryID"/>
+          </CONNECT>
+        </INLINE_PAGE>
+      </DETAILS_ROW>
+
+
+      <CONTAINER WIDTH="5">
+        <WIDGET TYPE="MULTISELECT">
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE NAME="DISPLAY" PROPERTY="result$availableFixedQueries$dtls$queryID"/>
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET NAME="ACTION" PROPERTY="details$selectedFixedQueries"/>
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+
+
+      <FIELD LABEL="Field.Label.FixedQuery">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$availableFixedQueries$dtls$queryName"/>
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+  <CLUSTER NUM_COLS="1">
+
+
+    <CLUSTER LABEL_WIDTH="50" STYLE="cluster-cpr-no-border" TITLE="Cluster.Title.SelectFocusAreas">
+
+
+      <!-- BEGIN, CR00212784, GD -->
+      <LIST PAGINATED="false">
+        <CONTAINER ALIGNMENT="CENTER" WIDTH="5">
+          <WIDGET TYPE="MULTISELECT">
+            <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+              <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="focusAreaCode"/>
+              </CONNECT>
+            </WIDGET_PARAMETER>
+
+
+            <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+              <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="details$selectedFocusAreas"/>
+              </CONNECT>
+            </WIDGET_PARAMETER>
+
+
+          </WIDGET>
+
+
+        </CONTAINER>
+
+
+        <FIELD LABEL="Field.Label.FocusArea">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="focusAreaCode"/>
+          </CONNECT>
+        </FIELD>
+
+
+      </LIST>
+      <!-- END, CR00212784 -->
+
+
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+</PAGE>

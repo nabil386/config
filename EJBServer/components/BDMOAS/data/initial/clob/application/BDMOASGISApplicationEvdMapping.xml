@@ -1,0 +1,61 @@
+
+<map name="EvidenceMapping"
+	xmlns="http://www.curamsoftware.com/schemas/GUMBO/Map">
+	
+	<map-code-table source-codetable="BDMEmailType" target-codetable="EmailType">
+		<map-value source="Personal" target="ET2"/>
+		<map-value source="Business" target="ET1"/>
+	</map-code-table>
+		
+		<map-entity source="TaxInfo">
+			<condition expression="TaxInfo.dedFedTax==&quot;YN1&quot; and TaxInfo.dedMethod==&quot;BDMTDM8000&quot;">
+				<target-entity id="VoluntaryTaxWithhold" name="VoluntaryTaxWithhold">
+					<set-attribute name="startDate" value="curam.date.today"/>
+					<map-attribute from="taxPersonID" to="nominee" />
+					<map-attribute from="dollarAmount" to="voluntaryTaxWithholdAmount" />
+					<set-attribute name="voluntaryTaxWithholdType" value="VTW0001"/>
+				</target-entity>
+			</condition>
+			<condition expression="TaxInfo.dedFedTax==&quot;YN1&quot;  and TaxInfo.dedMethod==&quot;BDMTDM8001&quot;">
+				<target-entity id="VoluntaryTaxWithhold" name="VoluntaryTaxWithhold">
+					<set-attribute name="startDate" value="curam.date.today"/>
+					<map-attribute from="taxPersonID" to="nominee" />
+					<map-attribute from="dollarPerct" to="voluntaryTaxWithholdPercentage" />
+					<set-attribute name="voluntaryTaxWithholdType" value="VTW0001"/>
+				</target-entity>
+			</condition>
+
+		</map-entity>
+
+	<map-entity source="IntakeApplicationType">
+		<condition expression="IntakeApplicationType.intakeApplicationTypeID==910001">
+			<target-entity name="Attestation">
+				<set-attribute name="attestationPeriodStartDate" value="curam.date.today"/>
+				<set-attribute name="isEligible" value="true" />
+				<set-attribute name="attestationType" value="BDMAT80000"/>
+			</target-entity>
+		</condition>
+		<condition expression="IntakeApplicationType.intakeApplicationTypeID==910002">
+			<target-entity name="Attestation">
+				<set-attribute name="attestationPeriodStartDate" value="curam.date.today"/>
+				<set-attribute name="isEligible" value="true" />
+				<set-attribute name="attestationType" value="BDMAT80001"/>
+			</target-entity>
+		</condition>
+		<condition expression="IntakeApplicationType.intakeApplicationTypeID==910003">
+			<target-entity name="Attestation">
+				<set-attribute name="attestationPeriodStartDate" value="curam.date.today"/>
+				<set-attribute name="isEligible" value="true" />
+				<set-attribute name="attestationType" value="BDMAT80001"/>
+			</target-entity>
+		</condition>	
+		<condition expression="IntakeApplicationType.intakeApplicationTypeID==910004">
+			<target-entity name="Attestation">
+				<set-attribute name="attestationPeriodStartDate" value="curam.date.today"/>
+				<set-attribute name="isEligible" value="true" />
+				<set-attribute name="attestationType" value="BDMAT80001"/>
+			</target-entity>
+		</condition>				
+	</map-entity>
+	
+</map>

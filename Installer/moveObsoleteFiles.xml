@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  This is the ant build file for moving obselete files.
+
+-->
+<project
+  basedir="."
+  default="all"
+  name="CuramMoveFiles"
+>
+
+  <property
+    name="CURAM_DIR"
+    value=".."
+  />
+
+  <property
+    name="BACKUP_FOLDER"
+    value="${CURAM_DIR}/${installer.version}-ObsoleteFiles"
+  />
+
+
+  <property
+    name="OBSOLETE_FILES_LIST_FILE"
+    value="${CURAM_DIR}/${installer.version}-ObsoleteFilesList.txt"
+  />
+
+
+  <available
+    file="${OBSOLETE_FILES_LIST_FILE}"
+    property="obsolete.file.exists"
+  />
+
+
+  <target
+    if="obsolete.file.exists"
+    name="all"
+  >
+
+
+    <mkdir dir="${BACKUP_FOLDER}"/>
+    <move
+      todir="${BACKUP_FOLDER}"
+      verbose="true"
+    >
+      <fileset dir="${CURAM_DIR}">
+        <includesfile name="${OBSOLETE_FILES_LIST_FILE}"/>
+      </fileset>
+    </move>
+
+
+  </target>
+
+
+</project>

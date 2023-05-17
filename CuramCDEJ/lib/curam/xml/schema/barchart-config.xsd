@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="BARCHART-CONFIG">
+    <xs:annotation>
+      <xs:documentation>Root element of configuration file.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence maxOccurs="unbounded">
+        <xs:element ref="CONFIG"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CONFIG">
+    <xs:annotation>
+      <xs:documentation>Configuration details for a particular bar chart.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="LEGEND"/>
+        <xs:element ref="LINK"/>
+        <xs:element ref="CAPTION_LINK" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="ID" type="xs:string" use="required"/>
+      <xs:attribute name="ORIENTATION" type="ORIENTATION_ATTRIBUTE" use="required"/>
+      <xs:attribute name="FOREGROUND_COLOR" type="xs:string" use="optional"/>
+      <xs:attribute name="BACKGROUND_COLOR" type="xs:string" use="optional"/>
+      <xs:attribute name="CAPTION_FOREGROUND" type="xs:string" use="optional"/>
+      <xs:attribute name="CAPTION_BACKGROUND" type="xs:string" use="optional"/>
+      <xs:attribute name="CAPTION_TEXT_CODETABLE" type="xs:string" use="optional"/>
+      <xs:attribute name="WIDTH" type="xs:int" use="optional"/>
+      <xs:attribute name="BORDER_COLOR" type="xs:string" use="optional"/>
+      <xs:attribute name="MAX_VALUE" type="xs:int" use="optional"/>
+      <xs:attribute name="MIN_INCREMENT" type="xs:int" use="optional"/>
+      <xs:attribute name="MAX_INCREMENT" type="xs:int" use="optional"/>
+      <xs:attribute name="X_AXIS_LABEL" type="xs:string" use="optional"/>
+      <xs:attribute name="Y_AXIS_LABEL" type="xs:string" use="optional"/>
+      <xs:attribute name="CAPTION" type="xs:string" use="optional"/>
+      <xs:attribute name="MAX_HEIGHT" type="xs:string" use="optional"/>
+      <xs:attribute name="MIN_HEIGHT" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LEGEND">
+    <xs:annotation>
+      <xs:documentation>Legend for the chart. CODETABLE attribute determines codetable to look up for type comparison.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence maxOccurs="unbounded">
+        <xs:element ref="ITEM"/>
+      </xs:sequence>
+      <xs:attribute name="CODETABLE" type="xs:string" use="optional"/>
+      <xs:attribute name="VISIBLE" type="xs:boolean" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ITEM">
+    <xs:annotation>
+      <xs:documentation>Legend item. The COLOR attribute is the hexi-decimal color code to display. CODE is the codetable code to use.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="COLOR" type="xs:string" use="required"/>
+      <xs:attribute name="CODE" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LINK">
+    <xs:annotation>
+      <xs:documentation>The link for clicking on any bar. LOCATION is the ID of the UIM page to link to.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence maxOccurs="unbounded">
+        <xs:element ref="PARAMETER"/>
+      </xs:sequence>
+      <xs:attribute name="LOCATION" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CAPTION_LINK">
+    <xs:annotation>
+      <xs:documentation>The link for clicking on any caption. LOCATION is the ID of the UIM page to link to.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence maxOccurs="unbounded">
+        <xs:element ref="PARAMETER"/>
+      </xs:sequence>
+      <xs:attribute name="LOCATION" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PARAMETER">
+    <xs:annotation>
+      <xs:documentation>Any parameters for the LINK or CAPTION_LINK elements. NAME is the name to give the parameter. VALUE is the name of the attribute on the BLOCK element or the CAPTION element (on BAR_CHART) to use as a parameter value unless USE_PAGE_PARAM is true, in which case VALUE is the name of a page parameter to use.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="NAME" type="xs:string" use="required"/>
+      <xs:attribute name="VALUE" type="xs:string" use="required"/>
+      <xs:attribute name="USE_PAGE_PARAM" type="xs:boolean" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="ORIENTATION_ATTRIBUTE">
+    <xs:annotation>
+      <xs:documentation>Bar chart orientation attribute. Can be HORIZONTAL or VERTICAL.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="HORIZONTAL"/>
+      <xs:enumeration value="VERTICAL"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

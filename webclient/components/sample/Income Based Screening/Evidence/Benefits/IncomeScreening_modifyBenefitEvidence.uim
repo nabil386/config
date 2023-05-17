@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="IncomeScreening_modifyBenefitEvidence"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="pageDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="IncomeScreening"
+    NAME="DISPLAY"
+    OPERATION="viewBenefitEvidence"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="IncomeScreening"
+    NAME="ACTION"
+    OPERATION="modifyBenefitEvidence"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="caseEvidenceTypeID"/>
+  <PAGE_PARAMETER NAME="householdBenefitsID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="householdBenefitsID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="fsHouseholdBenefitsID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseEvidenceTypeID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseEvidenceTypeID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="householdBenefitsID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="fsHouseholdBenefitsID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="35"
+    TITLE="Cluster.Title.Details"
+  >
+
+
+    <FIELD LABEL="Field.Label.HouseholdMember">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="concernRoleName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Participant_resolveRoleHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="participantType"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Type">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="benefitTypeCode"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="benefitTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ClaimNumber"
+      WIDTH="20"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="benefitClaimNo"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="benefitClaimNo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

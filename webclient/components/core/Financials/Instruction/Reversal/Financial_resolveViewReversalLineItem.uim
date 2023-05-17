@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2009, 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009, 2011 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Resolver to find the Debit or Credit financial line item details page  -->
+<?curam-deprecated Since Curam 6.0. Replaced by Financial_resolveInstructionView1.uim ?>
+<PAGE PAGE_ID="Financial_resolveViewReversalLineItem">
+  <JSP_SCRIPTLET>
+    
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String lineItemID = request.getParameter("lineItemID");     
+      String contextDescription = request.getParameter("contextDescription");
+      String creditDebitType = "";
+      String url = "";
+ 
+      if (lineItemID == null) {
+        throw new Exception("'lineItemID' parameter does not exist");
+      }
+      // BEGIN, CR00279713, AC
+      curam.interfaces.FinancialPkg.Financial_readCreditDebitType_TH
+      th = new curam.interfaces.FinancialPkg.Financial_readCreditDebitType_TH();      
+      
+      th.setFieldValue(th.readInstructionLineItemKey$instructionLineItemID_idx, lineItemID);
+      
+      th.callServer();
+      creditDebitType=th.getFieldValue(th.result$CreditDebitType_idx);      
+      // END, CR00279713
+      if (lineItemID != null) {     
+       // BEGIN, CR00372377, AC
+        if(("CDT").equals(creditDebitType)) {
+          url = context + "Financial_viewReversedLineItemPage.do?lineItemID=" 
+            + curam.omega3.request.RequestUtils.escapeURL(lineItemID) + "&amp;contextDescription=" +curam.omega3.request.RequestUtils.escapeURL(contextDescription);      
+        } else {
+          url = context + "Financial_viewReversedLineItemForDebitTypePage.do?lineItemID=" 
+            + curam.omega3.request.RequestUtils.escapeURL(lineItemID) + "&amp;contextDescription=" +curam.omega3.request.RequestUtils.escapeURL(contextDescription);
+        }
+         // END, CR00372377
+      }
+      url += "&amp;" + rh.getSystemParameters();  
+      response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+</PAGE>

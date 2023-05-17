@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="CREOLEProgramRecommendation_readLatestForApplication"
+  WINDOW_OPTIONS="width=900"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="CREOLEProgramRecommendation"
+    NAME="DISPLAY"
+    OPERATION="listLatestAppliedForEligibleSimulatedDeterminations"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="CREOLEProgramRecommendation"
+    NAME="DISPLAY_INELIGIBLE"
+    OPERATION="listLatestIneligibleProgramsForApplication"
+  />
+
+
+  <PAGE_PARAMETER NAME="applicationID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$applicationID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="DISPLAY_INELIGIBLE"
+      PROPERTY="key$applicationID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    TITLE="Cluster.Title.Eligible"
+  >
+
+
+    <LIST>
+      <DETAILS_ROW>
+        <INLINE_PAGE PAGE_ID="CREOLEProgramRecommendation_listPeriodsForLatestSimulatedDetermination">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$list$creoleProgramRecommendationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="creoleProgramRecommendationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$list$simulatedDeterminationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="simulatedDeterminationID"
+            />
+          </CONNECT>
+        </INLINE_PAGE>
+      </DETAILS_ROW>
+
+
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+        <ACTION_CONTROL LABEL="ActionControl.Label.Authorize">
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="isActionPending"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="CREOLEProgramRecommendation_confirmAuthorize"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$list$creoleProgramRecommendationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="creoleProgramRecommendationID"
+              />
+            </CONNECT>
+
+
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$list$simulatedDeterminationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="simulatedDeterminationID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL LABEL="ActionControl.Label.Decline">
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="isActionPending"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="CREOLEProgramRecommendation_decline"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$list$creoleProgramRecommendationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="creoleProgramRecommendationID"
+              />
+            </CONNECT>
+
+
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$list$simulatedDeterminationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="simulatedDeterminationID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL
+          APPEND_ELLIPSIS="false"
+          LABEL="ActionControl.Label.ViewStatusDetails"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="isAuthorizedOrDeclined"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="CREOLEProgramRecommendation_resolveStatusDetailsPage"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$list$creoleProgramRecommendationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="creoleProgramRecommendationID"
+              />
+            </CONNECT>
+
+
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$list$simulatedDeterminationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="simulatedDeterminationID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="isAuthorized"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="isAuthorized"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="isDeclined"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="isDeclined"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+
+
+      <FIELD LABEL="Field.Label.Program">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$list$productName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.SimulatedDeterminationDescription">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$list$description"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.EligibilityPeriod">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$list$period"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Summary">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$list$summary"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Status">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$list$status"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    TITLE="Cluster.Title.IneligiblePrograms"
+  >
+
+
+    <LIST>
+
+
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+        <ACTION_CONTROL LABEL="ActionControl.Label.Deny">
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY_INELIGIBLE"
+              PROPERTY="isPending"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="CREOLEProgramRecommendation_confirmDenyProgramApplication"
+          >
+
+
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY_INELIGIBLE"
+                PROPERTY="result$list$programApplicationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="programApplicationID"
+              />
+            </CONNECT>
+
+
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY_INELIGIBLE"
+                PROPERTY="result$list$programApplicationVersionNumber"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="programApplicationVersionNumber"
+              />
+            </CONNECT>
+
+
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL LABEL="ActionControl.Label.ViewProgramStatusDetails">
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY_INELIGIBLE"
+              PROPERTY="isDenied"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="CREOLEProgramRecommendation_viewProgramApplicationStatusDetails"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY_INELIGIBLE"
+                PROPERTY="result$list$programApplicationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="programApplicationID"
+              />
+            </CONNECT>
+
+
+          </LINK>
+
+
+        </ACTION_CONTROL>
+      </ACTION_SET>
+
+
+      <FIELD LABEL="Field.Label.Program">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY_INELIGIBLE"
+            PROPERTY="result$list$productName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Reason">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY_INELIGIBLE"
+            PROPERTY="result$list$reason"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Date">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY_INELIGIBLE"
+            PROPERTY="result$list$date"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Status">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY_INELIGIBLE"
+            PROPERTY="result$list$status"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </LIST>
+
+
+  </CLUSTER>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close"/>
+  </ACTION_SET>
+
+
+</PAGE>

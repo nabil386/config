@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2013,2014. All rights reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<workflow-process
+  category="PC1"
+  createdBy="admin"
+  creationDate="20130327T150325"
+  id="1126999418470696"
+  language-version="1.0"
+  process-version="2"
+  released="true"
+>
+  <name>DEFAULTCASENOTIFICATION</name>
+  <process-display-name>
+    <localized-text>
+      <locale language="en">Default Case Notification</locale>
+    </localized-text>
+  </process-display-name>
+  <description>
+    <localized-text>
+      <locale language="en">Default Case Notification Workflow - Allocates the Notification to the
+        specified user</locale>
+    </localized-text>
+  </description>
+  <enactment-mappings>
+    <mapping>
+      <source-attribute
+        name="userName"
+        struct-name="curam.core.sl.impl.NotificationWDOStruct"
+      />
+      <target-attribute
+        name="username"
+        wdo-name="DefaultCaseNotificationWDO"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="caseID"
+        struct-name="curam.core.sl.impl.NotificationWDOStruct"
+      />
+      <target-attribute
+        name="caseID"
+        wdo-name="DefaultCaseNotificationWDO"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="subject"
+        struct-name="curam.core.sl.impl.NotificationWDOStruct"
+      />
+      <target-attribute
+        name="subject"
+        wdo-name="DefaultCaseNotificationWDO"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="body"
+        struct-name="curam.core.sl.impl.NotificationWDOStruct"
+      />
+      <target-attribute
+        name="body"
+        wdo-name="DefaultCaseNotificationWDO"
+      />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo
+      initialize-attributes="false"
+      is-list-wdo="false"
+    >
+      <wdo-name>DefaultCaseNotificationWDO</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">DefaultCaseNotificationWDO</locale>
+        </localized-text>
+      </display-name>
+      <description>
+        <localized-text>
+          <locale language="en">DefaultCaseNotificationWDO</locale>
+        </localized-text>
+      </description>
+      <attributes>
+        <attribute>
+          <attribute-name>username</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">username</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>caseID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">caseID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>subject</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">subject</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>body</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">body</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="28674">
+      <name>
+        <localized-text>
+          <locale language="en">StartProcessActivity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The start process activity</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="28928"/>
+      </split>
+    </start-process-activity>
+    <end-process-activity id="28675">
+      <name>
+        <localized-text>
+          <locale language="en">EndProcessActivity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+    </end-process-activity>
+    <route-activity
+      category="AC1"
+      id="28676"
+    >
+      <name>
+        <localized-text>
+          <locale language="en">Notification</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">Dummy activity to send the required Notification</locale>
+        </localized-text>
+      </description>
+      <notification delivery-mechanism="DM1">
+        <subject>
+          <message>
+            <message-text>
+              <localized-text>
+                <locale language="en">%1s</locale>
+              </localized-text>
+            </message-text>
+            <message-parameters>
+              <wdo-attribute
+                name="subject"
+                wdo-name="DefaultCaseNotificationWDO"
+              />
+            </message-parameters>
+          </message>
+        </subject>
+        <body>
+          <message>
+            <message-text>
+              <localized-text>
+                <locale language="en">%1s</locale>
+              </localized-text>
+            </message-text>
+            <message-parameters>
+              <wdo-attribute
+                name="body"
+                wdo-name="DefaultCaseNotificationWDO"
+              />
+            </message-parameters>
+          </message>
+        </body>
+        <allocation-strategy
+          identifier="curam.core.sl.intf.NotificationAllocationFunction.defaultStrategy"
+          type="function"
+        >
+          <function-mappings>
+            <formal-parameters>
+              <formal-parameter index="0">
+                <base-type type="STRING">
+                  <wdo-attribute
+                    name="username"
+                    wdo-name="DefaultCaseNotificationWDO"
+                  />
+                </base-type>
+              </formal-parameter>
+            </formal-parameters>
+          </function-mappings>
+        </allocation-strategy>
+        <actions>
+          <!--BEGIN, CR00415237, SP -->
+          <action
+            open-modal="false"
+            page-id="Case_resolveCaseHome"
+            principal-action="false"
+          >
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="en">Case Home Page</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="caseID">
+              <wdo-attribute
+                name="caseID"
+                wdo-name="DefaultCaseNotificationWDO"
+              />
+            </link-parameter>
+          </action>
+          <!--END, CR00415237 -->
+        </actions>
+      </notification>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="28677"/>
+      </split>
+    </route-activity>
+  </activities>
+  <transitions>
+    <transition
+      from-activity-idref="28676"
+      id="28677"
+      to-activity-idref="28675"
+    />
+    <transition
+      from-activity-idref="28674"
+      id="28928"
+      to-activity-idref="28676"
+    />
+  </transitions>
+</workflow-process>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012,2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- ================                                                        -->
+<!-- This jsp redirects the user to the appropriate validation UIM pages     -->
+<!-- based on whether full or structural validation is being performed.            -->
+<PAGE
+  PAGE_ID="ProcessDefinitionTool_validationRedirect"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+      String validateStructureOnly =
+          request.getParameter("validateStructureOnly");
+      boolean structureOnly =
+          Boolean.valueOf(validateStructureOnly).booleanValue();
+      String processName = request.getParameter("processName");
+      String processID = request.getParameter("processID");
+      String processVersionNo = request.getParameter("processVersionNo");
+      
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory
+        .getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      
+      String pageID = null;
+      
+      if (structureOnly) {        
+        pageID = "ProcessDefinitionTool_validateProcessStructurePage.do";
+      } else {
+        pageID = "ProcessDefinitionTool_validateProcessPage.do";
+      }
+      
+      String redirectTo = context + pageID + "?processName=" + curam.omega3.request.RequestUtils.escapeURL(processName) 
+      + "&amp;processVersionNo=" + curam.omega3.request.RequestUtils.escapeURL(processVersionNo) 
+      + "&amp;processID=" + curam.omega3.request.RequestUtils.escapeURL(processID)
+      + "&amp;validateStructureOnly=" + curam.omega3.request.RequestUtils.escapeURL(validateStructureOnly)
+      + "&amp;" + rh.getSystemParameters();
+
+      response.sendRedirect(response.encodeRedirectURL(redirectTo));
+    
+  </JSP_SCRIPTLET>
+</PAGE>

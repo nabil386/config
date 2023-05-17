@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify the name, type and comments        -->
+<!-- of a Questionnaire.                                                    -->
+<PAGE
+  PAGE_ID="DecisionAssistAdmin_modifyQuestionnaire"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="Questionnaire"
+    NAME="MODIFY_QUESTIONNAIRE"
+    OPERATION="modifyQuestionniare"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="Questionnaire"
+    NAME="READ_QUESTIONNAIRE"
+    OPERATION="readQuestionnaire"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="questionnaireVersionID"/>
+  <CONNECT>
+    <TARGET
+      NAME="READ_QUESTIONNAIRE"
+      PROPERTY="key$dtls$questionnaireVersionID"
+    />
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionnaireVersionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <TARGET
+      NAME="MODIFY_QUESTIONNAIRE"
+      PROPERTY="details$dtls$questionnaireVersionID"
+    />
+    <SOURCE
+      NAME="READ_QUESTIONNAIRE"
+      PROPERTY="result$dtls$dtls$questionnaireVersionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <TARGET
+      NAME="MODIFY_QUESTIONNAIRE"
+      PROPERTY="details$dtls$versionNo"
+    />
+    <SOURCE
+      NAME="READ_QUESTIONNAIRE"
+      PROPERTY="result$dtls$dtls$versionNo"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00198224, SS -->
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+  >
+
+
+    <!-- BEGIN, CR00207167, SS -->
+    <FIELD
+      LABEL="Field.Label.ModifyQuestionnaireName"
+      WIDTH="90"
+    >
+      <!-- END, CR00198224 -->
+      <!-- END, CR00207167 -->
+      <CONNECT>
+        <TARGET
+          NAME="MODIFY_QUESTIONNAIRE"
+          PROPERTY="details$dtls$name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="READ_QUESTIONNAIRE"
+          PROPERTY="result$dtls$dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207167, SS -->
+    <!-- BEGIN, CR00198224, SS -->
+    <FIELD
+      LABEL="Field.Label.ModifyQuestionnaireType"
+      WIDTH="72"
+    >
+      <!-- END, CR00198224 -->
+      <!-- END, CR00207167 -->
+      <CONNECT>
+        <TARGET
+          NAME="MODIFY_QUESTIONNAIRE"
+          PROPERTY="details$dtls$type"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="READ_QUESTIONNAIRE"
+          PROPERTY="result$dtls$dtls$type"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.QuestionnaireComments"
+  >
+    <!-- BEGIN, CR00198224, SS -->
+    <FIELD HEIGHT="4">
+      <!-- END, CR00198224 -->
+      <CONNECT>
+        <TARGET
+          NAME="MODIFY_QUESTIONNAIRE"
+          PROPERTY="details$dtls$comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="READ_QUESTIONNAIRE"
+          PROPERTY="result$dtls$dtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    > </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    > </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

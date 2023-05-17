@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This is a search page which allows the user to search                  -->
+<!-- for prospect persons and persons.                                      -->
+<PAGE
+  PAGE_ID="Intake_findClientSearchResults"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationClient"
+    NAME="DISPLAY"
+    OPERATION="searchPersonAndProspectPersons"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationClient"
+    NAME="ACTION"
+    OPERATION="searchPersonAndProspectPersons"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationClient"
+    NAME="DISPLAYINFORMATIONAL"
+    OPERATION="getFindClientPodInformational"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="surname"/>
+  <PAGE_PARAMETER NAME="forename"/>
+  <PAGE_PARAMETER NAME="dateOfBirth"/>
+  <PAGE_PARAMETER NAME="referenceNumber"/>
+  <PAGE_PARAMETER NAME="middleName"/>
+  <PAGE_PARAMETER NAME="informationMesgText"/>
+  <PAGE_PARAMETER NAME="typeAction"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="surname"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$lastName"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="surname"
+    />
+    <TARGET
+      NAME="DISPLAYINFORMATIONAL"
+      PROPERTY="key$lastName"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="forename"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$firstName"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="forename"
+    />
+    <TARGET
+      NAME="DISPLAYINFORMATIONAL"
+      PROPERTY="key$firstName"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="middleName"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$initial"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="dateOfBirth"
+    />
+    <TARGET
+      NAME="DISPLAYINFORMATIONAL"
+      PROPERTY="key$dateOfBirth"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="dateOfBirth"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$dateOfBirth"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="referenceNumber"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$referenceID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="referenceNumber"
+    />
+    <TARGET
+      NAME="DISPLAYINFORMATIONAL"
+      PROPERTY="key$referenceID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="informationMesgText"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$informationMsgText"
+    />
+  </CONNECT>
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYINFORMATIONAL"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="key$referenceID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="key$referenceID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$referenceID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN,CR00273422,AM-->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.AdditionalSearchCriteria"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.FirstName"
+      WIDTH="100"
+    >
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="key$firstName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="key$firstName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$firstName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.MiddleInitial"
+      WIDTH="5"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="key$initial"
+        />
+      </CONNECT>
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="key$initial"
+        />
+      </CONNECT>
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$initial"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.DateOfBirth"
+      USE_DEFAULT="false"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="key$dateOfBirth"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="key$dateOfBirth"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$dateOfBirth"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AddressLineTwo"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$addressLineOne"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.City"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$city"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ZipCode"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$zip"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.LastName"
+      WIDTH="100"
+    >
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="key$lastName"
+        />
+      </CONNECT>
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="key$lastName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$lastName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Gender"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$gender"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AddressLineOne"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$aptSuit"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.AddressLineThree"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$addressLineTwo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.State"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$state"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+
+
+  <!-- END,CR00273422,AM-->
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      BOTTOM="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS">                             
+        </LINK>
+
+
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="Search_results1">         
+        </LINK>
+
+
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.QuickRegister"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Quick_register"
+        />
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <JSP_SCRIPTLET>   
+    if (request.getParameter("typeAction")!=null) { 
+    
+  </JSP_SCRIPTLET>
+  <INCLUDE FILE_NAME="SearchResultsActionView.vim"/>
+  <JSP_SCRIPTLET>    
+    } else 
+       {   
+  </JSP_SCRIPTLET>
+  <INCLUDE FILE_NAME="SearchResultsDisplayView.vim"/>
+  <JSP_SCRIPTLET>    
+        }
+  </JSP_SCRIPTLET>
+
+
+</PAGE>

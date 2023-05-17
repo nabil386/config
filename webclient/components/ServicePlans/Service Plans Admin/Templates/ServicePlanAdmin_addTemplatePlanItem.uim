@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012, 2015. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2004-2006 , 2009 Curam Software Ltd.                                            -->
+<!-- All rights reserved.                                                                                       -->
+<!-- This software is the confidential and proprietary information of Curam      -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose             -->
+<!-- such Confidential Information and shall use it only in accordance with       -->
+<!-- the terms of the license agreement you entered into with Curam              -->
+<!-- Software.                                                                                                     -->
+<!-- Description                                                                                                   -->
+<!-- ===========                                                                                       -->
+<!-- This page allows the user to add an plan item to a service plan template   -->
+<!-- sub goal.                                                                                                     -->
+<PAGE
+  PAGE_ID="ServicePlanAdmin_addTemplatePlanItem"
+  WINDOW_OPTIONS="width=725"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServicePlan"
+    NAME="DISPLAY"
+    OPERATION="listUnassociatedTemplatePlanItems"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00226792 MN -->
+  <SERVER_INTERFACE
+    CLASS="ServicePlan"
+    NAME="ACTION"
+    OPERATION="createPlanTemplatePlanItem"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00226792 -->
+
+
+  <PAGE_PARAMETER NAME="planTemplateSubGoalID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="planTemplateSubGoalID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="planTemplateSubGoalID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="planTemplateSubGoalID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="planTemplateSubGoalID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ServicePlanAdmin_templatePlanItemHome">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$key$key$planTemplatePlanItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="planTemplatePlanItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+      <LINK PAGE_ID="ServicePlanAdmin_templateSubGoalHome">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="planTemplateSubGoalID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="planTemplateSubGoalID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+  >
+
+
+    <FIELD LABEL="Field.Label.PlanItem">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="planItemID"
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="planItemID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ExpectedOutcome">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="expectedOutcomeID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+    <!-- BEGIN, CR00161962, LJ -->
+    <FIELD LABEL="Field.Label.isMandatoryInd">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$details$dtls$isMandatoryInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00161962 -->
+  </CLUSTER>
+  <!-- BEGIN, CR00161962, LJ -->
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.ApprovalDetails"
+  >
+    <FIELD LABEL="Field.Label.ApprovalRequired">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$details$dtls$approvalReqInd"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00161962 -->
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.DeliveryDetails"
+  >
+    <FIELD
+      LABEL="Field.Label.StartAfterPlanStart"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDay"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.AuthorizedUnits"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="authorizedUnits"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Duration"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="duration"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.MaximumUnits"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="maximumUnits"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Description"
+  >
+    <!-- BEGIN, CR00463142, EC -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Cluster.Title.Description"
+    >
+      <!-- END, CR00463142 -->
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

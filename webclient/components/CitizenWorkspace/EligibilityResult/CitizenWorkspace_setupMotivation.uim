@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2012 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- =========== -->
+<PAGE PAGE_ID="CitizenWorkspace_setupMotivation">
+  <JSP_SCRIPTLET>
+  <![CDATA[
+            
+      javax.servlet.http.HttpServletRequest hsRequest;
+      javax.servlet.http.HttpSession httpSession;
+      hsRequest = (javax.servlet.http.HttpServletRequest) request;
+      httpSession = hsRequest.getSession();
+      java.security.Principal userPrincipal = hsRequest.getUserPrincipal();
+      String url;
+      String contextPath = request.getContextPath();    
+
+      String playerID = request.getParameter("id");
+      String motivationName = request.getParameter("name");
+      String previousMotivationID= request.getParameter("previousMotivationID");
+      
+      String navigatorID = (String) httpSession.getAttribute("curam.navigatorid");
+            
+      // Call setup motivation process
+      curam.interfaces.MotivationPkg.Motivation_setupMotivation_TH th = 
+        new curam.interfaces.MotivationPkg.Motivation_setupMotivation_TH(); 
+      th.setFieldValue(th.key$motivationType_idx, motivationName);
+      th.setFieldValue(th.key$previousMotivationID_idx, previousMotivationID);
+      th.setFieldValue(th.key$navigatorID_idx, navigatorID);    
+      th.setFieldValue(th.key$sessionID_idx, playerID);   
+      th.callServer();
+      
+      String motivationID = th.getFieldValue(th.result$motivationID_idx);
+      
+      httpSession.setAttribute("curam.motivationid", motivationID);
+
+      String loginRequiredInd = th.getFieldValue(th.result$requiresLogin_idx);
+      String username = th.getFieldValue(th.result$username_idx);
+      String password = th.getFieldValue(th.result$password_idx);      
+      String usertype = th.getFieldValue(th.result$userType_idx);
+      String pagePlayerID = th.getFieldValue(th.result$pagePlayerID_idx);
+      String anonLoginAllowed = th.getFieldValue(th.result$anonLoginAllowed_idx);
+      String pageName = th.getFieldValue(th.result$nextPage_idx);;
+      String pageType = "";
+
+      //loginRequiredInd is used to determine whether the user has already entered login details
+      if (!"true".equals(loginRequiredInd)) {	  
+		// user has already entered login details, proceed to motivation
+		pageName = "StartMotivation";
+        pageType = "resolve";      
+		
+      }
+
+      if ("true".equals(loginRequiredInd) && userPrincipal != null) {
+      
+        // Set the session values required to forward to the correct page after logon
+        String params = "&id=" + pagePlayerID;
+        httpSession.setAttribute("curam.page.name", pageName);
+        httpSession.setAttribute("curam.page.params", params);
+        httpSession.setAttribute("curam.page.type", pageType);
+        httpSession.setAttribute("curam.userName", username);    
+        httpSession.setAttribute("curam.password", password);    
+        httpSession.setAttribute("curam.tempUser", "true");
+        httpSession.setAttribute("curam.userType", usertype);    
+        url = request.getContextPath() + "/logon.jsp";
+
+      } else {
+      
+        url = ""; // url variable has not been initialised
+        
+        // determine whether to route to ResolvePage or PagePlayerPage
+        if ("resolve".equalsIgnoreCase(pageType)) {
+          url += request.getContextPath() + "/cw/ResolvePage.do?";
+        } else {
+          url += request.getContextPath() + "/cw/PlayerPage.do?";      
+        }
+
+        // Add the params
+        url += "id=" + curam.omega3.request.RequestUtils.escapeURL(pagePlayerID) + "&page=" + curam.omega3.request.RequestUtils.escapeURL(pageName);      
+      }     
+                  
+      response.sendRedirect(response.encodeRedirectURL(url)); 
+    
+     ]]>
+  </JSP_SCRIPTLET>
+</PAGE>

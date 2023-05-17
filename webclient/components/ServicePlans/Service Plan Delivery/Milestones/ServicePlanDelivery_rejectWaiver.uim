@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012, 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009, 2010 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows a user to reject the milestone waiver request         -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_rejectWaiver"
+  WINDOW_OPTIONS="width=550"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainWaiverApprovalRequest"
+    NAME="ACTION"
+    OPERATION="rejectWaiver"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="waiverApprovalRequestID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="waiverApprovalRequestID"
+    />
+  </CONNECT>
+
+
+  <PAGE_PARAMETER NAME="description"/>
+  <PAGE_PARAMETER NAME="waiverApprovalRequestID"/>
+  <PAGE_PARAMETER NAME="milestoneDeliveryID"/>
+  <!-- BEGIN, CR00147167, SAI -->
+  <PAGE_PARAMETER NAME="caseID"/>
+  <!-- END, CR00147167 -->
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="41">
+    <FIELD
+      LABEL="Field.Label.RejectionReason"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="rejectionReason"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.RejectionComment"
+  >
+    <!-- BEGIN, CR00378408, DJ -->
+    <FIELD HEIGHT="4" LABEL="Field.Label.RejectionComment">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="rejectionComments"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00378408 -->
+  </CLUSTER>
+
+
+</PAGE>

@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 							                                              -->
+<!-- =========== 							                                              -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ApplicationClients"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="applicationID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationClient"
+    NAME="DISPLAY"
+    OPERATION="listClients"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$applicationID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="12"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$name"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Individual_resolveConcernRoleTypeHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.DateOfBirth"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$dateOfBirth"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN,CR00273422,AM-->
+    <FIELD
+      LABEL="Field.Label.ProgramRequested"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$programsRequested"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END,CR00273422,AM -->
+
+
+    <FIELD
+      LABEL="Field.Label.PrimaryClient"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$isPrimaryClient"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.SocialSecurityNumber"
+      WIDTH="13"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$socialSecurityNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN,CR00273422,AM-->
+    <FIELD
+      LABEL="Field.Label.ProspectPerson"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$isProspectPerson"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END,CR00273422,AM-->
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Application_ClientDetails">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$intakeApplicantID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="intakeApplicantID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- BEGIN,CR00264222,ZT -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.EditDetails">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="disableMenuOpt"
+          />
+        </CONDITION>
+
+
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Application_editClientDetails"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$intakeApplicantID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="intakeApplicantID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END,CR00264222,ZT -->
+
+
+      <!--BEGIN, CR00302240, JD -->
+      <SEPARATOR/>
+      <!--END, CR00302240 -->
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Register">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="isProspectPerson"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Application_registerProspectPersonAsPerson"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.MatchClient">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="isProspectPerson"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Application_searchPersonAndProspectPerson"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$intakeApplicantID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="intakeApplicantID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="applicationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="applicationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="name"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.NoValue"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="surname"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.NoValue"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="forename"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.NoValue"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="dateOfBirth"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.NoValue"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="referenceNumber"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.NoValue"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="gender"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.NoValue"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="addressData"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.NoValue"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="initial"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.NoValue"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="actionControlID"
+            />
+          </CONNECT>
+
+
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!--BEGIN, CR00302240, JD -->
+      <SEPARATOR/>
+      <!--END, CR00302240 -->
+
+
+      <ACTION_CONTROL
+        IMAGE="NewButton"
+        LABEL="ActionControl.Label.Remove"
+      >
+
+
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="isPrimaryClient"
+          />
+        </CONDITION>
+
+
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Application_removeClientConfirmation"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$intakeApplicantID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="intakeApplicantID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="applicationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="applicationID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </LIST>
+
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="disableMenuOpt"
+        />
+      </CONDITION>
+
+
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Application_SearchForClients"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="name"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="surname"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="forename"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="dateOfBirth"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="referenceNumber"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="gender"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="addressData"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="initial"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="actionControlID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to automatically schedule a phone hearing.   -->
+<PAGE
+  PAGE_ID="Appeal_displaySchedule_HearingReview"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+  <PAGE_PARAMETER NAME="searchAgainInd"/>
+  <PAGE_PARAMETER NAME="startDate"/>
+  <PAGE_PARAMETER NAME="jobID"/>
+  <PAGE_PARAMETER NAME="scheduleConfigMode"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="AutoSchedule"
+    NAME="DISPLAY"
+    OPERATION="displayUserSchedule"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="appealCaseID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="jobID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="userScheduleKey$jobID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="searchAgainInd"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="userScheduleKey$searchAgainInd"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="startDate"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="startDate"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="scheduleConfigMode"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="scheduleConfigMode"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="CONSTANT"
+      PROPERTY="Default.ScheduleConfigType"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="scheduleConfigType"
+    />
+  </CONNECT>
+
+
+  <CLUSTER TITLE="Cluster.Title.SearchDetails">
+
+
+    <FIELD LABEL="Field.Label.Date">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="scheduleDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+
+
+      <ACTION_CONTROL
+        IMAGE="SearchNextButton"
+        LABEL="ActionControl.Label.SearchNext"
+        TYPE="ACTION"
+      >
+
+
+        <LINK PAGE_ID="Appeal_displaySchedule_HearingReview">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="scheduleConfigMode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="scheduleConfigMode"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="scheduleDate"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="startDate"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Default.SearchAgainInd.True"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="searchAgainInd"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="jobID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="jobID"
+            />
+          </CONNECT>
+        </LINK>
+
+
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="ChangeDetailsButton"
+        LABEL="ActionControl.Label.ChangeDetails"
+        TYPE="ACTION"
+      >
+
+
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Appeal_enterScheduleCriteria_HearingReview"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="scheduleConfigMode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="scheduleConfigMode"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="CancelButton"
+        LABEL="ActionControl.Label.Cancel"
+      >
+        <LINK
+          PAGE_ID="Appeal_hearingReviewHomeForIC"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.UserSchedules"
+  >
+    <FIELD LABEL="Field.Label.UserSchedules">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="userScheduleData"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

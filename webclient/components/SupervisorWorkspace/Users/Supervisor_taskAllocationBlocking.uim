@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012,2019. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify a Dependant Data Item record.      -->
+<PAGE
+  PAGE_ID="Supervisor_taskAllocationBlocking"
+  WINDOW_OPTIONS="height=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorUsers"
+    NAME="DISPLAY"
+    OPERATION="listTaskAllocationBlockingHistoryForUser"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorUsers"
+    NAME="ACTION"
+    OPERATION="blockTaskAllocationForUser"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$userName"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$fromUserName"
+    />
+  </CONNECT>
+
+
+  <PAGE_PARAMETER NAME="userFullName"/>
+  <PAGE_PARAMETER NAME="userName"/>
+
+
+  <CLUSTER
+    LABEL_WIDTH="15"
+    NUM_COLS="1"
+  >
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      USE_DEFAULT="false"
+      WIDTH="38"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$startDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      USE_DEFAULT="false"
+      WIDTH="38"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$endDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST
+    
+    TITLE="List.Title.ActiveAndPendingBlocks"
+  >
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Clear">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Supervisor_clearTaskAllocationBlock"
+          SAVE_LINK="true"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$allAllocationDetailsList$activeAndPendingTaskAllocationBlockingPeriods$activeAndPendingDtls$taskRedirectionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="redirectedTaskID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$allAllocationDetailsList$activeAndPendingTaskAllocationBlockingPeriods$activeAndPendingDtls$startDateTime"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="startDateTime"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$allAllocationDetailsList$activeAndPendingTaskAllocationBlockingPeriods$activeAndPendingDtls$endDateTime"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="endDateTime"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$allAllocationDetailsList$activeAndPendingTaskAllocationBlockingPeriods$activeAndPendingDtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNum"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="userFullName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userFullName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.ActivePendingStartDate"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$allAllocationDetailsList$activeAndPendingTaskAllocationBlockingPeriods$activeAndPendingDtls$startDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ActivePendingEndDate"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$allAllocationDetailsList$activeAndPendingTaskAllocationBlockingPeriods$activeAndPendingDtls$endDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ActivePendingStatus"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$allAllocationDetailsList$activeAndPendingTaskAllocationBlockingPeriods$activeAndPendingDtls$taskAllocationBlockingStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="FALSE"
+  >
+    <ACTION_CONTROL
+      DEFAULT="true"
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+</PAGE>

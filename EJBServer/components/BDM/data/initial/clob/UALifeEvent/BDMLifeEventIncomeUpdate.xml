@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  
+<ieg-script xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ieg-schema.xsd"
+	finish-page="cw/FinishLifeEventScript.jspx"
+	quit-page="cw/QuitLifeEventScript.jspx"		
+	show-sections="true"
+	show-progress-bar="true"
+	validate-save-and-exit="false"
+	config-properties="bdm-app-config"
+	>
+		
+	<identifier id="BDMLifeEventIncomeUpdate" scriptversionnumber="V1" type="LifeEvent" />
+	<section>
+		<title id="IncomeInformation.Title"><![CDATA[Income information]]></title>
+			<question-page entity="Person" id="IncomeInformation" progress="0"
+			show-back-button="false"
+			show-exit-button="true"
+			show-next-button="true" 
+			show-save-exit-button="false">
+				<title id="IncomeDetails.Title"><![CDATA[Income information]]></title>
+				<description id="MandatoryFieldsDescription"><![CDATA[All fields are mandatory unless specified as optional.]]></description>
+				<validation expression="Income.incomeAmount &gt; 0 ">
+					<message id="Income.IncomeAmountValidationMessage">
+				    <![CDATA[Income cannot be less than zero ($0)]]>
+					</message>
+				</validation>
+				<validation expression="ValidateDatastoreIncomeValueChanged(Income.incomeAmount)">
+					<message id="Income.IncomeAmountChangedValidationMessage">
+				    <![CDATA[No change is made to the income amount]]>
+					</message>
+				</validation>
+				<cluster entity="Income" >
+					<question  id="incomeAmount" mandatory="true">
+						<label id="IncomeInformation.IncomeAmount.Label"><![CDATA[The amount below is what we have used to establish your claim for the current year. Please enter the amount that should be used to recalculate your benefit:]]></label>
+						<hint-text id="IncomeInformation.IncomeAmount.NOA.Label"><![CDATA[Please refer to line 236 on your Notice of Assessment for your total net income.]]></hint-text>
+					</question>
+				</cluster>
+			</question-page>
+	</section>
+	<!-- Summary -->
+	<section>
+		<title id="Summary.Title"><![CDATA[Summary]]></title>
+		<summary-page id="SummaryPage"
+			entity="Person"
+			show-back-button="true"
+			show-exit-button="true"
+			show-next-button="true" 
+			show-save-exit-button="false"
+			>
+			<next-button-label id="NextButton.Label"><![CDATA[Next]]></next-button-label>
+			<cluster entity="Income">
+				<title id="IncomeInfoCluster.Title"><![CDATA[Income]]></title>
+				<edit-link start-page="IncomeInformation" />
+				<layout><type>flow</type><num-rows>3</num-rows><label-alignment>right</label-alignment></layout>
+				<question id="incomeAmount">
+					<label id="Income.IncomeRange.Label"><![CDATA[The amount below is what we have used to establish your claim for the current year. Please enter the amount that should be used to recalculate your benefit:]]></label>
+				</question>
+			</cluster>
+		</summary-page>
+	</section>
+	
+	<!-- Attestation-->
+	<ieg-sub-script>
+		<identifier id="BDMStimulusApplicationSubmission" scriptversionnumber="V1" type="Sub"/>
+	</ieg-sub-script>
+	<!-- End Attestation-->
+	
+</ieg-script>
+	

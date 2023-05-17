@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view the details of a communication       -->
+<!-- that does have an attached file.                                       -->
+<PAGE
+  PAGE_ID="Application_viewMSWordCommunication"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Communication"
+    NAME="DISPLAY"
+    OPERATION="readMSWordCommunicationAndCaseMember"
+  />
+
+
+  <PAGE_PARAMETER NAME="communicationID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="communicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$communicationID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="38"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+    <FIELD LABEL="Field.Label.RegardingClient">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="clientConcernRoleName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="38"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Correspondent"
+  >
+
+
+    <FIELD LABEL="Field.Label.CorrespondentName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="correspondentName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Address">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="formattedAddressData"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CorrespondentType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="correspondentTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="19"
+    TITLE="Cluster.Title.AttachedFile"
+  >
+
+
+    <CONTAINER LABEL="Field.Label.Name">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="documentTemplateName"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.OpenAttachment"
+        TYPE="FILE_DOWNLOAD"
+      >
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="attachmentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="attachmentID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="38"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.AssociatedFiles"
+  >
+
+
+    <FIELD LABEL="Field.Label.FileLocation">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileLocation"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DocumentLocation">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="documentLocation"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.FileReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileReferenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DocumentReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="documentRefNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <FIELD HEIGHT="4">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

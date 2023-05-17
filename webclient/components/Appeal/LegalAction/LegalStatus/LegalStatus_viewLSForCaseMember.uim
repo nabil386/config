@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This Page allows users to modify association of participants with      -->
+<!-- legal action.                                                          -->
+<PAGE
+  PAGE_ID="LegalStatus_viewLSForCaseMember"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="CuramUIMSchema"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Statement"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="legalStatusID"/>
+  <PAGE_PARAMETER NAME="caseParticipantRoleID"/>
+
+
+  <!-- <SERVER_INTERFACE NAME="ACTION" CLASS="LegalAction" OPERATION="modifyParticipantDetails"
+        PHASE="ACTION"/> -->
+
+
+  <SERVER_INTERFACE
+    CLASS="LegalStatus"
+    NAME="DISPLAY"
+    OPERATION="readLegalStatus"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="LegalStatus"
+    NAME="DISPLAYCONTEXT"
+    OPERATION="getContextDescription"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseParticipantRoleID"
+    />
+    <TARGET
+      NAME="DISPLAYCONTEXT"
+      PROPERTY="caseParticipantRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="legalStatusID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$legalStatusID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseParticipantRoleID"
+    />
+    <TARGET
+      NAME="DISPLAYCONTEXT"
+      PROPERTY="caseParticipantRoleID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="FALSE"
+  >
+    <ACTION_CONTROL
+      IMAGE="EditButton"
+      LABEL="ActionControl.Label.Edit"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="multipleLSEnabledInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="LegalStatus_modifyLSForCaseMember"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="legalStatusID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="legalStatusID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseParticipantRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseParticipantRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="LegalStatus_listLSForCaseMember">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseParticipantRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseParticipantRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.ViewLegalStatus"
+  >
+    <FIELD
+      LABEL="Field.Label.LegalStatus"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$legalStatusCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.RecordStatus"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.LegalAction"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$legalActionName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+</PAGE>

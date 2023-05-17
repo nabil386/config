@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<RuleSet
+  name="PDCPhoneNumberSummaryRuleSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+>
+  <Class
+    extends="DefaultEvidenceSummary"
+    extendsRuleSet="EvidenceSummaryRuleSet"
+    name="PDCPhoneNumberSummary"
+  >
+    <Attribute name="evidence">
+      <type>
+        <ruleclass
+          name="PDCPhoneNumber"
+          ruleset="PDCPhoneNumberRuleSet"
+        />
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+<!--   ADO-21307 added new message for Alert indicator -->
+    <Attribute name="summary">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <reference attribute="hasNoExtension"/>
+            </condition>
+            <value>
+             	<choose>
+             		<type>
+             			<javaclass name="curam.creole.value.Message"/>
+             		</type>
+             		<when>
+             			<condition>
+             				<reference attribute="hasAlertInd"/>
+             			</condition>
+             			<value>
+             				 <ResourceMessage
+					                key="summaryMessage3"
+					                resourceBundle="curam.bdm.pdc.rules.DynEvd_PDCPhoneNumber_Summary"
+					              >
+					                <reference attribute="phoneType">
+					                  <reference attribute="evidence"/>
+					                </reference>
+					               <reference attribute="countryCode"/>
+					                <reference attribute="phoneAreaCode">
+					                  <reference attribute="evidence"/>
+					                </reference>
+					                <reference attribute="phoneNumber">
+					                  <reference attribute="evidence"/>
+					                </reference>
+             				</ResourceMessage>
+             			</value>
+             		</when>
+             		<otherwise>
+             			<value>
+             				<ResourceMessage
+					                key="summaryMessage1"
+					                resourceBundle="curam.bdm.pdc.rules.DynEvd_PDCPhoneNumber_Summary"
+					              >
+					                <reference attribute="phoneType">
+					                  <reference attribute="evidence"/>
+					                </reference>
+					               <reference attribute="countryCode"/>
+					                <reference attribute="phoneAreaCode">
+					                  <reference attribute="evidence"/>
+					                </reference>
+					                <reference attribute="phoneNumber">
+					                  <reference attribute="evidence"/>
+					                </reference>
+             				</ResourceMessage>
+             			</value>
+             		</otherwise>
+             	</choose>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <choose>
+             		<type>
+             			<javaclass name="curam.creole.value.Message"/>
+             		</type>
+             		<when>
+             			<condition>
+             				<reference attribute="hasAlertInd"/>
+             			</condition>
+             			<value>
+             				 <ResourceMessage
+					                key="summaryMessage4"
+					                resourceBundle="curam.bdm.pdc.rules.DynEvd_PDCPhoneNumber_Summary"
+					              >
+					                <reference attribute="phoneType">
+					                  <reference attribute="evidence"/>
+					                </reference>
+					               <reference attribute="countryCode"/>
+					                <reference attribute="phoneAreaCode">
+					                  <reference attribute="evidence"/>
+					                </reference>
+					                <reference attribute="phoneNumber">
+					                  <reference attribute="evidence"/>
+					                </reference>
+					                <reference attribute="phoneExtension">
+                 						 <reference attribute="evidence"/>
+               						 </reference>
+             				</ResourceMessage>
+             			</value>
+             		</when>
+             		<otherwise>
+             			<value>
+             				<ResourceMessage
+					                key="summaryMessage2"
+					                resourceBundle="curam.bdm.pdc.rules.DynEvd_PDCPhoneNumber_Summary"
+					              >
+					                <reference attribute="phoneType">
+					                  <reference attribute="evidence"/>
+					                </reference>
+					               <reference attribute="countryCode"/>
+					                <reference attribute="phoneAreaCode">
+					                  <reference attribute="evidence"/>
+					                </reference>
+					                <reference attribute="phoneNumber">
+					                  <reference attribute="evidence"/>
+					                </reference>
+					                <reference attribute="phoneExtension">
+					                  <reference attribute="evidence"/>
+					                </reference>
+             				</ResourceMessage>
+             			</value>
+             		</otherwise>
+             	</choose>
+            </value>
+          </otherwise>
+        </choose>
+      </derivation>
+    </Attribute>
+    <Attribute name="hasAlertInd">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+     	   <reference attribute="useForAlertsInd">
+              <reference attribute="evidence"/>
+            </reference>
+      </derivation>
+    </Attribute>
+    <!--   ADO-21307 added new message for Alert indicator -->
+    <!-- TASK-10566:Start Updated SUmmary Message for Phone Number -->
+    <Attribute name="countryCode">
+    	<type>
+    		<javaclass name="String"/>
+    	</type>
+    	<derivation>
+    		<call class="curam.ca.gc.bdm.creole.impl.Statics" method="getCountryCode">
+        		<type>
+			    	<javaclass name="String"/>
+			    </type>
+			        <arguments>
+			        		<reference attribute="evidence"/>
+			        </arguments>
+			   </call>
+    	</derivation>
+    </Attribute>
+<!-- TASK-10566:End Updated SUmmary Message for Phone Number -->
+
+
+
+<Attribute name="hasExtension">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <not>
+          <equals>
+            <reference attribute="phoneExtension">
+              <reference attribute="evidence"/>
+            </reference>
+            <null/>
+          </equals>
+        </not>
+      </derivation>
+    </Attribute>
+
+    <!-- BEGIN, CR00441204, KRK -->
+    <Attribute name="hasNoExtension">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <any>
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <equals>
+                <property name="length">
+                  <object>
+                    <reference attribute="phoneExtension">
+                      <reference attribute="evidence"/>
+                    </reference>
+                  </object>
+                </property>
+                <Number value="0"/>
+              </equals>
+              <equals>
+                <reference attribute="phoneExtension">
+                  <reference attribute="evidence"/>
+                </reference>
+                <null/>
+              </equals>
+            </members>
+          </fixedlist>
+        </any>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00441204 -->
+  </Class>
+</RuleSet>

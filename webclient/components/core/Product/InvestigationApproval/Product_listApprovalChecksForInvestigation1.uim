@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010 Curam Software Ltd.                             -->
+<!-- All rights reserved.                                                     -->
+<!-- This software is the confidential and proprietary information of Curam   -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose      -->
+<!-- such Confidential Information and shall use it only in accordance with   -->
+<!-- the terms of the license agreement you entered into with Curam           -->
+<!-- Software.                                                                -->
+<!-- Description                                                              -->
+<!-- ===========                                                              -->
+<!-- List all of the investigation approvals for an investigation.            -->
+<PAGE
+  PAGE_ID="Product_listApprovalChecksForInvestigation1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Product"
+    NAME="DISPLAY"
+    OPERATION="listApprovalCheckForInvestigationAndVersionNo"
+  />
+
+
+  <PAGE_PARAMETER NAME="investigationConfigID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="investigationConfigID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$investigationConfigID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.NewApprovalCheck"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Product_createApprovalCheckForInvestigation"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="investigationConfigID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="investigationConfigID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Product_modifyApprovalCheckForInvestigationFromList"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="investigationApprovalCheckID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="investigationApprovalCheckID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Product_cancelApprovalCheckForInvestigation"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="investigationApprovalCheckID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="investigationApprovalCheckID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+
+
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Title.Percentage"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="percentage"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Status"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Product_viewApprovalCheckForInvestigation">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="investigationApprovalCheckID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="investigationApprovalCheckID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<PAGE PAGE_ID="CommonIntake_listInternalIntakeApplicationsForST"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+  WINDOW_OPTIONS="width=900,height=600">
+  
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <SERVER_INTERFACE CLASS="ApplicationForm" NAME="DISPLAY"
+    OPERATION="listInternalIntakeApplicationsByProgramType" PHASE="DISPLAY" />
+  <SERVER_INTERFACE CLASS="ApplicationForm" NAME="ACTION"
+    OPERATION="selectInternalIntakeApplication" PHASE="ACTION" />
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="programTypeID"/>
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="programTypeID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="programTypeID"/>
+  </CONNECT>
+  
+  <JSP_SCRIPTLET>
+    <![CDATA[
+        /*
+         * This JSP Scriptlet checks if a single internal intake application only has been 
+         * configured on the system. If this is the case, there is no need for the user to
+         * select the intake application, so we simply redirect to the select programs page.
+         */
+        curam.omega3.texthelper.TextHelper th =
+          (curam.omega3.texthelper.TextHelper)pageContext.findAttribute("DISPLAY");    
+        String singleInternalIntakeApplicationConfiguredInd = th.getFieldValue("result$singleInternalIntakeApplicationConfiguredInd");
+
+        if(singleInternalIntakeApplicationConfiguredInd.equals("true")) {  
+          // No need for selection so redirect to programs page
+          String intakeApplicationTypeID = th.getFieldValue("result$singleInternalIntakeApplicationTypeID");     
+          curam.omega3.request.RequestHandler rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+          String concernRoleID = request.getParameter("concernRoleID");
+          String programTypeID = request.getParameter("programTypeID");
+          String context = request.getContextPath() + "/";
+          context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+          String url = context  + "CommonIntake_listInternalIntakeProgramsForSTPage.do?" 
+                                + "intakeApplicationTypeID=" + curam.omega3.request.RequestUtils.escapeURL(intakeApplicationTypeID) + "&"
+                                + "programTypeID=" + curam.omega3.request.RequestUtils.escapeURL(programTypeID) + "&"
+                                + "concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+          url += "&" + rh.getSystemParameters();
+          response.sendRedirect(response.encodeRedirectURL(url));  
+        }
+      ]]>
+  </JSP_SCRIPTLET>
+
+  <LIST>
+    <CONTAINER LABEL="Field.Label.Select">
+      <WIDGET TYPE="SINGLESELECT">
+        <WIDGET_PARAMETER NAME="SELECT_SOURCE">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="intakeApplicationTypeID" />
+            </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="SELECT_TARGET">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="key$intakeApplicationTypeID" />
+            </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD LABEL="Field.Title.Application" WIDTH="30">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="name"/>
+      </CONNECT>
+    </FIELD>
+    <CONTAINER LABEL="Field.Title.Description" WIDTH="70">
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="description"/>
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </LIST>
+  
+  <ACTION_SET>
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel" TYPE="ACTION" ALIGNMENT="LEFT"/>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Next" TYPE="SUBMIT">
+        <LINK PAGE_ID="CommonIntake_listInternalIntakeProgramsForST" SAVE_LINK="false" DISMISS_MODAL="false">
+            <CONNECT>
+                <SOURCE NAME="PAGE" PROPERTY="concernRoleID" />
+                <TARGET NAME="PAGE" PROPERTY="concernRoleID" />
+            </CONNECT>
+            <CONNECT>
+                <SOURCE NAME="PAGE" PROPERTY="programTypeID" />
+                <TARGET NAME="PAGE" PROPERTY="programTypeID" />
+            </CONNECT>
+            <CONNECT>
+                <SOURCE NAME="ACTION" PROPERTY="result$intakeApplicationTypeID" />
+                <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+            </CONNECT>
+        </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

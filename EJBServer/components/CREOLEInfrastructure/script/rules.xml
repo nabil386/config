@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright 2008-2011 Curam Software Ltd.
+  All rights reserved.
+  
+  This software is the confidential and proprietary information of Curam
+  Software, Ltd. ("Confidential Information").  You shall not disclose such
+  Confidential Information and shall use it only in accordance with the
+  terms of the license agreement you entered into with Curam Software.
+-->
+<project default="codegen" name="CREOLEGenerator">
+
+
+  <!-- The calling script must set a path with id "path.creole.gen.classpath" .
+    
+    This path must include:
+    - CREOLEInfrastructure.jar (where the custom ANT tasks are defined)
+    - Jars shipped by the CURAMSDEJ:
+      - coreinf
+      - jde-commons
+      - dom4j
+      - jaxen
+      - guice and guice multibindings
+      - fscontext
+      - providerutil
+      - log4j
+      - database drivers appropriate to your environment
+    - j2ee.jar
+    - the Curam Persistence Infrastructure
+    - any Java classes referenced from rule <javaclass> types or <call> expressions
+    - any static property files referenced from <ResourceBundle> rule expressions
+    - any additional CREOLE safe lists for Java classes
+    - Bootstrap.properties (for database connection information)
+  -->
+  
+  <!-- By default, forking is on -->
+  <property name="fork.database.tasks" value="true"/>
+
+  <!-- The directory where consolidated rule sets will be created -->
+  <property name="dir.consolidated.out"
+    location="${dir.creole.gen.out}/consolidated"/>
+
+  <target name="codegen"
+    depends="checkProperties, init, generate, copyOutput"/>
+
+  <target
+    description="Checks that properties have been set by the calling script."
+    name="checkProperties">
+    <fail
+      message="The property 'dir.creole.gen.tmp' must be set to a temporary output location."
+      unless="dir.creole.gen.tmp"/>
+    <fail
+      message="The property 'dir.creole.gen.out' must be set to the directory where generated ouptut will be placed."
+      unless="dir.creole.gen.out"/>
+  </target>
+
+
+  <target name="init" depends="checkProperties">
+    <delete dir="${dir.creole.gen.tmp}"/>
+    <mkdir dir="${dir.creole.gen.tmp}"/>
+  </target>
+
+
+
+  <target description="Invokes the CREOLE code generator"
+    name="generate">
+
+    <!-- NB a limitation of ANT is that <taskdef>s must be inside a <target> in order to pick up inherited references -->
+    <taskdef
+      classname="curam.creole.codegen.GenerateJavaRunnableRules"
+      name="generateCode">
+      <classpath>
+        <path refid="path.creole.gen.classpath"/>
+      </classpath>
+    </taskdef>
+
+    <generateCode outputdir="${dir.creole.gen.tmp}"
+      outputRuleSetsClassName="${outputRuleSetsClassName}" fork="false">
+      <fileset refid="rulesets"/>
+    </generateCode>
+  </target>
+
+  <target name="copyOutput">
+    <property location="${dir.creole.gen.out}/source"
+      name="dir.creole.gen.src"/>
+    <!-- only copy files whose contents have changed, to avoid unnecessary compilation -->
+    <copy todir="${dir.creole.gen.src}">
+      <fileset dir="${dir.creole.gen.tmp}">
+        <different ignoreFileTimes="true"
+          targetdir="${dir.creole.gen.src}"/>
+      </fileset>
+    </copy>
+    <!-- remove any unwanted generated output from the compile location -->
+    <delete>
+      <fileset dir="${dir.creole.gen.src}">
+        <present present="srconly"
+          targetdir="${dir.creole.gen.tmp}"/>
+      </fileset>
+    </delete>
+    <!-- clean up -->
+    <delete dir="${dir.creole.gen.tmp}"/>
+  </target>
+
+
+  <target name="assembleRuleSetSchema" description="Assembles the full Rule Set schema, including contributions from registered expressions">
+
+    <!-- NB a limitation of ANT is that <taskdef>s must be inside a <target> in order to pick up inherited references -->
+    <taskdef classname="curam.creole.codegen.AssembleRuleSetSchema"
+      name="assembleRuleSetSchema">
+      <classpath refid="path.creole.gen.classpath"/>
+    </taskdef>
+
+    <!-- default output location, unless overridden -->
+    <property location="${dir.creole.gen.out}/schema/RuleSet.xsd"
+      name="file.schema"/>
+    <property location="${file.schema}/.."
+      name="dir.schema"/>
+
+
+    <mkdir dir="${dir.schema}"/>
+    <delete file="${file.schema}"/>
+    
+    
+    <echo message="Writing assembled schema file to ${file.schema}..."/>
+
+    <assembleRuleSetSchema outputFile="${file.schema}" fork="${fork.database.tasks}"/>
+
+  </target>
+    
+    
+
+  <target
+    description="Creates an XML Catalog, with paths specific to this machine"
+    name="createCatalog">
+
+    <available file="${dir.creole.rules.xsd}"
+      property="dir.creole.rules.xsd.available"/>
+
+
+    <fail unless="dir.creole.rules.xsd.available"
+      message="The property 'dir.creole.rules.xsd' must be set to the location of the directory containing the CREOLE schema files."/>
+
+    <property name="file.template"
+      value="${dir.creole}/script/CreoleCatalogTemplate.xml"/>
+
+    <!-- default location if not overridden -->
+    <property name="file.catalog"
+      value="${dir.creole}/catalog/CreoleCatalog.xml"/>
+    <property name="file.schema"
+      value="${dir.creole}/catalog/RuleSet.xsd"/>
+      
+    <antcall target="assembleRuleSetSchema" inheritAll="true" inheritRefs="true">
+      <param name="file.schema" value="${file.schema}"/>
+    </antcall>
+
+
+    <copy file="${file.template}" tofile="${file.catalog}"
+      overwrite="true"/>
+
+    <property name="file.schema.location" location="${file.schema}"/>
+
+    <replace file="${file.catalog}" token="CREOLE_XSD_DIR"
+      value="${dir.creole.rules.xsd}"/>
+    <replace file="${file.catalog}" token="CREOLE_RULE_SET_XSD_FILE"
+      value="${file.schema.location}"/>
+      
+      
+
+
+  </target>
+
+
+
+  <target depends="checkProperties"
+    description="Generates a coverage report for rule executions."
+    name="coverage">
+
+    <!-- NB a limitation of ANT is that <taskdef>s must be inside a <target> in order to pick up inherited references -->
+    <taskdef classname="curam.creole.codegen.ReportCoverage"
+      name="reportCoverage">
+      <classpath refid="path.creole.gen.classpath"/>
+    </taskdef>
+
+    <property location="${dir.creole.gen.out}/coverage"
+      name="dir.coverage"/>
+
+
+    <delete dir="${dir.coverage}"/>
+    <mkdir dir="${dir.coverage}"/>
+
+
+    <reportCoverage outputdir="${dir.coverage}" fork="${fork.database.tasks}" coverageDataFile="${file.coverage.log}">
+      <fileset refid="rulesets"/>
+
+      <!-- Task optionally supports a filter containing filesets
+          - if present, the "included rule sets" reported will be limited to those files in the file sets,
+         otherwise all rule sets in the fileset above will be reported. -->
+
+      <!-- Example:
+      
+      <filter>
+        <fileset dir="some directory" includes="**/*MyRuleSetPattern*.xml"/>
+        <fileset refid="some file set defined elsewhere"/>
+      </filter>
+      
+      -->
+    </reportCoverage>
+
+
+  </target>
+
+  <target depends="checkProperties"
+    description="Generates rule documentation (RuleDoc) from the rule sets."
+    name="ruledoc">
+
+    <!-- NB a limitation of ANT is that <taskdef>s must be inside a <target> in order to pick up inherited references -->
+    <taskdef classname="curam.creole.codegen.GenerateRuleDoc"
+      name="generateRuleDoc">
+      <classpath refid="path.creole.gen.classpath"/>
+    </taskdef>
+
+    <property location="${dir.creole.gen.out}/ruledoc"
+      name="dir.ruledoc"/>
+
+
+    <delete dir="${dir.ruledoc}"/>
+    <mkdir dir="${dir.ruledoc}"/>
+
+
+    <generateRuleDoc outputdir="${dir.ruledoc}" fork="${fork.database.tasks}">
+      <fileset refid="rulesets"/>
+    </generateRuleDoc>
+
+
+  </target>
+
+  <target depends="checkProperties"
+    description="Outputs any rule attributes which are not referenced from other rule attributes (WARNING: these rule attributes may still be referenced from rule clients)."
+    name="unused">
+
+    <!-- NB a limitation of ANT is that <taskdef>s must be inside a <target> in order to pick up inherited references -->
+    <taskdef
+      classname="curam.creole.codegen.ReportUnusedAttributes"
+      name="reportUnusedAttributes">
+      <classpath refid="path.creole.gen.classpath"/>
+    </taskdef>
+
+    <echo
+      message="The following rule attributes are not referenced from any other rule attributes."/>
+    <echo
+      message="WARNING: these rule attributes may still be referenced from rule clients."/>
+
+    <reportUnusedAttributes fork="${fork.database.tasks}">
+      <fileset refid="rulesets"/>
+    </reportUnusedAttributes>
+
+
+  </target>
+
+  <target name="consolidateRuleSets">
+    <!-- NB we force generation each time, because included rule sets might have changed -->
+
+    <!-- delete the output directory, in case source files have been deleted -->
+    <delete dir="${dir.consolidated.out}"/>
+    <mkdir dir="${dir.consolidated.out}"/>
+
+
+
+    <!-- set useImplicitFileset="false" so that we can pass in an explicit file set instead -->
+    <xslt destdir="${dir.consolidated.out}" extension=".xml"
+      style="${dir.creole}/script/ConsolidateRules.xslt"
+      force="true" useImplicitFileset="false">
+      <fileset refid="rulesets"/>
+    </xslt>
+
+  </target>
+
+
+  <!-- This target uploads fully valid rule sets to the database
+       and migrates any existing rule objects to adhere to the 
+       new rule set structure(s).  -->
+  <target name="uploadRuleSets">
+    <!-- NB uploading from the consolidation output directory -->
+
+    <taskdef classname="curam.creole.codegen.UploadRuleSets"
+      name="uploadRuleSets">
+      <classpath>
+        <path refid="path.creole.gen.classpath"/>
+      </classpath>
+    </taskdef>
+
+    <uploadRuleSets fork="${fork.database.tasks}">
+      <fileset dir="${dir.consolidated.out}"/>
+    </uploadRuleSets>
+
+  </target>
+
+  
+  <target name="checkInitialDatabase">
+
+    <taskdef classname="curam.creole.codegen.CheckInitialDatabase"
+      name="checkInitialDatabase">
+      <classpath>
+        <path refid="path.creole.gen.classpath"/>
+      </classpath>
+    </taskdef>
+
+    <!-- BEGIN, CEF-5636 -->
+    <!-- disables Guice modules - must always run in a separate VM -->
+    
+    <java
+      classname="curam.creole.codegen.CheckInitialDatabase"
+      classpathref="path.creole.gen.classpath"
+      failonerror="${java.failonerror}"
+      fork="${java.fork}"
+      maxmemory="${java.maxmemory}"
+    >
+      <jvmarg value="-Dconsole.encoding=${java.console.encoding}"/>
+      <jvmarg value="-Dfile.encoding=UTF-8"/>
+    </java>
+    
+    <!-- END, CEF-5636 -->
+
+
+  </target>
+
+  <target name="validateRuleSets">
+
+    <taskdef classname="curam.creole.codegen.ValidateRuleSets"
+      name="validateRuleSets">
+      <classpath>
+        <path refid="path.creole.gen.classpath"/>
+      </classpath>
+    </taskdef>
+
+    <validateRuleSets fork="${fork.database.tasks}">
+      <fileset refid="rulesets"/>
+    </validateRuleSets>
+
+  </target>
+
+  <target name="dumpOutRuleObjects">
+  
+    <fail unless="dir.ruleobjectreport" message="The property 'dir.ruleobjectreport' must be set to the output directory to use for the report of rule objects."/>
+
+    <taskdef classname="curam.creole.util.DumpOutRuleObjects"
+      name="dumpOutRuleObjects">
+      <classpath>
+        <path refid="path.creole.gen.classpath"/>
+      </classpath>
+    </taskdef>
+
+    <dumpOutRuleObjects outputDir="${dir.ruleobjectreport}"/>
+
+  </target>
+
+</project>

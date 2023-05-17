@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2012 Curam Software Ltd.                            	    -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page is for editing the existing payment group.                   -->
+<PAGE PAGE_ID="PaymentGroup_modify" WINDOW_OPTIONS="width=500" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <SERVER_INTERFACE CLASS="PaymentGroupAdmin" NAME="DISPLAY" OPERATION="readPaymentGroupAndAvailableProductDetails" PHASE="DISPLAY"/>
+
+  <SERVER_INTERFACE CLASS="PaymentGroupAdmin" NAME="ACTION" OPERATION="modifyPaymentGroup" PHASE="ACTION"/>
+  
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE NAME="ACTION" PROPERTY="informationMsgTxt"/>
+    </CONNECT>
+  </INFORMATIONAL>
+  
+  <PAGE_PARAMETER NAME="paymentGroupID"/>
+    
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="paymentGroupID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$paymentGroupID"/>
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="paymentGroupID"/>
+    <TARGET NAME="ACTION" PROPERTY="paymentGroupID"/>
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="versionNo"/>
+    <TARGET NAME="ACTION" PROPERTY="versionNo"/>
+  </CONNECT>
+  
+  
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+    <ACTION_CONTROL LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="23" NUM_COLS="1">
+
+    <FIELD LABEL="Field.Label.PaymentGroupName" WIDTH="82">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="name"/>
+      </CONNECT>
+    </FIELD>
+    
+  </CLUSTER>
+  
+  <LIST TITLE="List.Label.CaseTypes">
+    <CONTAINER ALIGNMENT="CENTER" WIDTH="10">
+    
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="productID"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+  
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+              <TARGET NAME="ACTION" PROPERTY="selectedCaseTypes"/>
+            </CONNECT>
+        </WIDGET_PARAMETER>
+           
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="selectedCaseTypes"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        
+      </WIDGET>
+      
+    </CONTAINER>
+    
+      <FIELD WIDTH="90">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="productName"/>
+        </CONNECT>
+      </FIELD>
+    
+  </LIST>
+  
+  
+</PAGE>

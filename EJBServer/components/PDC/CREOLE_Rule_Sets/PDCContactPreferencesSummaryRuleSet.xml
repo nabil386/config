@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet
+  name="PDCContactPreferencesSummaryRuleSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+>
+  <Class
+    extends="DefaultEvidenceSummary"
+    extendsRuleSet="EvidenceSummaryRuleSet"
+    name="PDCContactPreferencesSummary"
+  >
+    <Attribute name="evidence">
+      <type>
+        <ruleclass
+          name="PDCContactPreferences"
+          ruleset="PDCContactPreferencesRuleSet"
+        />
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="summary">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <reference attribute="hasMethodAndlanguage"/>
+            </condition>
+            <value>
+              <ResourceMessage
+                key="summaryMessage1"
+                resourceBundle="curam.pdc.rules.DynEvd_PDCContactPreferences_Summary"
+              >
+                <reference attribute="preferredCommunication">
+                  <reference attribute="evidence"/>
+                </reference>
+                <reference attribute="preferredLanguage">
+                  <reference attribute="evidence"/>
+                </reference>
+              </ResourceMessage>
+            </value>
+          </when>
+          <when>
+            <condition>
+              <reference attribute="hasLanguageNoMethod"/>
+            </condition>
+            <value>
+              <ResourceMessage
+                key="summaryMessage2"
+                resourceBundle="curam.pdc.rules.DynEvd_PDCContactPreferences_Summary"
+              >
+                <reference attribute="preferredLanguage">
+                  <reference attribute="evidence"/>
+                </reference>
+              </ResourceMessage>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage
+                key="summaryMessage3"
+                resourceBundle="curam.pdc.rules.DynEvd_PDCContactPreferences_Summary"
+              >
+                <reference attribute="preferredCommunication">
+                  <reference attribute="evidence"/>
+                </reference>
+              </ResourceMessage>
+            </value>
+          </otherwise>
+        </choose>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="hasMethod">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <not>
+          <equals>
+            <reference attribute="preferredCommunication">
+              <reference attribute="evidence"/>
+            </reference>
+            <null/>
+          </equals>
+        </not>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="hasNoMethod">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="preferredCommunication">
+            <reference attribute="evidence"/>
+          </reference>
+          <null/>
+        </equals>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="hasLanguage">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <not>
+          <equals>
+            <reference attribute="preferredLanguage">
+              <reference attribute="evidence"/>
+            </reference>
+            <null/>
+          </equals>
+        </not>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="hasNoLanguage">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="preferredLanguage">
+            <reference attribute="evidence"/>
+          </reference>
+          <null/>
+        </equals>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="hasMethodAndlanguage">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <all>
+          <!-- A fixed list of Boolean conditions -->
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <reference attribute="hasMethod"/>
+              <reference attribute="hasLanguage"/>
+            </members>
+          </fixedlist>
+        </all>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="hasMethodNoLanguage">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <all>
+          <!-- A fixed list of Boolean conditions -->
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <reference attribute="hasMethod"/>
+              <reference attribute="hasNoLanguage"/>
+            </members>
+          </fixedlist>
+        </all>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="hasLanguageNoMethod">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <all>
+          <!-- A fixed list of Boolean conditions -->
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <reference attribute="hasNoMethod"/>
+              <reference attribute="hasLanguage"/>
+            </members>
+          </fixedlist>
+        </all>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+</RuleSet>

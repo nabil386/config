@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Resolver to find the evidence modifier page for the customer evidence  -->
+<PAGE
+  PAGE_ID="Evidence_resolveModifyObject"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>    
+    
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      
+      String successionID = request.getParameter("successionID");
+
+      String pageName="";
+      String url = "";
+  
+      if (successionID == null) {
+        core.ScriptletMissingParamException e = 
+          new core.ScriptletMissingParamException(-20002, "successionID");
+        System.out.println(e);
+        throw e;
+      }
+        
+      //
+      // get the caseID and evidence id and type
+      //    
+      curam.interfaces.EvidencePkg.Evidence_getEvidenceAndCaseFromSuccession_TH
+        resolveEvidenceAndCase = new curam.interfaces.EvidencePkg.Evidence_getEvidenceAndCaseFromSuccession_TH();
+
+      resolveEvidenceAndCase.setFieldValue(resolveEvidenceAndCase.key$successionID_idx, successionID);
+
+      resolveEvidenceAndCase.callServer();
+
+      String caseID = resolveEvidenceAndCase.getFieldValue(resolveEvidenceAndCase.result$caseIDKey$caseID_idx);
+      String evidenceID = resolveEvidenceAndCase.getFieldValue(resolveEvidenceAndCase.result$evidenceKey$evidenceID_idx);
+      String evidenceType = resolveEvidenceAndCase.getFieldValue(resolveEvidenceAndCase.result$evidenceKey$evType_idx);
+            
+      url = context + "Evidence_resolveModifyEvidencePage"
+            + "Page.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID)
+            + "&amp;evidenceID=" + curam.omega3.request.RequestUtils.escapeURL(evidenceID) 
+            + "&amp;evidenceType=" + curam.omega3.request.RequestUtils.escapeURL(evidenceType)
+            + "&amp;" + rh.getSystemParameters();  
+            
+      response.sendRedirect(response.encodeRedirectURL(url));
+    
+    
+  </JSP_SCRIPTLET>
+</PAGE>

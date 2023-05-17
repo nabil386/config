@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>	
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+		http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    
+ <!-- NOTE: Always add new changesets for every pull request. 
+      DO NOT modify existing changesets or SQLs.
+      Group related SQLs in a changeset.  
+      ID's must be unique and follow the format - ComponentName+Release+Sprint+UniqueID
+      Author must be specified - firstname initial.lastname-->
+ 
+ <!-- Sample changeset. -->
+ 
+ 	<!-- Creating the code table for BDMInterfaceNameCode -->
+    <changeSet  id="BDM_OAS_V2_S008_55952_01"  author="Nadira.Banu">
+        <sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+    
+    	INSERT INTO CodeTableHeader (TableName, TimeEntered, DefaultCode, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceNameCode',systimestamp, '', systimestamp, 1);
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceNameCode', 'BDMINC8000', 'CRA Death Match', '', '', '1', 0, 'en', systimestamp, 1);
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceNameCode', 'BDMINC8001', 'CRA GIS Take-up', '', '', '1', 0, 'en', systimestamp, 1);
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceNameCode', 'BDMINC8002', 'CRA GIS Reassessment', '', '', '1', 0, 'en', systimestamp, 1);
+		
+		<comment>Added a codetable for Interface Summary Name code</comment>
+	
+	</sql>
+	
+	 <rollback>         
+       		DELETE FROM CodeTableItem where TableName='BDMInterfaceNameCode' and CODE='BDMINC8000';
+       		DELETE FROM CodeTableItem where TableName='BDMInterfaceNameCode' and CODE='BDMINC8001';
+       		DELETE FROM CodeTableItem where TableName='BDMInterfaceNameCode' and CODE='BDMINC8002';
+     </rollback>
+     
+	
+	
+    </changeSet>
+    
+    <!--Creating the BDMInterfaceSummary Table -->
+	
+  <changeSet  id="BDM_OAS_V2_S008_55952_02"  author="Nadira.Banu">
+    <sql dbms="oracle"
+    splitStatements="true"
+    stripComments="true">
+
+        CREATE TABLE BDMINTERFACESUMMARY(
+				INTERFACESUMMARYID NUMBER(19,0) not null, 
+				TOTALRECORDS INTEGER not null, 
+				INTERFACENAMECODE VARCHAR(10), 
+				YEAR INTEGER not null, 
+				TOTALSUCCESSRECORDS INTEGER not null, 
+				TOTALTASKS INTEGER not null, 
+				CREATEDBY VARCHAR(64), 
+				CREATEDON DATE, 
+				LASTUPDATEDBY VARCHAR(64), 
+				LASTUPDATEDON DATE, 
+				VERSIONNO INTEGER not null
+			);
+			
+			ALTER TABLE BDMINTERFACESUMMARY ADD
+			CONSTRAINT BDMInterfaceSummary PRIMARY KEY(INTERFACESUMMARYID);
+
+            <comment>Created BDMINTERFACESUMMARY Table</comment>
+               </sql>
+               
+        <rollback>         
+       		ALTER TABLE BDMINTERFACESUMMARY DROP
+            	CONSTRAINT BDMInterfaceSummary PRIMARY KEY(INTERFACESUMMARYID);
+            DROP table BDMINTERFACESUMMARY;
+        </rollback>
+     
+  </changeSet>
+
+
+ <!--Creating the Facade operation security and function Identifiers -->
+  <changeSet  id="BDM_OAS_V2_S008_55952_03"  author="Nadira.Banu">
+    <sql dbms="oracle"
+    splitStatements="true"
+    stripComments="true">
+
+      
+        	 
+      INSERT INTO securityidentifier (
+    		sidname,
+   			sidtype,
+    		description,
+   			versionno,
+    		lastwritten
+		) VALUES (
+    		'BDMCRAAPI.processCRADeathMatch',
+    		'FUNCTION',
+   			 NULL,
+			 0,
+			 NULL
+		);
+
+		INSERT INTO securityfidsid (
+		    sidname,
+		    fidname,
+		    lastwritten
+		) VALUES (
+		    'BDMCRAAPI.processCRADeathMatch',
+		    'BDMCRAAPI.processCRADeathMatch',
+		    NULL
+		);
+
+	Insert into SECURITYGROUPSID (GROUPNAME,SIDNAME,LASTWRITTEN) values ('SUPERGROUP','BDMCRAAPI.processCRADeathMatch',null);
+
+      <comment>Created new Facade </comment>
+    </sql>
+               
+        <rollback>         
+       		DELETE FROM FunctionIdentifier where fidName='BDMCRAAPI.processCRADeathMatch';
+       		DELETE FROM securityidentifier where sidName='BDMCRAAPI.processCRADeathMatch';
+       		DELETE FROM securityfidsid where fidName='BDMCRAAPI.processCRADeathMatch';
+        </rollback>
+     
+  </changeSet>
+
+
+
+
+   
+</databaseChangeLog>

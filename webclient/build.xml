@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+
+  This is the ant build file for Curam projects.
+  This project extends the CDEJ build scripts to enhance a number of targets.
+
+-->
+<project default="client" name="CuramClientBuild">
+
+  <!-- =================================================================== -->
+  <!-- ========================== I M P O R T S ========================== -->
+  <!-- =================================================================== -->
+  <!-- JDE client build script -->
+  <property environment="sysenv."/>
+  <import file="${sysenv.CURAMCDEJ}/bin/build.xml"/>
+  <import file="${sysenv.CURAM_DIR}/Tools/Generators/EGTools/build.xml" optional="true"/>
+  <import file="${sysenv.CLIENT_DIR}/components/Rest/script/rest_client.xml" optional="true"/>
+
+  <property name="prp.regexpseparator" value="\\"/>
+
+  <!--
+     Override appbuild client to integrate generated evidence client page generation.
+  -->
+  <target name="client" depends="pre.client.build, ClientBuild.client"/>
+
+  <target name="pre.client.build">
+    <antcall target="egtools.client.generate"/>
+  </target>
+
+  <!--
+      Override appbuild clean and integrate clean target for generated client evidence.
+    -->
+  <target name="clean" depends="ClientBuild.clean">
+    <antcall target="egtools.client.clean"/>
+  </target>
+
+</project>

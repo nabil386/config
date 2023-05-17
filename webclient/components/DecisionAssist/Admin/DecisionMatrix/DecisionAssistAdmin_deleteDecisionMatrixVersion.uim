@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2005, 2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<PAGE
+  PAGE_ID="DecisionAssistAdmin_deleteDecisionMatrixVersion"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="DecisionMatrix"
+    NAME="DEL_DECISION_MATRIX"
+    OPERATION="removeDecisionMatrixVersion"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="DecisionMatrix"
+    NAME="REMOVED_DECISION_MATRIX"
+    OPERATION="readDecisionMatrixDetailsForDelete"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="decisionMatrixVersionID"/>
+  <PAGE_PARAMETER NAME="determinationPackageVersionID"/>
+  <PAGE_PARAMETER NAME="determinationConfigID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="decisionMatrixVersionID"
+    />
+    <TARGET
+      NAME="DEL_DECISION_MATRIX"
+      PROPERTY="key$key$key$decisionMatrixVersionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="decisionMatrixVersionID"
+    />
+    <TARGET
+      NAME="REMOVED_DECISION_MATRIX"
+      PROPERTY="key$decisionMatrixVersionID"
+    />
+  </CONNECT>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="FALSE"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="DecisionAssistAdmin_viewDeterminationPackage">
+        <CONNECT>
+          <SOURCE
+            NAME="DEL_DECISION_MATRIX"
+            PROPERTY="result$key$key$determinationPackageVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.No"
+      TYPE="ACTION"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="REMOVED_DECISION_MATRIX"
+          PROPERTY="result$recordNotFoundInd"
+        />
+      </CONDITION>
+      <LINK PAGE_ID="DecisionAssistAdmin_viewDeterminationPackage">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.No"
+      TYPE="ACTION"
+    >
+      <CONDITION>
+        <IS_FALSE
+          NAME="REMOVED_DECISION_MATRIX"
+          PROPERTY="result$recordNotFoundInd"
+        />
+      </CONDITION>
+      <LINK PAGE_ID="DecisionAssistAdmin_viewDecisionMatrix">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="decisionMatrixVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="decisionMatrixVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationConfigID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationConfigID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.DeleteDecisionMatrix"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

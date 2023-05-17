@@ -1,0 +1,79 @@
+<RuleSet name="BDMOASBenefitCessationDataRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../build/svr/creole.gen/schema/RuleSet.xsd">
+	<Class extends="ActiveSuccessionSet"
+		extendsRuleSet="PropagatorRuleSet" name="BDMOASBenefitCessation">
+		<Annotations>
+			<SuccessionSetPopulation
+				endDateAttribute="reinstatementDate"
+				startDateAttribute="cessationDate" />
+		</Annotations>
+		<Attribute name="reinstatementDate">
+			<Annotations />
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="cessationDate">
+			<Annotations />
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="description">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage
+					key="DynamicEvidenceSuccessionSet.description"
+					resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules">
+					<reference attribute="successionID" />
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="caseParticipantRole">
+			<Annotations />
+			<type>
+				<javaclass name="java.lang.Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="related_caseParticipantRole">
+			<Annotations />
+			<type>
+				<ruleclass name="CaseParticipantRole"
+					ruleset="CaseEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<reference attribute="caseParticipantRoleRecord">
+					<create ruleclass="CaseParticipantRoleCalculator"
+						ruleset="DynamicEvidenceRuleSet">
+						<reference attribute="caseParticipantRole" />
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="applicationDetails">
+			<Annotations>
+				<relatedSuccessionSet relationship="parent" />
+				<Label label-id="applicationDetails" name="" />
+			</Annotations>
+			<type>
+				<ruleclass name="BDMOASApplicationDetails"
+					ruleset="BDMOASApplicationDetailsDataRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

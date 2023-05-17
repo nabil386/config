@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<ieg-script xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ieg-schema.xsd"
+finish-page="CommonIntake_finishInternalIntakeScript" 
+	quit-page="CommonIntake_quitInternalIntakeScript"	
+	show-sections="true"
+	show-progress-bar="true"
+	validate-save-and-exit="false"
+	>
+		
+	<identifier id="BDMOASGISCombinedApplicationAP" scriptversionnumber="V1" type="Intake" />
+
+	<section>
+
+		<title id="Section.Title.GIS">
+			<![CDATA[Guaranteed Income Supplement Application]]>
+		</title>
+
+		<icon enabled-image="sample_about_you"
+			current-image="sample_about_you" />
+	
+		<condition expression="Application.applicationForm==&quot;AF7&quot;">
+		<question-page 
+			id="GIS" 
+			entity="Person"
+			progress="0" 
+			show-back-button="true" 
+			show-exit-button="true"
+			criteria="isPrimaryParticipant==true"
+			>
+			
+			<title id="QuestionPage.Title.GIS">
+				<![CDATA[Guaranteed Income Supplement Application]]>
+			</title>
+			
+			<description id="QuestionPage.Description.MandatoryFields">
+				<![CDATA[All fields marked with * are mandatory.]]>
+			</description>			
+
+			<cluster entity="GIS">
+				<question id="applyingForGISInd" mandatory="true">
+					<label id="Question.Label.ApplyingForGIS">
+						<![CDATA[Does the applicant want to apply for Guaranteed Income Supplement?]]>
+					</label>
+					<layout>
+						<type>radio</type>
+					</layout>
+				</question>		
+			</cluster>
+
+			<condition expression="GIS.applyingForGISInd==&quot;YN2&quot;">
+				<cluster entity="GIS">		
+					<question id="isAnyGISSecCompleted" mandatory="true">
+						<label id="Question.Label.IsAnyGISSectionCompleted">
+							<![CDATA[Did the applicant complete any Guaranteed Income Supplement related sections?]]>
+						</label>
+						<layout>
+							<type>radio</type>
+						</layout>						
+					</question>			
+				</cluster>
+			</condition>
+		</question-page>
+		</condition>
+		
+		<condition expression="(isNotNull(GIS.applyingForGISInd) and GIS.applyingForGISInd==&quot;YN1&quot;) or (isNotNull(GIS.isAnyGISSecCompleted) and GIS.isAnyGISSecCompleted==&quot;YN1&quot;)">
+			<question-page 
+				id="ApplicantsIncome" 
+				entity="Person"
+				progress="0" 
+				show-back-button="true" 
+				show-exit-button="true"
+ 				criteria="isPrimaryParticipant==true"				
+				>
+				
+				<title id="QuestionPage.Title.ApplicantsIncome">
+					<![CDATA[Applicant's Income]]>
+				</title>
+				
+				<description id="QuestionPage.Description.MandatoryFields">
+					<![CDATA[All fields marked with * are mandatory.]]>
+				</description>			
+
+				<validation expression="not(isNotNull(RetirementIncome.retirementDate)) or ValidateDateFirstOfMonth(RetirementIncome.retirementDate)">
+					<message id="Validation.Message.DateFirstOfMonth"><![CDATA[Selected Date must be 1st of the month.]]></message>
+				</validation>	
+
+				<validation expression="not(isNotNull(RetirementIncome.reductionDate)) or ValidateDateFirstOfMonth(RetirementIncome.reductionDate)">
+					<message id="Validation.Message.DateFirstOfMonth"><![CDATA[Selected Date must be 1st of the month.]]></message>
+				</validation>	
+	
+				<cluster entity="RetirementIncome">
+					<title id="Cluster.Title.RetirementIncomeDetails">
+						<![CDATA[Retirement Income details]]>
+					</title>
+					<question id="isRetirdOrRetirng2Yrs">
+						<label id="Question.Label.DidRetireOrExpctedIn2Years">
+							<![CDATA[Did applicant retire from work in the last two years, or do they expect to retire in the next two years?]]>
+						</label>
+						<layout>
+							<width>60</width>							
+						</layout>						
+					</question>						
+				</cluster>	
+				
+				<condition expression="RetirementIncome.isRetirdOrRetirng2Yrs==&quot;YN1&quot; ">
+					<cluster entity="RetirementIncome">
+						<question id="retirementDate" mandatory="true" show-field-help="true">
+							<label id="Question.Label.RetirementDate">
+								<![CDATA[Retirement Date]]>
+							</label>
+							<help-text id="Question.Label.RetirementDate.Help">
+								<![CDATA[YYYY-MM-DD </br><p>Selected Date must be 1st of the month.</p>]]>
+							</help-text>	
+							<layout>
+								<width>60</width>							
+							</layout>													
+						</question>		
+					</cluster>
+				</condition>
+
+				<cluster entity="RetirementIncome">
+					<question id="isPensionReduced2Yrs">
+						<label id="Question.Label.DidPensionIncmRedcdOrExpectedIn2Yrs">
+							<![CDATA[Has the applicant's pension income been reduced in the last two years or do they expect it will be reduced in the next two years?]]>
+						</label>
+						<layout>
+							<width>60</width>							
+						</layout>						
+					</question>						
+				</cluster>	
+				
+				<condition expression="RetirementIncome.isPensionReduced2Yrs==&quot;YN1&quot; ">
+					<cluster entity="RetirementIncome">
+						<question id="reductionDate" mandatory="true" show-field-help="true">
+							<label id="Question.Label.DateOfReduction">
+								<![CDATA[Date of reduction]]>
+							</label>
+							<help-text id="Question.Label.DateOfReduction.Help">
+								<![CDATA[YYYY-MM-DD </br><p>Selected Date must be 1st of the month.</p>]]>
+							</help-text>	
+							<layout>
+								<width>60</width>							
+							</layout>													
+						</question>		
+					</cluster>
+				</condition>										
+
+				<cluster entity="ForeignIncome">
+					<title id="Cluster.Title.ForeignIncomeDetails">
+						<![CDATA[Foreign Income details]]>
+					</title>
+					<question id="isReceivingForeignIncome">
+						<label id="Question.Label.DidReceiveForeignIncome">
+							<![CDATA[Does the applicant receive income from another country?]]>
+						</label>
+						<layout>
+							<width>60</width>							
+						</layout>						
+					</question>						
+				</cluster>	
+				
+				<condition expression="ForeignIncome.isReceivingForeignIncome==&quot;YN1&quot; ">
+					<cluster entity="ForeignIncome">
+						<question id="foreignIncomeType" mandatory="true">
+							<label id="Question.Label.TypeOfForeignIncome">
+								<![CDATA[Type of Foreign Income]]>
+							</label>
+							<layout>
+								<width>70</width>							
+							</layout>							
+						</question>		
+					</cluster>
+				</condition>
+				
+				<condition expression="ForeignIncome.isReceivingForeignIncome==&quot;YN1&quot; ">
+					<cluster entity="ForeignIncome">
+						<question id="annualForeignIncomeStr" mandatory="true">
+							<label id="Question.Label.AnnualForeignIncome">
+								<![CDATA[Annual Foreign Income Amount & Currency]]>
+							</label>
+							<layout>
+								<width>70</width>							
+							</layout>								
+						</question>		
+					</cluster>
+				</condition>	
+			</question-page>				
+		</condition>			
+
+		<condition expression="(isNotNull(GIS.applyingForGISInd) and GIS.applyingForGISInd==&quot;YN1&quot;) or (isNotNull(GIS.isAnyGISSecCompleted) and GIS.isAnyGISSecCompleted==&quot;YN1&quot;) or Application.applicationForm==&quot;AF10&quot;">
+			<question-page 
+				id="MaritalStatusInfo" 
+				entity="Person"
+				progress="0" 
+				show-back-button="true" 
+				show-exit-button="true"
+ 				criteria="isPrimaryParticipant==true"				
+				>
+				<set-attribute expression="isNotNull(MaritalStatusInfo.currentMaritalStatus)" id="Person.maritalStatusSetInd" />				
+				<title id="QuestionPage.Title.MaritalStatusInfo">
+					<![CDATA[Marital Status Information]]>
+				</title>
+				
+				<description id="QuestionPage.Description.MandatoryFields">
+					<![CDATA[All fields marked with * are mandatory.]]>
+				</description>			
+	
+				<cluster entity="MaritalStatusInfo">
+					<title id="Cluster.Title.MaritalStatus">
+						<![CDATA[Marital Status]]>
+					</title>
+					<question id="currentMaritalStatus">
+						<label id="Question.Label.CurrentMaritalStatus">
+							<![CDATA[Current Marital Status]]>
+						</label>
+						<layout>
+							<type>radio</type>
+						</layout>						
+					</question>						
+				</cluster>	
+				
+				<condition expression="(isNotNull(MaritalStatusInfo.currentMaritalStatus) and MaritalStatusInfo.currentMaritalStatus!=&quot;MS1&quot;) and not(Application.applicationForm==&quot;AF10&quot; and (MaritalStatusInfo.currentMaritalStatus==&quot;MS1&quot; or MaritalStatusInfo.currentMaritalStatus==&quot;MS5&quot; or MaritalStatusInfo.currentMaritalStatus==&quot;MS6&quot; or MaritalStatusInfo.currentMaritalStatus==&quot;MS2&quot;))">
+					<cluster entity="MaritalStatusInfo">
+						<question id="maritalDate" mandatory="true">
+							<label id="Question.Label.Date">
+								<![CDATA[Date]]>
+							</label>
+							<help-text id="Question.Label.Date.Help">
+								<![CDATA[YYYY-MM-DD Selected Date must be 15th of the month when not indicated on the form.]]>
+							</help-text>
+						</question>		
+					</cluster>
+				</condition>
+
+			<condition expression="(MaritalStatusInfo.currentMaritalStatus==&quot;MS3&quot;  or MaritalStatusInfo.currentMaritalStatus==&quot;MS5&quot; or MaritalStatusInfo.currentMaritalStatus==&quot;MS6&quot;) and Application.applicationForm!=&quot;AF10&quot;" >
+				<cluster entity="MaritalStatusInfo">
+					<title id="Cluster.Title.LivingApartReasons">
+						<![CDATA[Living apart for reasons beyond control]]>
+					</title>
+					<question id="isSeparated">
+						<label id="Question.Label.LivingApartReasonsBeyondControl">
+							<![CDATA[Are the applicant and their spouse/common-law partner living apart for reasons beyond their control?]]>
+						</label>
+						<layout>
+							<width>60</width>							
+						</layout>						
+					</question>						
+				</cluster>						
+			</condition>
+			<condition expression="MaritalStatusInfo.isSeparated==&quot;YN1&quot;">
+				<cluster entity="MaritalStatusInfo">
+					<question id="seperationDate" mandatory="true">
+						<label id="Question.Label.SeparatedDate">
+							<![CDATA[Date]]>
+						</label>
+						<help-text id="Question.Label.SeparatedDate.Help">
+							<![CDATA[YYYY-MM-DD Selected Date must be 15th of the month when not indicated on the form.]]>
+						</help-text>
+					</question>		
+				</cluster>
+			</condition>
+			
+			<condition expression="Application.applicationForm==&quot;AF10&quot;" >
+				<cluster entity="MaritalStatusInfo">
+					<title id="Cluster.Title.SpouseOrCommonLawPartnerInformation">
+						<![CDATA[Spouse or Common-Law Partner Information]]>
+					</title>
+					<question id="spouseFullName">
+						<label id="Question.Label.SpouseFullName">
+							<![CDATA[Full Name]]>
+						</label>
+						<layout>
+							<width>60</width>							
+						</layout>						
+					</question>	
+					<question id="spouseDateOfBirth" show-field-help="true">
+						<label id="Question.Label.SpouseDateOfBirth">
+							<![CDATA[Date of Birth]]>
+						</label>
+						<layout>
+                    		<type>date-picker</type>
+                    	</layout>
+						<help-text id="Question.Label.SpouseDateOfBirth.Help">
+							<![CDATA[YYYY-MM-DD]]>
+						</help-text>
+					</question>
+					<question id="spouseSIN">
+					<label id="Question.Label.SpouseSIN">
+						<![CDATA[Canadian SIN]]>
+					</label>
+					<layout>
+						<label-width>0</label-width>
+						<width>40</width>						
+					</layout>					
+				</question>						
+				</cluster>						
+			</condition>		
+			</question-page>				
+		</condition>		
+	</section>
+</ieg-script>

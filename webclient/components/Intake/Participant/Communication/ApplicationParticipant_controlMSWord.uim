@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page handles the interaction between Curam and Microsoft word for a      -->
+<!-- communication using Microsoft Word.                                            -->
+<PAGE
+  PAGE_ID="ApplicationParticipant_controlMSWord"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Communication"
+    NAME="DISPLAY"
+    OPERATION="getWordTemplateDocumentAndData"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationCommunication"
+    NAME="ACTION"
+    OPERATION="modifyWordDocument"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="communicationID"/>
+  <PAGE_PARAMETER NAME="templateID"/>
+  <PAGE_PARAMETER NAME="applicationID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="communicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="communicationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="templateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="templateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="communicationID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="communicationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="applicationID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      DEFAULT="true"
+      TYPE="SUBMIT"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER SHOW_LABELS="false">
+    <WIDGET TYPE="FILE_EDIT">
+      <WIDGET_PARAMETER NAME="DOCUMENT">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="document"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="document"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+      <WIDGET_PARAMETER NAME="DETAILS">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="templateData"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+    </WIDGET>
+  </CLUSTER>
+
+
+</PAGE>

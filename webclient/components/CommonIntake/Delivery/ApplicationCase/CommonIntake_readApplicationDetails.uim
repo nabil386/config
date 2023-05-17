@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Application case details on the list application for a person page -->
+<PAGE PAGE_ID="CommonIntake_readApplicationDetails" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText" />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <PAGE_PARAMETER NAME="caseID" />
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID" />
+    <TARGET NAME="DISPLAY" PROPERTY="applicationCaseID" />
+  </CONNECT>
+
+  <SERVER_INTERFACE CLASS="ApplicationCase" NAME="DISPLAY"
+    OPERATION="readApplicationDetails" />
+
+  <CLUSTER NUM_COLS="2" LABEL_WIDTH="55">
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="isReferralIndicator"/>
+    </CONDITION>
+    <FIELD LABEL="Field.Label.ClientReference">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="applicationReference"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PreferredContact">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$preferredContact" />
+      </CONNECT>
+    </FIELD>	
+	<FIELD LABEL="Field.Label.ReferralSource">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="referralSource"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ReferredBy">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="referredBy"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Owner" WIDTH="10">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="userFullName"/>
+      </CONNECT>
+      <LINK OPEN_MODAL="true" PAGE_ID="Case_resolveOrgObjectTypeHome"
+        WINDOW_OPTIONS="width=900,height=500">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="orgObjectReference"/>
+          <TARGET NAME="PAGE" PROPERTY="orgObjectReference"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="orgObjectType"/>
+          <TARGET NAME="PAGE" PROPERTY="orgObjectType"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>         
+    <FIELD LABEL="Field.Label.Clients">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="caseClients"/>
+      </CONNECT>
+    </FIELD>    
+    <FIELD LABEL="Field.Label.MethodOfReceipt">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$methodOfApplication" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ReferredSourceDetails">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="referralSourceDetails"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ReferredReason">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="referralReason"/>
+      </CONNECT>
+    </FIELD>    
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+  
+  <CLUSTER NUM_COLS="2" LABEL_WIDTH="55">
+    <CONDITION>
+      <IS_FALSE NAME="DISPLAY" PROPERTY="isReferralIndicator"/>
+    </CONDITION>
+    <FIELD LABEL="Field.Label.ClientReference">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="applicationReference"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PreferredContact">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$preferredContact" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Owner" WIDTH="10">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="userFullName"/>
+      </CONNECT>
+      <LINK OPEN_MODAL="true" PAGE_ID="Case_resolveOrgObjectTypeHome"
+        WINDOW_OPTIONS="width=900,height=500">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="orgObjectReference"/>
+          <TARGET NAME="PAGE" PROPERTY="orgObjectReference"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="orgObjectType"/>
+          <TARGET NAME="PAGE" PROPERTY="orgObjectType"/>
+        </CONNECT>
+      </LINK>
+    </FIELD> 
+    <FIELD LABEL="Field.Label.Clients">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="caseClients"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MethodOfReceipt">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$methodOfApplication" />
+      </CONNECT>
+    </FIELD>    
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+</PAGE>

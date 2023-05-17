@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007-2008, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Create new Sporting Activity Expense evidence.                         -->
+<PAGE PAGE_ID="ICSample_createSportingActivityExpense_fromInEdit" WINDOW_OPTIONS="width=1200" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT">
+      <LINK PAGE_ID="Evidence_resolveWorkspaceInEdit" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel">
+      <LINK PAGE_ID="Evidence_resolveWorkspaceInEdit" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+          <TARGET NAME="PAGE" PROPERTY="caseID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <INCLUDE FILE_NAME="ICSample_createSportingActivityExpenseEvidence_content.vim"/>
+
+
+  <SERVER_INTERFACE CLASS="SampleMaintainSportingActivityExpense" NAME="DISPLAY" OPERATION="getParentEvidenceList"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="caseID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="parEvType"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$evidenceType"/>
+  </CONNECT>
+
+
+  <LIST DESCRIPTION="List.SelectParentEvidence.Description" TITLE="List.SelectParentEvidence.Title">
+
+
+    <CONTAINER LABEL="Container.Label.Action" WIDTH="5">
+      <WIDGET LABEL="Cluster.Label.RadioButton" TYPE="SINGLESELECT">
+        <WIDGET_PARAMETER NAME="SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="parentList$dtls$evidenceID"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="SELECT_TARGET">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="dtls$sportingActivityID"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD LABEL="List.Title.InEditIndication" WIDTH="5">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="parentList$dtls$wipPendingCode"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="List.Title.StatusCode" WIDTH="10">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="parentList$dtls$statusCode"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="List.Title.Type" WIDTH="25">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="parentList$dtls$evidenceType"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="List.Title.Name" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="parentList$dtls$concernRoleName"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="List.Title.EffectiveDate" WIDTH="12">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="parentList$dtls$effectiveFrom"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="List.Title.Details" WIDTH="23">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="parentList$dtls$summary"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

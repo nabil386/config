@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright  2007 Curam Software Ltd.                                    -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This is the home page for the web application                          -->
+<PAGE
+  PAGE_ID="SPAE_Application_workspace"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE DESCRIPTION="Field.StaticText.Welcome">
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+    <!--CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="externalContext" />
+    </CONNECT-->
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="WorkAllocation"
+    NAME="DISPLAY"
+    OPERATION="listTaskAndActivitiesForCurrentUser"
+  />
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.MyShortcuts"
+  >
+
+
+    <CONTAINER>
+      <ACTION_CONTROL LABEL="ActionControl.Label.ChangePassword">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="SPAE_modifyUserPassword"
+        />
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <CONTAINER>
+      <ACTION_CONTROL LABEL="ActionControl.Label.ViewAccountDetails">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="SPAE_viewUserModal"
+        />
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <CONTAINER>
+      <ACTION_CONTROL LABEL="ActionControl.Label.ViewClientDetails">
+        <LINK PAGE_ID="SPAE_searchLinkedParticipant"/>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+  >
+
+
+    <LIST TITLE="List.Title.Tasks">
+
+
+      <FIELD
+        LABEL="Field.Title.TaskID"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="SPAE_TaskManagement_taskHome">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="taskID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taskID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Title.Subject"
+        WIDTH="60"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="reservedTasks$dtlsList$dtls$subject"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Title.Deadline"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dueDateTime"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </LIST>
+
+
+  </CLUSTER>
+
+
+</PAGE>

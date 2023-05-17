@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+ 
+ <PAGE PAGE_ID="CommonIntake_editProgramWithdrawal"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+     WINDOW_OPTIONS="width=850">
+    
+     <SERVER_INTERFACE CLASS="ProgramAuthorisation" NAME="DISPLAY" OPERATION="readWithdrawalDetails"
+        PHASE="DISPLAY"/>
+     <SERVER_INTERFACE CLASS="ProgramAuthorisation" NAME="ACTION" OPERATION="modifyProgramWithdrawal"
+        PHASE="ACTION"/>
+    
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+        </CONNECT>
+    </PAGE_TITLE>
+    
+    <PAGE_PARAMETER NAME="withdrawalRequestID"/>
+    <PAGE_PARAMETER NAME="intakeProgramApplicationID"/>
+
+    
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="withdrawalRequestID"/>
+        <TARGET NAME="DISPLAY" PROPERTY="key$withdrawalRequestID"/>
+    </CONNECT>
+    <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$versionNo"/>
+        <TARGET NAME="ACTION" PROPERTY="versionNo"/>
+    </CONNECT>
+    
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="withdrawalRequestID"/>
+        <TARGET NAME="ACTION" PROPERTY="withdrawalRequestID"/>
+    </CONNECT>
+
+    
+    <ACTION_SET >
+        <ACTION_CONTROL LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+
+        <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+    </ACTION_SET>
+   
+     
+     
+     <CLUSTER NUM_COLS="2" LABEL_WIDTH="50">
+         
+         <FIELD LABEL="Field.Label.Program">
+             
+             <CONNECT>
+                 <SOURCE NAME="DISPLAY" PROPERTY="details$programName"/>
+             </CONNECT>
+         </FIELD>
+         <FIELD LABEL="Field.Label.WithdrawalReason" USE_BLANK="true">
+             <CONNECT>
+                 <SOURCE NAME="DISPLAY" PROPERTY="withdrawalRequestReason"/>
+             </CONNECT>
+             <CONNECT>
+                 <TARGET NAME="ACTION" PROPERTY="withdrawalRequestReason"/>
+             </CONNECT>
+         </FIELD> 
+         
+     </CLUSTER>
+     <CLUSTER TITLE="Cluster.Title.OtherWithdrawalReason" SHOW_LABELS="false">
+         <FIELD HEIGHT="4" LABEL="Cluster.Title.OtherWithdrawalReason">
+             <CONNECT>
+                 <SOURCE NAME="DISPLAY" PROPERTY="otherWReqReason"/>
+             </CONNECT>
+             <CONNECT>
+                 <TARGET
+                     NAME="ACTION"
+                     PROPERTY="otherWReqReason"
+                 />
+             </CONNECT>
+         </FIELD>
+     </CLUSTER>
+     
+     <CLUSTER NUM_COLS="2" LABEL_WIDTH="52">
+          <FIELD LABEL="Field.Label.Date">
+              <CONNECT>
+                  <SOURCE NAME="DISPLAY" PROPERTY="withdrawalDate"/>
+              </CONNECT>   
+             <CONNECT>
+             <TARGET NAME="ACTION" PROPERTY="withdrawalDate"/>
+             </CONNECT>
+             </FIELD>
+         <FIELD LABEL="Field.Label.WithdrawalMethod" USE_BLANK="true">
+             <CONNECT>
+                 <INITIAL NAME="DISPLAY" PROPERTY="codeTableItemDetails$description" HIDDEN_PROPERTY="codeTableItemDetails$code"/>
+             </CONNECT>
+             <CONNECT>
+                 <SOURCE NAME="DISPLAY" PROPERTY="requestMethod"/>
+             </CONNECT>
+             <CONNECT>
+                 <TARGET NAME="ACTION" PROPERTY="requestMethod"/>
+             </CONNECT>
+         </FIELD> 
+         <FIELD LABEL="Field.Label.RequestedBy" USE_BLANK="true"> 
+             <CONNECT>
+                 <INITIAL NAME="DISPLAY" PROPERTY="details$fullNameDtls$clientNameAge"/>
+             </CONNECT>
+             <CONNECT>
+                 <SOURCE NAME="DISPLAY" PROPERTY="result$clientFullName"/>
+             </CONNECT>
+             <CONNECT>
+                 <TARGET NAME="ACTION" PROPERTY="details$clientFullName"/>
+             </CONNECT>
+         </FIELD> 
+     </CLUSTER>
+     <CLUSTER TITLE="Cluster.Title.Comments" SHOW_LABELS="false">
+         <FIELD HEIGHT="4" LABEL="Cluster.Title.Comments">
+             <CONNECT>
+                 <SOURCE NAME="DISPLAY" PROPERTY="comments"/>
+             </CONNECT>
+             <CONNECT>
+                 <TARGET NAME="ACTION" PROPERTY="comments"/>
+             </CONNECT>
+         </FIELD>
+     </CLUSTER>   
+</PAGE>
+

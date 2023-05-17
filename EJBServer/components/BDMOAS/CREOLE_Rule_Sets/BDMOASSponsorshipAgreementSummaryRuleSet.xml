@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Task 63026 DEV: Implement SIN Masking Via Summary Rule Set -->
+<RuleSet name="BDMOASSponsorshipAgreementSummaryRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../build/svr/creole.gen/schema/RuleSet.xsd">
+
+	<Class name="BDMOASSponsorshipAgreementSummary"
+		extends="DefaultEvidenceSummary"
+		extendsRuleSet="EvidenceSummaryRuleSet">
+
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="BDMOASSponsorshipAgreement"
+					ruleset="BDMOASSponsorshipAgreementRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="summary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Message" />
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<reference attribute="breakdownDate">
+									<reference attribute="evidence" />
+								</reference>
+								<null />
+							</equals>
+						</condition>
+						<value>
+							<reference attribute="standardSummary" />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<reference attribute="breakdownSummary" />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="standardSummary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="StandardSummary"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASSponsorshipAgreementSummaryRuleSet" />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="breakdownSummary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="BreakdownSummary"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASSponsorshipAgreementSummaryRuleSet">
+					<reference attribute="breakdownDate">
+						<reference attribute="evidence" />
+					</reference>
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+
+	</Class>
+
+</RuleSet>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2009, 2011-2012 Curam Software Ltd.                    -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- This workflow is used to generate a service invoice exception task.    -->
+<!--BEGIN, CR00235681, PM-->
+<workflow-process
+  category="PC2"
+  createdBy="admin"
+  creationDate="20060117T154649"
+  id="3"
+  language-version="1.0"
+  process-version="1"
+  released="true"
+>
+  <!--  END, CR00235681-->
+  <name>COMPLETEHEARINGTASK</name>
+
+
+  <process-display-name>
+    <localized-text>
+      <locale language="en">Complete Hearing Task</locale>
+    </localized-text>
+  </process-display-name>
+
+
+  <description>
+    <localized-text>
+      <locale language="en">
+        
+        <!-- BEGIN, CR00306765, AKr -->
+        Creates a task for the hearing official assigned to a hearing when it is
+        completed, to indicate that a decision needs to be made for the hearing case.
+        <!-- END, CR00306765 -->
+      </locale>
+    </localized-text>
+  </description>
+  <documentation>COMPLETEHEARINGTASK</documentation>
+  <enactment-mappings>
+    <mapping>
+      <source-attribute
+        name="hearingID"
+        struct-name="curam.appeal.sl.entity.struct.HearingDtls"
+      />
+      <target-attribute
+        name="HearingID"
+        wdo-name="COMPLETEHEARINGTASK"
+      />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo>
+      <wdo-name>COMPLETEHEARINGTASK</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">COMPLETEHEARINGTASK</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>HearingID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">HearingID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="29697">
+      <name>
+        <localized-text>
+          <locale language="en">StartProcessActivity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The start process activity</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="29701"/>
+      </split>
+    </start-process-activity>
+    <end-process-activity id="29698">
+      <name>
+        <localized-text>
+          <locale language="en">EndProcessActivity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+    </end-process-activity>
+    <manual-activity
+      category="AC1"
+      id="29699"
+    >
+      <name>
+        <localized-text>
+          <locale language="en">CompleteHearing</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">CompleteHearing</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="29702"/>
+      </split>
+      <task>
+        <message>
+          <message-text>
+            <localized-text>
+              <locale language="en">Complete Hearing for case %1n</locale>
+            </localized-text>
+          </message-text>
+          <message-parameters>
+            <wdo-attribute
+              name="HearingID"
+              wdo-name="COMPLETEHEARINGTASK"
+            />
+          </message-parameters>
+        </message>
+        <actions>
+          <action
+            page-id="Case_resolveCaseHome"
+            principal-action="true"
+          >
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="en">Complete Hearing for case %1n</locale>
+                </localized-text>
+              </message-text>
+              <message-parameters>
+                <wdo-attribute
+                  name="HearingID"
+                  wdo-name="COMPLETEHEARINGTASK"
+                />
+              </message-parameters>
+            </message>
+            <link-parameter name="caseID">
+              <wdo-attribute
+                name="HearingID"
+                wdo-name="COMPLETEHEARINGTASK"
+              />
+            </link-parameter>
+          </action>
+        </actions>
+        <allow-deadline-override>false</allow-deadline-override>
+        <allow-task-forwarding>false</allow-task-forwarding>
+      </task>
+      <allocation-strategy
+        identifier="HEARINGSCHEDULER"
+        type="target"
+      />
+      <event-wait>
+        <events>
+          <event
+            event-class="APPEAL"
+            event-type="CLOSECOMPLETEHEARINGTASK"
+            identifier="29700"
+          >
+            <event-match-attribute
+              name="HearingID"
+              wdo-name="COMPLETEHEARINGTASK"
+            />
+          </event>
+        </events>
+      </event-wait>
+      <biz-object-associations>
+        <biz-object-association biz-object-type="BOT1">
+          <wdo-attribute
+            name="HearingID"
+            wdo-name="COMPLETEHEARINGTASK"
+          />
+        </biz-object-association>
+      </biz-object-associations>
+    </manual-activity>
+  </activities>
+  <transitions>
+    <transition
+      from-activity-idref="29697"
+      id="29701"
+      to-activity-idref="29699"
+    />
+    <transition
+      from-activity-idref="29699"
+      id="29702"
+      to-activity-idref="29698"
+    />
+  </transitions>
+</workflow-process>

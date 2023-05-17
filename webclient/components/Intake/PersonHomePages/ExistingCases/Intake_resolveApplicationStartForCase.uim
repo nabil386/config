@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- ====================================================================== -->
+<!-- Copyright 2010 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<!-- This page retrieves the executionID for the selected application type and-->
+<!-- program types then calls IEG script                                    -->
+<PAGE
+  PAGE_ID="Intake_resolveApplicationStartForCase"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <JSP_SCRIPTLET>
+        curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      String intakeApplicationTypeID = request.getParameter("intakeApplicationTypeID");
+      String programTypeCodes = request.getParameter("programTypeCodes");
+      String concernRoleID = request.getParameter("concernRoleID");
+      String caseID = request.getParameter("caseID");
+      programTypeCodes = programTypeCodes.replaceAll("\\t", ",");
+      String url = "";
+
+      if (intakeApplicationTypeID == null) {
+        core.ScriptletMissingParamException e = new
+          core.ScriptletMissingParamException(-20002, "intakeApplicationTypeID");
+        throw e;
+      }
+
+     curam.interfaces.ApplicationPkg.Application_startApplicationForCase_TH
+        th = new curam.interfaces.ApplicationPkg.Application_startApplicationForCase_TH();
+      th.setFieldValue(th.key$applicationTypeCode_idx, intakeApplicationTypeID);
+      th.setFieldValue(th.key$programTypeCodes_idx, programTypeCodes);
+      th.setFieldValue(th.concernRoleIDCaseIDkey$concernRoleID_idx, concernRoleID);
+      th.setFieldValue(th.concernRoleIDCaseIDkey$caseID_idx, caseID);
+      th.callServer();
+
+      String executionID = th.getFieldValue(th.result$executionID_idx);
+      url = context + "ieg/Screening.do?" + "executionID=" + curam.omega3.request.RequestUtils.escapeURL(executionID);
+      url += "&amp;" + rh.getSystemParameters();
+      response.sendRedirect(response.encodeRedirectURL(url));
+  </JSP_SCRIPTLET>
+
+
+</PAGE>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2005-2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Coordinators view page for a Case Audit                                -->
+<PAGE
+  PAGE_ID="CaseAudit_coordinatorViewCaseAudit"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="CaseAudit"
+    NAME="DISPLAY"
+    OPERATION="readCaseAudit"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00183007, GD -->
+  <SERVER_INTERFACE
+    CLASS="CaseAuditTransactionLog"
+    NAME="TRANSDISPLAY"
+    OPERATION="listRecentTransactions"
+  />
+  <!-- END, CR00183007 -->
+
+
+  <PAGE_PARAMETER NAME="caseAuditID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseAuditID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseAuditID"
+    />
+  </CONNECT>
+
+
+  <INCLUDE FILE_NAME="CaseAudit_optionsCaseAuditDetailsView.vim"/>
+
+
+  <INCLUDE FILE_NAME="CaseAudit_viewCaseAuditFurtherDetailsView.vim"/>
+
+
+  <!-- BEGIN, CR00183007, GD -->
+  <INCLUDE FILE_NAME="CaseAudit_listTransactionLogView.vim"/>
+  <!-- END, CR00183007 -->
+
+
+</PAGE>

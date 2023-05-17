@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Service Supplier check for duplicate registration page                 -->
+<PAGE PAGE_ID="RegisterServiceSupplier_duplicateCheckWizard" WINDOW_OPTIONS="width=975,height=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00290965, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE NAME="ACTION" PROPERTY="informationMsgTxt"/>
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <SERVER_INTERFACE ACTION_ID_PROPERTY="actionIDProperty" CLASS="ParticipantRegistration" NAME="ACTION" OPERATION="setRegisterServiceSupplierSearchCriteriaDetails" PHASE="ACTION"/>
+  <!-- END, CR00290965 -->
+
+
+  <SERVER_INTERFACE CLASS="ParticipantRegistration" NAME="DISPLAY" OPERATION="getRegisterServiceSupplierSearchCriteria" PHASE="DISPLAY"/>
+
+
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="wizardStateID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="wizardStateID$wizardStateID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="stateID$wizardStateID"/>
+    <TARGET NAME="ACTION" PROPERTY="stateID$wizardStateID"/>
+  </CONNECT>
+
+
+  <SERVER_INTERFACE CLASS="ParticipantRegistration" NAME="DISPLAYWIZARD" OPERATION="getRegisterServiceSupplierWizard"/>
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE NAME="DISPLAYWIZARD" PROPERTY="wizardMenu"/>
+    </CONNECT>
+  </MENU>
+
+
+  <INCLUDE FILE_NAME="RegisterServiceSupplier_duplicateCheckWizardView.vim"/>
+
+
+  <CLUSTER>
+    <ACTION_SET ALIGNMENT="CENTER" BOTTOM="false">
+      <ACTION_CONTROL ACTION_ID="SEARCH" DEFAULT="true" IMAGE="SearchButton" LABEL="ActionControl.Label.Search" TYPE="SUBMIT">
+        <LINK PAGE_ID="THIS" SAVE_LINK="false"/>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL IMAGE="ResetButton" LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="RegisterServiceSupplier_duplicateCheckWizard" SAVE_LINK="false">
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="wizardStateID$wizardStateID"/>
+            <TARGET NAME="PAGE" PROPERTY="wizardStateID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST PAGINATED="false" TITLE="List.Title.SearchResults">
+
+
+    <FIELD LABEL="Field.Title.Name" WIDTH="40">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="dtlsList$participantDetails"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.Address" WIDTH="60">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="dtlsList$formattedAddress"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <ACTION_SET BOTTOM="true" TOP="true">
+
+
+    <ACTION_CONTROL ALIGNMENT="LEFT" LABEL="ActionControl.Label.Cancel"/>
+
+
+    <ACTION_CONTROL ACTION_ID="NEXTPAGE" LABEL="ActionControl.Label.Next" TYPE="SUBMIT">
+      <LINK DISMISS_MODAL="false" PAGE_ID="RegisterServiceSupplier_registerWizard" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="ACTION" PROPERTY="wizardStateID$wizardStateID"/>
+          <TARGET NAME="PAGE" PROPERTY="wizardStateID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+</PAGE>

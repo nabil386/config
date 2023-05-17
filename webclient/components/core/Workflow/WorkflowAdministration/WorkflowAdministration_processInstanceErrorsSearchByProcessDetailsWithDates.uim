@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description -->
+<!-- =========== -->
+<!-- Searches for currently active Process Instance Errors                       -->
+<PAGE
+  PAGE_ID="WorkflowAdministration_processInstanceErrorsSearchByProcessDetailsWithDates"
+  SCRIPT_FILE="ExecDashboardScript.js"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="WorkflowAdministration"
+    NAME="DISPLAY"
+    OPERATION="displayProcessInstanceErrorsSearchFields"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="processCompletedFromDate"/>
+  <PAGE_PARAMETER NAME="processCompletedToDate"/>
+  <PAGE_PARAMETER NAME="processDisplayName"/>
+  <PAGE_PARAMETER NAME="processInstanceErrorType"/>
+  <PAGE_PARAMETER NAME="autoSearchParam"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processCompletedFromDate"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="arg1$processCompletedFromDate"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processCompletedToDate"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="arg1$processCompletedToDate"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processDisplayName"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="arg1$processDisplayName"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processInstanceErrorType"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="arg1$processInstanceErrorType"
+    />
+  </CONNECT>
+
+
+  <SCRIPT
+    ACTION="autoSearch(autoSearchParam)"
+    EVENT="ONLOAD"
+  />
+
+
+  <CLUSTER
+    LABEL_WIDTH="20"
+    TITLE="Cluster.SearchByProcessDetails.Title"
+  >
+
+
+    <CLUSTER LABEL_WIDTH="18">
+      <CONTAINER LABEL="Container.Label.ProcessName">
+        <FIELD
+          USE_DEFAULT="false"
+          WIDTH="15"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$processInstanceErrorType"
+            />
+          </CONNECT>
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="searchErrorsByProcessDetailsKey$processInstanceErrorType"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD WIDTH="71">
+          <CONNECT>
+            <INITIAL
+              NAME="DISPLAY"
+              PROPERTY="result$processDisplayName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$processDisplayName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="searchErrorsByProcessDetailsKey$processDisplayName"
+            />
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <CLUSTER
+      LABEL_WIDTH="36"
+      NUM_COLS="2"
+    >
+      <FIELD
+        LABEL="Field.Label.ProcessesStartDate"
+        WIDTH="65"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$processCompletedFromDate"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="searchErrorsByProcessDetailsKey$processCompletedFromDate"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.Status"
+        USE_BLANK="false"
+        USE_DEFAULT="true"
+        WIDTH="45"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="searchErrorsByProcessDetailsKey$status"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.ProcessesEndDate"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+        WIDTH="65"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$processCompletedToDate"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="searchErrorsByProcessDetailsKey$processCompletedToDate"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="Button.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="Button.Label.Reset"
+      >
+        <LINK PAGE_ID="WorkflowAdministration_resolveProcessInstanceErrorsSearchByProcessDetailsWithDates"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <INCLUDE FILE_NAME="WorkflowAdministration_processInstanceErrorsSearchByProcessDetailsView.vim"/>
+</PAGE>

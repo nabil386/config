@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to select an existing hearing case           -->
+<!-- to add a new appeal request to. Alternatively the user can select to   -->
+<!-- create a new hearing case.						    -->
+<!--									    -->
+<!-- This page is for cases being appealed which are part of an             -->
+<!-- integrated case.                                                       -->
+<!--   																		-->
+<PAGE
+  PAGE_ID="Appeal_selectOrCreateIssueHearingCaseIC"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="contextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="HearingCase"
+    NAME="DISPLAY"
+    OPERATION="listActiveHearingCases"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="implCaseID"/>
+  <PAGE_PARAMETER NAME="participantRoleID"/>
+  <PAGE_PARAMETER NAME="contextDescription"/>
+  <PAGE_PARAMETER NAME="priorAppealCaseID"/>
+  <PAGE_PARAMETER NAME="appellantTypeCode"/>
+  <PAGE_PARAMETER NAME="parentCaseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="implCaseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="participantRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="participantRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="appellantTypeCode"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="appellantTypeCode"
+    />
+  </CONNECT>
+
+
+  <CLUSTER DESCRIPTION="Cluster.Description">
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        IMAGE="PreviousButton"
+        LABEL="ActionControl.Label.Previous"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Appeal_enterAppellantAndRespondentForIssueHearingCaseIC"
+          SAVE_LINK="FALSE"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="implCaseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="implCaseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="priorAppealCaseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="priorAppealCaseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="parentCaseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="parentCaseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="contextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contextDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="Create"
+        LABEL="ActionControl.Label.Create"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Appeal_createIssueHearingCaseMultipleCasesIC"
+          SAVE_LINK="FALSE"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="implCaseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="implCaseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="parentCaseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="parentCaseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="participantRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="participantRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="contextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="appellantTypeCode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="appellantTypeCode"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="priorAppealCaseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="priorAppealCaseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="CancelButton"
+        LABEL="ActionControl.Label.Cancel"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Appeal_listAppealCaseIC"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="implCaseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.HearingCases">
+
+
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="20"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.Select">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Appeal_addHearingCaseIC"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="appealCaseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="hearingCaseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="caseReference"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseReference"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="implCaseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="implCaseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="contextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="parentCaseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="parentCaseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.CaseReference"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseReference"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Appeal_hearingCaseIssueHomeForIC">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="appealCaseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Owner"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseOwner"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ReceivedDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="receivedDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.DeadlineDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="deadlineDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

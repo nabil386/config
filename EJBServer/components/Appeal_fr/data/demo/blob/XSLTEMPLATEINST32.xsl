@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" version="1.0">
+  <xsl:variable name="fo:layout-master-set">
+    <fo:layout-master-set>
+      <fo:simple-page-master master-name="default-page" page-height="11in" page-width="8.5in" margin-left="0.6in" margin-right="0.6in">
+        <fo:region-body margin-top="0.79in" margin-bottom="0.79in" />
+      </fo:simple-page-master>
+    </fo:layout-master-set>
+  </xsl:variable>
+  <xsl:template match="DOCUMENT">
+    <!--Explicitly select DATA to ensure META element is ignored.-->
+    <xsl:apply-templates select="DATA" />
+  </xsl:template>
+  <xsl:template match="DATA">
+    <!--Explicitly select the STRUCT to avoid processing anything else.-->
+    <xsl:apply-templates select="STRUCT[SNAME='ScheduleHearingData']" />
+  </xsl:template>
+  <xsl:template match="STRUCT">
+    <fo:root>
+      <xsl:copy-of select="$fo:layout-master-set" />
+      <fo:page-sequence master-reference="default-page" initial-page-number="1" format="1">
+        <!-- START NON-TRANSLATABLE -->
+        <fo:flow flow-name="xsl-region-body" font-family="WT Sans">
+          <!-- END NON-TRANSLATABLE -->
+          <fo:block>
+            <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+              <fo:block text-align="center">
+                <fo:inline font-size="14pt" font-weight="bold">Avis d'audience à domicile</fo:inline>
+                <fo:block>
+                  <fo:leader leader-pattern="space" />
+                </fo:block>
+                <fo:block>
+                  <xsl:text />
+                </fo:block>
+                <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                  <fo:block text-align="left">
+                    <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                      <fo:block text-align="right">
+                        <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                          <fo:block>
+                            <fo:block>
+                              <xsl:text />
+                            </fo:block>
+                            <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                              <fo:block text-align="left">
+                                <fo:inline font-size="12pt" font-weight="normal">
+                                  <xsl:apply-templates select="FIELD[FNAME='correspondentName']" />
+                                </fo:inline>
+                                <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                                  <fo:block>
+                                    <fo:block space-before.optimum="1pt" space-after.optimum="2pt" white-space-collapse="false" linefeed-treatment="preserve" white-space-treatment="preserve">
+                                      <fo:block>
+                                        <fo:inline font-size="12pt">
+                                          <xsl:apply-templates select="FIELD[FNAME='correspondentAddress']" />
+                                        </fo:inline>
+                                        <fo:block>
+                                          <fo:leader leader-pattern="space" />
+                                        </fo:block>
+                                        <fo:inline font-size="12pt">En réponse à votre demande, une audience se tiendra à l'heure et au lieu suivants :</fo:inline>
+                                        <fo:block>
+                                          <fo:leader leader-pattern="space" />
+                                        </fo:block>
+                                        <fo:block>
+                                          <xsl:text />
+                                        </fo:block>
+                                        <fo:table width="100%" space-before.optimum="1pt" space-after.optimum="2pt">
+                                          <fo:table-column column-width="160pt" />
+                                          <fo:table-column />
+                                          <fo:table-body>
+                                            <fo:table-row>
+                                              <fo:table-cell width="160pt" padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" text-align="start" border-style="solid" border-width="1pt" border-color="black">
+                                                <fo:block>
+                                                  <fo:inline font-size="12pt" font-weight="normal">Numéro de l'audience :</fo:inline>
+                                                </fo:block>
+                                              </fo:table-cell>
+                                              <fo:table-cell padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" text-align="start" border-style="solid" border-width="1pt" border-color="black">
+                                                <fo:block>
+                                                  <fo:inline font-size="12pt" font-weight="normal">
+                                                    <xsl:apply-templates select="FIELD[FNAME='hearingReference']" />
+                                                  </fo:inline>
+                                                </fo:block>
+                                              </fo:table-cell>
+                                            </fo:table-row>
+                                            <fo:table-row>
+                                              <fo:table-cell width="160pt" padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" text-align="start" border-style="solid" border-width="1pt" border-color="black">
+                                                <fo:block>
+                                                  <fo:inline font-size="12pt" font-weight="normal">Numéro de dossier :</fo:inline>
+                                                </fo:block>
+                                              </fo:table-cell>
+                                              <fo:table-cell padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" text-align="start" border-style="solid" border-width="1pt" border-color="black">
+                                                <fo:block>
+                                                  <fo:inline font-size="12pt" font-weight="normal">
+                                                    <xsl:apply-templates select="FIELD[FNAME='caseReference']" />
+                                                  </fo:inline>
+                                                </fo:block>
+                                              </fo:table-cell>
+                                            </fo:table-row>
+                                            <fo:table-row>
+                                              <fo:table-cell width="160pt" padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" text-align="start" border-style="solid" border-width="1pt" border-color="black">
+                                                <fo:block>
+                                                  <fo:inline font-size="12pt" font-weight="normal">Date :</fo:inline>
+                                                </fo:block>
+                                              </fo:table-cell>
+                                              <fo:table-cell padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" text-align="start" border-style="solid" border-width="1pt" border-color="black">
+                                                <fo:block>
+                                                  <fo:inline font-size="12pt" font-weight="normal">
+                                                    <xsl:apply-templates select="FIELD[FNAME='scheduledDate']" />
+                                                  </fo:inline>
+                                                </fo:block>
+                                              </fo:table-cell>
+                                            </fo:table-row>
+                                            <fo:table-row>
+                                              <fo:table-cell width="160pt" padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" text-align="start" border-style="solid" border-width="1pt" border-color="black">
+                                                <fo:block>Heure :</fo:block>
+                                              </fo:table-cell>
+                                              <fo:table-cell text-align="left" padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" border-style="solid" border-width="1pt" border-color="black">
+                                                <fo:block>
+                                                  <xsl:apply-templates select="FIELD[FNAME='scheduledTime']" />
+                                                </fo:block>
+                                              </fo:table-cell>
+                                            </fo:table-row>
+                                            <fo:table-row>
+                                              <fo:table-cell width="160pt" padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" text-align="start" border-style="solid" border-width="1pt" border-color="black">
+                                                <fo:block>Adresse :</fo:block>
+                                              </fo:table-cell>
+                                              <fo:table-cell text-align="left" padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" border-style="solid" border-width="1pt" border-color="black">
+                                                <fo:block white-space-collapse="false" linefeed-treatment="preserve" white-space-treatment="preserve">
+                                                  <xsl:apply-templates select="FIELD[FNAME='hearingAddress']" />
+                                                </fo:block>
+                                              </fo:table-cell>
+                                            </fo:table-row>
+                                            <xsl:if test="FIELD[FNAME='continueBenefitsString']/VALUE != ''">
+                                              <fo:table-row>
+                                                <fo:table-cell width="160pt" padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" text-align="start" border-style="solid" border-width="1pt" border-color="black">
+                                                  <fo:block>
+                                                    <fo:inline font-size="12pt">Statut de l'assistance :</fo:inline>
+                                                  </fo:block>
+                                                </fo:table-cell>
+                                                <fo:table-cell text-align="left" padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" border-style="solid" border-width="1pt" border-color="black">
+                                                  <fo:block>
+                                                    <fo:inline font-size="12pt">
+                                                      Le bureau local <xsl:apply-templates select="FIELD[FNAME='continueBenefitsString']" /> a donné l'ordre de continuer à vous assister sans rien changer jusqu'à ce que la décision soit rendue.
+                                                    </fo:inline>
+                                                  </fo:block>
+                                                </fo:table-cell>
+                                              </fo:table-row>
+                                            </xsl:if>
+                                            <fo:table-row>
+                                              <fo:table-cell width="160pt" padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" text-align="start" border-style="solid" border-width="1pt" border-color="black">
+                                                <fo:block>
+                                                  <fo:inline font-size="12pt">Documents à produire :</fo:inline>
+                                                </fo:block>
+                                              </fo:table-cell>
+                                              <fo:table-cell text-align="left" padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" border-style="solid" border-width="1pt" border-color="black">
+                                                <fo:block>
+                                                  <fo:inline font-size="12pt">
+                                                    <xsl:apply-templates select="FIELD[FNAME='receivedDate']" />
+                                                  </fo:inline>
+                                                </fo:block>
+                                              </fo:table-cell>
+                                            </fo:table-row>
+                                            <fo:table-row>
+                                              <fo:table-cell width="160pt" padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" text-align="start" border-style="solid" border-width="1pt" border-color="black">
+                                                <fo:block>
+                                                  <fo:inline font-size="12pt">Problèmes :</fo:inline>
+                                                </fo:block>
+                                              </fo:table-cell>
+                                              <fo:table-cell text-align="left" padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" border-style="solid" border-width="1pt" border-color="black">
+                                                <fo:block>
+                                                  <fo:list-block provisional-distance-between-starts="0mm" provisional-label-separation="2mm" start-indent="0mm" space-before.optimum="3pt" space-after.optimum="3pt">
+                                                    <fo:list-item>
+                                                      <fo:list-item-label end-indent="label-end()" font-size="12pt" font-weight="normal">
+                                                        <fo:block />
+                                                      </fo:list-item-label>
+                                                      <fo:list-item-body start-indent="body-start()" font-size="12pt" font-weight="normal">
+                                                        <xsl:apply-templates select="FIELD[FNAME='appealReasonData']" />
+                                                      </fo:list-item-body>
+                                                    </fo:list-item>
+                                                  </fo:list-block>
+                                                </fo:block>
+                                              </fo:table-cell>
+                                            </fo:table-row>
+                                          </fo:table-body>
+                                        </fo:table>
+                                        <fo:block>
+                                          <fo:leader leader-pattern="space" />
+                                        </fo:block>
+                                        <fo:inline font-size="12pt">
+                                          Cette audience a eu lieu le <xsl:apply-templates select="FIELD[FNAME='scheduleString']" />
+                                          <xsl:apply-templates select="FIELD[FNAME='scheduledDate']" />.
+                                        </fo:inline>
+                                        <fo:block>
+                                          <fo:leader leader-pattern="space" />
+                                        </fo:block>
+                                        <fo:inline font-size="10pt" font-weight="bold">Instructions</fo:inline>
+                                        <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                                          <fo:block text-align="justify">
+                                            <fo:inline font-size="10pt">Votre présence est requise aux date et heure précitées à l'adresse que vous avez fournie pour participer à une audience téléphonique suite à la demande d'audience déposée à cet effet. Vous souhaiterez peut-être produire certaines informations collectées ou faire comparaître des témoins à cette audience. Si ces témoins n'assistent pas à l'audience en personne, vous devez fournir un numéro de téléphone permettant de les joindre au cours de l'audience. Vous pouvez, à l'audience, être assisté par le représentant de votre choix, interroger les témoins et examiner les informations collectées présentées. L'audience sera enregistrée.</fo:inline>
+                                            <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                                              <fo:block text-align="justify">
+                                                <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                                                  <fo:block>
+                                                    <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                                                      <fo:block text-align="justify">
+                                                        <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                                                          <fo:block>
+                                                            <fo:inline font-size="10pt">Si vous ne pouvez être présent à l'heure fixée, vous pouvez solliciter un ajournement en prenant contact avec :</fo:inline>
+                                                            <fo:block>
+                                                              <fo:leader leader-pattern="space" />
+                                                            </fo:block>
+                                                            <fo:block>
+                                                              <xsl:text />
+                                                            </fo:block>
+                                                            <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                                                              <fo:block text-align="justify">
+                                                                <fo:inline font-size="10pt">
+                                                                  <xsl:apply-templates select="FIELD[FNAME='organizationName']" />
+                                                                </fo:inline>
+                                                                <fo:block>
+                                                                  <xsl:text />
+                                                                </fo:block>
+                                                                <fo:block space-before.optimum="1pt" space-after.optimum="2pt" white-space-collapse="false" linefeed-treatment="preserve" white-space-treatment="preserve">
+                                                                  <fo:block text-align="justify">
+                                                                    <fo:inline font-size="10pt">
+                                                                      <xsl:apply-templates select="FIELD[FNAME='organizationAddress']" />
+                                                                    </fo:inline>
+                                                                    <fo:block>
+                                                                      <fo:leader leader-pattern="space" />
+                                                                    </fo:block>
+                                                                    <fo:inline font-size="10pt">Celui-ci sera accordé uniquement en cas de motif valide. Si vous continuez à bénéficier d'une assistance, de prestations ou de services lors du processus d'audience et que vous demandez un ajournement, alors cette assistance, ces prestations ou ces services resteront inchangés. Ce ne sera plus le cas après la décision de l'audience EXCEPTE si un ajournement est accordé. Tout manquement à comparaître ou à justifier d'un motif valide pour ne pas comparaître se répercutera sur l'assistance, les prestations ou les services dont vous bénéficiez.</fo:inline>
+                                                                    <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                                                                      <fo:block text-align="justify">
+                                                                        <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                                                                          <fo:block>
+                                                                            <fo:inline font-size="10pt">
+                                                                              En cas de retard, vous devrez peut-être renoncer à votre audience. Si votre représentant ou vous-même ne vous présentez pas à une audience prévue, votre demande sera considérée abandonnée, sauf si, dans les <xsl:apply-templates select="FIELD[FNAME='appealTimeLimit']" /> jours suivant la date prévue, votre représentant ou vous-même demandez un report d'audience et fournissez une raison valable pour justifier votre manquement à comparaître.
+                                                                            </fo:inline>
+                                                                            <fo:block>
+                                                                              <xsl:text />
+                                                                            </fo:block>
+                                                                          </fo:block>
+                                                                        </fo:block>
+                                                                      </fo:block>
+                                                                    </fo:block>
+                                                                    <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                                                                      <fo:block>
+                                                                        <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                                                                          <fo:block text-align="justify">
+                                                                            <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                                                                              <fo:block text-align="justify">
+                                                                                <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                                                                                  <fo:block text-align="justify">
+                                                                                    <fo:inline font-size="10pt">
+                                                                                      Si vous souhaitez présenter des documents au cours de l'examen d'audience, une copie de ces documents doit être reçue au moins <xsl:apply-templates select="FIELD[FNAME='statementTimeLimit']" /> jours avant la date de l'examen d'audience.
+                                                                                    </fo:inline>
+                                                                                    <fo:block>
+                                                                                      <fo:leader leader-pattern="space" />
+                                                                                    </fo:block>
+                                                                                    <fo:block>
+                                                                                      <fo:leader leader-pattern="space" />
+                                                                                    </fo:block>
+                                                                                    <fo:block>
+                                                                                      <xsl:text />
+                                                                                    </fo:block>
+                                                                                    <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                                                                                      <fo:block text-align="justify">
+                                                                                        <fo:block space-before.optimum="1pt" space-after.optimum="2pt">
+                                                                                          <fo:block text-align="left">
+                                                                                            <fo:inline font-size="10pt">Si vous ne souhaitez plus être entendu dans le cadre d'une audience, veuillez signer la décharge ci-dessous et retourner la présente notification à l'adresse ci-dessous :</fo:inline>
+                                                                                            <fo:block>
+                                                                                              <fo:leader leader-pattern="space" />
+                                                                                            </fo:block>
+                                                                                            <fo:inline font-size="10pt">
+                                                                                              <xsl:apply-templates select="FIELD[FNAME='organizationName']" />
+                                                                                            </fo:inline>
+                                                                                            <fo:block>
+                                                                                              <xsl:text />
+                                                                                            </fo:block>
+                                                                                            <fo:block space-before.optimum="1pt" space-after.optimum="2pt" white-space-collapse="false" linefeed-treatment="preserve" white-space-treatment="preserve">
+                                                                                              <fo:block text-align="left">
+                                                                                                <fo:inline font-size="10pt">
+                                                                                                  <xsl:apply-templates select="FIELD[FNAME='organizationAddress']" />
+                                                                                                </fo:inline>
+                                                                                                <fo:block>
+                                                                                                  <fo:leader leader-pattern="space" />
+                                                                                                </fo:block>
+                                                                                                <fo:inline font-size="10pt">Je souhaite retirer ma demande d'audience.</fo:inline>
+                                                                                                <fo:block>
+                                                                                                  <fo:leader leader-pattern="space" />
+                                                                                                </fo:block>
+                                                                                                <fo:block>
+                                                                                                  <fo:leader leader-pattern="space" />
+                                                                                                </fo:block>
+                                                                                                <fo:block>
+                                                                                                  <fo:leader leader-pattern="space" />
+                                                                                                </fo:block>
+                                                                                                <fo:block>
+                                                                                                  <fo:leader leader-pattern="space" />
+                                                                                                </fo:block>
+                                                                                                <fo:block>
+                                                                                                  <xsl:text />
+                                                                                                </fo:block>
+                                                                                                <fo:table font-size="10pt" font-weight="normal" width="100%" space-before.optimum="1pt" space-after.optimum="2pt">
+                                                                                                  <fo:table-column column-width="327pt" />
+                                                                                                  <fo:table-column />
+                                                                                                  <fo:table-body>
+                                                                                                    <fo:table-row>
+                                                                                                      <fo:table-cell width="327pt" padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" text-align="start" border-style="solid" border-width="1pt" border-color="white">
+                                                                                                        <fo:block>
+                                                                                                          <fo:inline font-size="10pt" font-weight="normal">______________________________________________</fo:inline>
+                                                                                                          <fo:block>
+                                                                                                            <fo:leader leader-pattern="space" />
+                                                                                                          </fo:block>
+                                                                                                          <fo:inline font-size="10pt">Signature</fo:inline>
+                                                                                                        </fo:block>
+                                                                                                      </fo:table-cell>
+                                                                                                      <fo:table-cell padding-start="3pt" padding-end="3pt" padding-before="3pt" padding-after="3pt" display-align="center" text-align="start" border-style="solid" border-width="1pt" border-color="white">
+                                                                                                        <fo:block>
+                                                                                                          <fo:inline font-size="10pt">____________________________</fo:inline>
+                                                                                                          <fo:block>
+                                                                                                            <fo:leader leader-pattern="space" />
+                                                                                                          </fo:block>
+                                                                                                          <fo:inline font-size="10pt">Date</fo:inline>
+                                                                                                        </fo:block>
+                                                                                                      </fo:table-cell>
+                                                                                                    </fo:table-row>
+                                                                                                  </fo:table-body>
+                                                                                                </fo:table>
+                                                                                              </fo:block>
+                                                                                            </fo:block>
+                                                                                          </fo:block>
+                                                                                        </fo:block>
+                                                                                      </fo:block>
+                                                                                    </fo:block>
+                                                                                  </fo:block>
+                                                                                </fo:block>
+                                                                              </fo:block>
+                                                                            </fo:block>
+                                                                          </fo:block>
+                                                                        </fo:block>
+                                                                      </fo:block>
+                                                                    </fo:block>
+                                                                  </fo:block>
+                                                                </fo:block>
+                                                              </fo:block>
+                                                            </fo:block>
+                                                          </fo:block>
+                                                        </fo:block>
+                                                      </fo:block>
+                                                    </fo:block>
+                                                  </fo:block>
+                                                </fo:block>
+                                              </fo:block>
+                                            </fo:block>
+                                          </fo:block>
+                                        </fo:block>
+                                      </fo:block>
+                                    </fo:block>
+                                  </fo:block>
+                                </fo:block>
+                              </fo:block>
+                            </fo:block>
+                          </fo:block>
+                        </fo:block>
+                      </fo:block>
+                    </fo:block>
+                  </fo:block>
+                </fo:block>
+              </fo:block>
+            </fo:block>
+          </fo:block>
+        </fo:flow>
+      </fo:page-sequence>
+    </fo:root>
+  </xsl:template>
+  <xsl:template match="STRUCT_LIST">
+    <xsl:apply-templates select="STRUCT[SNAME='AppealReasonData']" />
+  </xsl:template>
+  <xsl:template match="STRUCT[SNAME='AppealReasonData']">
+    <fo:block font-size="12pt" font-weight="normal">
+      <xsl:apply-templates select="FIELD[FNAME='appealReasonCode']" />
+    </fo:block>
+  </xsl:template>
+  <xsl:template match="FIELD">
+    <xsl:choose>
+      <xsl:when test="FNAME='appealReasonData'">
+        <xsl:apply-templates select="STRUCT_LIST" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="VALUE" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+</xsl:stylesheet>
+
+

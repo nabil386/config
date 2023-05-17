@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMOASProductRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../build/svr/creole.gen/schema/RuleSet.xsd">
+
+	<Class name="BDMOASProduct" extends="DefaultProduct"
+		extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet">
+
+		<Attribute name="objectiveTypes">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="DefaultObjectiveType"
+						ruleset="DefaultProductEligibilityEntitlementRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="BDMOASAbstractObjectiveType" />
+					</listof>
+					<members>
+						<reference attribute="oasPensionObjectiveType" />
+						<reference attribute="gisObjectiveType" />
+						<reference attribute="alwObjectiveType" />
+						<reference attribute="alwSurvivorObjectiveType" />
+					</members>
+				</fixedlist>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="oasPensionObjectiveType">
+			<type>
+				<ruleclass name="BDMOASAbstractObjectiveType" />
+			</type>
+			<derivation>
+				<create ruleclass="OASPensionObjectiveType" />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="gisObjectiveType">
+			<type>
+				<ruleclass name="BDMOASAbstractObjectiveType" />
+			</type>
+			<derivation>
+				<create ruleclass="GISObjectiveType" />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="alwObjectiveType">
+			<type>
+				<ruleclass name="BDMOASAbstractObjectiveType" />
+			</type>
+			<derivation>
+				<create ruleclass="ALWObjectiveType" />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="alwSurvivorObjectiveType">
+			<type>
+				<ruleclass name="BDMOASAbstractObjectiveType" />
+			</type>
+			<derivation>
+				<create ruleclass="ALWSurvivorObjectiveType" />
+			</derivation>
+		</Attribute>
+
+	</Class>
+
+	<Class name="BDMOASMonthlyTagType" extends="DefaultTagType"
+		extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet">
+
+		<Attribute name="tagTypeID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<Number value="3" />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="pattern">
+			<type>
+				<javaclass name="curam.util.type.FrequencyPattern" />
+			</type>
+			<derivation>
+				<FrequencyPattern value="200100000" />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="valueType">
+			<type>
+				<codetableentry table="RulesTagType" />
+			</type>
+			<derivation>
+				<Code table="RulesTagType">
+					<String value="RTT3" />
+				</Code>
+			</derivation>
+		</Attribute>
+
+	</Class>
+
+	<Class name="BDMOASAbstractObjectiveType" abstract="true"
+		extends="DefaultObjectiveType"
+		extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet">
+
+		<Attribute name="objectiveTypeID">
+			<type>
+				<javaclass name="String" />
+			</type>
+			<derivation>
+				<abstract />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="name">
+			<type>
+				<codetableentry table="RulesComponentType" />
+			</type>
+			<derivation>
+				<abstract />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="tagTypes">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="AbstractTagType"
+						ruleset="ProductEligibilityEntitlementRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="AbstractTagType"
+							ruleset="ProductEligibilityEntitlementRuleSet" />
+					</listof>
+					<members>
+						<reference attribute="monthlyDelivery" />
+					</members>
+				</fixedlist>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="monthlyDelivery">
+			<type>
+				<ruleclass name="BDMOASMonthlyTagType" />
+			</type>
+			<derivation>
+				<create ruleclass="BDMOASMonthlyTagType" />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="financialComponentType">
+			<type>
+				<codetableentry table="RulesComponentFCType" />
+			</type>
+			<derivation>
+				<Code table="RulesComponentFCType">
+					<String value="CT1" />
+				</Code>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="rateTarget">
+			<type>
+				<codetableentry table="RulesComponentTarget" />
+			</type>
+			<derivation>
+				<Code table="RulesComponentTarget">
+					<String value="RC1" />
+				</Code>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="isDeductionAllowable">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<true />
+			</derivation>
+		</Attribute>
+
+	</Class>
+
+	<Class name="OASPensionObjectiveType"
+		extends="BDMOASAbstractObjectiveType">
+
+		<Attribute name="objectiveTypeID">
+			<type>
+				<javaclass name="String" />
+			</type>
+			<derivation>
+				<String value="OASRC1" />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="name">
+			<type>
+				<codetableentry table="RulesComponentType" />
+			</type>
+			<derivation>
+				<Code table="RulesComponentType">
+					<String value="OASRC1" />
+				</Code>
+			</derivation>
+		</Attribute>
+
+	</Class>
+
+	<Class name="GISObjectiveType"
+		extends="BDMOASAbstractObjectiveType">
+
+		<Attribute name="objectiveTypeID">
+			<type>
+				<javaclass name="String" />
+			</type>
+			<derivation>
+				<String value="OASRC2" />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="name">
+			<type>
+				<codetableentry table="RulesComponentType" />
+			</type>
+			<derivation>
+				<Code table="RulesComponentType">
+					<String value="OASRC2" />
+				</Code>
+			</derivation>
+		</Attribute>
+
+	</Class>
+
+	<Class name="ALWObjectiveType"
+		extends="BDMOASAbstractObjectiveType">
+
+		<Attribute name="objectiveTypeID">
+			<type>
+				<javaclass name="String" />
+			</type>
+			<derivation>
+				<String value="OASRC3" />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="name">
+			<type>
+				<codetableentry table="RulesComponentType" />
+			</type>
+			<derivation>
+				<Code table="RulesComponentType">
+					<String value="OASRC3" />
+				</Code>
+			</derivation>
+		</Attribute>
+
+	</Class>
+
+	<Class name="ALWSurvivorObjectiveType"
+		extends="BDMOASAbstractObjectiveType">
+
+		<Attribute name="objectiveTypeID">
+			<type>
+				<javaclass name="String" />
+			</type>
+			<derivation>
+				<String value="OASRC3" />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="name">
+			<type>
+				<codetableentry table="RulesComponentType" />
+			</type>
+			<derivation>
+				<Code table="RulesComponentType">
+					<String value="OASRC4" />
+				</Code>
+			</derivation>
+		</Attribute>
+
+	</Class>
+
+	<Class name="BDMOASObjectiveTimeline"
+		extends="DefaultObjectiveTimeline"
+		extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet">
+
+		<Attribute name="concernRoleID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="objectiveType">
+			<type>
+				<ruleclass name="BDMOASAbstractObjectiveType" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="valueTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="isEntitledTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="Boolean" />
+						</type>
+						<when>
+							<condition>
+								<compare comparison="&gt;">
+									<intervalvalue>
+										<reference attribute="valueTimeline" />
+									</intervalvalue>
+									<Number value="0" />
+								</compare>
+							</condition>
+							<value>
+								<true />
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<false />
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="targetIDTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<reference attribute="concernRoleID" />
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="tagTimelines">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="AbstractTagTimeline"
+						ruleset="ProductEligibilityEntitlementRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="AbstractTagTimeline"
+							ruleset="ProductEligibilityEntitlementRuleSet" />
+					</listof>
+					<members>
+						<create ruleclass="BDMOASTagTimeline">
+							<specify attribute="tagType">
+								<create ruleclass="BDMOASMonthlyTagType" />
+							</specify>
+							<specify attribute="valueTimeline">
+								<reference attribute="valueTimeline" />
+							</specify>
+						</create>
+					</members>
+				</fixedlist>
+			</derivation>
+		</Attribute>
+
+
+	</Class>
+
+	<Class name="BDMOASTagTimeline" extends="DefaultTagTimeline"
+		extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet">
+
+		<Attribute name="tagType">
+			<type>
+				<ruleclass name="AbstractTagType"
+					ruleset="ProductEligibilityEntitlementRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="valueTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Object" />
+				</javaclass>
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+	</Class>
+
+</RuleSet>

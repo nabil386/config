@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012, 2015. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE PAGE_ID="System_createProperty" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="PropertyAdmin" NAME="ACTION" OPERATION="addProperty" PHASE="ACTION"/>
+
+
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT">
+      <LINK PAGE_ID="System_resolveRefreshSearch" DISMISS_MODAL="false">
+        <!-- TEMPORARY SOLUTION for the search page refresh:     -->
+        <!-- secondFormInput corresponds to the first input field-->
+        <!-- defined in the System_listAllProperties.uim, if its -->
+        <!-- position changes, you need to update this property  -->
+        <!-- accordingly.                                        -->
+        <CONNECT>
+          <SOURCE NAME="ACTION" PROPERTY="result$category"/>
+          <TARGET NAME="PAGE" PROPERTY="secondFormInput"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="41" NUM_COLS="2">
+    <FIELD LABEL="Field.Title.PropertyName">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="descriptionKey$displayName"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.Type" WIDTH="100">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="key$type"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.Category">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="key$category"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER LABEL_WIDTH="26.5">
+    <FIELD LABEL="Field.Title.ID">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="key$displayName"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER SHOW_LABELS="false" TITLE="Field.Title.Description">
+    <!-- BEGIN, CR00463142, EC -->
+    <FIELD HEIGHT="4" LABEL="Field.Title.Description">
+      <!-- END, CR00463142 -->
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="descriptionKey$description"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

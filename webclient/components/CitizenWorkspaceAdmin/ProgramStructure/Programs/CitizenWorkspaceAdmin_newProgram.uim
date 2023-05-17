@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed Materials - Property of IBM
+    
+    Copyright IBM Corporation 2012. All Rights Reserved.
+    
+    US Government Users Restricted Rights - Use, duplication or disclosure 
+    restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright (c) 2012 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="CitizenWorkspaceAdmin_newProgram"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd" WINDOW_OPTIONS="width=1075,height=680">
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText"/>
+        </CONNECT>
+    </PAGE_TITLE>
+   
+    <!-- List Create Program Details -->
+    <SERVER_INTERFACE CLASS="CitizenWorkspaceAdmin" NAME="DISPLAY"
+        OPERATION="listCreateProgramDetails" PHASE="DISPLAY"/>
+    <!-- Create Program -->
+    <SERVER_INTERFACE CLASS="CitizenWorkspaceAdmin" NAME="ACTION" OPERATION="createProgram"
+        PHASE="ACTION"/>
+    
+    <ACTION_SET>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+    </ACTION_SET>
+    
+    <!-- Details -->
+    <CLUSTER NUM_COLS="2" LABEL_WIDTH="50">
+        <FIELD LABEL="Field.Title.Name">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="name"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Title.Reference">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="programTypeReference"/>
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+    
+    <!-- Intake Processing Details -->
+    <CLUSTER TITLE="Cluster.Title.IntakeProcessingDetails" NUM_COLS="2" LABEL_WIDTH="50">
+        <!-- Col 1 -->
+        <FIELD USE_BLANK="true" LABEL="Field.Title.IntakeSystem">
+            <CONNECT>
+                <INITIAL NAME="DISPLAY" 
+                    HIDDEN_PROPERTY="systemID"
+                    PROPERTY="systemName"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="intakeSystemID"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Title.ReopenAvailable">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="reopenAvailableInd"/>
+            </CONNECT>
+        </FIELD>
+         <FIELD USE_BLANK="true" LABEL="Field.Title.CoverageType">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="coverageType"/>
+            </CONNECT>
+        </FIELD>
+        <!-- Col 2 -->
+        <FIELD USE_BLANK="true" LABEL="Field.Title.ApplicationCase">
+            <CONNECT>
+                <INITIAL NAME="DISPLAY" 
+                    HIDDEN_PROPERTY="caseConfigurationID"
+                    PROPERTY="caseConfigurationName"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="caseConfigurationID"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Title.ProgramReopened">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="programReopenedWorkflow"/>
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+    
+    <!-- Case Processing System -->
+    <CLUSTER TITLE="Cluster.Title.CaseProcessingDetails" NUM_COLS="2" LABEL_WIDTH="65">
+        <!-- Col 1 -->
+        <FIELD LABEL="Field.Title.CaseProcessingSystem" USE_BLANK="true">
+            <CONNECT>
+                <INITIAL NAME="DISPLAY" 
+                    HIDDEN_PROPERTY="systemID"
+                    PROPERTY="systemName"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="details$targetSystemID"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Title.IntegratedCaseStrategy" USE_BLANK="true">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="integratedCaseStrategy"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Title.ClientSelectionRuleset" USE_BLANK="true">
+            <CONNECT>
+                <INITIAL
+                    HIDDEN_PROPERTY="result$ruleSetList$ruleSetID"
+                    NAME="DISPLAY"
+                    PROPERTY="result$ruleSetList$name" 
+                />
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="clientSelectionRulesetID"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Title.ProductDeliveryType" USE_BLANK="true">
+            <CONNECT>
+                <INITIAL
+                    NAME="DISPLAY"
+                    HIDDEN_PROPERTY="productID"
+                    PROPERTY="productList$name" 
+                />
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="productID"/>
+            </CONNECT>
+        </FIELD>
+        
+        <!-- Col 2 -->
+        <FIELD LABEL="Field.Title.CuramCaseType" USE_BLANK="true">
+            <CONNECT>
+                <INITIAL
+                    HIDDEN_PROPERTY="integratedCaseType"
+                    NAME="DISPLAY"
+                    PROPERTY="integratedCaseType" 
+                />
+            </CONNECT>
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="integratedCaseType"
+                />
+            </CONNECT>
+        </FIELD>  
+        <FIELD LABEL="Field.Title.ClientSelectionStrategy" USE_BLANK="true">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="clientSelectionStrategy"/>
+            </CONNECT>
+        </FIELD>        
+        <FIELD LABEL="Field.Title.SubmitProductDelivery">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="submitProductDeliveryInd"/>
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+    
+    <!-- Outcome Plan Configuration -->
+    <CLUSTER TITLE="Cluster.Title.OutcomePlanDetails" NUM_COLS="2" LABEL_WIDTH="65">
+       <FIELD LABEL="Field.Title.OutcomePlanType" USE_BLANK="true">
+			<CONNECT>
+                <INITIAL
+                    HIDDEN_PROPERTY="result$outcomePlanTypes$dtls$outcomePlanAdminID"
+                    NAME="DISPLAY"
+                    PROPERTY="result$outcomePlanTypes$dtls$outcomePlanName" 
+                />
+            </CONNECT>
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="outcomePlanType"
+                />
+            </CONNECT>
+        </FIELD>    	        
+        <FIELD LABEL="Field.Title.ClientSelectionOPStrategy" USE_BLANK="true">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="clientSelectionOPStrategy"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Title.OutcomePlanStrategy" USE_BLANK="true">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="outcomePlanStrategy"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Title.ClientSelectionOPRuleset" USE_BLANK="true">
+            <CONNECT>
+                <INITIAL
+                    HIDDEN_PROPERTY="result$ruleSetTypes$ruleSetID"
+                    NAME="DISPLAY"
+                    PROPERTY="result$ruleSetTypes$name" 
+                />
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="clientSelectionOPRuleset"/>
+            </CONNECT>
+        </FIELD>
+
+    </CLUSTER>
+    
+    <CLUSTER TITLE="Cluster.Title.Timer" NUM_COLS="2" LABEL_WIDTH="65">
+      <!-- Col 1 -->
+      <FIELD LABEL="Field.Title.DispositionPeriod" WIDTH_UNITS="CHARS" WIDTH="4">
+          <CONNECT>
+              <TARGET NAME="ACTION" PROPERTY="numDispositionDays"/>
+          </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Title.WarningDays" WIDTH_UNITS="CHARS" WIDTH="4">
+          <CONNECT>
+              <TARGET NAME="ACTION" PROPERTY="numWarningDays"/>
+          </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Title.ExtensionApproval">
+          <CONNECT>
+              <TARGET NAME="ACTION" PROPERTY="timerApprovalRequiredInd"/>
+          </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Title.ResumeTimer">
+          <CONNECT>
+              <TARGET NAME="ACTION" PROPERTY="resumeTimerInd"/>
+          </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Title.TimerStart">
+          <CONNECT>
+              <TARGET NAME="ACTION" PROPERTY="timerStartWorkflow"/>
+          </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Title.DeadlineNotAchieved">
+          <CONNECT>
+              <TARGET NAME="ACTION" PROPERTY="deadlineNotAchievedWorkflow"/>
+          </CONNECT>
+      </FIELD>
+      <!-- Col 2 -->
+      <FIELD LABEL="Field.Title.StartOn" USE_BLANK="true">
+          <CONNECT>
+              <TARGET NAME="ACTION" PROPERTY="timerStartOn"/>
+          </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Title.ExtensionAllowed">
+          <CONNECT>
+              <TARGET NAME="ACTION" PROPERTY="timerExtensionAllowedInd"/>
+          </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Title.UseBusinessDays">
+          <CONNECT>
+              <TARGET NAME="ACTION" PROPERTY="useBusinessDaysInd"/>
+          </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Title.ResumeFrom" USE_BLANK="true">
+          <CONNECT>
+              <TARGET NAME="ACTION" PROPERTY="timerResumeFrom"/>
+          </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Title.WarningReached">
+          <CONNECT>
+              <TARGET NAME="ACTION" PROPERTY="warningReachedWorkflow"/>
+          </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    
+    <!-- Description -->
+    <CLUSTER TITLE="Cluster.Title.Description" SHOW_LABELS="false">
+        <FIELD HEIGHT="100">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="internalDescription"/>
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+    
+</PAGE>

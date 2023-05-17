@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Displays the tab details for a service plan page.                      -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_planItemTabDetails"
+  TYPE="DETAILS"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+  <!-- BEGIN, CR00235316, SS -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="name"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Separator"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="concernRoleName"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <TAB_NAME>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="name"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Separator"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="concernRoleName"
+      />
+    </CONNECT>
+  </TAB_NAME>
+
+  <PAGE_PARAMETER NAME="plannedItemID"/>
+  <SERVER_INTERFACE
+    CLASS="ServicePlanTab"
+    NAME="DISPLAY"
+    OPERATION="readPlanItemTabDetails"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="plannedItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="plannedItemID"
+    />
+  </CONNECT>
+  
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY_PLANITEM"
+    OPERATION="viewPlanItem"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="plannedItemID"
+    />
+    <TARGET
+      NAME="DISPLAY_PLANITEM"
+      PROPERTY="plannedItemIDKey$plannedItemID"
+    />
+  </CONNECT>
+  
+  
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY_SERVICEUNITPLANNEDITEM"
+    OPERATION="viewServiceUnitPlannedItemDetails"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="plannedItemID"
+    />
+    <TARGET
+      NAME="DISPLAY_SERVICEUNITPLANNEDITEM"
+      PROPERTY="plannedItemIDKey$plannedItemID"
+    />
+  </CONNECT>
+  
+  
+ 
+  <CLUSTER NUM_COLS="1">
+  <CLUSTER 
+    NUM_COLS="2"
+    STYLE="cluster-cpr-no-border"
+    BEHAVIOR="NONE"
+    LABEL_WIDTH="50">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="displayUnitsInd"
+      />
+    </CONDITION>
+
+    <FIELD LABEL="Field.Label.PlanItemName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+   
+    <FIELD LABEL="Field.Label.SubGoal">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_SERVICEUNITPLANNEDITEM"
+          PROPERTY="subGoalName"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.ConcerningName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="concernRoleName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Participant_resolveRoleHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concerningID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="participantType"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.Sensitivity">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sensitivityCode"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.Owner">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="ownerName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Case_resolveOrgObjectTypeHome"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="userName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="orgObjectReference"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="orgObjectReference"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="orgObjectType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="orgObjectType"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.Responsibility">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_SERVICEUNITPLANNEDITEM"
+          PROPERTY="planItemRespUserFullName"
+        />
+      </CONNECT>
+  
+      <LINK
+        PAGE_ID="ServicePlanDelivery_resolveResponsibilityHome"
+        >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY_SERVICEUNITPLANNEDITEM"
+            PROPERTY="responsibilityID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+       
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY_SERVICEUNITPLANNEDITEM"
+            PROPERTY="respSetToClientInd"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="respSetToClientInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY_SERVICEUNITPLANNEDITEM"
+            PROPERTY="respSetToParticipant"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="respSetToParticipant"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY_SERVICEUNITPLANNEDITEM"
+            PROPERTY="respUserName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="respUserName"
+          />
+        </CONNECT>
+     
+      </LINK>
+    </FIELD>
+  
+    <FIELD LABEL="Field.Label.Outcome">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="outcomeAchieved"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+    
+  </CLUSTER>
+
+
+  <CLUSTER 
+    NUM_COLS="2"
+    BEHAVIOR="NONE"
+    LABEL_WIDTH="50"
+    STYLE="cluster-cpr-no-border">
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="displayUnitsInd"
+      />
+    </CONDITION>
+
+    <FIELD LABEL="Field.Label.PlanItemName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.SubGoal">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_PLANITEM"
+          PROPERTY="subGoalName"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.ConcerningName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="concernRoleName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Participant_resolveRoleHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concerningID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="participantType"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.Sensitivity">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sensitivityCode"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.Owner">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="ownerName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Case_resolveOrgObjectTypeHome"
+        >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="userName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="orgObjectReference"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="orgObjectReference"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="orgObjectType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="orgObjectType"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.Responsibility">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_PLANITEM"
+          PROPERTY="planItemRespUserFullName"
+        />
+      </CONNECT>
+      
+      <LINK
+        PAGE_ID="ServicePlanDelivery_resolveResponsibilityHome"
+        >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY_PLANITEM"
+            PROPERTY="responsibilityID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY_PLANITEM"
+            PROPERTY="respSetToClientInd"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="respSetToClientInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY_PLANITEM"
+            PROPERTY="respSetToParticipant"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="respSetToParticipant"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY_PLANITEM"
+            PROPERTY="respUserName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="respUserName"
+          />
+        </CONNECT>
+        
+      </LINK>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.Outcome">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="outcomeAchieved"
+        />
+      </CONNECT>
+    </FIELD>
+       
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+    
+  </CLUSTER>
+ </CLUSTER>
+  <!-- END, CR00235316 -->
+</PAGE>

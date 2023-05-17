@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMMaritalStatusVerDataRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../build/svr/creole.gen/schema/RuleSet.xsd">
+
+	<Class name="BDMMaritalStatus" extends="ActiveInEditEvidenceRow"
+		extendsRuleSet="PropagatorRuleSet">
+
+		<Attribute name="caseParticipantRoleID">
+			<type>
+				<javaclass name="java.lang.Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="maritalStatus">
+			<type>
+				<codetableentry table="BDMMaritalStatus" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="startDate">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="endDate">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="bdmReceivedFrom">
+			<Annotations />
+			<type>
+				<codetableentry table="BDMReceivedFrom" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="bdmReceivedFromCountry">
+			<Annotations />
+			<type>
+				<codetableentry table="BDMSourceCountry" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="bdmModeOfReceipt">
+			<Annotations />
+			<type>
+				<codetableentry table="BDMModeOfReceipt" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="related_caseParticipantRole">
+			<type>
+				<ruleclass name="CaseParticipantRole"
+					ruleset="CaseEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<reference attribute="caseParticipantRoleRecord">
+					<create ruleclass="CaseParticipantRoleCalculator"
+						ruleset="DynamicEvidenceRuleSet">
+						<reference attribute="caseParticipantRoleID" />
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+
+	</Class>
+
+</RuleSet>

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view a list of version histories          -->
+<!-- for a determination package.                                           -->
+<PAGE
+  PAGE_ID="DecisionAssistAdmin_listPackageVersionsHistory"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="DeterminationPackage"
+    NAME="MENUCONTEXT"
+    OPERATION="viewDeterminationPackageMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationPackageVersionID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="key$key$key$determinationPackageVersionID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00246866, AK -->
+  <SERVER_INTERFACE
+    CLASS="DeterminationPackage"
+    NAME="LIST_PACKAGES"
+    OPERATION="readAllDeterminationPackageVersionsHistoryDetails"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00246866 -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationPackageVersionID"
+    />
+    <TARGET
+      NAME="LIST_PACKAGES"
+      PROPERTY="key$key$key$determinationPackageVersionID"
+    />
+  </CONNECT>
+
+
+  <PAGE_PARAMETER NAME="determinationPackageVersionID"/>
+  <PAGE_PARAMETER NAME="determinationConfigID"/>
+
+
+  <!-- BEGIN, CR00214609, PS -->
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Details"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="DecisionAssistAdmin_viewDeterminationPackage">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.DecisionMatrices"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="DecisionAssistAdmin_listDecisionMatricesForDP">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.VersionHistory"
+      STYLE="in-page-current-link"
+    >
+      <LINK PAGE_ID="DecisionAssistAdmin_listPackageVersionsHistory">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <!-- END, CR00214609 -->
+
+
+  <!-- BEGIN, CR00246866, AK -->
+  <LIST>
+    <!-- BEGIN, CR00214609, PS -->
+    <FIELD
+      LABEL="Field.Label.Version"
+      WIDTH="10"
+    >
+      <!-- END, CR00214609 -->
+      <CONNECT>
+        <SOURCE
+          NAME="LIST_PACKAGES"
+          PROPERTY="determinationPkgVersionNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00214609, PS -->
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="14"
+    >
+      <!-- END, CR00214609 -->
+      <CONNECT>
+        <SOURCE
+          NAME="LIST_PACKAGES"
+          PROPERTY="versionStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.From"
+      WIDTH="16"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="LIST_PACKAGES"
+          PROPERTY="fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.To"
+      WIDTH="16"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="LIST_PACKAGES"
+          PROPERTY="toDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Created"
+      WIDTH="16"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="LIST_PACKAGES"
+          PROPERTY="dateCreated"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.CreatedBy"
+      WIDTH="24"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="LIST_PACKAGES"
+          PROPERTY="createdUserFullName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="LIST_PACKAGES"
+            PROPERTY="createdBy"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <!-- BEGIN, CR00214609, PS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="DecisionAssistAdmin_viewDeterminationPackageVersion">
+        <CONNECT>
+          <SOURCE
+            NAME="LIST_PACKAGES"
+            PROPERTY="result$versionHistoryDtlsList$dtls$determinationPackageVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationConfigID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationConfigID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00214609 -->
+  </LIST>
+  <!-- END, CR00246866 -->
+</PAGE>

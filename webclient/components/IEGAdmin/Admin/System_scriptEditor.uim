@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2008,2017. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description -->
+<!-- =========== -->
+<!-- Page used to launch the IEG Editor to allow an IEG Script Definition -->
+<!-- to be edited.                                                        --> 
+<PAGE PAGE_ID="System_scriptEditor" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+  <JSP_SCRIPTLET>
+    <![CDATA[
+    
+    curam.omega3.request.RequestHandler rh
+       = curam.omega3.request.RequestHandlerFactory
+         .getRequestHandler(request);
+             
+    String schemaName = request.getParameter("schemaName");
+    
+    if (schemaName != null && schemaName.length() > 0) {
+    
+      String scriptID = request.getParameter("scriptID");
+      String name = request.getParameter("name");
+      String scriptType = request.getParameter("scriptType");
+      String scriptVersion = request.getParameter("scriptVersion");
+      String syncToken = curam.util.client.security.CSRFToken.getToken(
+        pageContext.getSession());
+      String __o3rpu = request.getParameter("__o3rpu");
+      StringBuffer flashVars = new StringBuffer();
+      String contextFromRequest = request.getParameter("o3ctx");
+    
+      // scriptID
+      flashVars.append("scriptID")
+               .append("=")
+               .append(curam.omega3.request.RequestUtils.escapeURL(scriptID))
+               .append("&");
+               
+      // scriptType
+      flashVars.append("scriptType")
+               .append("=")
+               .append(curam.omega3.request.RequestUtils.escapeURL(scriptType))
+               .append("&");
+      
+      // scriptVersion
+      flashVars.append("scriptVersion")
+               .append("=")
+               .append(curam.omega3.request.RequestUtils.escapeURL(scriptVersion))
+               .append("&");
+      
+	  // syncToken
+      flashVars.append("syncToken")
+               .append("=")
+               .append(curam.omega3.request.RequestUtils.escapeURL(syncToken))
+               .append("&");
+			   
+      // schemaName
+      flashVars.append("schemaName")
+               .append("=")
+               .append(curam.omega3.request.RequestUtils.escapeURL(schemaName))
+               .append("&");      
+  
+      // locale
+      flashVars.append("locale")
+               .append("=")
+               .append(curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+                         pageContext.getSession()).getLocale().toString())
+               .append("&"); 
+
+		// base text direction
+      flashVars.append("baseTextDir")
+            .append("=")
+            .append(curam.util.client.BidiUtils.getBaseTextDirection().toString())
+            .append("&");
+               
+      // scriptName
+      flashVars.append("name")
+               .append("=")
+               .append(curam.omega3.request.RequestUtils.escapeURL(name))
+               .append("&");
+               
+      // entryURL               
+      StringBuffer entryUri = new StringBuffer(); 
+      if (__o3rpu != null && __o3rpu.trim().length() > 0) {
+               entryUri.append("../");
+               entryUri.append(curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale());
+               entryUri.append("/");
+               entryUri.append(curam.omega3.request.RequestUtils.escapeURL(__o3rpu));
+                      
+               flashVars.append("entryUri")
+                        .append("=")
+                        .append(entryUri);
+      }
+
+      StringBuilder htmlOut = new StringBuilder("<html lang=\"en\"><head>");
+
+      htmlOut.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>");
+      htmlOut.append("<title>IEG Script Editor</title><style>body { margin: 0px; overflow:hidden }</style>");
+      htmlOut.append("<script  type=\"text/javascript\" src=\"../ieg/flex/AC_OETags.js\"></script>");
+      
+      htmlOut.append("<script type=\"text/javascript\">var requiredMajorVersion = 9,requiredMinorVersion = 0,requiredRevision = 0;");
+      htmlOut.append("var noFlashContent = document.createTextNode('Alternate HTML content should be placed here.This content requires the Adobe Flash Player.');");
+      htmlOut.append("var hasRequestedVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);");
+      htmlOut.append(" function displayAlt(hasFlash) { if (!hasFlash) {");
+      htmlOut.append("var editor = document.getElementById('IEG2Editor');");
+      htmlOut.append("var altContent = document.createElement('div'); altContent.appendChild(noFlashContent);");
+      htmlOut.append("var getLink = document.createElement('a'); getLink.href = 'http://www.adobe.com/go/getflash'; getLink.appendChild(document.createTextNode('Get Flash'));"); 
+      htmlOut.append("altContent.appendChild(getLink);console.info(altContent);document.body.insertBefore(altContent, editor);");
+      htmlOut.append("}};");
+      htmlOut.append("function notifyTop() { setTimeout(\"window.parent.dojo.publish('/curam/progress/unload');displayAlt(hasRequestedVersion);\",2000); };");
+      htmlOut.append("</script>");
+      
+      htmlOut.append("<script type=\"text/javascript\" src=\"../CDEJ/jscript/dojotk/dojo/dojo.js\" djConfig=\"parseOnLoad:true\">//script content</script>");
+      htmlOut.append("<script type=\"text/javascript\" src=\"../CDEJ/jscript/dojotk/dijit/dijit.js\">//script content</script>");
+      htmlOut.append("<script type=\"text/javascript\">dojo.registerModulePath('curam', '../../curam');dojo.registerModulePath('cm', '../../cm');");
+      htmlOut.append("</script>");
+      htmlOut.append("<script type=\"text/javascript\" src=\"../CDEJ/jscript/cdej.js\">// script content</script>");
+      htmlOut.append("<script type=\"text/javascript\" src=\"../CDEJ/jscript/cdej-cm.js\">// script content</script>");
+      
+      htmlOut.append("<script type=\"text/javascript\">dojo.require('curam.core-uim');");      
+      htmlOut.append("var sc = new curam.util.ScreenContext();sc.setContext(" + curam.omega3.request.RequestUtils.escapeURL(contextFromRequest) + ");");
+      htmlOut.append("if (sc.hasContextBits('MODAL')) { dojo.require('curam.util.Dialog'); curam.util.Dialog.init();");
+      htmlOut.append("dojo.ready(curam.util.Dialog.pageLoadFinished);dojo.ready(function() {curam.util.Dialog.close();}); }</script>");
+      htmlOut.append("</head><body scroll=\"no\" onload=\"notifyTop();\">");
+
+      // EMBEDDING THE IEG2 EDITOR SWF
+      htmlOut.append("<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" id=\"IEG2Editor\" width=\"100%\" height=\"100%\"");
+      htmlOut.append(" codebase=\"http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab\">");
+      htmlOut.append("<param name=\"movie\" value=\"IEG2Editor.swf\" /><param name=\"quality\" value=\"high\" />");
+      htmlOut.append("<param name=\"wmode\" value=\"opaque\" /><param name=\"bgcolor\" value=\"white\" /><param name=\"allowScriptAccess\" value=\"sameDomain\" />");
+     htmlOut.append("<param name=\"flashVars\" value=\"").append(flashVars).append("\">");
+
+     htmlOut.append("<embed src=\"../ieg/flex/IEG2Editor.swf\" wmode=\"opaque\" quality=\"high\" bgcolor=\"white\"");
+     htmlOut.append(" id=\"IEG2EditorEmbed\" width=\"100%\" height=\"100%\" name=\"IEG2EditorEmbed\" align=\"middle\"");
+     htmlOut.append(" play=\"true\" loop=\"false\" quality=\"high\" allowScriptAccess=\"sameDomain\"");
+     htmlOut.append(" type=\"application/x-shockwave-flash\" pluginspage=\"http://www.adobe.com/go/getflashplayer\"");
+     htmlOut.append(" flashVars=\"").append(flashVars).append("\"></embed></object></body></html>");
+     
+     out.print(htmlOut);
+	}
+    ]]>
+  </JSP_SCRIPTLET>
+</PAGE>

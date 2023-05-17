@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This process allows the user to view security role details.            -->
+<PAGE
+  PAGE_ID="System_viewSecurityRole"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="System"
+    NAME="DISPLAY"
+    OPERATION="readSecurityRole"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="roleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="roleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$roleID"
+    />
+  </CONNECT>
+
+
+  <LIST TITLE="Cluster.Title.Groups">
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_cancelGroupFromSecurityRole"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="roleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="roleID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="listGroupsInRole$securityGroupDetails$groupID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="groupID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="listGroupsInRole$securityGroupDetails$groupName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="groupName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="listGroupsInRole$securityGroupDetails$groupName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="System_viewSecurityGroup">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$listGroupsInRole$securityGroupDetails$groupID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="groupID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Description"
+      WIDTH="65"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="listGroupsInRole$securityGroupDetails$groupDescription"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

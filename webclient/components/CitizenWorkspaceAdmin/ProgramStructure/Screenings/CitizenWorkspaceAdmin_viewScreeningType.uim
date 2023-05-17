@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright 2008, 2012 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="CitizenWorkspaceAdmin_viewScreeningType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="details$name" /> 
+    </CONNECT>
+  </PAGE_TITLE>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL LABEL="ActionControl.Label.ScreeningTypeDetails" STYLE="in-page-current-link">
+      <LINK PAGE_ID="CitizenWorkspaceAdmin_viewScreeningType" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="screeningTypeID" />
+          <TARGET NAME="PAGE" PROPERTY="screeningTypeID" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Programs" STYLE="in-page-link">
+      <LINK PAGE_ID="CitizenWorkspaceAdmin_listProgramItemsForScreening" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="screeningTypeID" />
+          <TARGET NAME="PAGE" PROPERTY="screeningTypeID" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="details$name" />
+          <TARGET NAME="PAGE" PROPERTY="screeningTypeName" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <SERVER_INTERFACE CLASS="CitizenWorkspaceAdmin" NAME="DISPLAY" OPERATION="viewScreeningType" />
+  <PAGE_PARAMETER NAME="screeningTypeID" />
+  <CONNECT>  
+    <SOURCE NAME="PAGE" PROPERTY="screeningTypeID" />
+    <TARGET NAME="DISPLAY" PROPERTY="key$screeningTypeID" />
+  </CONNECT>
+  <CLUSTER NUM_COLS="2"  LABEL_WIDTH="35">
+    <FIELD LABEL="Field.Title.ProgramSelection">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="programSelectionInd" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.Icon">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="icon" />
+      </CONNECT>      
+    </FIELD>
+    <FIELD LABEL="Field.Title.URL">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="url" />
+      </CONNECT>
+      <LINK OPEN_NEW="true" URI_SOURCE_NAME="DISPLAY" URI_SOURCE_PROPERTY="url"/>
+    </FIELD>
+    <FIELD LABEL="Field.Title.AllowRescreening">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="allowRescreeningInd" />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER NUM_COLS="2" TITLE="Cluster.Title.EligibilityDetails" LABEL_WIDTH="35">
+    <FIELD LABEL="Field.Title.EligibilityScript">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="eligibilityScriptName" />
+      </CONNECT>
+      <LINK PAGE_ID="System_scriptEditor">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="screeningScriptID" />
+          <TARGET NAME="PAGE" PROPERTY="scriptID" />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="screeningScriptType" />
+          <TARGET NAME="PAGE" PROPERTY="scriptType" />
+        </CONNECT>
+        <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="screeningScriptVersion" />
+          <TARGET NAME="PAGE" PROPERTY="scriptVersion" />
+        </CONNECT>                    
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="screeningSchemaName" />
+          <TARGET NAME="PAGE" PROPERTY="schemaName" />
+        </CONNECT>
+        <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="eligibilityScriptName" />
+          <TARGET NAME="PAGE" PROPERTY="name" />
+        </CONNECT>                    
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Title.EligibilityRules">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="ruleSetName" />
+      </CONNECT>
+      <LINK PAGE_ID="CreoleAdmin_resolveOpenEditor">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="screeningSnapShotID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="snapShotID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="ruleSetName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="name"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Title.EligibilitySchema">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="screeningSchemaName" />
+      </CONNECT>
+      <LINK PAGE_ID="System_editSchema">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="screeningSchemaName" />
+          <TARGET NAME="PAGE" PROPERTY="schemaName" />
+        </CONNECT>
+      </LINK>
+    </FIELD>   
+  </CLUSTER>
+  <CLUSTER NUM_COLS="2" TITLE="Cluster.Title.FilterDetails" LABEL_WIDTH="35">
+    <FIELD LABEL="Field.Title.FilterScript">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="filterScriptName" />
+      </CONNECT>
+      <LINK PAGE_ID="System_scriptEditor">
+        <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="filterScreeningScriptID" />
+        <TARGET NAME="PAGE" PROPERTY="scriptID" />
+        </CONNECT>
+        <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="filterScreeningScriptType" />
+        <TARGET NAME="PAGE" PROPERTY="scriptType" />
+        </CONNECT>
+        <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="filterScreeningScriptVersion" />
+        <TARGET NAME="PAGE" PROPERTY="scriptVersion" />
+        </CONNECT>                    
+        <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="filterScreeningSchemaName" />
+        <TARGET NAME="PAGE" PROPERTY="schemaName" />
+        </CONNECT>
+        <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="filterScriptName" />
+        <TARGET NAME="PAGE" PROPERTY="name" />
+        </CONNECT>                    
+      </LINK>
+    </FIELD>  
+    <FIELD LABEL="Field.Title.FilterRules">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="filterRuleSetName" />
+      </CONNECT>
+      <LINK PAGE_ID="CreoleAdmin_resolveOpenEditor">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="filterSnapShotID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="snapShotID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="filterRuleSetName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="name"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Title.FilterSchema">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="filterScreeningSchemaName" />
+      </CONNECT>
+      <LINK PAGE_ID="System_editSchema">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="filterScreeningSchemaName" />
+          <TARGET NAME="PAGE" PROPERTY="schemaName" />
+        </CONNECT>
+      </LINK>
+    </FIELD>    
+  </CLUSTER>  
+  <CLUSTER TITLE="Cluster.Title.Description" SHOW_LABELS="false">
+    <CONTAINER>
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="details$description" />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL IMAGE="CALocalizableTextTranslation" LABEL="ActionControl.Label.Translations">
+        <LINK PAGE_ID="LocalizableText_viewLocalizableText" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="details$dtls$descriptionTextID" />
+            <TARGET NAME="PAGE" PROPERTY="localizableTextID" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>  
+  <CLUSTER TITLE="Cluster.Title.AmIEligible" SHOW_LABELS="false">
+    <CONTAINER>
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="amIEligible" />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL IMAGE="CALocalizableTextTranslation" LABEL="ActionControl.Label.Translations">
+        <LINK PAGE_ID="LocalizableText_viewLocalizableText" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="amIEligibleTextID" />
+            <TARGET NAME="PAGE" PROPERTY="localizableTextID" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>
+  <CLUSTER  TITLE="Cluster.Title.HowToApply" SHOW_LABELS="false">
+    <CONTAINER>
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="howToApply" />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL IMAGE="CALocalizableTextTranslation" LABEL="ActionControl.Label.Translations">
+        <LINK PAGE_ID="LocalizableText_viewLocalizableText" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="howToApplyTextID" />
+            <TARGET NAME="PAGE" PROPERTY="localizableTextID" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>  
+</PAGE>

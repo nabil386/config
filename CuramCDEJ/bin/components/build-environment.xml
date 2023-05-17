@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2006,2020. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+Sets the core properties for the build environment. Once imported into another
+script, the following properties can be used:
+
+  dir.jde  - The root directory of the JDE.
+  dir.cdej - The release directory for the CDEJ.
+  dir.sdej - The release directory for the SDEJ.
+  jar.j2ee - The path to the "j2ee.jar" file.
+
+Each of these will be tested for existence and this script will fail if they
+are not set correctly.
+
+In addition, the Ant properties for the tools and libraries installed by the
+development environment installer will be defined.
+
+  dir.devenv - The path to the development environment home directory.
+  ...        - The properties defined in "${dir.devenv}/devenv.properties".
+
+For use by these scripts to locate other scripts and XSLT stylesheets, the
+following property is defined:
+
+  dir.bld.scripts - The location of this script and other related scripts.
+
+-->
+<project name="build.environment">
+
+  <!--
+  Load the environment variable. Certain variables are required and these will
+  be checked below. Other than these values, only JAVA_HOME and ANT_HOME are
+  needed, but if this script is running, then we already have those, so there
+  is no need to check them.
+  -->
+  <property environment="env" />
+
+  <condition property="dir.jde" value="${env.CURAMJDE_ROOT}">
+    <isset property="env.CURAMJDE_ROOT" />
+  </condition>
+
+  <condition property="dir.cdej" value="${env.CURAMCDEJ}">
+    <isset property="env.CURAMCDEJ" />
+  </condition>
+
+  <condition property="dir.sdej" value="${env.CURAMSDEJ}">
+    <isset property="env.CURAMSDEJ" />
+  </condition>
+
+  <condition property="jar.j2ee" value="${env.J2EE_JAR}">
+    <isset property="env.J2EE_JAR" />
+  </condition>
+
+  <condition property="liberty.home" value="${env.WLP_HOME}">
+    <isset property="env.WLP_HOME"/>
+  </condition>
+
+  <path id="liberty.j2ee">
+    <fileset dir="${liberty.home}/lib" includes="*.jar" erroronmissingdir="false"/>
+    <fileset dir="${liberty.home}/dev/api/spec" erroronmissingdir="false">
+      <include name="*.jar"/>
+      <exclude name="com.ibm.ws.javaee.jms.2.0_*.jar"/>
+      <exclude name="com.ibm.ws.javaee.ejb.3.1_*.jar"/>
+      <exclude name="com.ibm.ws.javaee.servlet.3.1_*.jar"/>
+      <exclude name="com.ibm.ws.javaee.annotation.1.2_*.jar"/>
+      <exclude name="com.ibm.ws.javaee.connector.1.6_*.jar"/>
+      <exclude name="com.ibm.ws.javaee.interceptor.1.1_*.jar"/>
+      <exclude name="com.ibm.ws.javaee.transaction.1.1_*.jar"/>
+    </fileset>
+  </path>
+
+  <property name="jar.j2ee" refid="liberty.j2ee"/>
+
+  <condition property="CHECKSTYLE_HOME" value="${env.CHECKSTYLE_HOME}">
+    <isset property="env.CHECKSTYLE_HOME" />
+  </condition>
+
+  <condition property="FINDBUGS_HOME" value="${env.FINDBUGS_HOME}">
+    <isset property="env.FINDBUGS_HOME" />
+  </condition>
+
+  <condition property="JSDOC_TOOLKIT_HOME" value="${env.JSDOC_TOOLKIT_HOME}">
+      <isset property="env.JSDOC_TOOLKIT_HOME" />
+  </condition>
+
+  <condition property="JSCOVERAGE_HOME" value="${env.JSCOVERAGE_HOME}">
+      <isset property="env.JSCOVERAGE_HOME" />
+  </condition>
+
+  <!--
+  The system environment variable takes precedence if set.
+  -->
+  <condition property="dir.devenv" value="${env.DEVENV_HOME}">
+    <isset property="env.DEVENV_HOME" />
+  </condition>
+  <!--
+  The following line will have no effect if the property was
+  already set on the preceding line.
+  -->
+  <property name="dir.devenv" value="${dir.jde}/devenv" />
+
+  <fail message="CURAMCDEJ is not set." unless="dir.cdej" />
+  <fail message="CURAMSDEJ is not set." unless="dir.sdej" />
+  <fail message="J2EE_JAR is not set." unless="jar.j2ee" />
+
+  <available file="${dir.jde}"  property="has.dir.jde" />
+  <available file="${dir.cdej}" property="has.dir.cdej" />
+  <available file="${dir.sdej}" property="has.dir.sdej" />
+
+  <available file="${jar.j2ee}" property="has.jar.j2ee" />
+  <fail message="${jar.j2ee} does not exist.">
+    <condition>
+      <and>
+        <not><isset property="env.WLP_HOME"/></not>
+        <not><isset property="has.jar.j2ee"/></not>
+      </and>
+    </condition>
+  </fail>
+
+  <!--
+  Load the properties for the Development Environment Installer tool-set.
+  -->
+  <property file="${dir.devenv}/devenv.properties"/>
+
+  <!--
+  If running from JDE then set to location in client folder, otherwise assume
+  running on AD stream and set to location in CDEJ.
+  -->
+  <condition property="dir.bld.scripts" value="${dir.jde}/client/CoreInf/CuramCDEJ/bin/components/">
+    <isset property="env.CURAMJDE_ROOT" />
+  </condition>
+  <property name="dir.bld.scripts" value="${dir.cdej}/bin/components/"/>
+
+
+  <property name="ant.build.javac.source" value="1.8"/>
+  <property name="ant.build.javac.target" value="1.8"/>
+
+</project>

@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012, 2016. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- List of identical incoming evidence to be synchronized.                -->
+<PAGE
+  PAGE_ID="ApplicationEvidenceBroker_listIdenticalIncomingEvidenceFromETab"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="applicationID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationEvidence"
+    NAME="DISPLAY"
+    OPERATION="listIdenticalIncomingEvidence"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="applicationID"
+    />
+  </CONNECT>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="InPageNav.Label.Identical"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="EvidenceBroker_listIdenticalIncomingEvidenceFromETab"
+        SAVE_LINK="false"
+      >
+        
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="InPageNav.Label.NonIdentical">
+      <LINK
+        PAGE_ID="ApplicationEvidenceBroker_listNonIdenticalIncomingEvidenceFromETab"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+         <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <ACTION_SET
+    ALIGNMENT="LEFT"
+    BOTTOM="false"
+    TOP="true"
+  >
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.AcceptAll"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="EvidenceBroker_acceptAllIncomingEvidence"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <SEPARATOR/>
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.RejectAll"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="EvidenceBroker_rejectAllIncomingEvidence"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <SEPARATOR/>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.OpenNewTab">
+      <LINK PAGE_ID="EvidenceBroker_listIdenticalIncomingEvidence">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Compare">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="EvidenceBroker_compareIdenticalEvidence"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="evidenceDescriptorID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="evidenceDescriptorID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Accept">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="EvidenceBroker_acceptIncomingEvidence"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="evidenceDescriptorID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="evidenceDescriptorID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reject">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="EvidenceBroker_rejectIncomingEvidence"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="evidenceDescriptorID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="evidenceDescriptorID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="List.Title.EvidenceType"
+      WIDTH="12"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="evidenceType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="List.Title.Participant"
+      WIDTH="12"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="participantName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="List.Title.Description"
+      WIDTH="26"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="summary"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="List.Title.Period"
+      WIDTH="18"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="period"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="List.Title.Event"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="eventType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="List.Title.SourceCase"
+      WIDTH="22"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sourceCase"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2008, 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view a list of bank accounts for both the -->
+<!-- original and duplicate Participants. The page allows a user merge      -->
+<!-- selected duplicate participant bank account records with the original  -->
+<!-- participant                                                            -->
+<PAGE
+  PAGE_ID="Participant_mergeBankAccounts"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ClientMerge"
+    NAME="DISPLAY"
+    OPERATION="listBankAccountsForMerge"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ClientMerge"
+    NAME="ACTION"
+    OPERATION="mergeBankAccounts"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="originalConcernRoleID"/>
+  <PAGE_PARAMETER NAME="duplicateConcernRoleID"/>
+  <PAGE_PARAMETER NAME="concernRoleMergeID"/>
+  <PAGE_PARAMETER NAME="contextDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="originalConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="originalConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="duplicateConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="duplicateConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="originalConcernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="originalConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleMergeID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="concernRoleMergeID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="THIS"/>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <LIST TITLE="List.Title.BankAccounts">
+
+
+    <!-- BEGIN, CR00223827 ,MC -->
+    <DETAILS_ROW>
+
+
+      <INLINE_PAGE PAGE_ID="Participant_viewMergeBankAccount">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="origList$details$dtls$concernRoleBankAccountID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleBankAccountID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+
+
+    </DETAILS_ROW>
+    <!-- END, CR00223827 -->
+
+
+    <!-- BEGIN, CR00359032, GA -->
+    <FIELD
+      LABEL="Field.Label.Primary"
+      WIDTH="14"
+    >
+      <!-- END, CR00359032 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="origList$details$dtls$primaryInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00359032, GA -->
+    <FIELD
+      LABEL="Field.Label.AccountName"
+      WIDTH="21"
+    >
+      <!-- END, CR00359032 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="origList$details$dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00359032, GA -->
+    <FIELD
+      LABEL="Field.Label.AccountType"
+      WIDTH="25"
+    >
+      <!-- END, CR00359032 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="origList$details$dtls$typeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00359032, GA -->
+    <FIELD
+      LABEL="Field.Label.AccountNumber"
+      WIDTH="20"
+    >
+      <!-- END, CR00359032 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="origList$details$dtls$accountNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00359032, GA -->
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <!-- END, CR00359032 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="origList$details$dtls$statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <LIST
+    DESCRIPTION="List.MergeBankAccounts.Description"
+    TITLE="List.Title.MergeBankAccounts"
+  >
+
+
+    <CONTAINER WIDTH="7">
+
+
+      <WIDGET TYPE="MULTISELECT">
+
+
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dupList$details$dtls$concernRoleBankAccountID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+
+
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="mergeTabList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+
+
+      </WIDGET>
+
+
+    </CONTAINER>
+    <!-- BEGIN, CR00223827 ,MC -->
+    <DETAILS_ROW>
+
+
+      <INLINE_PAGE PAGE_ID="Participant_viewMergeBankAccount">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dupList$details$dtls$concernRoleBankAccountID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleBankAccountID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+
+
+    </DETAILS_ROW>
+    <!-- END, CR00223827 -->
+
+
+    <!-- BEGIN, CR00359032, GA -->
+    <FIELD
+      LABEL="Field.Label.Primary"
+      WIDTH="14"
+    >
+      <!-- END, CR00359032 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dupList$details$dtls$primaryInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00359032, GA -->
+    <FIELD
+      LABEL="Field.Label.AccountName"
+      WIDTH="21"
+    >
+      <!-- END, CR00359032 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dupList$details$dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00359032, GA -->
+    <FIELD
+      LABEL="Field.Label.AccountType"
+      WIDTH="25"
+    >
+      <!-- END, CR00359032 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dupList$details$dtls$typeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00359032, GA -->
+    <FIELD
+      LABEL="Field.Label.AccountNumber"
+      WIDTH="20"
+    >
+      <!-- END, CR00359032 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dupList$details$dtls$accountNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00359032, GA -->
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <!-- END, CR00359032 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dupList$details$dtls$statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

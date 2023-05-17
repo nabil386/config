@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PAGE PAGE_ID="BDMOAS_displayEntitlement">
+
+	<PAGE_PARAMETER NAME="determinationID" />
+	<PAGE_PARAMETER NAME="displayDate" />
+
+	<SERVER_INTERFACE CLASS="CaseDetermination"
+		NAME="DISPLAY" OPERATION="viewDecisionDisplayRulesCategoryXML" />
+
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="determinationID" />
+		<TARGET NAME="DISPLAY" PROPERTY="key$determinationID" />
+	</CONNECT>
+	<CONNECT>
+		<SOURCE NAME="PAGE" PROPERTY="displayDate" />
+		<TARGET NAME="DISPLAY" PROPERTY="key$date" />
+	</CONNECT>
+	<CONNECT>
+		<SOURCE NAME="TEXT" PROPERTY="CategoryRef" />
+		<TARGET NAME="DISPLAY" PROPERTY="key$categoryRef" />
+	</CONNECT>
+
+	<CLUSTER NUM_COLS="2">
+		<CLUSTER TITLE="Cluster.Deferral" NUM_COLS="1" LABEL_WIDTH="50">
+			<FIELD LABEL="Field.IsDeferring">
+				<CONNECT>
+					<SOURCE
+						EXTENDED_PATH="/DecisionDetails/BDMOASSummaryCategory/isDeferring"
+						NAME="DISPLAY" PROPERTY="xmlData" />
+				</CONNECT>
+			</FIELD>
+			<FIELD LABEL="Field.ValidDeferral">
+				<CONNECT>
+					<SOURCE
+						EXTENDED_PATH="/DecisionDetails/BDMOASSummaryCategory/sixtyFifthBirthDate"
+						NAME="DISPLAY" PROPERTY="xmlData" />
+				</CONNECT>
+			</FIELD>
+			<FIELD LABEL="Field.EarliestEligibleDate">
+				<CONNECT>
+					<SOURCE
+						EXTENDED_PATH="/DecisionDetails/BDMOASSummaryCategory/isClientDeceased"
+						NAME="DISPLAY" PROPERTY="xmlData" />
+				</CONNECT>
+			</FIELD>
+			<FIELD LABEL="Field.RequestedStartDate">
+				<CONNECT>
+					<SOURCE
+						EXTENDED_PATH="/DecisionDetails/BDMOASSummaryCategory/dateOfDeath"
+						NAME="DISPLAY" PROPERTY="xmlData" />
+				</CONNECT>
+			</FIELD>
+		</CLUSTER>
+		<CLUSTER NUM_COLS="1" TITLE="Cluster.Incarceration" LABEL_WIDTH="50">
+			<FIELD LABEL="Field.IsIncarcerated">
+				<CONNECT>
+					<SOURCE
+						EXTENDED_PATH="/DecisionDetails/BDMOASSummaryCategory/meetsLegalStatusReqOAS"
+						NAME="DISPLAY" PROPERTY="xmlData" />
+				</CONNECT>
+			</FIELD>
+			<FIELD LABEL="Field.IncarcerationOverride">
+				<CONNECT>
+					<SOURCE
+						EXTENDED_PATH="/DecisionDetails/BDMOASSummaryCategory/isApplyingWithinCanada"
+						NAME="DISPLAY" PROPERTY="xmlData" />
+				</CONNECT>
+			</FIELD>
+		</CLUSTER>
+	</CLUSTER>
+
+
+	<CLUSTER NUM_COLS="1" TITLE="Cluster.Residency" WIDTH="50" LABEL_WIDTH="50">
+		<FIELD LABEL="Field.ResidenceReq">
+			<CONNECT>
+				<SOURCE
+					EXTENDED_PATH="/DecisionDetails/BDMOASSummaryCategory/meetsResidenceReqOAS"
+					NAME="DISPLAY" PROPERTY="xmlData" />
+			</CONNECT>
+		</FIELD>
+		<FIELD LABEL="Field.CountryOfResidence">
+			<CONNECT>
+				<SOURCE
+					EXTENDED_PATH="/DecisionDetails/BDMOASSummaryCategory/countryOfResidence"
+					NAME="DISPLAY" PROPERTY="xmlData" />
+			</CONNECT>
+		</FIELD>
+		<FIELD LABEL="Field.IsPortable">
+			<CONNECT>
+				<SOURCE
+					EXTENDED_PATH="/DecisionDetails/BDMOASSummaryCategory/isPortable"
+					NAME="DISPLAY" PROPERTY="xmlData" />
+			</CONNECT>
+		</FIELD>
+	</CLUSTER>
+
+</PAGE>

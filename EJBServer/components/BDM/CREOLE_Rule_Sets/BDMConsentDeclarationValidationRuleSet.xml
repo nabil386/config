@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMConsentDeclarationValidationRuleSet" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">>
+	<Class extends="DefaultEvidenceValidationResult"
+		extendsRuleSet="EvidenceValidationRuleSet" name="ValidationResult">
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="BDMConsentDeclaration"
+					ruleset="BDMConsentDeclarationRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="standardValidations">
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass name="Validation" ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="Validation" ruleset="EvidenceValidationRuleSet" />
+					</listof>
+					<members>
+						<reference attribute="dateSignedWitnessDateSignedValidation" />
+					</members>
+				</fixedlist>
+			</derivation>
+		</Attribute>
+        
+        <Attribute name="dateSignedWitnessDateSignedValidation">
+            <type>
+                <ruleclass name="Validation"
+                    ruleset="EvidenceValidationRuleSet" />
+            </type>
+            <derivation>
+                <create ruleclass="Validation"
+                    ruleset="EvidenceValidationRuleSet">
+                    <reference attribute="dateSignedWitnessDateSignedValidationFailure" />
+                    <reference attribute="dateSignedWitnessDateSignedValidationFailureMessage" />
+                </create>
+            </derivation>
+        </Attribute>
+
+        <Attribute name="dateSignedWitnessDateSignedValidationFailure">
+            <type>
+                <javaclass name="java.lang.Boolean" />
+            </type>
+            <derivation>
+                <all>
+                    <fixedlist>
+                        <listof>
+                            <javaclass name="java.lang.Boolean" />
+                        </listof>
+                        <members>
+                            <equals>
+                                <Code table="BDMSignatureType">
+                                    <String value="SST2" />
+                                </Code>
+                                <reference attribute="signatureType">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </equals>
+                            <not>
+                                <reference attribute="isSigningOnBehalf">
+                                    <reference attribute="evidence" />
+                                </reference>
+                            </not>
+                            <not>
+                                <equals>
+                                    <reference attribute="dateSigned">
+                                        <reference attribute="evidence" />
+                                    </reference>
+                                    <reference attribute="witnessDateSigned">
+                                        <reference attribute="evidence" />
+                                    </reference>
+                                </equals>
+                            </not>
+                        </members>
+                    </fixedlist>
+                </all>
+            </derivation>
+        </Attribute>
+
+        <Attribute name="dateSignedWitnessDateSignedValidationFailureMessage">
+            <type>
+                <javaclass name="curam.creole.value.Message" />
+            </type>
+            <derivation>
+                <ResourceMessage
+                    key="ERR_DATE_SIGNED_NOT_EQUAL_WITNESS_DATE_SIGNED"
+                    resourceBundle="curam.ca.gc.bdm.evidence.BDMConsentDeclarationValidationRuleSet" />
+            </derivation>
+        </Attribute>
+	</Class>
+</RuleSet>

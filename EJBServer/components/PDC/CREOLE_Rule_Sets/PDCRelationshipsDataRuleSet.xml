@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="PDCRelationshipsDataRuleSet">
+  <Class
+    extends="ActiveSuccessionSet"
+    extendsRuleSet="PropagatorRuleSet"
+    name="PDCRelationships"
+  >
+    <Annotations>
+      <SuccessionSetPopulation/>
+    </Annotations>
+    <Attribute name="relationshipType">
+      <Annotations/>
+      <type>
+        <codetableentry table="RelationshipTypeCode"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="endReason">
+      <Annotations/>
+      <type>
+        <codetableentry table="RelationshipEndReason"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="fromDate">
+      <Annotations/>
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="toDate">
+      <Annotations/>
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="DynamicEvidenceSuccessionSet.description"
+          resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules"
+        >
+          <reference attribute="successionID"/>
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="relatedParticipant">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="related_relatedParticipant">
+      <Annotations/>
+      <type>
+        <ruleclass
+          name="CaseParticipantRole"
+          ruleset="CaseEntitiesRuleSet"
+        />
+      </type>
+      <derivation>
+        <reference attribute="caseParticipantRoleRecord">
+          <create
+            ruleclass="CaseParticipantRoleCalculator"
+            ruleset="DynamicEvidenceRuleSet"
+          >
+            <reference attribute="relatedParticipant"/>
+          </create>
+        </reference>
+      </derivation>
+    </Attribute>
+    <Attribute name="participant">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="related_participant">
+      <Annotations/>
+      <type>
+        <ruleclass
+          name="CaseParticipantRole"
+          ruleset="CaseEntitiesRuleSet"
+        />
+      </type>
+      <derivation>
+        <reference attribute="caseParticipantRoleRecord">
+          <create
+            ruleclass="CaseParticipantRoleCalculator"
+            ruleset="DynamicEvidenceRuleSet"
+          >
+            <reference attribute="participant"/>
+          </create>
+        </reference>
+      </derivation>
+    </Attribute>
+  </Class>
+</RuleSet>

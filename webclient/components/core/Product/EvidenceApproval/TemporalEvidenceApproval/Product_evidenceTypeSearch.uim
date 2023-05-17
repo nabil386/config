@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2006-2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This process allows the user to view the list of evidence types that   -->
+<!-- exist in the CASEEVIDENCE codetable                                    -->
+<PAGE
+  PAGE_ID="Product_evidenceTypeSearch"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Product"
+    NAME="DISPLAY"
+    OPERATION="listAllProducts"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="Product"
+    NAME="ACTION"
+    OPERATION="listEvidenceTypesByProductID"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+  <!--BEGIN CR00109753, SK-->
+  <CLUSTER
+    DESCRIPTION="Cluster.Description"
+    LABEL_WIDTH="15"
+    NUM_COLS="1"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <!--END CR00109753, SK-->
+    <FIELD
+      LABEL="Field.Label.Product"
+      USE_BLANK="TRUE"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="productID"
+          NAME="DISPLAY"
+          PROPERTY="nameDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="productID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="Product_evidenceTypeSearch"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST
+    
+    TITLE="List.Title.SearchResults"
+  >
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_createTemporalEvidenceApprovalCheckForPosition"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="typeCodeString"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="evidenceDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Title.EvidenceType"
+      WIDTH="90"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="evidenceDescription"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

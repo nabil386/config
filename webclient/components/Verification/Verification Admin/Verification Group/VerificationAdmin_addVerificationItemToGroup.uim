@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="VerificationAdmin_addVerificationItemToGroup"
+  WINDOW_OPTIONS="width=800"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainVerificationGroup"
+    NAME="DISPLAY"
+    OPERATION="viewVGItemTabDetails"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainVerificationGroup"
+    NAME="ACTION"
+    OPERATION="updateVGItemTabDetails"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainVerificationGroup"
+    NAME="DISPLAYVGITEMS"
+    OPERATION="getAllVerificationItems"
+  />
+
+
+  <PAGE_PARAMETER NAME="verificationGroupID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="verificationGroupID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="vgID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="verificationGroupID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="verificationGroupID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER TITLE="Cluster.Label.ItemDetails">
+    <CLUSTER
+      DESCRIPTION="Field.Statictext.VerificationItem"
+      LABEL_WIDTH="25"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD
+        CONTROL="CHECKBOXED_LIST"
+        HEIGHT="4"
+        LABEL="Field.Label.VerificationItems"
+      >
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="verificationItemID"
+            NAME="DISPLAYVGITEMS"
+            PROPERTY="vIName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="vgItemTabList"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="vgItemTabList"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+</PAGE>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2011, 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011-2012 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view an event.                            -->
+<PAGE
+  PAGE_ID="Events_resolveUserEventsView"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+      
+    curam.omega3.request.RequestHandler 
+      rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+    String context = request.getContextPath() + "/";
+    context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+    
+    // Event must be an user activity
+    String activityID = request.getParameter("activityID");
+    String caseID = request.getParameter("caseID");
+    String isRecurring = request.getParameter("recurringInd");
+    String isReadOnly = request.getParameter("readOnlyInd");
+    String meetingMinutesID = request.getParameter("meetingMinutesID");
+    String url = "";
+		String activityTypeCode = request.getParameter("activityTypeCode");
+    if (activityID == null) {
+       core.ScriptletMissingParamException e = new
+       core.ScriptletMissingParamException(-20002, "activityID");
+       System.out.println(e);
+       throw e;
+    }
+
+    String description = "";      
+    String activityType = "";
+		if(!activityTypeCode.equals("AT4")){
+    // Read the activity description and type      
+    curam.interfaces.ActivityPkg.Activity_readStandardOrganizationActivity_TH
+    th = new curam.interfaces.ActivityPkg.Activity_readStandardOrganizationActivity_TH();
+
+    th.setFieldValue(th.key$maintainActivityKey$activityID_idx,activityID);
+    th.callServer();
+
+    description = th.getFieldValue(th.result$activityContextDescriptionDetails$description_idx);
+    activityType = th.getFieldValue(th.result$organizationStandardActivityDetails$activityTypeCode_idx);
+		
+    if (activityType.equals("AT2")) { // Activity of type Meeting 
+    
+      if (meetingMinutesID == null || meetingMinutesID.equals("0") || meetingMinutesID.equals("")) {
+      // BEGIN, CR00372377, AC
+        // Display Meeting Details page as no meeting minutes have been recorded
+        url = context + "CalendarMeeting_viewMeetingInlinePage.do?activityID=" 
+          + curam.omega3.request.RequestUtils.escapeURL(activityID) + "&amp;description=" + curam.omega3.request.RequestUtils.escapeURL(description);     
+      } else {
+      
+        // Display Meeting Minutes details page
+        url = context + "CalendarMeetingDetails_viewDetailsInlinePage.do?meetingID=" 
+          + curam.omega3.request.RequestUtils.escapeURL(meetingMinutesID) + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) + "&amp;description=" + curam.omega3.request.RequestUtils.escapeURL(description);     
+      }
+    } else {  // Standard Activity
+
+      if (isRecurring.equals("false") &amp;&amp; (isReadOnly.equals("false"))) {
+        url = context + "Activity_viewStandardUserActivityInlinePage.do?activityID=" 
+          + curam.omega3.request.RequestUtils.escapeURL(activityID) + "&amp;description=" +curam.omega3.request.RequestUtils.escapeURL(description);
+
+      } else if (isRecurring.equals("false") &amp;&amp; (isReadOnly.equals("true"))) {
+        url = context + "Activity_viewReadOnlyStandardUserActivityViewOnlyPage.do?activityID=" 
+          + curam.omega3.request.RequestUtils.escapeURL(activityID) + "&amp;description=" +curam.omega3.request.RequestUtils.escapeURL(description);
+
+      } else if (isRecurring.equals("true") &amp;&amp; (isReadOnly.equals("false"))) {
+        url = context + "Activity_viewRecurringUserActivityInlinePage.do?activityID=" 
+          + curam.omega3.request.RequestUtils.escapeURL(activityID) + "&amp;description=" +curam.omega3.request.RequestUtils.escapeURL(description);
+
+      } else if (isRecurring.equals("true") &amp;&amp; (isReadOnly.equals("true"))) {
+        url = context + "Activity_viewReadOnlyRecurringUserActivityViewOnlyPage.do?activityID=" 
+          + curam.omega3.request.RequestUtils.escapeURL(activityID) + "&amp;description=" +curam.omega3.request.RequestUtils.escapeURL(description);
+      }
+       // END, CR00372377         
+    }
+    }
+    
+    if (activityTypeCode.equals("AT4")) {// Holidays
+     curam.interfaces.OrganizationPkg.Organization_readLocationIDByLocationHolidayKey_TH 
+     th = new curam.interfaces.OrganizationPkg.Organization_readLocationIDByLocationHolidayKey_TH();
+     th.setFieldValue(th.key$locationHolidayID_idx, activityID);
+     th.callServer();
+     String locationID = th.getFieldValue(th.result$locationID_idx);
+     
+     curam.interfaces.OrganizationPkg.Organization_readLocationStructureIDForLocationID_TH 
+     thh = new curam.interfaces.OrganizationPkg.Organization_readLocationStructureIDForLocationID_TH();
+     thh.setFieldValue(thh.locationKey$locationID_idx, locationID);
+     thh.callServer();
+     String locationStructureID = thh.getFieldValue(thh.result$locationStructureID_idx);
+     
+     // BEGIN, CR00342927, SS
+     curam.interfaces.OrganizationPkg.Organization_getCurrentUser_TH 
+     th1 = new curam.interfaces.OrganizationPkg.Organization_getCurrentUser_TH();
+     th1.callServer();
+     String userName = th1.getFieldValue(th1.result$userName_idx);
+         
+     url = context +
+     "Organization_viewLocationHolidayForUsersFromListPage.do?locationHolidayID="
+     + curam.omega3.request.RequestUtils.escapeURL(activityID)
+     + "&amp;locationID=" + curam.omega3.request.RequestUtils.escapeURL(locationID)
+     + "&amp;locationStructureID=" + curam.omega3.request.RequestUtils.escapeURL(locationStructureID)
+     + "&amp;userName=" + curam.omega3.request.RequestUtils.escapeURL(userName);
+  	} 
+  	
+  	 
+  	// END, CR00342927
+    url += "&amp;" + rh.getSystemParameters();
+    response.sendRedirect(response.encodeRedirectURL(url));
+  </JSP_SCRIPTLET>
+</PAGE>

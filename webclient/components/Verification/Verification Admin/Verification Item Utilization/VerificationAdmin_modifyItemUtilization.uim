@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2003, 2012, 2015. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2006, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify a Verification Item Utilization record.               -->
+<PAGE PAGE_ID="VerificationAdmin_modifyItemUtilization" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.ModifyItemUtilization"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00348311, SSK -->
+  <SERVER_INTERFACE CLASS="VerificationAdministration" NAME="ACTION" OPERATION="updateVerificationItemUtilization" PHASE="ACTION"/>
+  <!-- END, CR00348311 -->
+
+
+  <SERVER_INTERFACE CLASS="VerificationAdministration" NAME="DISPLAY" OPERATION="readVerificationItemUtilization" PHASE="DISPLAY"/>
+
+
+  <SERVER_INTERFACE CLASS="VerificationAdministration" NAME="DISPLAY2" OPERATION="readAllVerificationItemNames"/>
+
+
+  <PAGE_PARAMETER NAME="verificationItemUtilizationID"/>
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE NAME="ACTION" PROPERTY="result$dtls$dtls$message"/>
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <!-- Map Verification Item Utilization ID to the Display bean for reading record -->
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="verificationItemUtilizationID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$dtls$verificationItemUtilizationID"/>
+  </CONNECT>
+
+
+  <!-- Map verificationItemUtilizationID parameter to modifyVerificationItemUtilization action-phase bean -->
+
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="verifiableDataItemID"/>
+    <TARGET NAME="ACTION" PROPERTY="dtls$dtls$modifyDtls$verifiableDataItemID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="verificationItemUtilizationID"/>
+    <TARGET NAME="ACTION" PROPERTY="dtls$dtls$modifyDtls$verificationItemUtilizationID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="recordStatus"/>
+    <TARGET NAME="ACTION" PROPERTY="dtls$dtls$modifyDtls$recordStatus"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="versionNo"/>
+    <TARGET NAME="ACTION" PROPERTY="dtls$dtls$modifyDtls$versionNo"/>
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT">      
+  </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <!--<CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="verifiableDataItemID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="dtls$dtls$modifyDtls$verifiableDataItemID"
+    />
+  </CONNECT>-->
+
+
+  <!-- BEGIN, CR00348311, SSK -->
+  <CLUSTER LABEL_WIDTH="50" NUM_COLS="2">
+
+
+    <FIELD LABEL="Field.Label.VerificationItem">
+      <CONNECT>
+        <INITIAL HIDDEN_PROPERTY="result$dtls$listDtls$dtls$verificationItemID" NAME="DISPLAY2" PROPERTY="result$dtls$listDtls$dtls$name"/>
+      </CONNECT>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="verificationItemID"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="dtls$dtls$modifyDtls$verificationItemID"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.UsageType">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="usageType"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="usageType"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.FromDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="fromDate"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="fromDate"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.SuppliedByClient">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="clientSupplied"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="clientSupplied"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.AddSecurityID">
+      <CONNECT>
+        <INITIAL NAME="DISPLAY" PROPERTY="addSID"/>
+      </CONNECT>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="addSID"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="addSID"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+    <FIELD LABEL="Field.Label.Level" WIDTH="32">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="verificationLevel"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="verificationLevel"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Todate" USE_DEFAULT="false">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="toDate"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="toDate"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Mandatory">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="mandatory"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="mandatory"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.RemoveSecurityID">
+      <CONNECT>
+        <INITIAL NAME="DISPLAY" PROPERTY="removeSID"/>
+      </CONNECT>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="removeSID"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="removeSID"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR 3140, RK -->
+  <CLUSTER LABEL_WIDTH="50" NUM_COLS="2" TITLE="Cluster.Title.ExpiryDetails">
+    <FIELD LABEL="Field.Label.ExpiryDays" WIDTH="32">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="expiryDays"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="expiryDays"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ExpiryDateFrom">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="expiryDateFrom"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="expiryDateFrom"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.WarningDays" WIDTH="32">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="warningDays"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="warningDays"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ExpiryDateEvent">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="expiryDateEvent"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="expiryDateEvent"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR 3140 -->
+  <!-- END, CR00348311 -->
+
+
+  <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Title.Description">
+    <!-- BEGIN, CR00463142, EC -->
+    <FIELD HEIGHT="4" LABEL="Cluster.Title.Description">
+      <!-- END, CR00463142 -->
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="comments"/>
+      </CONNECT>
+
+
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="comments"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

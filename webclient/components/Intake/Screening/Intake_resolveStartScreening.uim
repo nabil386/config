@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- ====================================================================== -->
+<!-- Copyright 2009-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<!-- This page resolves between the following pages                         -->
+<!-- 1) Confirming starting a new screening page                            -->
+<!-- 2) Resolving screening type page                                       -->
+<!-- 3) Select screening page                                               -->
+<!-- 4) Select category page                                                -->
+<PAGE
+  PAGE_ID="Intake_resolveStartScreening"
+  WINDOW_OPTIONS="width=1200,height=600"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    curam.omega3.request.RequestHandler
+    rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+    
+    String context = request.getContextPath() + "/";
+    String concernRoleID = request.getParameter("concernRoleID");
+    String url = "";
+    
+    if(concernRoleID == null) {
+    core.ScriptletMissingParamException e = new
+    core.ScriptletMissingParamException(-20002, "concernRoleID");
+    throw e;
+    }
+    
+    curam.interfaces.IntakeScreeningPkg.IntakeScreening_resolveStartScreening_TH
+    th = new curam.interfaces.IntakeScreeningPkg.IntakeScreening_resolveStartScreening_TH();
+    
+    th.setFieldValue(th.key$concernRoleID_idx, concernRoleID);
+    th.callServer();
+    
+    
+    String invokeSelectScreeningPage = th.getFieldValue(th.result$invokeSelectScreeningPage_idx);
+    boolean invokeSelectScreeningPageInd = Boolean.valueOf(invokeSelectScreeningPage).booleanValue();
+    
+    String invokeResolveScreeningType = th.getFieldValue(th.result$invokeResolveScreeningType_idx);
+    boolean invokeResolveScreeningTypeInd = Boolean.valueOf(invokeResolveScreeningType).booleanValue();
+     
+    context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+    
+    if(invokeResolveScreeningTypeInd) {
+    
+      url = context + "Intake_resolveScreeningTypePage.do?" + "screeningTypeID=" + curam.omega3.request.RequestUtils.escapeURL(th.getFieldValue(th.result$screeningTypeID_idx));
+      url += "&amp;" + "concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+    
+    } else if(invokeSelectScreeningPageInd) {
+    
+      url = context + "Intake_selectScreeningPage.do?";
+      url += "&amp;" + "concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+      // BEGIN,CR00267865,GG
+    } else {
+    
+      url = context + "Intake_noScreeningDefinedPage.do?";
+    
+    }
+    // END,CR00267865
+    
+    url += "&amp;" + rh.getSystemParameters();
+    response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+</PAGE>

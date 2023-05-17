@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2003, 2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003, 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software Ltd. ("Confidential Information"). You                  -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows a user to view a daily schedule.  -->
+<PAGE
+  PAGE_ID="Organization_viewDailySchedule"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAY"
+    OPERATION="readDailySchedule"
+  />
+
+
+  <PAGE_PARAMETER NAME="scheduleID"/>
+  <PAGE_PARAMETER NAME="locationStructureID"/>
+  <PAGE_PARAMETER NAME="locationID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="scheduleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="dailyScheduleKey$scheduleID"
+    />
+  </CONNECT>
+
+
+  <LIST TITLE="List.Label.Slots">
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <!-- BEGIN, CR00321314, SG -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.AssignPosition">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_createPositionSlotAvailability"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="slotID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="slotID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00321314 -->
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_modifySlotFromList"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtls$slotID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="slotID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtls$name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="LocationStructure"
+        LABEL="ActionControl.Label.Delete"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_cancelSlot"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtls$slotID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="slotID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00357960, SG -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtls$versionNo"
+            />
+            <!-- END, CR00357960 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="scheduleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="scheduleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$description$description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.SlotName"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.SlotStartDate"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$startTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.SlotEndDate"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$endTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.SlotMaxWorkItems"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$maxWorkUnits"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Organization_viewSlot">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dtls$slotID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="slotID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="details$locationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00416277, VT -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+      WIDTH="100"
+    >
+      <!-- END, CR00416277 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="details$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <MENU MODE="NAVIGATION">
+    <ACTION_CONTROL LABEL="Field.Label.Browse">
+      <LINK PAGE_ID="Organization_resolveLocationTree">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+</PAGE>

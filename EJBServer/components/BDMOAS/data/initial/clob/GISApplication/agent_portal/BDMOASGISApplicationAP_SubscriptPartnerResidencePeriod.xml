@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ieg-script
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ieg-schema.xsd"
+	finish-page="CommonIntake_finishInternalIntakeScript"
+	quit-page="CommonIntake_quitInternalIntakeScript" show-sections="true"
+	show-progress-bar="true" validate-save-and-exit="false">
+
+	<identifier id="BDMOASGISApplicationAP"
+		scriptversionnumber="V1" type="Intake" />
+
+	<section>
+		<title id="Section.Title.PartnerResidencePeriod">
+			<![CDATA[Spouse/Common-Law Partner Residence Period]]>
+		</title>
+
+		<loop loop-type="for-each" entity="Person"
+			criteria="isPrimaryParticipant==false">
+			<question-page id="PartnerResidence" entity="Person"
+				progress="0" show-back-button="true" show-exit-button="true"
+				criteria="isPrimaryParticipant==false">
+	
+				<title id="QuestionPage.Title.Residence">
+					<![CDATA[Residence]]>
+				</title>
+	
+				<description
+					id="QuestionPage.Description.MandatoryFields">
+					<![CDATA[All fields marked with * are mandatory.]]>
+				</description>
+	
+				<!-- Residence History Cluster -->
+				<cluster entity="LegalStatus">
+					<question id="isLivedInCAForLast2Yr" mandatory="true">
+						<label id="Question.Label.IsLivedInCanadaForLast2Years">
+							<![CDATA[Has your Spouse or Common-Law Partner lived in Canada for the last two years?]]>
+						</label>
+						<layout>
+							<type>radio</type>
+						</layout>
+					</question>
+				</cluster>
+			</question-page>
+
+			<condition
+				expression="LegalStatus.isLivedInCAForLast2Yr==&quot;YN2&quot;">
+				<loop loop-type="while"
+					loop-expression="hasMoreResidencePeriodToEnter"
+					entity="ResidenceHistory">
+					<question-page id="PartnerResidenceHistory"
+						entity="ResidenceHistory" progress="0" show-back-button="true"
+						show-exit-button="true">
+
+						<title id="QuestionPage.Title.ResidenceHistory">
+								<![CDATA[Residence History]]>
+						</title>
+
+						<description
+							id="QuestionPage.Description.MandatoryFields">
+								<![CDATA[All fields marked with * are mandatory.]]>
+						</description>
+
+						<validation
+							expression="not(isNotNull(ResidenceHistory.residenceHistEndDate) and isNotNull(ResidenceHistory.residenceHistStartDate)) or ValidateEndDateNotEarlierThanStartDate(ResidenceHistory.residenceHistStartDate, ResidenceHistory.residenceHistEndDate)">
+							<message id="Validation.Message.EndDateBeforeStartDate"><![CDATA[End date must be after Start Date.]]></message>
+						</validation>
+
+						<cluster>
+							<title id="Cluster.Title.AddResidenceHistory">
+									<![CDATA[Add Residence History]]>
+							</title>
+
+							<description
+								id="Cluster.Description.AddResidenceHistory">
+									<![CDATA[List all countries, including Canada, where the spouse/ common-law partner has resided in last two years]]>
+							</description>
+
+							<question id="residenceHistCountry">
+								<label id="Question.Label.Country">
+										<![CDATA[Country]]>
+								</label>
+								<layout>
+									<width>70</width>
+								</layout>
+							</question>
+
+							<question id="residenceHistStartDate"
+								show-field-help="true">
+								<label id="Question.Label.StartDate">
+										<![CDATA[Start Date]]>
+								</label>
+								<layout>
+									<type>date-picker</type>
+									<class-names>wds-js-input-mask-yyyy-mm-dd</class-names>
+								</layout>
+								<help-text id="Question.Label.StartDate.Help">
+										<![CDATA[YYYY-MM-DD]]>
+								</help-text>
+							</question>
+
+							<question id="residenceHistEndDate"
+								show-field-help="true">
+								<label id="Question.Label.EndDate">
+										<![CDATA[End Date]]>
+								</label>
+								<layout>
+									<type>date-picker</type>
+									<class-names>wds-js-input-mask-yyyy-mm-dd</class-names>
+								</layout>
+								<help-text id="Question.Label.EndDate.Help">
+										<![CDATA[YYYY-MM-DD]]>
+								</help-text>
+							</question>				
+							
+						</cluster>
+						<cluster>
+							<question id="hasMoreResidencePeriodToEnter"
+								control-question="true" control-question-type="IEG_BOOLEAN">
+								<label id="Question.Label.IsAnyResidencePeriodToEnter">
+													<![CDATA[Is there another residence period to be entered?]]>
+								</label>
+							</question>
+						</cluster>
+					</question-page>
+				</loop>
+
+				<summary-page id="PartnerResidenceHistoryList" entity="Person"
+					progress="0" show-back-button="true" show-exit-button="true"
+					criteria="isPrimaryParticipant==false">
+	
+					<title id="QuestionPage.Title.ResidenceHistoryList">
+									<![CDATA[Residence History]]>
+					</title>
+	
+					<list entity="Person" criteria="isPrimaryParticipant==false">
+						<title id="Cluster.Title.ResidenceHistory">
+							<![CDATA[Residence History]]>
+						</title>
+						<description id="Cluster.Description.ResidenceHistory">
+							<![CDATA[See below the details of the residence periods captured thus far in this form]]>
+						</description>
+						<edit-link start-page="PartnerResidenceHistory"
+							skip-to-summary="true" />
+						<delete-link />
+						<list entity="ResidenceHistory">
+							<column id="residenceHistCountry">
+								<title id="Question.Label.Country">
+									<![CDATA[Country]]>
+								</title>
+							</column>
+							<column id="residenceHistStartDate">
+								<title id="Question.Label.StartDate">
+									<![CDATA[Start Date]]>
+								</title>
+							</column>
+							<column id="residenceHistEndDate">
+								<title id="Question.Label.EndDate">
+									<![CDATA[End Date]]>
+								</title>
+							</column>									
+						</list>
+					</list>
+				</summary-page>
+			</condition>
+		</loop>		
+	</section>
+</ieg-script>

@@ -1,0 +1,203 @@
+<EvidenceTypeVersion modifiable="true"
+	businessStartDate="startDate" businessEndDate="endDate"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../../../../../../DynamicEvidenceMetadata.xsd">
+	<Model>
+		<Attributes>
+			<!-- Participant  -->
+			<Attribute>
+				<RelatedCPAttribute cpRoleType="MEM"
+					name="caseParticipantRole" participantType="Person" mandatory="true">
+					<CPSearchType code="PRI" />
+					<CPSearchType code="MEM" />
+				</RelatedCPAttribute>
+			</Attribute>
+			
+			<!-- Institution -->
+			<Attribute>
+				<RelatedCPAttribute
+					cpRoleType="BDMINST" name="institution" mandatory="true"
+					participantType="ServiceProvider">
+					<CPSearchType code="BDMINST" />
+				</RelatedCPAttribute>
+			</Attribute>
+			
+			<!-- Offender Status -->
+			<Attribute>
+				<DataAttribute mandatory="true" name="offenderStatus">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMOffenderStatus" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			
+			<!-- Offender Identification Number (OID)  -->
+			<Attribute>
+				<DataAttribute name="offenderID" mandatory="true">
+					<DomainType dataType="String">
+						<StringOptions maxSize="30" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			
+			<!-- Release Date reported by Client  -->
+			<Attribute>
+				<DataAttribute name="noticeDate" mandatory="false">
+					<DomainType dataType="Date" />
+				</DataAttribute>
+			</Attribute>
+			
+			<!-- CSC Aliases or Nicknames -->
+			<Attribute>
+				<DataAttribute name="aliases">
+					<DomainType dataType="String">
+						<StringOptions maxSize="300" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			
+			<!-- Admission Date -->
+			<Attribute>
+				<DataAttribute name="startDate" mandatory="true">
+					<DomainType dataType="Date" />
+				</DataAttribute>
+			</Attribute>
+			
+			<!-- CSC Release Date -->
+			<Attribute>
+				<DataAttribute name="endDate">
+					<DomainType dataType="Date" />
+				</DataAttribute>
+			</Attribute>
+			
+			<!-- Comments -->
+			<Attribute>
+				<CommentsAttribute name="comments" />
+			</Attribute>
+		</Attributes>
+		<Relationships />
+	</Model>
+	<Validations>
+	<PatternValidations>
+		<Validator>
+		<ComparisonValidator operator="GreaterThanOrEqualTo" shallow="false" source="endDate" target="startDate" useClause="false" useLiteral="false">
+          <ValidationMessageInformation>
+            <ValidationMessageMapping>
+              <ValidationMessage>
+                <ValidationMessageResource id="ERR_ADMISSION_DATE_CANNOT_BE_AFTER_CSC_RELEASE_DATE"/>
+              </ValidationMessage>
+            </ValidationMessageMapping>
+          </ValidationMessageInformation>
+        </ComparisonValidator>
+		</Validator>
+	</PatternValidations>
+	<CustomRulesValidation
+		ruleSetName="BDMIncarcerationValidationRuleSet" />
+	</Validations>
+	<SummaryInformation>
+		<SummaryMapping>
+			<Summary>
+				<parameter name="offenderStatus" />
+				<SummaryResource id="SummaryMessage" />
+			</Summary>
+		</SummaryMapping>
+	</SummaryInformation>
+	<UserInterface>
+		<Cluster>
+			<!-- Participant  -->
+			<RelCPCluster defaultToBlank="true"
+				enableMultiMemberUpdates="false" fullCreateParticipant="false"
+				isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true"
+				modifyOption="no" showParticipantTypeFilter="true"
+				useSingleName="false" searchOption="multiple">
+				<StandardField source="caseParticipantRole" />
+				<ClusterName id="Related.Participant.Cluster.Title" />
+				<LabelName id="Related.Participant.Name.Label" />
+				<RelCpPfx id="Related.Participant.Description" />
+				<FirstName id="Related.Participant.First.Name.Label" />
+				<SecondName id="Related.Participant.Second.Name.Label" />
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<!-- Institution -->
+			<RelCPCluster defaultToBlank="true"
+				enableMultiMemberUpdates="false" fullCreateParticipant="true"
+				isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true"
+				modifyOption="multiple" showParticipantTypeFilter="true"
+				useSingleName="false" searchOption="Service Supplier">
+				<StandardField source="institution" />
+				<ClusterName id="Related.Institution.Cluster.Title" />
+				<LabelName id="Related.Institution.Name.Label" />
+				<DescriptionName
+					id="Related.Institution.Description" />
+				<FirstName id="Related.Institution.First.Name.Label" />
+				<SecondName id="Related.Institution.Second.Name.Label" />
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true" labelWidth="40"
+				numberOfColumns="2">
+				<Title id="Incarceration.Cluster.Title" />
+				
+				<!-- Offender Identification Number (OID)  -->
+				
+				<StandardClusterField>
+					<StandardField source="offenderID" modifiable="true"
+						useDefault="false" useBlank="true">
+						<Label id="OffenderID.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				
+				<!-- Offender Status -->
+				<StandardClusterField>
+					<StandardField source="offenderStatus"
+						modifiable="true" useDefault="false" useBlank="true">
+						<Label id="OffenderStatus.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				
+				<!-- Release Date reported by Client  -->
+				<StandardClusterField>
+					<StandardField source="noticeDate" modifiable="true"
+						useDefault="false" useBlank="true">
+						<Label id="NoticeDate.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				
+				<!-- CSC Aliases or Nicknames -->
+				<StandardClusterField>
+					<StandardField source="aliases" modifiable="true"
+						useDefault="false" useBlank="true">
+						<Label id="Aliases.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				
+				<!-- Admission Date -->
+				<StandardClusterField>
+					<StandardField source="startDate" modifiable="true"
+						useDefault="false" useBlank="true">
+						<Label id="StartDate.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				
+				<!-- CSC Release Date -->
+				<StandardClusterField>
+					<StandardField source="endDate" modifiable="true"
+						useDefault="false" useBlank="true">
+						<Label id="EndDate.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<!-- Comments -->
+			<CommentsCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true">
+				<Title id="Comments.Cluster.Title" />
+				<StandardField source="comments" />
+			</CommentsCluster>
+		</Cluster>
+	</UserInterface>
+</EvidenceTypeVersion>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<!--
+  This is the ant build file for importing process definitions.
+  It contains any utility tasks used by this purpose.
+-->
+<project name="app_workflowimport" default="listworkflows">
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="${sysenv.CURAMSDEJ}/bin/app_properties.xml" />
+
+  <!--  **************************  -->
+  <!--  ***  Import Utilities  ***  -->
+  <!--  **************************  -->
+  <import file="${sysenv.CURAMSDEJ}/bin/app_utilities.xml" />
+
+  <!--  ***************************************************  -->
+  <!--  ***  Check workflow import file name property   ***  -->
+  <!--  ***************************************************  -->
+  <target name="check.workflow.import.filename.available" unless="workflow.file">
+    <fail message="The property 'workflow.file' must be set. Please use -Dworkflow.file"/>
+  </target>
+
+  <!--  ***************************************************  -->
+  <!--  ***  Check workflow import directory name property   ***  -->
+  <!--  ***************************************************  -->
+  <target name="check.workflow.import.directory.available" unless="workflow.dir">
+    <fail message="The property 'workflow.dir' must be set. Please use -Dworkflow.dir"/>
+  </target>
+
+  <!--  ************************************************************  -->
+  <!--  ***  Check workflow import overwrite indicator property  ***  -->
+  <!--  ************************************************************  -->
+  <target name="check.workflow.import.overwriteInd.available" unless="overwrite.workflow">
+    <condition property="overwrite.workflow" value="true">
+       <istrue value="${overwrite}"/>
+    </condition>
+    <property name="overwrite.workflow" value="false"/>
+  </target>
+
+  <!--  *************************************************  -->
+  <!--  ***  Check  workflow import file environment  ***  -->
+  <!--  *************************************************  -->
+  <target name="check.workflow.file.import.env"
+    depends="check.workflow.import.filename.available, check.workflow.import.overwriteInd.available">
+    <available property="workflow.import.file.exists"
+      file="${workflow.file}" type="file"/>
+    <fail unless="workflow.import.file.exists"
+       message="The process definition file ${workflow.file} specified does not exist."/>
+  </target>
+
+  <!--  ******************************************************  -->
+  <!--  ***  Check  workflow import directory environment  ***  -->
+  <!--  ******************************************************  -->
+  <target name="check.workflow.directory.import.env"
+    depends="check.workflow.import.directory.available, check.workflow.import.overwriteInd.available">
+    <available property="workflow.import.directory.exists"
+      file="${workflow.dir}" type="dir"/>
+    <fail unless="workflow.import.directory.exists"
+       message="The directory file ${workflow.dir} specified does not exist."/>
+  </target>
+
+  <!--  ************************************************  -->
+  <!--  ***  Build workflow file import properties   ***  -->
+  <!--  ************************************************  -->
+  <target name="build.workflow.file.import.properties" depends="check.workflow.file.import.env">
+    <property name="batch.program"
+      value="curam.util.internal.workflow.intf.ProcessDefinitionImportFile.importProcessFromFile"/>
+    <property name="batch.parameters"
+      value="fileName=${workflow.file},overwrite=${overwrite.workflow}"/>
+    <property name="batch.username"  value="superuser"/>
+  </target>
+
+  <!--  *****************************************************  -->
+  <!--  ***  Build workflow directory import properties   ***  -->
+  <!--  *****************************************************  -->
+  <target name="build.workflow.directory.import.properties" depends="check.workflow.directory.import.env">
+    <property name="batch.program"
+      value="curam.util.internal.workflow.intf.ProcessDefinitionImportDirectory.importProcessesFromDir"/>
+    <property name="batch.parameters"
+      value="fileName=${workflow.dir},overwrite=${overwrite.workflow}"/>
+    <property name="batch.username"  value="superuser"/>
+  </target>
+
+  <!--  ************************************  -->
+  <!--  ***  List workflow information   ***  -->
+  <!--  ************************************  -->
+  <target name="listworkflows"
+    depends="check.db.type, run.database.db2, run.database.ora, run.database.zos, run.database.h2,
+             get.decrypted.db.password"
+    description="List of workflows available on the database">
+
+    <echo>List of workflows available on the database</echo>
+
+    <sql
+      driver="${db.driver}"
+      url="${db.url}"
+      userid="${curam.db.username}"
+      password="${decrypted.db.password}"
+      print="yes"
+      onerror="continue">
+      
+      <connectionProperty name="sslConnection" value="${curam.db2.ssl}"/>
+      <classpath>
+        <path refid="database.common.classpath"/>
+      </classpath>
+
+      Select PROCESSID, PROCESSVERSION, PROCESSNAME from PROCESSDEFINITION;
+    </sql>
+  </target>
+
+  <!--  *************************************  -->
+  <!--  ***   Import process definition   ***  -->
+  <!--  *************************************  -->
+  <target name="importworkflow" depends="build.workflow.file.import.properties"
+    description="Import a process definition definition from file to database
+      (specify file to be imported using -Dworkflow.file,
+       and whether to overwrite existing processes using -Doverwrite)">
+
+    <ant
+      antfile="${dir.sde.bin}/app_batchlauncher.xml"
+      target="main"
+      inheritall="false">
+      <property name="batch.program" value="${batch.program}"/>
+      <property name="batch.parameters" value="${batch.parameters}"/>
+      <property name="batch.username" value="${batch.username}"/>
+      <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+      <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+    </ant>
+
+    <echo>The process definition file ${workflow.file} has been imported into the database</echo>
+  </target>
+
+  <!--  *************************************  -->
+  <!--  ***   Import process definition   ***  -->
+  <!--  *************************************  -->
+  <target name="importworkflows" depends="build.workflow.directory.import.properties"
+    description="Import process definitions definition from a directory to the database
+      (specify directory with the files to be imported using -Dworkflow.dir,
+       and whether to overwrite existing processes using -Doverwrite)">
+
+    <ant
+      antfile="${dir.sde.bin}/app_batchlauncher.xml"
+      target="main"
+      inheritall="false">
+      <property name="batch.program" value="${batch.program}"/>
+      <property name="batch.parameters" value="${batch.parameters}"/>
+      <property name="batch.username" value="${batch.username}"/>
+      <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+      <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+    </ant>
+
+    <echo>The process definitions in the directory ${workflow.dir} have been imported into the database</echo>
+  </target>
+
+</project>

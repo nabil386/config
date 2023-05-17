@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description -->
+<!-- =========== -->
+<!--   -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="UIAdminApplication_defaultSearchPage"
+>
+
+
+  <PAGE_PARAMETER NAME="applicationID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationView"
+    NAME="DISPLAY"
+    OPERATION="readSearchDetails"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$applicationID"
+    />
+  </CONNECT>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="Control.Label.Configure">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="UIAdminApplication_modifySearchDetails"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="key$applicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="Control.Label.EditSearchType">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="UIAdminApplication_editSearchType"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="key$applicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="Control.Label.Delete">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="appSearchEnabled"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="UIAdminApplication_deleteSearch"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="key$applicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="20">
+    <FIELD LABEL="Field.Label.DefaultSearchPage">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="defaultSearchPage"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.InitialText">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$initialText"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    LABEL_WIDTH="20"
+    TITLE="Cluster.Title.FurtherOptions"
+  >
+    <FIELD LABEL="Field.Label.FurtherOptionsID">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="furtherOptionsPageID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.FurtherOptionsDescription">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="furtherOptionsDescription"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

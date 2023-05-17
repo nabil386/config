@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- ====================================================================== -->
+<!-- Copyright 2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 						      	                            -->
+<!-- ====================================================================== -->
+<!-- Creates a new PCR Configuration                         		    -->
+<PAGE
+  PAGE_ID="PCRAdmin_newPCRConfiguration"
+  WINDOW_OPTIONS="width=550"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="CREOLERuleSetAdmin"
+    NAME="DISPLAY"
+    OPERATION="listAllPublishedRuleSets"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="PCRAdmin"
+    NAME="CASEDISPLAY"
+    OPERATION="listCaseTypeAndSubType"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="PCRAdmin"
+    NAME="RUNPOINTDISPLAY"
+    OPERATION="listPCRRunPoints"
+  />
+
+
+  <!--BEGIN,CR00267442,ZT-->
+  <SERVER_INTERFACE
+    CLASS="PCRAdmin"
+    NAME="ACTION"
+    OPERATION="createPCRConfiguration1"
+    PHASE="ACTION"
+  />
+  <!--END,CR00267442-->
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    BEHAVIOR="NONE"
+    LABEL_WIDTH="35"
+    NUM_COLS="1"
+  >
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="70"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.StartDate"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.EndDate"
+      USE_BLANK="true"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!--BEGIN,CR00267442,ZT-->
+    <FIELD
+      LABEL="Field.Title.RuleSet"
+      USE_BLANK="true"
+      WIDTH="80"
+    >
+      <!--END,CR00267442-->
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="ruleSetName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.CaseAndSubType"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="identifier"
+          NAME="CASEDISPLAY"
+          PROPERTY="caseTypeAndSubType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="caseConfigurationIdentifier"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.RunInDeferredProcessing">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="runInDeferredProcessing"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.RunManually">
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="runManually"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+    <!-- BEGIN,CR00273422,AM-->
+    <FIELD LABEL="Field.Title.AccessPCRManually">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="assessPCRManually"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+    <!--END,CR00273422,AM-->
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    BEHAVIOR="NONE"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.PCRRunPoints"
+  >
+
+
+    <LIST
+      
+      STYLE="screening-select-list"
+    >
+      <CONTAINER>
+        <WIDGET
+          ALIGNMENT="CENTER"
+          TYPE="MULTISELECT"
+          WIDTH="100"
+          WIDTH_UNITS="PERCENT"
+        >
+
+
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="pcrRunPoints"
+              />
+            </CONNECT>
+
+
+          </WIDGET_PARAMETER>
+
+
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="RUNPOINTDISPLAY"
+                PROPERTY="runPointType"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+
+
+        </WIDGET>
+      </CONTAINER>
+      <FIELD
+        LABEL="Field.Label.Description"
+        WIDTH="90"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="RUNPOINTDISPLAY"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+
+
+  </CLUSTER>
+
+
+</PAGE>

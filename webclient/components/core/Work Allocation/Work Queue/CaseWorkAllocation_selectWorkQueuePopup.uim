@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  IBM Confidential
+
+  OCO Source Materials
+
+  PID 5725-H26
+
+  Copyright IBM Corporation 2008, 2013
+
+  The source code for this program is not published or otherwise divested
+  of its trade secrets, irrespective of what has been deposited with the US Copyright Office -->
+<!-- Copyright  2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information"). You                 -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Popup page allowing the user to select a work queue with reference to a case.                   -->
+<PAGE
+  PAGE_ID="CaseWorkAllocation_selectWorkQueuePopup"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="WorkAllocation"
+    NAME="DISPLAY"
+    OPERATION="listWorkQueue"
+  />
+  <!-- BEGIN, CR00388862, AC-->
+  <SERVER_INTERFACE
+    CLASS="WorkAllocation"
+    NAME="DISPLAY1"
+    OPERATION="isWorkQueueSearchEnabled"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="WorkAllocation"
+    NAME="ACTION"
+    OPERATION="searchWorkQueueList"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00388862-->
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.CloseButton.label"
+      TYPE="DISMISS"
+    >
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- BEGIN, CR00388862, AC-->
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY1"
+        PROPERTY="result$workQueueSearchInd"
+      />
+    </CONDITION>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="WorkAllocation_selectWorkQueuePopup"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.AdministratorFirstName"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="administratorFirstName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <FIELD
+      LABEL="Field.Title.AdministratorLastName"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="administratorLastName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    TITLE="Cluster.Filter.SearchResults"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY1"
+        PROPERTY="result$workQueueSearchInd"
+      />
+    </CONDITION>
+    <LIST>
+      <CONTAINER
+        LABEL="Container.Label.Action"
+        WIDTH="15"
+      >
+        <ACTION_CONTROL
+          LABEL="ActionControl.Label.Select"
+          TYPE="DISMISS"
+        >
+          <LINK>
+            <CONNECT>
+              <SOURCE
+                NAME="ACTION"
+                PROPERTY="dtls$dtls$workQueueID"
+              />
+              <!-- BEGIN, CR00398217, AC-->
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="value"
+              />
+              <!-- END, CR00398217-->
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="ACTION"
+                PROPERTY="dtls$dtls$name"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="description"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </CONTAINER>
+
+
+      <FIELD
+        LABEL="Field.Title.Name"
+        WIDTH="35"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$dtls$name"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Title.Administrator"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="administratorUserName"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Title.UserSubscription"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$dtls$allowUserSubscriptionInd"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+
+
+  </CLUSTER>
+
+
+  <LIST>
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY1"
+        PROPERTY="result$workQueueSearchInd"
+      />
+    </CONDITION>
+    <!-- END, CR00388862-->
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="15"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="workQueueID"
+            />
+            <!-- BEGIN, CR00398217, AC-->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+            <!-- END, CR00398217-->
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Administrator"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="administratorFullName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.UserSubscription"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="allowUserSubscriptionInd"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

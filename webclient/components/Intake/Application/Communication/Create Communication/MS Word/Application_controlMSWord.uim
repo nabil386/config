@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page handles the interaction between Curam and MS Word for a      -->
+<!-- communication using MSWord.                                            -->
+<?curam-deprecated Since Curam 6.0.5, replaced by Application_controlMSWord1.uim?>
+<PAGE
+  PAGE_ID="Application_controlMSWord"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Text"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Communication"
+    NAME="DISPLAY"
+    OPERATION="getWordTemplateDocumentAndData"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Communication"
+    NAME="ACTION"
+    OPERATION="modifyWordDocument"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="communicationID"/>
+  <PAGE_PARAMETER NAME="templateID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="communicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="communicationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="templateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="templateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="communicationID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="communicationID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      DEFAULT="true"
+      TYPE="SUBMIT"
+    />
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER SHOW_LABELS="false">
+    <WIDGET TYPE="FILE_EDIT">
+      <WIDGET_PARAMETER NAME="DOCUMENT">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="document"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="document"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+      <WIDGET_PARAMETER NAME="DETAILS">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="templateData"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+    </WIDGET>
+  </CLUSTER>
+
+
+</PAGE>

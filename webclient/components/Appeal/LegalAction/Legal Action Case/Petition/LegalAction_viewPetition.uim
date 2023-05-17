@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2008, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows users to view petition details                        -->
+<PAGE
+  PAGE_ID="LegalAction_viewPetition"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+
+
+  <SHORTCUT_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="legalActDtls$pageDescription"
+      />
+    </CONNECT>
+  </SHORTCUT_TITLE>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="LegalPetition"
+    NAME="DISPLAY"
+    OPERATION="readPetition"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER NUM_COLS="2">
+    <FIELD LABEL="Field.Label.PetitionNum">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="petitionNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LegalCategory">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="legalCategoryNameCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.FiledDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="filedDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CourtLocation">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="locationName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="legalActDtls$dtls$statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Outcome">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="outcomeCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LegalAction">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="legalActionNameCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="petitionDtls$dtls$creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Judge">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="adjudicateName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00198761, GP -->
+      <LINK PAGE_ID="Appeal_resolveUserHome">
+        <!-- END, CR00198761 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="adjudicateName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="adjudicateConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="legalActDtls$dtls$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!--Closure details-->
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.ClosureDetails"
+  >
+
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="caseClosedInd"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Reason">
+      <CONNECT>
+        <TARGET
+          NAME="DISPLAY"
+          PROPERTY="reasonCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Priority">
+      <CONNECT>
+        <TARGET
+          NAME="DISPLAY"
+          PROPERTY="priority"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+  <CLUSTER
+    LABEL_WIDTH="40"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Narrative"
+  >
+    <FIELD HEIGHT="4">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="narrative"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00177494, PM -->
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00417165, GK -->
+    <FIELD
+      HEIGHT="3"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00417165 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$legalActDtls$dtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00177494 -->
+
+
+</PAGE>

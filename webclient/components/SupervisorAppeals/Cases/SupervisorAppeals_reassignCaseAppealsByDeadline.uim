@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2005, 2022. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2005 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Reads a Task's home page details. -->
+<!-- BEGIN, CR00405639, KRK -->
+<PAGE PAGE_ID="SupervisorAppeals_reassignCaseAppealsByDeadline" WINDOW_OPTIONS="width=1200" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- END, CR00405639 -->
+
+
+  <SERVER_INTERFACE CLASS="MaintainSupervisorAppealCase" NAME="DISPLAY" OPERATION="listSupervisorUsers" PHASE="DISPLAY"/>
+
+
+  <SERVER_INTERFACE CLASS="MaintainSupervisorAppealCase" NAME="ACTION" OPERATION="reassignCaseAppealsByDeadLine" PHASE="ACTION"/>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT">
+        </ACTION_CONTROL>
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel">
+        </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="23">
+    <CONTAINER LABEL="Container.Label.Owner">
+      <FIELD WIDTH="28">
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="organisationObject"/>
+        </CONNECT>
+      </FIELD>
+      <FIELD WIDTH="49">
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="newUserID"/>
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.Autoreassign">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="autoReassign"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <SERVER_INTERFACE CLASS="MaintainSupervisorAppealCase" NAME="DISPLAYAPPEALCASES" OPERATION="listCaseAppealsByDeadLine" PHASE="DISPLAY"/>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+    <TARGET NAME="DISPLAYAPPEALCASES" PROPERTY="key$caseID"/>
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00405639, KRK -->
+  <LIST TITLE="List.Title.Cases">
+
+
+    <CONTAINER ALIGNMENT="CENTER" WIDTH="6">
+      <WIDGET TYPE="MULTISELECT">
+
+
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE NAME="DISPLAYAPPEALCASES" PROPERTY="appealCaseID"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="reassignCaseList"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <CONTAINER LABEL="Container.Label.Appeals" SEPARATOR="Container.Separator" WIDTH="25">
+
+
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="DISPLAYAPPEALCASES" PROPERTY="caseReference"/>
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="DISPLAYAPPEALCASES" PROPERTY="appealCaseType"/>
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.Appelant" WIDTH="18">
+      <CONNECT>
+        <SOURCE NAME="DISPLAYAPPEALCASES" PROPERTY="appelant"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.OwnerType" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAYAPPEALCASES" PROPERTY="orgObjectType"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Owner" WIDTH="18">
+      <CONNECT>
+        <SOURCE NAME="DISPLAYAPPEALCASES" PROPERTY="objectOwnerName"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Deadline" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAYAPPEALCASES" PROPERTY="deadlinedate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAYAPPEALCASES" PROPERTY="status"/>
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00405639 -->
+  </LIST>
+</PAGE>

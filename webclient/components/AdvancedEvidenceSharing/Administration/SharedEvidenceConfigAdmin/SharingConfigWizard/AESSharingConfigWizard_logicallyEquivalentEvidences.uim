@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2017. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE 
+  PAGE_ID="AESSharingConfigWizard_logicallyEquivalentEvidences"
+  WINDOW_OPTIONS="width=1025,height=600"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.Title" />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <PAGE_PARAMETER NAME="wizardStateID" />
+   
+  <SERVER_INTERFACE
+    CLASS="AESSharingConfigWizard"
+    NAME="DISPLAY"
+    OPERATION="readLEEvidencesPage"
+    PHASE="DISPLAY"
+  />
+  
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionString"
+    CLASS="AESSharingConfigWizard"
+    NAME="ACTION"
+    OPERATION="saveLEEvidencesPage"
+    PHASE="ACTION"
+  />  
+  
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="wizardStateID" />
+    <TARGET NAME="DISPLAY" PROPERTY="key$wizardStateID" />
+  </CONNECT>
+     
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="wizardStateID" />
+    <TARGET NAME="ACTION" PROPERTY="wiz$wizardStateID" />
+  </CONNECT>
+  
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+  
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+  
+    <FIELD LABEL="Field.Label.Source">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sourceName"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD
+      LABEL="Field.Label.SourceEvidenceType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="listSourceDetails$listDetails$evidenceTypeCode"
+          NAME="DISPLAY"
+          PROPERTY="listSourceDetails$listDetails$evidenceDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="sourceEvidenceTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.ShareVerifications">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$shareVerificationsOption"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.Target">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="targetName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.TargetEvidenceType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="listTargetDetails$listDetails$evidenceTypeCode"
+          NAME="DISPLAY"
+          PROPERTY="listTargetDetails$listDetails$evidenceDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="targetEvidenceTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.TrustedSource">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$trustedSource"
+        />
+      </CONNECT>
+    </FIELD>
+
+  </CLUSTER>
+
+   <CLUSTER>
+	   <DESCRIPTION>
+	  	<CONNECT>
+	  		<SOURCE
+	  			NAME="TEXT"
+	  			PROPERTY="Cluster.Description.SharingRules"
+	  		/>
+	  	</CONNECT>
+	  </DESCRIPTION>
+ 
+    <WIDGET
+      LABEL="Field.Label.UploadFile"
+      TYPE="FILE_UPLOAD"
+    >
+      <WIDGET_PARAMETER NAME="CONTENT">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="logicESharingRules"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+ 	  <WIDGET_PARAMETER NAME="FILE_NAME">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="logicESharingRulesFileName"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+    </WIDGET>
+
+  </CLUSTER>
+  
+  <CLUSTER
+    SHOW_LABELS="true"
+    STYLE="outer-cluster-borderless"
+  >
+    <LIST TITLE="List.Label.ExistingSharingConfiguration">
+      <FIELD
+        LABEL="Field.Label.SourceEvidenceType"
+        WIDTH="50"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="sourceEvidenceDesc"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.TargetEvidenceType"
+        WIDTH="50"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="targetEvidenceDesc"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+    <ACTION_CONTROL
+      ACTION_ID="Save"
+      IMAGE="SaveAndExitButton"
+      LABEL="ActionControl.Label.SaveAndExit"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        PAGE_ID="AES_listEvidenceSharingConfig"
+        SAVE_LINK="false"
+      >
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ACTION_ID="SaveAndAdd"
+      IMAGE="SaveAndAddButton"
+      LABEL="ActionControl.Label.SaveAndAdd"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        PAGE_ID="AESSharingConfigWizard_logicallyEquivalentEvidences"
+        SAVE_LINK="false"
+      >
+      </LINK>
+    </ACTION_CONTROL>
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+</PAGE>

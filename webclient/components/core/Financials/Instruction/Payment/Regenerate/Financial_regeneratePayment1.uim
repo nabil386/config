@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright  2010-2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information"). You                 -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to regenerate a canceled payament            -->
+<PAGE PAGE_ID="Financial_regeneratePayment1" WINDOW_OPTIONS="width=500" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="Financial" NAME="ACTION" OPERATION="regeneratePaymentForNominee" PHASE="ACTION"/>
+
+
+  <PAGE_PARAMETER NAME="finInstructionID"/>
+  <PAGE_PARAMETER NAME="effectiveDate"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <!-- BEGIN, CR00292632, SG -->
+  <SERVER_INTERFACE CLASS="Case" NAME="DISPLAY" OPERATION="listCaseNominees"/>
+  <!-- END, CR00292632 -->
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="finInstructionID"/>
+
+
+    <!-- BEGIN, CR00292632, SG -->
+    <TARGET NAME="DISPLAY" PROPERTY="financialInstructionID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="caseID"/>
+  </CONNECT>
+  <!-- END, CR00292632 -->
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="finInstructionID"/>
+    <TARGET NAME="ACTION" PROPERTY="finInstructionID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="defaultNomineeOnlyInd"/>
+    <TARGET NAME="ACTION" PROPERTY="originalNomineeInd"/>
+  </CONNECT>
+
+
+  <CLUSTER SHOW_LABELS="false" STYLE="outer-cluster-borderless">
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="defaultNomineeOnlyInd"/>
+    </CONDITION>
+    <FIELD>
+      <CONNECT>
+        <SOURCE NAME="TEXT" PROPERTY="Field.StaticText.ReissuePayment"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER LABEL_WIDTH="45" NUM_COLS="1">
+    <CONDITION>
+      <IS_FALSE NAME="DISPLAY" PROPERTY="defaultNomineeOnlyInd"/>
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Regenerate">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="originalNomineeInd"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="ActionControl.Label.ChangeNominee" USE_BLANK="true" WIDTH="100">
+      <CONNECT>
+        <!-- BEGIN, CR00314367, SG -->
+        <INITIAL HIDDEN_PROPERTY="caseNomineeDetailsList$caseNomineeConcernRoleIDOpt" NAME="DISPLAY" PROPERTY="concernRoleName"/>
+        <!-- END, CR00314367 -->
+      </CONNECT>
+      <CONNECT>
+        <!-- BEGIN, CR00314367, SG -->
+        <TARGET NAME="ACTION" PROPERTY="caseNomineeConcernRoleIDOpt"/>
+        <!-- END, CR00314367 -->
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+
+
+    <ACTION_CONTROL IMAGE="YesButton" LABEL="ActionControl.Label.Reissue" TYPE="SUBMIT"/>
+    <ACTION_CONTROL IMAGE="NoButton" LABEL="ActionControl.Label.Cancel"/>
+
+
+  </ACTION_SET>
+
+
+</PAGE>

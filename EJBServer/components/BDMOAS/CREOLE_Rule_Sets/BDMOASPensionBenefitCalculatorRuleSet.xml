@@ -1,0 +1,54 @@
+<RuleSet name="BDMOASPensionBenefitCalculatorRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class name="BDMPensionOASBenefitCalculator"
+		extends="BDMOASAbstractBenefitCalculator"
+		extendsRuleSet="BDMOASBenefitCalculatorRuleSet">
+		<Attribute name="benefitType">
+			<type>
+				<codetableentry table="BDMOASBenefitType" />
+			</type>
+			<derivation>
+				<Code table="BDMOASBenefitType">
+					<String value="BT1" />
+				</Code>
+			</derivation>
+		</Attribute>
+		<Attribute name="eligibilityCalculator">
+			<type>
+				<ruleclass name="BDMOASPensionEligibilityCalculator"
+					ruleset="BDMOASPensionEligibilityCalculatorRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="BDMOASPensionEligibilityCalculator"
+					ruleset="BDMOASPensionEligibilityCalculatorRuleSet">
+					<reference attribute="caseParticipantRoleID" />
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="entitlementCalculator">
+			<type>
+				<ruleclass name="BDMOASPensionEntitlementCalculator"
+					ruleset="BDMOASPensionEntitlementCalculatorRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="BDMOASPensionEntitlementCalculator"
+					ruleset="BDMOASPensionEntitlementCalculatorRuleSet">
+					<reference attribute="caseParticipantRoleID" />
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="isSuspendedTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<false />
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMOASEligibilityEntitlementRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class name="BDMOASDeterminationContext">
+		<Initialization>
+			<Attribute name="caseID">
+				<type>
+					<javaclass name="Number" />
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="caseData">
+			<type>
+				<ruleclass name="BDMOASCaseData"
+					ruleset="BDMOASDataRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="BDMOASCaseData"
+					ruleset="BDMOASDataRuleSet">
+					<reference attribute="caseID" />
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="determinationTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<true />
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="primaryCaseParticipantRoleID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<reference attribute="caseParticipantRoleID">
+					<reference attribute="primaryCaseParticipantRoleRecord">
+						<reference attribute="caseData" />
+					</reference>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="benefitTypeList">
+			<type>
+				<javaclass name="List">
+					<codetableentry table="BDMOASBenefitType" />
+				</javaclass>
+			</type>
+			<derivation>
+				<removeduplicates>
+					<dynamiclist>
+						<list>
+							<reference attribute="applicationDetailsRecordList">
+								<create ruleclass="BDMOASCaseParticipantData"
+									ruleset="BDMOASDataRuleSet">
+									<reference attribute="primaryCaseParticipantRoleID" />
+								</create>
+							</reference>
+						</list>
+						<listitemexpression>
+							<reference attribute="benefitType">
+								<current />
+							</reference>
+						</listitemexpression>
+					</dynamiclist>
+				</removeduplicates>
+			</derivation>
+		</Attribute>
+		<Attribute name="oasPensionBenefitCalculator">
+			<type>
+				<ruleclass name="BDMPensionOASBenefitCalculator"
+					ruleset="BDMOASPensionBenefitCalculatorRuleSet" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<ruleclass name="BDMPensionOASBenefitCalculator"
+							ruleset="BDMOASPensionBenefitCalculatorRuleSet" />
+					</type>
+					<when>
+						<condition>
+							<property name="contains">
+								<object>
+									<reference attribute="benefitTypeList" />
+								</object>
+								<arguments>
+									<Code table="BDMOASBenefitType">
+										<String value="BT1" />
+									</Code>
+								</arguments>
+							</property>
+						</condition>
+						<value>
+							<create ruleclass="BDMPensionOASBenefitCalculator"
+								ruleset="BDMOASPensionBenefitCalculatorRuleSet">
+								<reference attribute="primaryCaseParticipantRoleID" />
+							</create>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<null />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="benefitCalculatorList">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="BDMOASAbstractBenefitCalculator"
+						ruleset="BDMOASBenefitCalculatorRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<dynamiclist>
+					<list>
+						<reference attribute="benefitTypeList" />
+					</list>
+					<listitemexpression>
+						<choose>
+							<type>
+								<ruleclass name="BDMOASAbstractBenefitCalculator"
+									ruleset="BDMOASBenefitCalculatorRuleSet" />
+							</type>
+							<test>
+								<current />
+							</test>
+							<when>
+								<condition>
+									<Code table="BDMOASBenefitType">
+										<String value="BT1" />
+									</Code>
+								</condition>
+								<value>
+									<reference attribute="oasPensionBenefitCalculator" />
+								</value>
+							</when>
+							<otherwise>
+								<value>
+									<null />
+								</value>
+							</otherwise>
+						</choose>
+					</listitemexpression>
+				</dynamiclist>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class name="BDMOASCase" extends="DefaultCase"
+		extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet">
+		<Attribute name="determinationContext">
+			<type>
+				<ruleclass name="BDMOASDeterminationContext" />
+			</type>
+			<derivation>
+				<create ruleclass="BDMOASDeterminationContext">
+					<reference attribute="integratedCaseID">
+						<reference attribute="caseHeader">
+							<reference attribute="productDeliveryCase" />
+						</reference>
+					</reference>
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="isEligibleTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<dynamiclist>
+							<list>
+								<reference attribute="benefitCalculatorList">
+									<reference attribute="determinationContext" />
+								</reference>
+							</list>
+							<listitemexpression>
+								<intervalvalue>
+									<reference attribute="isEligibleTimeline">
+										<reference attribute="eligibilityCalculator">
+											<current />
+										</reference>
+									</reference>
+								</intervalvalue>
+							</listitemexpression>
+						</dynamiclist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="entitlementAmountTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<sum>
+						<dynamiclist>
+							<list>
+								<reference attribute="benefitCalculatorList">
+									<reference attribute="determinationContext" />
+								</reference>
+							</list>
+							<listitemexpression>
+								<intervalvalue>
+									<reference attribute="entitlementAmountTimeline">
+										<reference attribute="entitlementCalculator">
+											<current />
+										</reference>
+									</reference>
+								</intervalvalue>
+							</listitemexpression>
+						</dynamiclist>
+					</sum>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="objectiveTimelines">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="AbstractObjectiveTimeline"
+						ruleset="ProductEligibilityEntitlementRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<filter>
+					<list>
+						<dynamiclist>
+							<list>
+								<reference attribute="benefitCalculatorList">
+									<reference attribute="determinationContext" />
+								</reference>
+							</list>
+							<listitemexpression>
+								<choose>
+									<type>
+										<ruleclass name="AbstractObjectiveTimeline"
+											ruleset="ProductEligibilityEntitlementRuleSet" />
+									</type>
+									<when>
+										<condition>
+											<not>
+												<equals>
+													<timelineoperation>
+														<Number value="0" />
+													</timelineoperation>
+													<reference attribute="issuanceAmountTimeline">
+														<current />
+													</reference>
+												</equals>
+											</not>
+										</condition>
+										<value>
+											<create ruleclass="BDMOASObjectiveTimeline"
+												ruleset="BDMOASProductRuleSet">
+												<specify attribute="concernRoleID">
+													<reference attribute="concernRoleID">
+														<reference attribute="participantRole">
+															<reference
+																attribute="primaryCaseParticipantRoleRecord">
+																<reference attribute="caseData">
+																	<reference attribute="determinationContext" />
+																</reference>
+															</reference>
+														</reference>
+													</reference>
+												</specify>
+												<specify attribute="objectiveType">
+													<choose>
+														<type>
+															<ruleclass name="BDMOASAbstractObjectiveType"
+																ruleset="BDMOASProductRuleSet" />
+														</type>
+														<test>
+															<reference attribute="benefitType">
+																<current />
+															</reference>
+														</test>
+														<when>
+															<condition>
+																<Code table="BDMOASBenefitType">
+																	<String value="BT1" />
+																</Code>
+															</condition>
+															<value>
+																<create ruleclass="OASPensionObjectiveType"
+																	ruleset="BDMOASProductRuleSet" />
+															</value>
+														</when>
+														<otherwise>
+															<value>
+																<null />
+															</value>
+														</otherwise>
+													</choose>
+												</specify>
+												<specify attribute="valueTimeline">
+													<reference attribute="issuanceAmountTimeline">
+														<current />
+													</reference>
+												</specify>
+											</create>
+										</value>
+									</when>
+									<otherwise>
+										<value>
+											<null />
+										</value>
+									</otherwise>
+								</choose>
+							</listitemexpression>
+						</dynamiclist>
+					</list>
+					<listitemexpression>
+						<not>
+							<equals>
+								<null />
+								<current />
+							</equals>
+						</not>
+					</listitemexpression>
+				</filter>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

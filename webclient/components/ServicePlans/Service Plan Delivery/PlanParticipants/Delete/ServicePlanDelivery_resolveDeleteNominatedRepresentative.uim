@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This script redirects the user from a Nominated Representative list    -->
+<!-- page to delete Nominated Representative page with required parameters. -->
+<PAGE
+    PAGE_ID="ServicePlanDelivery_resolveDeleteNominatedRepresentative"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+    >
+    <JSP_SCRIPTLET>
+        
+        
+        curam.omega3.request.RequestHandler rh 
+        = curam
+        .omega3
+        .request
+        .RequestHandlerFactory
+        .getRequestHandler(request);
+        
+        String context = request.getContextPath() + "/";
+        context += curam.omega3.user.UserPreferencesFactory.getUserPreferences
+        (pageContext.getSession()).getLocale() + "/";
+        
+        String caseParticipantRoleID = request.getParameter("caseParticipantRoleID");
+        
+        String url = "";
+        String versionNo = "";
+        
+        curam.interfaces.ServicePlanDeliveryPkg.ServicePlanDelivery_readNominatedRepresentativeDetails_TH
+        th = new curam.interfaces.ServicePlanDeliveryPkg.ServicePlanDelivery_readNominatedRepresentativeDetails_TH();
+        
+        th.setFieldValue(th.key$caseParticipantRoleKey$caseParticipantRoleKey$caseParticipantRoleID_idx, caseParticipantRoleID);
+        
+        th.callServer();
+        
+        versionNo=th.getFieldValue(th.result$servicePlanparticipantDetails$servicePlanParticipantDetails$versionNo_idx);
+        
+        if (null == caseParticipantRoleID) {
+        
+        core.ScriptletMissingParamException e = new
+        core.ScriptletMissingParamException(-20002, "caseParticipantRoleID");
+        System.out.println(e);
+        throw e;
+     
+        
+        }
+
+        url = context 
+        + "ServicePlanDelivery_deleteNominatedRepresentativePage.do?caseParticipantRoleID=" 
+        + curam.omega3.request.RequestUtils.escapeURL(caseParticipantRoleID)+"&amp;versionNo=" +curam.omega3.request.RequestUtils.escapeURL(versionNo);
+   
+      
+        url += "&amp;" + rh.getSystemParameters();
+      
+        response.sendRedirect(response.encodeRedirectURL(url));
+        
+        
+    </JSP_SCRIPTLET>
+</PAGE>

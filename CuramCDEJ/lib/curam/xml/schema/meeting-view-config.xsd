@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="SCHEDULE_CONFIG">
+    <xs:annotation>
+      <xs:documentation>Root element for meeting view configuration settings.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="CONFIG" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CONFIG">
+    <xs:annotation>
+      <xs:documentation>Configuration for a meeting view. TYPE attribute identifies particular view. INTERVAL attribute must be 15, 30 or 60. START and END attributes are start and end times for time line and must be in hh:mm format.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="USER_HOME"/>
+        <xs:element ref="NEW_EVENT"/>
+        <xs:element ref="MULTI_SELECT"/>
+      </xs:sequence>
+      <xs:attribute name="TYPE" type="xs:string" use="required"/>
+      <xs:attribute name="INTERVAL" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="15"/>
+            <xs:enumeration value="30"/>
+            <xs:enumeration value="60"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="START" type="xs:string" use="required"/>
+      <xs:attribute name="END" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MULTI_SELECT">
+    <xs:annotation>
+      <xs:documentation>Multi-select settings. PAGE attribute identifies page to submit multiselect form to. TAB_STRING_PARAM attribute is the name of the tab-delimited string parameter to submit selected elements users.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="PAGE" type="xs:string" use="required"/>
+      <xs:attribute name="TAB_STRING_PARAM" type="xs:string" use="required"/>
+      <xs:attribute name="DATE_PARAM" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NEW_EVENT">
+    <xs:annotation>
+      <xs:documentation>New event page link settings. PAGE attribute identifies page to link to. ID_PARAM attribute is the name of the ID parameter to pass user id as. START_PARAM is the name of the start time parameter. END_PARAM is the name of the end time parameter.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="PAGE" type="xs:string" use="required"/>
+      <xs:attribute name="ID_PARAM" type="xs:string" use="required"/>
+      <xs:attribute name="START_PARAM" type="xs:string" use="required"/>
+      <xs:attribute name="END_PARAM" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="USER_HOME">
+    <xs:annotation>
+      <xs:documentation>User home page link settings. PAGE attribute identifies page to link user home to. ID_PARAM attribute is the name of the ID parameter to pass user id to home page. NEW_WINDOW attribute is true to open home page in new page, otherwise false.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="PAGE" type="xs:string" use="required"/>
+      <xs:attribute name="ID_PARAM" type="xs:string" use="required"/>
+      <xs:attribute name="NEW_WINDOW" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

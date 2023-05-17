@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information"). You                 -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Lists all of the work queues that the currently logged in user and     -->
+<!-- his org objects are subscribed to.                                     -->
+<PAGE
+  PAGE_ID="Inbox_viewWorkQueueList"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+  <!-- BEGIN, CR00226437, LP -->
+  <SERVER_INTERFACE
+    CLASS="Inbox"
+    NAME="DISPLAY"
+    OPERATION="searchWorkQueues"
+  />
+  <!-- END, CR00226437 -->
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    BOTTOM="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="SubscribeButton"
+      LABEL="ActionControl.SubscribeButton.label"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Inbox_subscribeUserToWorkQueue"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="userFullName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00161962, KY -->
+  <LIST>
+    <!-- END, CR00161962 -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.View">
+        <LINK PAGE_ID="Inbox_listAvailableWorkQueueTasks">
+          <CONNECT>
+            <!-- BEGIN, CR00161962, KY -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtlsList$workQueueID"
+            />
+            <!-- END, CR00161962 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="workQueueID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtlsList$workQueueName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="queueName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.reservenexttask">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Inbox_reserveWorkQueueTask"
+        >
+          <CONNECT>
+            <!-- BEGIN, CR00161962, KY -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtlsList$workQueueID"
+            />
+            <!-- END, CR00161962 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="workQueueID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00161962, KY -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtlsList$workQueueName"
+            />
+            <!-- END, CR00161962 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userFullName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.UnSubscribe">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Inbox_unsubscribeUserFromWorkQueue"
+        >
+          <CONNECT>
+            <!-- BEGIN, CR00161962, KY -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtlsList$workQueueID"
+            />
+            <!-- END, CR00161962 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="workQueueID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00161962, KY -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtlsList$workQueueName"
+            />
+            <!-- END, CR00161962 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <!-- BEGIN, CR00161962, KY -->
+    <FIELD LABEL="Field.Title.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtlsList$workQueueName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.SubscriptionDate"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtlsList$subscriptionDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

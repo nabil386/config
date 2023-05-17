@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009-2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Evidence infrastructure view page to be included in the client page    -->
+<!-- for applying evidence changes                                          -->
+<!-- BEGIN, CR00238748, GD -->
+<?curam-deprecated Since Curam 6.0, replaced by Incident_listIncidentsForDuplicateParticipant1.uim?>
+<!-- END, CR00238748 -->
+<PAGE
+  PAGE_ID="Incident_listIncidentsForDuplicateParticipant"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="pageDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Incidents"
+    NAME="DISPLAY"
+    OPERATION="listIncidentsForDuplicateParticipant"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="tab-renderer"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="data"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <LIST>
+
+
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+        <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+          <!-- BEGIN, CR00170281, MR -->
+          <LINK
+            OPEN_MODAL="TRUE"
+            PAGE_ID="Incident_modifyIncident"
+          >
+            <!-- END, CR00170281  -->
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="incidentID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="incidentID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+
+
+      <FIELD
+        LABEL="List.Title.Type"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="type"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="List.Title.RecordedDate"
+        WIDTH="10"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="recordedDate"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="List.Title.ReportedBy"
+        WIDTH="10"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="reportedBy"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="List.Title.Severity"
+        WIDTH="10"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="severity"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="List.Title.ClosureDate"
+        WIDTH="10"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="closureDate"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="List.Title.CaseReference"
+        WIDTH="10"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="caseReference"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="List.Title.Status"
+        WIDTH="10"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="status"
+          />
+        </CONNECT>
+      </FIELD>
+      <DETAILS_ROW>
+        <INLINE_PAGE PAGE_ID="Incident_viewIncident">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="incidentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="incidentID"
+            />
+          </CONNECT>
+        </INLINE_PAGE>
+      </DETAILS_ROW>
+    </LIST>
+  </CLUSTER>
+
+
+</PAGE>

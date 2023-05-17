@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Page to list service plan deliveries for an integrated case.           -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_ListICs"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- BEGIN, CR00247794, PM -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- END, CR00247794 -->  
+    
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY"
+    OPERATION="listByICCase"
+    PHASE="DISPLAY"
+  />
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$servicePlanIntegratedCaseKey$servicePlanIntegratedCaseKey$caseID"
+    />
+  </CONNECT>
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="result$infodtls$dtls$informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <ACTION_SET
+    ALIGNMENT="LEFT"
+    BOTTOM="false"
+    TOP="true"
+  >
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+    
+    <!-- BEGIN, CR00247294, PM -->
+    <LINK
+      OPEN_MODAL="true"
+      PAGE_ID="ServicePlanDelivery_ICCreateNoTabs"
+    >
+    <!-- END, CR00247294 -->
+    
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+        
+   <!-- BEGIN, CR00247794, PM -->
+    <ACTION_CONTROL
+       IMAGE="NewButton"
+       LABEL="ActionControl.Label.IntegratedServicePlan"
+     >
+      <LINK PAGE_ID="IntegratedServicePlan_homeActiveOnly">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+     </ACTION_CONTROL>
+    <!-- END, CR00247794 -->    
+  </ACTION_SET>
+  
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="result$listServicePlanForIC$dtls$goalInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ServicePlanDelivery_modifyDetails"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$listServicePlanForIC$dtls$caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD
+      LABEL="Field.Title.ReferenceNumber"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseReference"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="ServicePlanDelivery_home1">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$listServicePlanForIC$dtls$caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+        
+    <!-- BEGIN, CR00247794, PM -->       
+    <FIELD
+      LABEL="Field.Title.Type"
+      WIDTH="20"
+      >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="servicePlanType"
+        />
+     </CONNECT>
+    </FIELD>
+   <!-- END, CR00247794 --> 
+    
+   <!-- BEGIN, CR00247794, PM -->
+    <FIELD
+      LABEL="Field.Title.Member"
+      WIDTH="20"
+    >
+   <!-- END, CR00247794 -->
+   
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="memberName"
+        />
+      </CONNECT>
+      
+      <!-- BEGIN, CR00247294, PM -->
+      <LINK PAGE_ID="ServicePlanDelivery_resolvePersonHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="caseParticipantRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseParticipantRoleID"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00247294 -->
+    </FIELD>
+
+    <!-- BEGIN, CR00247794, PM -->
+    <FIELD
+      LABEL="Field.Title.Goal"
+      WIDTH="23"
+    >
+    <!-- END, CR00247794 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+  
+    <FIELD
+      LABEL="Field.Title.DateCreated"
+      WIDTH="12"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="registrationDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00247294, PM -->
+    <FIELD
+       LABEL="Field.Title.Status"
+       WIDTH="10"
+    >
+      <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="statusCode"
+      />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00247294 -->
+  </LIST>
+</PAGE>

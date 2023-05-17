@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- Copyright (c) 2007-2008, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Evidence infrastructure view page to be included in the client page    -->
+<!-- for listing in edit and pending removal case evidence                  -->
+<PAGE
+  PAGE_ID="Evidence_workspaceInEdit"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="participantID"/>
+  <PAGE_PARAMETER NAME="evidenceType"/>
+  <SERVER_INTERFACE
+    CLASS="Evidence"
+    NAME="DISPLAY"
+    OPERATION="listAllForInEditWorkspace"
+  />
+  <SERVER_INTERFACE
+    CLASS="Evidence"
+    NAME="ACTION"
+    OPERATION="getEvidenceTypeAndParticipantID"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseIDKey$caseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="participantID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$participantKey$key$participantID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="evidenceType"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$evidenceType"
+    />
+  </CONNECT>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+ 
+    <INCLUDE FILE_NAME="Evidence_workspaceInEditLinks.vim"/>
+    <CLUSTER
+      NUM_COLS="3"
+      SHOW_LABELS="false"
+      STYLE="cluster-cpr-no-border"
+    >
+      <CLUSTER
+        SHOW_LABELS="true"
+        STYLE="cluster-cpr-no-border"
+      >
+        <FIELD
+          LABEL="Field.Label.Participant"
+          USE_BLANK="false"
+          USE_DEFAULT="false"
+        >
+          <CONNECT>
+            <INITIAL
+              HIDDEN_PROPERTY="participantIDNameDetailsList$dtls$participantID"
+              NAME="DISPLAY"
+              PROPERTY="participantIDNameDetailsList$dtls$participantName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$filteredParticipantID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="key$participantID"
+            />
+          </CONNECT>
+          <SCRIPT
+            ACTION="enactHiddenActionControl_onChange()"
+            EVENT="ONCHANGE"
+            SCRIPT_FILE="evidenceTypeWorkspace.js"
+          />
+        </FIELD>
+      </CLUSTER>
+      <CONTAINER
+        ALIGNMENT="LEFT"
+        STYLE="inner-span-action-control-visibility-hidden"
+      >
+        <ACTION_CONTROL
+          IMAGE="ListButton"
+          LABEL="ActionControl.Label.List"
+          TYPE="SUBMIT"
+        >
+          <LINK PAGE_ID="this"/>
+        </ACTION_CONTROL>
+      </CONTAINER>
+    </CLUSTER>
+    <LIST
+      STYLE="cluster-cpr-no-border"
+      TITLE="Cluster.WIP.Update.Title"
+    >
+      <FIELD LABEL="List.Title.Item">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="newAndUpdateList$dtls$evidenceType"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="Evidence_resolveWorkspace">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="newAndUpdateList$dtls$parentEvidenceID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="evidenceID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="newAndUpdateList$dtls$evidenceType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="evidenceType"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="newAndUpdateList$dtls$parentEvidenceType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="parentEvidenceType"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <FIELD LABEL="List.Title.EvidenceType">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="newAndUpdateList$dtls$evidenceType"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="List.Title.Name">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="newAndUpdateList$dtls$concernRoleName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="List.Title.Period">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="period"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="List.Title.UpdatedBy">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="newAndUpdateList$dtls$updatedBy"
+          />
+        </CONNECT>
+      </FIELD>
+      <DETAILS_ROW>
+        <INLINE_PAGE PAGE_ID="Evidence_listInEditEvdInstanceChanges">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="newAndUpdateList$dtls$evidenceType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="evidenceType"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="newAndUpdateList$dtls$successionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="successionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="newAndUpdateList$dtls$participantID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="participantID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="newAndUpdateList$dtls$parentEvidenceID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="parEvID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="newAndUpdateList$dtls$parentEvidenceType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="parEvType"
+            />
+          </CONNECT>
+        </INLINE_PAGE>
+      </DETAILS_ROW>
+    </LIST>
+</PAGE>

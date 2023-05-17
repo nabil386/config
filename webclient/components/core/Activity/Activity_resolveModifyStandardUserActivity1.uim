@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify an activity.                       -->
+<PAGE
+  PAGE_ID="Activity_resolveModifyStandardUserActivity1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String activityID = request.getParameter("ID");
+      String recurring = request.getParameter("RE");
+      String caseID = request.getParameter("caseID");
+      String url = "";
+      String description = "";
+      
+      // BEGIN, CR00244394, ELG
+      //if event has not passed the case description, set the description here
+      if ((caseID == null) || caseID.equals("0")) {
+      // END, CR00244394
+                
+        curam.interfaces.ActivityPkg.Activity_readContextDescription_TH 
+        th = new curam.interfaces.ActivityPkg.Activity_readContextDescription_TH();
+               
+        th.setFieldValue(th.key$activityContextDescriptionKey$activityID_idx,activityID);      
+        th.callServer(); 
+        description = th.getFieldValue(th.result$activityContextDescriptionDetails$description_idx);
+           
+      } else {
+      
+        //Read the case description and pass it to activity pages.
+        curam.interfaces.CasePkg.Case_readCaseContextDescription_TH 
+        th = new curam.interfaces.CasePkg.Case_readCaseContextDescription_TH();
+                                
+        th.setFieldValue(th.caseContextDescriptionKey$caseID_idx, caseID);      
+        th.callServer(); 
+        description = th.getFieldValue(th.result$description_idx);
+        
+      }
+  
+      if (activityID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "ID");
+       System.out.println(e);
+       throw e;
+       
+      } else if (recurring==null) {
+         core.ScriptletMissingParamException e = new
+            core.ScriptletMissingParamException(-20001, "RE");
+        System.out.println(e);
+        throw e;
+
+      } 
+      
+      if (recurring.equals("false")) {
+        url = context + "Activity_modifyStandardUserActivity1Page.do?activityID=" + curam.omega3.request.RequestUtils.escapeURL(activityID) + "&amp;description=" + curam.omega3.request.RequestUtils.escapeURL(description) + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+      } else {
+        url = context + "Activity_modifyRecurringUserActivity1Page.do?activityID=" + curam.omega3.request.RequestUtils.escapeURL(activityID) + "&amp;description=" + curam.omega3.request.RequestUtils.escapeURL(description) + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);      
+      }
+      
+      url += "&amp;" + rh.getSystemParameters();
+      response.sendRedirect(response.encodeRedirectURL(url));
+
+    
+  </JSP_SCRIPTLET>
+</PAGE>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002,2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to enter theHOH details and calls the server -->
+<!-- to create the case and add the evidence. -->
+<PAGE
+  PAGE_ID="IncomeScreening_createCase"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="concernRoleName"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="IncomeScreening"
+    NAME="DISPLAY"
+    OPERATION="getRegisteredMemberDetails"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="IncomeScreening"
+    NAME="ACTION"
+    OPERATION="createScreeningCase"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL
+      IMAGE="PreviousButton"
+      LABEL="ActionControl.Label.Previous"
+    >
+      <LINK PAGE_ID="IncomeScreening_confirmPerson">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="NextButton"
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="IncomeScreening_enterHouseholdMembers">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="ExitButton"
+      LABEL="ActionControl.Label.Exit"
+    >
+      <LINK PAGE_ID="IncomeScreening_selectPersonType"/>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="20"
+    TITLE="Cluster.Title.Details"
+  >
+
+
+    <FIELD LABEL="Field.Label.Citizen">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="citizenshipCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Disabled">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="disabledInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Striker">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="strikerInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

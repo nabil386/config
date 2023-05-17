@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Reads Position Location details.                                       -->
+<PAGE
+  PAGE_ID="Organization_viewPositionLocations"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAY"
+    OPERATION="viewPosition"
+  />
+
+
+  <PAGE_PARAMETER NAME="positionID"/>
+  <PAGE_PARAMETER NAME="organisationStructureID"/>
+  <PAGE_PARAMETER NAME="organisationUnitID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="positionID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="orgStructureAndPositionKey$positionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="organisationStructureID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="orgStructureAndPositionKey$organisationStructureID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="organisationUnitID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="orgStructureAndPositionKey$organisationUnitID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAYLOCATIONDETAILS"
+    OPERATION="viewLocationDetailsForPosition"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="positionID"
+    />
+    <TARGET
+      NAME="DISPLAYLOCATIONDETAILS"
+      PROPERTY="key$positionID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.AssignLocation">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_AssignLocationToPosition"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="positionName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="positionName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="organisationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationStructureID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="positionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="positionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="organisationUnitID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationUnitID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_RemoveLocationFromPosition"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="viewPositionDetails$organisationUnitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAYLOCATIONDETAILS"
+              PROPERTY="locationName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="name"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAYLOCATIONDETAILS"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAYLOCATIONDETAILS"
+              PROPERTY="positionLocationLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="positionLocationLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAYLOCATIONDETAILS"
+              PROPERTY="positionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="positionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.LocationName"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYLOCATIONDETAILS"
+          PROPERTY="locationName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.LocationStatus"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYLOCATIONDETAILS"
+          PROPERTY="locationStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

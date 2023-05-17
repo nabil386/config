@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Determines which status page to bring the user to based on 
+the state of the simulated determination.-->
+<PAGE
+  PAGE_ID="CREOLEProgramRecommendation_resolveStatusDetailsPage"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+        
+        
+        curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+        
+        String context = request.getContextPath() + "/";
+        context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+        String isAuthorized = request.getParameter("isAuthorized");
+        String isDeclined = request.getParameter("isDeclined");
+        String creoleProgramRecommendationID = request.getParameter("creoleProgramRecommendationID");
+        String simulatedDeterminationID = request.getParameter("simulatedDeterminationID");
+
+        String url ="";        
+        if (Boolean.valueOf(isAuthorized).booleanValue()) {
+        url = context + "CREOLEProgramRecommendation_viewAuthorizationDetailsPage.do?creoleProgramRecommendationID="+ curam.omega3.request.RequestUtils.escapeURL(creoleProgramRecommendationID);
+        url += "&amp;simulatedDeterminationID="+ curam.omega3.request.RequestUtils.escapeURL(simulatedDeterminationID);
+        }
+        else if (Boolean.valueOf(isDeclined).booleanValue())
+        {
+        url = context + "CREOLEProgramRecommendation_viewDeclinationDetailsPage.do?creoleProgramRecommendationID="+ curam.omega3.request.RequestUtils.escapeURL(creoleProgramRecommendationID);
+        url += "&amp;simulatedDeterminationID="+ curam.omega3.request.RequestUtils.escapeURL(simulatedDeterminationID);
+        }
+        url += "&amp;" + rh.getSystemParameters();
+        response.sendRedirect(response.encodeRedirectURL(url));
+        
+        
+    </JSP_SCRIPTLET>
+</PAGE>

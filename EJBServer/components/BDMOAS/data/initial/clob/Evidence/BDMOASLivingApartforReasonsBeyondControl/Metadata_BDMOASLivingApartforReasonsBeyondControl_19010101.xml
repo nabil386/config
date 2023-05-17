@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Task DEV 86193 : Marital Relationship and Living Apart for Reasons Beyond 
+	Control Evidence -->
+<EvidenceTypeVersion businessEndDate="endDate"
+	businessStartDate="startDate" modifiable="true"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../../../../../../DynamicEvidenceMetadata.xsd">
+	<Model>
+		<Attributes>
+			<Attribute>
+				<DataAttribute name="reasonForLivingApart"
+					mandatory="true" volatile="true">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMOASLivingApartReason" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="livingApartReasonDescription">
+					<DomainType dataType="String">
+						<StringOptions maxSize="144" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="startDate" mandatory="true">
+					<DomainType dataType="Date"/>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="endDate">
+					<DomainType dataType="Date" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<CommentsAttribute name="comments" />
+			</Attribute>
+		</Attributes>
+		<Relationships>
+			<Relationship>
+				<MandatoryParent evidenceTypeCode="OASDET0010"
+					name="maritalRelationship" />
+			</Relationship>
+		</Relationships>
+	</Model>
+	<Validations>
+		<PatternValidations>
+			<Validator>
+				<DuplicateValidator endDate="endDate"
+					startDate="startDate">
+					<DateRangeValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_OVERLAPPING_LIVINGAPART_EVIDENCE_RECORD_EXISTS" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</DateRangeValidationMessageInformation>
+				</DuplicateValidator>
+			</Validator>
+			<Validator>
+				<ComparisonValidator
+					operator="GreaterThanOrEqualTo" shallow="false" source="endDate"
+					target="startDate" useClause="false" useLiteral="false">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_START_DATE_CAN_NOT_BE_AFTER_END_DATE" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</ComparisonValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="reasonForLivingApart"
+					sourceLiteral="Other" target="livingApartReasonDescription"
+					unidirectional="true" useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_LIVING_APART_REASON_OTHER_DESCRIPTION_REQUIRED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+		</PatternValidations>
+		<CustomRulesValidation
+			ruleSetName="BDMOASLivingApartforReasonsBeyondControlValidationRuleSet" />
+	</Validations>
+	<SummaryInformation>
+		<SummaryRuleset
+			ruleSetName="BDMOASLivingApartforReasonsBeyondControlSummaryRuleSet" />
+	</SummaryInformation>
+	<UserInterface>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true" labelWidth="40"
+				numberOfColumns="2">
+				<Title id="Cluster.LvingApartDetails.Name" />
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="reasonForLivingApart" useBlank="true" useDefault="false">
+						<Label id="ReasonForLivingApart.Label.Name" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="livingApartReasonDescription" useDefault="false">
+						<Label id="Description.Label.Name" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="startDate"
+						useDefault="false">
+						<Label id="StartDate.Label.Name" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="endDate"
+						useDefault="false">
+						<Label id="EndDate.Label.Name" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<CommentsCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true">
+				<Title id="Comments.Cluster.Title" />
+				<StandardField source="comments" />
+			</CommentsCluster>
+		</Cluster>
+	</UserInterface>
+</EvidenceTypeVersion>

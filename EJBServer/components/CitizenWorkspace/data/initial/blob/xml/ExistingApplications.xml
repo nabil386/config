@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2016. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="page-schema.xsd">
+    <identifier name="Existing Applications" />
+    <server alias="DISPLAY" method="getExistingApplicationsDetails" />
+    <content>
+        <container style="page-header-panel">
+            <title id="Page.Title" />
+            <description id="Page.Description" />
+            <icon id="title_current_apps" />
+        </container>
+        
+        <container>
+        
+          <title id="Unsubmitted.Title" />
+    <description id="Unsubmitted.Description" />
+          <help id="Unsubmitted.Help"/>
+
+          <list>
+
+            <field source="/DISPLAY/xmlData/inProgressApplications/application[]" type="CW_HYPERLINKS"
+                isGrouped="true">
+              <title id="Unsubmitted.ApplicationType"/>
+              <param name="label-extension" value="name"/>
+              <param name="uri-extension" value="url"/>
+            </field>
+
+            <field source="/DISPLAY/xmlData/inProgressApplications/application[]/programs/program[]" type="CW_HYPERLINKS">
+              <title id="Unsubmitted.Programs"/>
+              <param name="label-extension" value="name"/>
+              <param name="uri-extension" value="url"/>
+            </field>
+
+            <field source="/DISPLAY/xmlData/inProgressApplications/application[]/createdDate" type="SVR_DATE" isGrouped="true">
+              <title id="Unsubmitted.CreatedDate"/>
+            </field>
+
+            <container style="cw-render-children" source="/DISPLAY/xmlData/inProgressApplications/application[]" isGrouped="true">
+              <title id="Unsubmitted.Action"/>
+              <param name="separator" id="Unsubmitted.Action.Separator"/>
+              
+              <field type="CW_HYPERLINKS" source="//DISPLAY/xmlData/inProgressApplications/application[]">
+                <title id="Unsubmitted.Continue"/>
+                
+                <param name="uri-prefix" value="ResumeIntakeIEGScript.jspx?iegExecutionID="/>
+                
+                <param name="uri-extension" value="iegExecutionID"/>
+              </field>
+               
+              <field type="CW_HYPERLINKS" source="/DISPLAY/xmlData/inProgressApplications/application[]">
+                <title id="Unsubmitted.Delete"/>
+                
+                <param name="uri-prefix" value="ResolveInternalLink.jspx?page=CitizenWorkspace_deleteInProgressApplication&id="/>
+                
+                <param name="uri-extension" value="iegExecutionID"/>
+                <param name="is-popup" value="true"/>
+              </field>       
+             
+            </container>
+
+          </list>
+
+        </container>
+
+        <container>
+          <title id="Submitted.Title" />
+    <description id="Submitted.Description" />
+          <help id="Submitted.Help"/>
+
+          <list source="/DISPLAY/xmlData/submittedApplications/application[]">
+            
+            <field source="/DISPLAY/xmlData/submittedApplications/application[]" type="CW_HYPERLINKS" isGrouped="true">
+              <title id="Submitted.ApplicationType"/>
+              <param name="label-extension" value="name"/>
+              <param name="uri-extension" value="url"/>
+            </field>
+            
+            
+            <field source="/DISPLAY/xmlData/submittedApplications/application[]/programs/program[]" type="CW_HYPERLINKS">
+              <title id="Submitted.Programs"/>
+              <param name="label-extension" value="name"/>
+              <param name="uri-extension" value="url"/>
+            </field>
+
+            <field source="/DISPLAY/xmlData/submittedApplications/application[]/programs/program/submittedDate" type="SVR_DATE">
+              <title id="Submitted.SubmissionDate"/>
+            </field>
+            
+            <field type="CW_HYPERLINKS" source="/DISPLAY/xmlData/submittedApplications/application[]/program">
+              <title id="Submitted.Withdraw"/>
+              <param name="uri-prefix" value="WithdrawApplicationConfirmPage.do%26id="/>
+              <param name="uri-extension" value="iegExecutionID"/>
+              <param name="is-popup" value="true"/>
+            </field>
+          </list>
+
+        </container>
+
+    </content>
+    <navigation>
+        <nav-button name="exit" page="ResolveCitizenHome" page-type="resolve" />
+		<nav-button name="next" type="action" />
+    </navigation>
+</page>

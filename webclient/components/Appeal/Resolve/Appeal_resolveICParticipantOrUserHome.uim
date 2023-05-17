@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2003-2009, 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This script redirects the user from an Appeal page to a user           -->
+<!-- or participant home page, depending on the supplier type               -->
+<PAGE
+  PAGE_ID="Appeal_resolveICParticipantOrUserHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler rh 
+        = curam
+          .omega3
+          .request
+          .RequestHandlerFactory
+          .getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences
+        (pageContext.getSession()).getLocale() + "/";
+      String interpreterID = request.getParameter("interpreterID");
+      String supplierType = request.getParameter("supplierType");
+      String url = "";
+
+      if (interpreterID == null) {
+
+          // BEGIN, CR00110216, SK
+               core.ScriptletMissingParamException e = new
+                     core.ScriptletMissingParamException(-20002, "interpreterID");
+               System.out.println(e);
+               throw e;
+          // END, CR00110216
+
+      }
+
+      if (supplierType == null) {
+
+          // BEGIN, CR00110216, SK
+               core.ScriptletMissingParamException e = new
+                     core.ScriptletMissingParamException(-20002, "supplierType");
+               System.out.println(e);
+               throw e;
+        // END, CR00110216
+
+      }
+
+      // If the type is Participant - AS1
+      if (supplierType.equals("AS1")) {
+
+      // BEGIN, CR00246931, GP
+      String concernRoleID = "";
+      String concernRoleType = "";
+      curam.interfaces.AppealPkg.Appeal_readConcernRoleDetails_TH 
+        th = new curam.interfaces.AppealPkg.Appeal_readConcernRoleDetails_TH();
+    
+      th.setFieldValue(th.key$appealCaseParticipantRoleKey$caseParticipantRoleKey$caseParticipantRoleID_idx, interpreterID);
+   
+      th.callServer();
+    
+      concernRoleID = th.getFieldValue
+        (th.result$appealParticipantRoleDetails$caseParticipantConcernRoleDetails$concernRoleID_idx);
+      concernRoleType = th.getFieldValue
+        (th.result$appealParticipantRoleDetails$caseParticipantConcernRoleDetails$concernRoleType_idx);
+      
+      url = context + "Participant_resolveRoleHomePage.do?concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID)
+        + "&amp;participantType=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleType);
+      
+      url += "&amp;" + rh.getSystemParameters(); 
+      // END,  CR00246931
+
+      } else if (supplierType.equals("AS2")) {
+
+        url = context + "Organization_viewUserDetailsPage.do?userName=" 
+          + curam.omega3.request.RequestUtils.escapeURL(interpreterID);
+
+      }
+
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+    
+  </JSP_SCRIPTLET>
+</PAGE>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet
+  name="DefaultAllocationTargetsRuleSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+>
+  <Class
+    extends="AbstractAllocationTargets"
+    extendsRuleSet="AbstractAllocationTargetsRuleSet"
+    name="AllocationTargetsImpl"
+  >
+    <Annotations>
+      <Documentation
+        documentation-id="DefaultAllocationTargetsRuleSetDocumentationID_1354547070210"
+        text="This is the default implementation class for a workflow allocation ruleset. It extends from the abstract Allocation Targets ruleset that describes the structure of allocation rules. Any class that extends this class can be considered a primary class which is used to hold the targets for allocation."
+      />
+    </Annotations>
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="AllocationTargetsImpl"
+          resourceBundle="curam.core.rules.DefaultAllocationTargetsRuleSet"
+        >    
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="targets">
+      <Annotations>
+        <Documentation
+          documentation-id="DefaultAllocationTargetsRuleSetDocumentationID_1354547084844"
+          text="This is a mandatory attribute for any workflow allocation ruleset. Targets is a list of allocation target classes that is required by the workflow engine to assign the task, notification, decision or reminder. Each target must contain an allocation type and an instance  of the chosen type."
+        />
+      </Annotations>
+      <type>
+        <javaclass name="List">
+          <ruleclass
+            name="AllocationTarget"
+            ruleset="AbstractAllocationTargetsRuleSet"
+          />
+        </javaclass>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <javaclass name="List">
+              <ruleclass
+                name="AllocationTarget"
+                ruleset="AbstractAllocationTargetsRuleSet"
+              />
+            </javaclass>
+          </type>
+          <when>
+            <condition>
+              <equals>
+                <reference attribute="priority"/>
+                <String value="TP2"/>
+              </equals>
+            </condition>
+            <value>
+              <fixedlist>
+                <listof>
+                  <ruleclass
+                    name="AllocationTarget"
+                    ruleset="AbstractAllocationTargetsRuleSet"
+                  />
+                </listof>
+                <members>
+                  <create
+                    ruleclass="AllocationTarget"
+                    ruleset="AbstractAllocationTargetsRuleSet"
+                  >
+                    <specify attribute="type">
+                      <Code table="TargetItemType">
+                        <String value="RL23"/>
+                      </Code>
+                    </specify>
+                    <specify attribute="identifier">
+                      <String value="">
+                        <Annotations>
+                          <Label
+                            label-id="DefaultAllocationTargetsRuleSetlabelID_1354275303168"
+                            name="Queue Identifier"
+                          />
+                        </Annotations>
+                      </String>
+                    </specify>
+                  </create>
+                  <create
+                    ruleclass="AllocationTarget"
+                    ruleset="AbstractAllocationTargetsRuleSet"
+                  >
+                    <specify attribute="type">
+                      <Code table="TargetItemType">
+                        <String value="RL9"/>
+                      </Code>
+                    </specify>
+                    <specify attribute="identifier">
+                      <String value="">
+                        <Annotations>
+                          <Label
+                            label-id="DefaultAllocationTargetsRuleSetlabelID_1354275310837"
+                            name="User Name"
+                          />
+                        </Annotations>
+                      </String>
+                    </specify>
+                  </create>
+                </members>
+              </fixedlist>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <fixedlist>
+                <listof>
+                  <ruleclass
+                    name="AllocationTarget"
+                    ruleset="AbstractAllocationTargetsRuleSet"
+                  />
+                </listof>
+                <members>
+                  <create
+                    ruleclass="AllocationTarget"
+                    ruleset="AbstractAllocationTargetsRuleSet"
+                  >
+                    <specify attribute="type">
+                      <Code table="TargetItemType">
+                        <Annotations>
+                          <Label
+                            label-id="DefaultAllocationTargetsRuleSetlabelID_1354276444597"
+                            name=""
+                          />
+                        </Annotations>
+                        <String value="RL23"/>
+                      </Code>
+                    </specify>
+                    <specify attribute="identifier">
+                      <String value="">
+                        <Annotations>
+                          <Label
+                            label-id="DefaultAllocationTargetsRuleSetlabelID_1354275303168"
+                            name="Queue Identifier"
+                          />
+                        </Annotations>
+                      </String>
+                    </specify>
+                  </create>
+                </members>
+              </fixedlist>
+            </value>
+          </otherwise>
+        </choose>
+      </derivation>
+    </Attribute>
+    <Attribute name="priority">
+      <Annotations>
+        <Documentation
+          documentation-id="DefaultAllocationTargetsRuleSetDocumentationID_1354547098450"
+          text="This is an attribute that can be mapped from a workflow data object attribute. This can be used to in an expression to evaluate the assignment of a task, notification, decision and reminders."
+        />
+      </Annotations>
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class
+    extends="WorkAllocation"
+    extendsRuleSet="AbstractAllocationTargetsRuleSet"
+    name="WorkAllocation"
+  >
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="WorkAllocation"
+          resourceBundle="curam.core.rules.DefaultAllocationTargetsRuleSet"
+        >    
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+  </Class>
+</RuleSet>

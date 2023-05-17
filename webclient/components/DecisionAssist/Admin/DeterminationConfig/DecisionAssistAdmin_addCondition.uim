@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd" PAGE_ID="DecisionAssistAdmin_addCondition">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+    </CONNECT>
+    <CONNECT>
+      <SOURCE NAME="DETERMINATION_DETAILS" PROPERTY="result$dtls$dtls$name"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE CLASS="Condition" NAME="ADD_CONDITION" OPERATION="associateConditionsToDC"
+    PHASE="ACTION"/>
+  <SERVER_INTERFACE CLASS="DeterminationConfig" NAME="DETERMINATION_DETAILS"
+    OPERATION="readDeterminationConfig" PHASE="DISPLAY"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="determinationConfigID"/>
+    <TARGET NAME="DETERMINATION_DETAILS" PROPERTY="key$key$key$determinationConfigID"/>
+  </CONNECT>
+  <PAGE_PARAMETER NAME="determinationConfigID"/>
+  <CLUSTER NUM_COLS="2" TITLE="Cluster.Title.Details">
+    <FIELD LABEL="Field.Label.ConditionName">
+      <CONNECT>
+        <TARGET NAME="ADD_CONDITION" PROPERTY="conditionID"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="determinationConfigID"/>
+    <TARGET NAME="ADD_CONDITION" PROPERTY="dtls$dtls$determinationConfigID"/>
+  </CONNECT>
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+    <ACTION_CONTROL LABEL="ActionControl.Label.Save" TYPE="SUBMIT">
+      <LINK PAGE_ID="DecisionAssistAdmin_listConditionForDetermination">
+        <CONNECT>
+          <SOURCE NAME="ADD_CONDITION" PROPERTY="dtls$dtls$determinationConfigID"/>
+          <TARGET NAME="PAGE" PROPERTY="determinationConfigID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL  LABEL="ActionControl.Label.Cancel"> </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

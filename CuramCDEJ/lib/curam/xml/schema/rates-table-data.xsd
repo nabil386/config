@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="RATES_DATA">
+		<xs:annotation>
+			<xs:documentation>Root of this rates table data. There can be zero to many columns.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="COLUMN" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="ROW" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:attribute name="INDEX" type="xs:integer" use="required"/>
+						<xs:attribute name="ID" type="xs:string" use="required"/>
+						<xs:attribute name="TYPE" type="xs:string" use="required"/>
+						<xs:attribute name="NUM_SUB_ROWS" type="xs:integer" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+			<xs:attribute name="READ_ONLY" type="xs:boolean" use="optional" default="false"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="COLUMN">
+		<xs:annotation>
+			<xs:documentation>A rates table column. This column can contain zero to many sub-columns and rows.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="SUB_COLUMN" minOccurs="0"/>
+				<xs:element ref="ROW" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="INDEX" type="xs:integer" use="required"/>
+			<xs:attribute name="ID" type="xs:string" use="required"/>
+			<xs:attribute name="TYPE" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="SUB_COLUMN">
+		<xs:annotation>
+			<xs:documentation>A rates table sub-column. This element can contain zero to many rows.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="ROW" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="MINIMUM" type="xs:double" use="optional"/>
+			<xs:attribute name="MAXIMUM" type="xs:double" use="optional"/>
+			<xs:attribute name="VALUE" type="xs:double" use="optional"/>
+			<xs:attribute name="INDEX" type="xs:integer" use="required"/>
+			<xs:attribute name="ID" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ROW">
+		<xs:annotation>
+			<xs:documentation>A rates table row. This element can contain zero to many cells.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="CELL" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="INDEX" type="xs:integer" use="required"/>
+			<xs:attribute name="ID" type="xs:string" use="required"/>
+			<xs:attribute name="TYPE" type="xs:string" use="required"/>
+			<xs:attribute name="NUM_SUB_ROWS" type="xs:integer" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CELL">
+		<xs:annotation>
+			<xs:documentation>A rates table cell. This element is nested within the appropriate row and column elements.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="ID" type="xs:string" use="required"/>
+			<xs:attribute name="MINIMUM" type="xs:double" use="optional"/>
+			<xs:attribute name="MAXIMUM" type="xs:double" use="optional"/>
+			<xs:attribute name="VALUE" type="xs:double" use="optional"/>
+			<xs:attribute name="COLUMN_INDEX" type="xs:integer" use="required"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

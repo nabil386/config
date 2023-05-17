@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page retrieves calendar events from a particular start date when  -->
+<!-- accessed from the external party navigation. -->
+<PAGE
+  PAGE_ID="ExternalParty_locationHolidayCalendar"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ExternalParty"
+    NAME="DISPLAY"
+    OPERATION="readAllExternalPartyLocationHoliday"
+  />
+
+
+  <ACTION_SET BOTTOM="false">
+
+
+    <ACTION_CONTROL
+      IMAGE="NewLocationHolidayButton"
+      LABEL="ActionControl.Label.NewLocationHoliday"
+    >
+
+
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_createLocationHolidayFromCalendar"
+      >
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+
+
+      </LINK>
+
+
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="ViewList"
+      LABEL="ActionControl.Label.List"
+    >
+
+
+      <LINK PAGE_ID="Organization_listLocationHoliday">
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+
+
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="startDate"/>
+  <PAGE_PARAMETER NAME="calendarViewType"/>
+  <PAGE_PARAMETER NAME="locationID"/>
+  <PAGE_PARAMETER NAME="locationStructureID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="startDate"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="startDate"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="calendarViewType"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="calendarViewType"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="locationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="locationID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER SHOW_LABELS="false">
+
+
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="calendarXMLString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <MENU MODE="NAVIGATION">
+    <ACTION_CONTROL LABEL="Field.Label.Browse">
+      <LINK PAGE_ID="Organization_resolveLocationTree">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationStructureID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="locationID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+</PAGE>

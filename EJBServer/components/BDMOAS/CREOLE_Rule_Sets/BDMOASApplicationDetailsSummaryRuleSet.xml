@@ -1,0 +1,282 @@
+<RuleSet name="BDMOASApplicationDetailsSummaryRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../build/svr/creole.gen/schema/RuleSet.xsd">
+	<Class extends="DefaultEvidenceSummary"
+		extendsRuleSet="EvidenceSummaryRuleSet" name="SummaryInformation">
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="BDMOASApplicationDetails"
+					ruleset="BDMOASApplicationDetailsRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="benefitType">
+			<Annotations />
+			<type>
+				<codetableentry table="BDMOASBenefitType" />
+			</type>
+			<derivation>
+				<reference attribute="benefitType">
+					<reference attribute="evidence" />
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="applicationStatus">
+			<Annotations />
+			<type>
+				<codetableentry table="BDMOASApplicationStatus" />
+			</type>
+			<derivation>
+				<reference attribute="applicationStatus">
+					<reference attribute="evidence" />
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="summary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Message" />
+					</type>
+					<when>
+						<condition>
+							<reference attribute="isCancellationGranted" />
+						</condition>
+						<value>
+							<reference attribute="cancellationGrantedSummary" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<reference attribute="isCeased" />
+						</condition>
+						<value>
+							<reference attribute="ceasedSummary" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<not>
+								<equals>
+									<null />
+									<reference attribute="requestedPensionStartDate">
+										<reference attribute="evidence" />
+									</reference>
+								</equals>
+							</not>
+						</condition>
+						<value>
+							<reference attribute="deferredSummary" />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<reference attribute="statusSummary" />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="cancellationGrantedSummary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage
+					key="CancellationGrantedSummaryMessage"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASApplicationDetailsSummaryRuleSet">
+					<reference attribute="benefitType" />
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="ceasedSummary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="CeasedSummaryMessage"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASApplicationDetailsSummaryRuleSet">
+					<reference attribute="benefitType" />
+					<reference attribute="cessationDate">
+						<reference attribute="currentBenefitCessation" />
+					</reference>
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="deferredSummary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="DeferredSummaryMessage"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASApplicationDetailsSummaryRuleSet">
+					<reference attribute="benefitType" />
+					<reference attribute="requestedPensionStartDate">
+						<reference attribute="evidence" />
+					</reference>
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="statusSummary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="StatusSummaryMessage"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASApplicationDetailsSummaryRuleSet">
+					<reference attribute="benefitType" />
+					<reference attribute="applicationStatus" />
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="isCancellationGranted">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="java.lang.Boolean" />
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<null />
+								<reference
+									attribute="related_BDMOASBenefitCancellationRequest">
+									<reference attribute="evidence" />
+								</reference>
+							</equals>
+						</condition>
+						<value>
+							<false />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<any>
+								<dynamiclist>
+									<list>
+										<reference
+											attribute="related_BDMOASBenefitCancellationRequest">
+											<reference attribute="evidence" />
+										</reference>
+									</list>
+									<listitemexpression>
+										<all>
+											<fixedlist>
+												<listof>
+													<javaclass name="java.lang.Boolean" />
+												</listof>
+												<members>
+													<equals>
+														<reference attribute="cancellationStatus">
+															<current />
+														</reference>
+														<Code table="BDMOASCancellationStatus">
+															<String value="CST2" />
+														</Code>
+													</equals>
+													<equals>
+														<reference attribute="status">
+															<current />
+														</reference>
+														<Code table="EvidenceDescriptorStatus">
+															<String value="EDS1" />
+														</Code>
+													</equals>
+												</members>
+											</fixedlist>
+										</all>
+									</listitemexpression>
+								</dynamiclist>
+							</any>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="isCeased">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="java.lang.Boolean" />
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<null />
+								<reference attribute="related_BDMOASBenefitCessation">
+									<reference attribute="evidence" />
+								</reference>
+							</equals>
+						</condition>
+						<value>
+							<false />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<not>
+								<equals>
+									<null />
+									<reference attribute="currentBenefitCessation" />
+								</equals>
+							</not>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="currentBenefitCessation">
+			<type>
+				<ruleclass name="BDMOASBenefitCessation"
+					ruleset="BDMOASBenefitCessationRuleSet" />
+			</type>
+			<derivation>
+				<singleitem onMultiple="error" onEmpty="returnNull">
+					<filter>
+						<list>
+							<reference attribute="related_BDMOASBenefitCessation">
+								<reference attribute="evidence" />
+							</reference>
+						</list>
+						<listitemexpression>
+							<all>
+								<fixedlist>
+									<listof>
+										<javaclass name="java.lang.Boolean" />
+									</listof>
+									<members>
+										<equals>
+											<null />
+											<reference attribute="reinstatementDate">
+												<current />
+											</reference>
+										</equals>
+										<equals>
+											<reference attribute="status">
+												<current />
+											</reference>
+											<Code table="EvidenceDescriptorStatus">
+												<String value="EDS1" />
+											</Code>
+										</equals>
+									</members>
+								</fixedlist>
+							</all>
+						</listitemexpression>
+					</filter>
+				</singleitem>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

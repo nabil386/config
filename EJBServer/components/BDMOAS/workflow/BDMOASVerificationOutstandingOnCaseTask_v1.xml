@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<workflow-process category="PC1" createdBy="admin"
+	creationDate="20230417T233424" id="1126999418470708"
+	language-version="1.0" process-version="1" released="true">
+
+	<name>BDMOASVerificationOutstandingOnCaseTask</name>
+
+
+	<process-display-name>
+		<localized-text>
+			<locale language="en">BDMOAS Verification Outstanding On Case Task</locale>
+		</localized-text>
+	</process-display-name>
+	<description>
+		<localized-text>
+			<locale language="en">Task will generate when there is  outstanding verification for a evidence</locale>
+		</localized-text>
+	</description>
+
+
+	<enactment-mappings>
+		<mapping>
+			<source-attribute name="subject" struct-name="curam.ca.gc.bdmoas.sl.verification.struct.BDMOASVerOutstandingTaskDetails" />
+			<target-attribute name="subject" wdo-name="TaskCreateDetailsForOV" />
+		</mapping>
+		<mapping>
+			<source-attribute name="caseID"	struct-name="curam.ca.gc.bdmoas.sl.verification.struct.BDMOASVerOutstandingTaskDetails" />
+			<target-attribute name="caseID" wdo-name="TaskCreateDetailsForOV" />
+		</mapping>
+		<mapping>
+			<source-attribute name="evidenceID"	struct-name="curam.ca.gc.bdmoas.sl.verification.struct.BDMOASVerOutstandingTaskDetails" />
+			<target-attribute name="evidenceID" wdo-name="TaskCreateDetailsForOV" />
+		</mapping>
+		<mapping>
+			<source-attribute name="concernRoleID" 	struct-name="curam.ca.gc.bdmoas.sl.verification.struct.BDMOASVerOutstandingTaskDetails" />
+			<target-attribute name="concernRoleID" 	wdo-name="TaskCreateDetailsForOV" />
+		</mapping>
+		<mapping>
+			<source-attribute name="assignedTo"	struct-name="curam.ca.gc.bdmoas.sl.verification.struct.BDMOASVerOutstandingTaskDetails" />
+			<target-attribute name="assignedTo"	wdo-name="TaskCreateDetailsForOV" />
+		</mapping>
+		<mapping>
+			<source-attribute name="assigneeType" 	struct-name="curam.ca.gc.bdmoas.sl.verification.struct.BDMOASVerOutstandingTaskDetails" />
+			<target-attribute name="assigneeType"	wdo-name="TaskCreateDetailsForOV" />
+		</mapping>
+
+	</enactment-mappings>
+	<wdos>
+		<wdo>
+			<wdo-name>TaskCreateDetailsForOV</wdo-name>
+			<display-name>
+			<localized-text><locale country="" language="en">TaskCreateDetails for OustStanding Verification</locale></localized-text>
+			</display-name>
+			<attributes>
+				<attribute>
+					<attribute-name>subject</attribute-name>
+					<display-name>
+						<localized-text><locale country="" language="en">Task subject</locale></localized-text>
+					</display-name>
+					<type>STRING</type>
+					<required-at-enactment>true</required-at-enactment>
+				</attribute>
+				<attribute>
+					<attribute-name>caseID</attribute-name>
+					<display-name>
+						<localized-text><locale country="" language="en">Case</locale></localized-text>
+					</display-name>
+					<type>INT64</type>
+					<required-at-enactment>true</required-at-enactment>
+				</attribute>
+				<attribute>
+					<attribute-name>evidenceID</attribute-name>
+					<display-name>
+						<localized-text><locale country="" language="en">Evidence</locale></localized-text>
+					</display-name>
+					<type>INT64</type>
+					<required-at-enactment>true</required-at-enactment>
+				</attribute>
+				<attribute>
+					<attribute-name>concernRoleID</attribute-name>
+					<display-name>
+						<localized-text><locale country="" language="en">concernRole</locale></localized-text>
+					</display-name>
+					<type>INT64</type>
+					<required-at-enactment>true</required-at-enactment>
+				</attribute>			
+			<attribute>
+					<attribute-name>assignedTo</attribute-name>
+					<display-name>
+						<localized-text><locale language="en">User name</locale></localized-text>
+					</display-name>
+					<type>STRING</type>
+					<required-at-enactment>true</required-at-enactment>
+					<process-output>false</process-output>
+				</attribute>
+				<attribute>
+					<attribute-name>assigneeType</attribute-name>
+					<display-name>
+						<localized-text><locale language="en">Assignee type</locale></localized-text>
+					</display-name>
+					<type>STRING</type>
+					<required-at-enactment>true</required-at-enactment>
+					 <process-output>false</process-output>					
+				</attribute>
+			</attributes>
+		</wdo>
+	</wdos>
+	<activities>
+		<start-process-activity id="99">
+			<name>
+				<localized-text><locale country="" language="en">StartProcessActivity</locale></localized-text>				
+			</name>
+			<description>
+				<localized-text><locale country="" language="en">The start process activity.</locale></localized-text>				
+			</description>
+			<split type="none">
+				<transition-id idref="100" />
+			</split>
+		</start-process-activity>
+		<end-process-activity id="200">
+			<name>
+				<localized-text><locale country="" language="en">EndProcessActivity</locale></localized-text>				
+			</name>
+			<description>
+				<localized-text><locale country="" language="en">The end process activity</locale></localized-text>				
+			</description>
+			<join type="none" />
+		</end-process-activity>
+		<manual-activity category="" id="201">
+			<name>
+				<localized-text><locale country="" language="en">ManualAllocationActivity</locale></localized-text>					
+			</name>
+			<join type="none" />
+			<split type="none">
+				<transition-id idref="101" />
+			</split>
+			<task>
+				<message>
+					<message-text>
+							<localized-text><locale country="" language="en">%1s</locale></localized-text>
+					</message-text>
+					<message-parameters>
+						<wdo-attribute name="subject" 	wdo-name="TaskCreateDetailsForOV" />
+					</message-parameters>
+				</message>
+				<actions>
+					<action page-id="Case_resolveCaseHome" principal-action="true">
+						<message>
+							<message-text>
+								<localized-text><locale language="en">Case Home</locale></localized-text>
+							</message-text>
+						</message>
+						<link-parameter name="caseID">
+							<wdo-attribute name="caseID" wdo-name="TaskCreateDetailsForOV" />
+						</link-parameter>
+					</action>
+					 <action page-id="Case_resolveParticipantHome"
+						principal-action="false">
+						<message>
+							<message-text>
+								<localized-text><locale language="en">Person Home</locale></localized-text>
+							</message-text>
+						</message>
+						<link-parameter name="concernRoleID">
+							<wdo-attribute name="concernRoleID" 	wdo-name="TaskCreateDetailsForOV" />
+						</link-parameter>
+					</action> 
+				</actions>
+				
+				<task-priority>
+					<priority>TP2</priority>
+				</task-priority>
+				<allow-deadline-override>false</allow-deadline-override>
+				<allow-task-forwarding>false</allow-task-forwarding>
+			</task>
+			<allocation-strategy type="function"
+				identifier="curam.core.sl.intf.WorkflowAllocationFunction.manualAllocationStrategy">
+				<function-mappings>
+					<formal-parameters>
+						<formal-parameter index="0">
+							<struct type="curam.core.sl.struct.TaskCreateDetails">
+								<field name="assignedTo">
+									<base-type type="STRING">
+										<wdo-attribute wdo-name="TaskCreateDetailsForOV"	name="assignedTo" />
+									</base-type>
+								</field>
+								<field name="assigneeType">
+									<base-type type="STRING">
+										<wdo-attribute wdo-name="TaskCreateDetailsForOV" name="assigneeType" />
+									</base-type>
+								</field>
+							</struct>
+						</formal-parameter>
+					</formal-parameters>
+				</function-mappings>
+			</allocation-strategy>
+			<event-wait>
+				<events>
+					<event event-class="TASK" event-type="CLOSED" identifier="1">
+						<event-match-attribute name="taskID" wdo-name="Context_Task" />
+					</event>
+				</events>
+			</event-wait>
+			<biz-object-associations>
+				<biz-object-association
+					biz-object-type="BOT1">
+					<wdo-attribute name="caseID"	wdo-name="TaskCreateDetailsForOV" />
+				</biz-object-association>
+				<biz-object-association
+					biz-object-type="OASBOT1">
+					<wdo-attribute name="evidenceID"	wdo-name="TaskCreateDetailsForOV" />
+				</biz-object-association>
+			</biz-object-associations>
+		</manual-activity>
+	</activities>
+	<transitions>
+		<transition from-activity-idref="99" id="100"
+			to-activity-idref="201">
+		</transition>
+		<transition from-activity-idref="201" id="101"
+			to-activity-idref="200" />
+	</transitions>
+</workflow-process>

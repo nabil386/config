@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Page for reassigning the list of Case Audits for an Auditor or Team.   -->
+<PAGE
+  PAGE_ID="CaseAudit_reassignCaseAudits"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="CaseAudit"
+    NAME="DISPLAYCASEAUDITS"
+    OPERATION="listCaseAuditsForAssignment"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseIDVersNoList"
+    />
+    <TARGET
+      NAME="DISPLAYCASEAUDITS"
+      PROPERTY="details$caseIDVersNoList"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="CaseAudit"
+    NAME="DISPLAYMEMBERS"
+    OPERATION="listAssignableAuditMembers"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="CaseAudit"
+    NAME="ACTION"
+    OPERATION="passCaseAuditAssignDetailsAsParam"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseIDVersNoList"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$caseIDVersNoList"
+    />
+  </CONNECT>
+
+
+  <PAGE_PARAMETER NAME="auditPlanID"/>
+  <PAGE_PARAMETER NAME="caseIDVersNoList"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseIDVersNoList"
+    />
+    <TARGET
+      NAME="DISPLAYMEMBERS"
+      PROPERTY="key$caseIDVersNoList"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="auditPlanID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$auditPlanID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+  >
+    <FIELD
+      LABEL="Field.Label.ReassignTo"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$dtls$auditorID"
+          NAME="DISPLAYMEMBERS"
+          PROPERTY="result$dtls$auditorName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$auditorID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <LIST
+    PAGINATED="false"
+    
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.AuditReference"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYCASEAUDITS"
+          PROPERTY="result$dtls$caseAuditReference"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="CaseAudit_resolveCaseAuditHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAYCASEAUDITS"
+            PROPERTY="result$dtls$caseAuditID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseAuditID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.CaseReference"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYCASEAUDITS"
+          PROPERTY="result$dtls$caseRef"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ClientName"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYCASEAUDITS"
+          PROPERTY="result$dtls$caseClientFullName"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="FALSE"
+  >
+
+
+    <ACTION_CONTROL
+      IMAGE="NewAuditorButton"
+      LABEL="ActionControl.Label.NewAuditorButton"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="CaseAudit_createAuditors"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="NewAuditTeamButton"
+      LABEL="ActionControl.Label.NewAuditTeamButton"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="CaseAudit_createAuditTeam"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Reassign"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="CaseAudit_confirmCaseAuditAssignment"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$auditorID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditorID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$caseIDVersNoList"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseIDVersNoList"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+
+
+  </ACTION_SET>
+
+
+</PAGE>

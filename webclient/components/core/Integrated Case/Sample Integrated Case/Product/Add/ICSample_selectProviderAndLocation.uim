@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2004 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to select the product provider and location  -->
+<!-- for delivery of the benefit.                                           -->
+<PAGE
+  PAGE_ID="ICSample_selectProviderAndLocation"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Product"
+    NAME="DISPLAY"
+    OPERATION="listProvidersAndLocations"
+  />
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL
+      IMAGE="PreviousButton"
+      LABEL="ActionControl.Label.Previous"
+    >
+      <LINK
+        PAGE_ID="ICSample_existingCaseList"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="integratedCaseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="integratedCaseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="ExitButton"
+      LABEL="ActionControl.Label.Exit"
+    />
+
+
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="productID"/>
+  <PAGE_PARAMETER NAME="integratedCaseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="productID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="productID"
+    />
+  </CONNECT>
+
+
+  <LIST TITLE="List.Title.ProvidersAndLocations">
+
+
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="15"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.Select">
+        <LINK
+          PAGE_ID="ICSample_selectDeliveryPattern"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="productID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="productID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="productProviderID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="productProviderID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="locationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="locationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="integratedCaseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="integratedCaseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.Provider"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="productProviderName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="ProductProvider_home">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="productProviderID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Location"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="locationName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      ALIGNMENT="RIGHT"
+      LABEL="Field.Label.Cost"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="estimatedCost"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

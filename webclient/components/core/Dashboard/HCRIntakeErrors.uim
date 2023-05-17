@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2012, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="HCRIntakeErrors"
+  SCRIPT_FILE="ExecDashboardScript.js"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="WorkflowAdministration"
+    NAME="DISPLAY"
+    OPERATION="processInstanceSummarySearch"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="WorkflowAdministration"
+    NAME="ACTION"
+    OPERATION="sendReportDurationDetails"
+    PHASE="ACTION"
+  />
+
+
+  <SCRIPT
+    ACTION="changeChartWidthDependingOnBrowser()"
+    EVENT="ONLOAD"
+  />
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="result$infoList$dtls$informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <CLUSTER STYLE="SEARCHCRITERIAPANEL">
+    <CLUSTER
+      NUM_COLS="2"
+      STYLE="SEARCHCRITERIAPANEL1"
+    >
+      <CLUSTER
+        NUM_COLS="2"
+        STYLE="SEARCHCRITERIAPANEL2"
+      >
+        <FIELD LABEL="Field.Label.ProcessInstantstartDate">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$searchFromDate"
+            />
+          </CONNECT>
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="key$processInstanceStartFromDate"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.ToEndDate">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$searchToDate"
+            />
+          </CONNECT>
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="key$processInstanceStartToDate"
+            />
+          </CONNECT>
+        </FIELD>
+      </CLUSTER>
+      <CLUSTER STYLE="SEARCHCRITERIAPANEL3">
+        <ACTION_SET
+          ALIGNMENT="CENTER"
+          TOP="false"
+        >
+          <ACTION_CONTROL
+            IMAGE="SearchButton"
+            LABEL="ActionControl.Label.Go"
+            TYPE="SUBMIT"
+          >
+            <LINK PAGE_ID="HCRIntakeErrors_customised">
+              <CONNECT>
+                <SOURCE
+                  NAME="ACTION"
+                  PROPERTY="result$processInstanceStartFromDate"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="searchFromDate"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="ACTION"
+                  PROPERTY="result$processInstanceStartToDate"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="searchToDate"
+                />
+              </CONNECT>
+            </LINK>
+          </ACTION_CONTROL>
+        </ACTION_SET>
+      </CLUSTER>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="45"
+    STYLE="WORKFLOWCLUSTER"
+    TITLE="Cluster.Title.Workflow"
+  >
+    <DESCRIPTION>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Cluster.Description.Workflow"
+        />
+      </CONNECT>
+    </DESCRIPTION>
+    <CLUSTER NUM_COLS="2">
+      <CLUSTER STYLE="WORKFLOWCHART">
+        <FIELD>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$fullDetailsList$workflowChart"
+            />
+          </CONNECT>
+        </FIELD>
+      </CLUSTER>
+
+
+      <CLUSTER
+        LABEL_WIDTH="45"
+        STYLE="WORKFLOWTABLE"
+      >
+        <LIST TITLE="List.Title.ProcessInstanceErrorsWF">
+          <FIELD LABEL="Field.Label.Workflow">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="fullDetailsList$dtls$processDisplayName"
+              />
+            </CONNECT>
+          </FIELD>
+          <FIELD LABEL="Field.Label.TotalInstances">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="fullDetailsList$dtls$countOfInstances"
+              />
+            </CONNECT>
+          </FIELD>
+          <FIELD LABEL="Field.Label.NumberOfErrors">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="fullDetailsList$dtls$countOfErrors"
+              />
+            </CONNECT>
+            <LINK PAGE_ID="WorkflowAdministration_processInstanceErrorsSearchByProcessDetailsWithDates">
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="result$searchFromDate"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="processCompletedFromDate"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="result$searchToDate"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="processCompletedToDate"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="fullDetailsList$dtls$processName"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="processDisplayName"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="fullDetailsList$dtls$processInstanceErrorType"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="processInstanceErrorType"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="result$isAutoSearchAllowed"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="autoSearchParam"
+                />
+              </CONNECT>
+            </LINK>
+          </FIELD>
+        </LIST>
+        <CLUSTER>
+          <DESCRIPTION>
+            <CONNECT>
+              <SOURCE
+                NAME="TEXT"
+                PROPERTY="Cluster.Description.WorkflowTable"
+              />
+            </CONNECT>
+          </DESCRIPTION>
+          <FIELD CONTROL="SKIP"/>
+        </CLUSTER>
+      </CLUSTER>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="45"
+    STYLE="DPCLUSTER"
+    TITLE="Cluster.Title.DeferredProcess"
+  >
+    <DESCRIPTION>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Cluster.Description.DeferredProcess"
+        />
+      </CONNECT>
+    </DESCRIPTION>
+    <CLUSTER NUM_COLS="2">
+      <CLUSTER STYLE="DEFERREDPROCESSCHART">
+        <FIELD>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dpFullDetailsList$deferredProcessChart"
+            />
+          </CONNECT>
+        </FIELD>
+      </CLUSTER>
+      <CLUSTER
+        LABEL_WIDTH="45"
+        STYLE="DPTABLE"
+      >
+        <LIST TITLE="List.Title.ProcessInstanceErrorsDP">
+          <FIELD LABEL="Field.Label.DeferredTransactionProcess">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="dpFullDetailsList$dtls$processDisplayName"
+              />
+            </CONNECT>
+          </FIELD>
+          <FIELD LABEL="Field.Label.TotalInstances">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="dpFullDetailsList$dtls$countOfInstances"
+              />
+            </CONNECT>
+          </FIELD>
+          <FIELD LABEL="Field.Label.TotalErrors">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="dpFullDetailsList$dtls$countOfErrors"
+              />
+            </CONNECT>
+            <LINK PAGE_ID="WorkflowAdministration_processInstanceErrorsSearchByProcessDetailsWithDates">
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="result$searchFromDate"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="processCompletedFromDate"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="result$searchToDate"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="processCompletedToDate"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="dpFullDetailsList$dtls$processName"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="processDisplayName"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="dpFullDetailsList$dtls$processInstanceErrorType"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="processInstanceErrorType"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="result$isAutoSearchAllowed"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="autoSearchParam"
+                />
+              </CONNECT>
+            </LINK>
+          </FIELD>
+        </LIST>
+        <CLUSTER>
+          <DESCRIPTION>
+            <CONNECT>
+              <SOURCE
+                NAME="TEXT"
+                PROPERTY="Cluster.Description.DeferredProcessTable"
+              />
+            </CONNECT>
+          </DESCRIPTION>
+          <FIELD CONTROL="SKIP"/>
+        </CLUSTER>
+      </CLUSTER>
+    </CLUSTER>
+  </CLUSTER>
+
+
+</PAGE>

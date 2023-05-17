@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/CuramRulesSchema.xsd">  
+  <Product comment="This is the rule set for a Sample Sporting Grant." id="PRODUCT_21" legislationbase="" producttype="RT2"> 
+    <Label highlightonfailure="true" legislationlink=""> 
+      <RuleName> 
+        <Text locale="fr" value="Exemple de subvention de sport"/> 
+      </RuleName>  
+      <SuccessText> 
+        <Text locale="fr" value="Personne autorisée pour un exemple de subvention sportive"/> 
+      </SuccessText>  
+      <FailureText> 
+        <Text locale="fr" value="Personne non autorisée pour un exemple de subvention sportive"/> 
+      </FailureText> 
+    </Label>  
+    <DataAccess name="Globals"> 
+      <DataItem name="dateOfCalculation"/>  
+      <DataItem name="deliveryFrequency"/>  
+      <DataItem name="personReferenceNumber"/>  
+      <DataItem name="claimReferenceNumber"/>  
+      <DataItem name="assessmentReferenceNumber"/> 
+    </DataAccess>  
+    <DataAccess name="SampleSportingGrantProductRulesEvidence"> 
+      <DataItem name="dailyRate"/>  
+      <DataItem name="certificationFromDate"/>  
+      <DataItem name="certificationToDate"/>  
+      <DataItem name="sportingActivityAmount"/>  
+      <DataItem name="sportingActivityExpenseAmount"/>  
+      <DataItem name="varNetSportingActivityAmount"/>  
+      <!-- BEGIN, CR00022287, TV -->  
+      <DataItem name="sportingSponsorshipAmount"/>  
+      <!-- END, CR00022287 -->  
+      <!-- BEGIN, CR00067844, SSK -->  
+      <DataItem name="clientAge"/>  
+      <!-- END, CR00067844 --> 
+    </DataAccess>  
+    <!-- BEGIN, CR00067844, SSK -->  
+    <DataAccess name="SimpleProductRulesConstants"> 
+      <DataItem name="kMinAge"/>  
+      <DataItem name="kMaxAge"/> 
+    </DataAccess>  
+    <!-- END, CR00067844 -->  
+    <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="1" operation="and" summaryitem="true"> 
+      <Label highlightonfailure="true" legislationlink=""> 
+        <RuleName> 
+          <Text locale="fr" value="Produit d'activité sportive d'exemple"/> 
+        </RuleName>  
+        <SuccessText> 
+          <Text locale="fr" value="Produit d'activité sportive d'exemple"/> 
+        </SuccessText>  
+        <FailureText> 
+          <Text locale="fr" value="Produit d'activité sportive d'exemple"/> 
+        </FailureText> 
+      </Label>  
+      <!-- BEGIN, CR00021265, SK -->  
+      <!-- BEGIN, HARP 63288, SK -->  
+      <!-- BEGIN, CR00067844, SSK -->  
+      <Rule id="29" summaryitem="true"> 
+        <Label highlightonfailure="true" legislationlink=""> 
+          <RuleName> 
+            <Text locale="fr" value="Plus de 18 ans."/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Plus de 18 ans."/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Moins de 18 ans."/> 
+          </FailureText> 
+        </Label>  
+        <Condition dataitemlhs="SampleSportingGrantProductRulesEvidence.clientAge" dataitemrhs="SimpleProductRulesConstants.kMinAge" id="14" operation="&gt;="/>  
+        <Condition conjunction="or" dataitemlhs="SampleSportingGrantProductRulesEvidence.clientAge" dataitemrhs="0" id="21" operation="=="/> 
+      </Rule>  
+      <!-- END, CR00067844 -->  
+      <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="18" operation="and" summaryitem="true"> 
+        <!-- END, HARP 63288 -->  
+        <!-- END, CR00021265 -->  
+        <Label highlightonfailure="true" legislationlink=""> 
+          <RuleName> 
+            <Text locale="fr" value="Prérequis"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Prérequis"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Prérequis"/> 
+          </FailureText> 
+        </Label>  
+        <!-- BEGIN, CR00021265, SK -->  
+        <!-- BEGIN, HARP 63288, SK -->  
+        <Rule id="19" rulemode="notquotation" summaryitem="true"> 
+          <!-- END, HARP 63288 -->  
+          <!-- END, CR00021265 -->  
+          <Label highlightonfailure="true" legislationlink=""> 
+            <RuleName> 
+              <Text locale="fr" value="Demandeur certifié"/> 
+            </RuleName>  
+            <SuccessText> 
+              <Text locale="fr" value="Le demandeur est certifié"/> 
+            </SuccessText>  
+            <FailureText> 
+              <Text locale="fr" value="Le demandeur n'est pas certifié"/> 
+            </FailureText> 
+          </Label>  
+          <Condition dataitemlhs="SampleSportingGrantProductRulesEvidence.certificationFromDate" dataitemrhs="Globals.dateOfCalculation" id="2" operation="&lt;="/>  
+          <Condition conjunction="and" dataitemlhs="SampleSportingGrantProductRulesEvidence.certificationToDate" dataitemrhs="Globals.dateOfCalculation" id="3" operation="&gt;="/> 
+        </Rule> 
+      </RuleGroup>  
+      <!-- BEGIN, CR00021265, SK -->  
+      <!-- BEGIN, HARP 63288, SK -->  
+      <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="17" operation="and" summaryitem="true"> 
+        <!-- END, HARP 63288 -->  
+        <!-- END, CR00021265 -->  
+        <Label highlightonfailure="true" legislationlink=""> 
+          <RuleName> 
+            <Text locale="fr" value="Informations collectées"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Informations collectées"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Informations collectées"/> 
+          </FailureText> 
+        </Label>  
+        <!-- BEGIN, CR00141890, ELG -->  
+        <!-- BEGIN, CR00022287, TV -->  
+        <DataItemAssignment dataitem="SampleSportingGrantProductRulesEvidence.varNetSportingActivityAmount" id="16" value="SampleSportingGrantProductRulesEvidence.sportingActivityAmount - SampleSportingGrantProductRulesEvidence.sportingActivityExpenseAmount - SampleSportingGrantProductRulesEvidence.sportingSponsorshipAmount"/>  
+        <!-- END, CR00022287 -->  
+        <!-- END, CR00141890 -->  
+        <Rule id="15" summaryitem="false"> 
+          <Label highlightonfailure="false" legislationlink=""> 
+            <!-- BEGIN, CR00021265, SK -->  
+            <!-- BEGIN, HARP 63288, SK -->  
+            <RuleName> 
+              <Text locale="fr" value="Règle d'activité sportive d'exemple"/> 
+            </RuleName>  
+            <!-- END, HARP 63288 -->  
+            <!-- END, CR00021265 -->  
+            <SuccessText> 
+              <Text locale="fr" value="Règle d'activité sportive d'exemple - réussite"/> 
+            </SuccessText>  
+            <FailureText> 
+              <Text locale="fr" value="Règle d'activité sportive d'exemple - échec"/> 
+            </FailureText> 
+          </Label>  
+          <!-- BEGIN, CR00021265, SK -->  
+          <!-- BEGIN, HARP 63288, SK -->  
+          <Condition closingbrackets="0" conjunction="and" dataitemlhs="SampleSportingGrantProductRulesEvidence.varNetSportingActivityAmount" dataitemrhs="0" id="20" openingbrackets="0" operation="&gt;"/>  
+          <!-- END, HARP 63288 -->  
+          <!-- END, CR00021265 --> 
+        </Rule> 
+      </RuleGroup> 
+    </RuleGroup>  
+    <ObjectiveGroup comment="" conjunction="all" id="7" priority="1"> 
+      <Label highlightonfailure="true" legislationlink=""> 
+        <RuleName> 
+          <Text locale="fr" value="Taux de l'exemple du produit de subvention sportive"/> 
+        </RuleName>  
+        <SuccessText> 
+          <Text locale="fr" value="Le taux de produit de l'exemple de subvention sportive peut être payé"/> 
+        </SuccessText>  
+        <FailureText> 
+          <Text locale="fr" value="Le taux de produit de l'exemple de subvention sportive ne peut être payé"/> 
+        </FailureText> 
+      </Label>  
+      <Objective comment="Sample Sporting Grant Product" deductionallowable="true" description="" id="8" priority="1" ratefctype="CT1" ratetarget="RC1" ratetype="PC4" recordid="12" targetid="0"> 
+        <Label highlightonfailure="true" legislationlink=""> 
+          <RuleName> 
+            <Text locale="fr" value="Taux minimal de produit de l'exemple de subvention sportive"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Taux minimal de produit de l'exemple de subvention sportive"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Taux minimal de produit de l'exemple de subvention sportive"/> 
+          </FailureText> 
+        </Label>  
+        <!-- BEGIN, CR00021265, SK -->  
+        <!-- BEGIN, HARP 63288, SK -->  
+        <ObjectiveTag id="9" name="Personal Daily Rate" pattern="000100000" recordid="14" type="RTT3" value="SampleSportingGrantProductRulesEvidence.varNetSportingActivityAmount"/>  
+        <ObjectiveTag id="10" name="Personal Monthly Rate" pattern="200100000" recordid="15" type="RTT3" value="SampleSportingGrantProductRulesEvidence.varNetSportingActivityAmount*30"/>  
+        <!-- END, HARP 63288 -->  
+        <!-- END, CR00021265 -->  
+        <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="11" operation="and" summaryitem="true"> 
+          <Label highlightonfailure="true" legislationlink=""> 
+            <RuleName> 
+              <Text locale="fr" value="Règles pour le taux maximal de produit de l'exemple de subvention sportive"/> 
+            </RuleName>  
+            <SuccessText> 
+              <Text locale="fr" value="Réussite des règles pour le taux maximal de produit de l'exemple de subvention sportive"/> 
+            </SuccessText>  
+            <FailureText> 
+              <Text locale="fr" value="Echec des règles pour le taux maximal de produit de l'exemple de subvention sportive"/> 
+            </FailureText> 
+          </Label>  
+          <Rule id="12" rulemode="all" summaryitem="true"> 
+            <Label highlightonfailure="true" legislationlink=""> 
+              <!-- BEGIN, CR00168699, LD -->  
+              <RuleName> 
+                <Text locale="fr" value="Le montant net de l'activité sportive doit être supérieur à zéro"/> 
+              </RuleName>  
+              <SuccessText> 
+                <Text locale="fr" value="Le montant net de l'activité sportive doit être supérieur à zéro - Vrai"/> 
+              </SuccessText>  
+              <FailureText> 
+                <Text locale="fr" value="Le montant net de l'activité sportive doit être supérieur à zéro - Faux"/> 
+              </FailureText>  
+              <!-- END, CR00168699 --> 
+            </Label>  
+            <Condition closingbrackets="0" conjunction="and" dataitemlhs="SampleSportingGrantProductRulesEvidence.varNetSportingActivityAmount" dataitemrhs="0" id="13" openingbrackets="0" operation="&gt;"/> 
+          </Rule> 
+        </RuleGroup> 
+      </Objective> 
+    </ObjectiveGroup> 
+  </Product> 
+</RuleSet>

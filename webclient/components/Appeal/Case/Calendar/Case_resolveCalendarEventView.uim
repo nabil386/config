@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2003-2009, 2011 Curam Software Ltd.                       -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp redirects the user to the appropriate page                    -->
+<!-- to view details of an event or activity from a case calendar.          -->
+<PAGE
+  PAGE_ID="Case_resolveCalendarEventView"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+    curam.omega3.request.RequestHandler 
+    rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+    
+    String context = request.getContextPath() + "/";
+    context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";      
+    String eventType = request.getParameter("TYPE");
+    String eventID = request.getParameter("ID");
+    String caseID = request.getParameter("caseID");
+    String isRecurring = request.getParameter("RE");
+    String isReadOnly = request.getParameter("RO");
+    String isIssue = request.getParameter("isIssue");    
+    String url = "";
+    String startDate = request.getParameter("startDate");
+    String calendarViewType = request.getParameter("calendarViewType");  
+    
+    if (startDate == null) {
+    startDate = "";
+    }
+    
+    if (eventID == null) {
+    // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "eventID");
+       System.out.println(e);
+       throw e;
+       // END, CR00126196
+    }
+    
+    String description = "";
+    String activityType = "";
+    
+    if (eventType == null) {      
+    // Read the activity description and type      
+    curam.interfaces.ActivityPkg.Activity_readStandardOrganizationActivity_TH
+    th = new curam.interfaces.ActivityPkg.Activity_readStandardOrganizationActivity_TH();
+    
+    th.setFieldValue(th.key$maintainActivityKey$activityID_idx,eventID);
+    th.callServer();
+    
+    description = th.getFieldValue(th.result$activityContextDescriptionDetails$description_idx);
+    activityType = th.getFieldValue(th.result$organizationStandardActivityDetails$activityTypeCode_idx);
+    }
+    
+    if (!caseID.equals("null")) {
+    
+        // Get the case type code to resolve properly shared event type codes.
+        curam.interfaces.CasePkg.Case_resolveCaseType_TH
+        th = new curam.interfaces.CasePkg.Case_resolveCaseType_TH();
+        
+        th.setFieldValue(th.readCaseTypeDetails$caseID_idx,caseID);
+        
+        th.callServer();
+        
+        String caseTypeCode = th.getFieldValue(th.result$caseTypeCode$caseTypeCode_idx);      
+        
+    if (eventType == null) { 
+    
+    if (activityType.equals("AT2")) { // Activity of type meeting          
+    url = context + "Meeting_viewMeetingPage.do?activityID=" 
+    + curam.omega3.request.RequestUtils.escapeURL(eventID);        
+    } else {  // Standard Activity
+    
+      if (isRecurring.equals("false") &amp;&amp; (isReadOnly.equals("false"))) {
+      url = context + "Activity_viewStandardUserActivityViewOnlyPage.do?activityID=" 
+      + curam.omega3.request.RequestUtils.escapeURL(eventID) + "&amp;description=" +curam.omega3.request.RequestUtils.escapeURL(description);
+
+      } else if (isRecurring.equals("false") &amp;&amp; (isReadOnly.equals("true"))) {
+      url = context + "Activity_viewReadOnlyStandardUserActivityPage.do?activityID=" 
+      + curam.omega3.request.RequestUtils.escapeURL(eventID) + "&amp;description=" +curam.omega3.request.RequestUtils.escapeURL(description);
+
+      } else if (isRecurring.equals("true") &amp;&amp; (isReadOnly.equals("false"))) {
+      url = context + "Activity_viewRecurringUserActivityViewOnlyPage.do?activityID=" 
+      + curam.omega3.request.RequestUtils.escapeURL(eventID) + "&amp;description=" +curam.omega3.request.RequestUtils.escapeURL(description);
+
+      } else if (isRecurring.equals("true") &amp;&amp; (isReadOnly.equals("true"))) {
+      url = context + "Activity_viewReadOnlyRecurringUserActivityPage.do?activityID=" 
+      + curam.omega3.request.RequestUtils.escapeURL(eventID) + "&amp;description=" +curam.omega3.request.RequestUtils.escapeURL(description);
+      }
+    }
+    
+    } else if (eventType.equals("ET1")) {
+        // BEGIN, CR00423973, YF
+        curam.interfaces.CasePkg.Case_isCERDecision_TH 
+          th2 = new curam.interfaces.CasePkg.Case_isCERDecision_TH();
+        th2.setFieldValue(th2.key$caseDecisionID_idx, eventID);
+        th2.callServer();              
+        String result  = th2.getFieldValue("result$result");
+              
+        if (result.equals("YES")) {
+          // Decision is from a CER ruleset
+          String determinationID = th2.getFieldValue("result$determinationID");
+          String decisionFromDate = th2.getFieldValue("result$decisionFromDate");
+          url = context + "ProductDelivery_viewCreoleDecisionDetailsViewOnlyPage.do?determinationID=" 
+             + curam.omega3.request.RequestUtils.escapeURL(determinationID)
+             + "&amp;displayDate=" + curam.omega3.request.RequestUtils.escapeURL(decisionFromDate);
+        } else {
+          // Decision is from a classic ruleset
+          url = context + "ProductDelivery_viewDecisionWithStaticRulesTreeViewOnlyPage.do?decisionID=" 
+             + curam.omega3.request.RequestUtils.escapeURL(eventID) ; 
+        }
+        // END, CR00423973, YF
+    
+    // BEGIN, CR00267858, MC
+    } else if (eventType.equals("ET5")) {
+
+      curam.interfaces.CasePkg.Case_isCreoleProduct_TH 
+        creoleProduct_th = new curam.interfaces.CasePkg.Case_isCreoleProduct_TH();
+
+      creoleProduct_th.setFieldValue(creoleProduct_th.key$caseID_idx, caseID);
+      creoleProduct_th.setFieldValue(creoleProduct_th.approvalKey$caseApprovalID_idx, eventID);
+      creoleProduct_th.callServer();              
+      
+      // BEGIN, CR00292210, KRK
+      String result  = creoleProduct_th.getFieldValue("result$result");      
+      String determinationID = creoleProduct_th.getFieldValue("result$determinationID");
+      // END, CR00292210 
+      
+      if (result.equals("YES")) {
+        url = context + "ProductDelivery_listCaseApprovalEventCreoleDecisionsViewOnlyPage.do?approvalID=" 
+                + curam.omega3.request.RequestUtils.escapeURL(eventID)
+                + "&amp;determinationID=" 
+                + curam.omega3.request.RequestUtils.escapeURL(determinationID)
+           + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+      } else {
+        url = context + "Case_viewApprovalTextBasedTreeViewOnlyPage.do?approvalID=" + curam.omega3.request.RequestUtils.escapeURL(eventID);      
+      }        
+
+    } else if (eventType.equals("ET7")) {
+
+      curam.interfaces.CasePkg.Case_isCreoleProduct_TH 
+        creoleProduct_th = new curam.interfaces.CasePkg.Case_isCreoleProduct_TH();
+
+      creoleProduct_th.setFieldValue(creoleProduct_th.key$caseID_idx, caseID);
+      creoleProduct_th.setFieldValue(creoleProduct_th.approvalKey$caseApprovalID_idx, eventID);
+      creoleProduct_th.callServer();              
+     
+     // BEGIN, CR00292210, KRK
+      String result  = creoleProduct_th.getFieldValue("result$result");            
+      String determinationID = creoleProduct_th.getFieldValue("result$determinationID");
+      // END, CR00292210 
+
+      if (result.equals("YES")) {
+        url = context + "ProductDelivery_listSubmitForApprovalCreoleDecisionsViewOnlyPage.do?approvalID=" 
+                + curam.omega3.request.RequestUtils.escapeURL(eventID)
+                + "&amp;determinationID=" 
+                + curam.omega3.request.RequestUtils.escapeURL(determinationID)
+              + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+      } else {
+        url = context + "Case_viewSubmitForApprovalViewOnlyPage.do?approvalID=" + curam.omega3.request.RequestUtils.escapeURL(eventID);      
+      }         
+
+    } else if (eventType.equals("ET8")) {
+
+      curam.interfaces.CasePkg.Case_isCreoleProduct_TH 
+        creoleProduct_th = new curam.interfaces.CasePkg.Case_isCreoleProduct_TH();
+
+      creoleProduct_th.setFieldValue(creoleProduct_th.key$caseID_idx, caseID);
+      creoleProduct_th.setFieldValue(creoleProduct_th.approvalKey$caseApprovalID_idx, eventID);
+      creoleProduct_th.callServer();     
+               
+      // BEGIN, CR00292210, KRK
+      String result  = creoleProduct_th.getFieldValue("result$result");
+      String determinationID = creoleProduct_th.getFieldValue("result$determinationID");
+      // END, CR00292210 
+      
+      if (result.equals("YES")) {
+        url = context + "ProductDelivery_listCreoleDecisionsForDeterminationPage.do?determinationID=" 
+              + curam.omega3.request.RequestUtils.escapeURL(determinationID)
+              + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+      }            
+    // END, CR00267858  
+
+    } else if (eventType.equals("ET16")) {
+    url = context + "Appeal_hearingCaseHearingHomeViewOnlyPage.do?hearingID=" +curam.omega3.request.RequestUtils.escapeURL(eventID);
+    
+    } else if (eventType.equals("ET17")) {
+    url = context + "Appeal_IC_hearingReviewHearingHomeViewOnlyPage.do?hearingID=" +curam.omega3.request.RequestUtils.escapeURL(eventID);
+    
+    } else if (eventType.equals("ET18")) {
+    url = context + "Appeal_hearingCaseHomeViewOnlyPage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(eventID) ;
+    
+    } else if (eventType.equals("ET19")) {
+    url = context + "Appeal_hearingReviewHomeViewOnlyPage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(eventID); 
+    
+    } else if (eventType.equals("ET21")) {
+    url = context + "Appeal_resolveAppealViewOnlyHomePage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) ;
+    
+    } else if (eventType.equals("ET22")) {
+    url = context + "Appeal_resolveAppealViewOnlyHomePage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(eventID) ;
+    
+    } else if (eventType.equals("ET23")) {
+    url = context + "Appeal_hearingCaseHearingHomeViewOnlyPage.do?hearingID=" + curam.omega3.request.RequestUtils.escapeURL(eventID) ;
+    
+    } else if (eventType.equals("ET24")) {
+    url = context + "Appeal_IC_hearingReviewHearingHomeViewOnlyPage.do?hearingID=" + curam.omega3.request.RequestUtils.escapeURL(eventID) ;
+    
+    } else if (eventType.equals("ET25")) {
+    url = context + "Appeal_IC_hearingReviewHearingHomeViewOnlyPage.do?hearingID=" + curam.omega3.request.RequestUtils.escapeURL(eventID) ;
+    
+    } else if (eventType.equals("ET26")) {  
+    url = context + "Appeal_hearingCaseHearingHomeViewOnlyPage.do?hearingID=" + curam.omega3.request.RequestUtils.escapeURL(eventID) ;
+    
+    } else if (eventType.equals("ET27")) {      
+    url = context + "Appeal_hearingCaseHearingHomeViewOnlyPage.do?hearingID=" + curam.omega3.request.RequestUtils.escapeURL(eventID) ;
+    
+    } else if (eventType.equals("ET28")) {
+    url = context + "Appeal_IC_hearingReviewHearingHomeViewOnlyPage.do?hearingID=" + curam.omega3.request.RequestUtils.escapeURL(eventID) ;          
+    
+    //BEGIN, CR00125204, RKi   
+    } else if (eventType.equals("ET29")) {
+    url = context + "Appeal_IC_listHearingCaseReopenHistoryViewOnlyPage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) ;
+    
+    } else if (eventType.equals("ET30")) {
+    // BEGIN, CR00295047, MC
+    url = context + "Appeal_resolveAppealViewOnlyHomePage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+
+    } else if (eventType.equals("ET31")) {
+    url = context + "Appeal_resolveAppealViewOnlyHomePage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) ;
+    
+    } else if (eventType.equals("ET32")) {
+    url = context + "Appeal_resolveAppealViewOnlyHomePage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) ;
+    
+    } else if (eventType.equals("ET33")) {
+    url = context + "Appeal_resolveAppealViewOnlyHomePage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) ;         
+    
+    } else if (eventType.equals("ET34")) {
+    url = context + "Appeal_resolveAppealViewOnlyHomePage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) ;
+    
+    } else if (eventType.equals("ET35")) {
+    url = context + "Appeal_resolveAppealViewOnlyHomePage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) ;          
+    
+    } else if (eventType.equals("ET36")) {
+    url = context + "Appeal_resolveAppealViewOnlyHomePage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) ;
+    // END, CR00295047 
+    //END, CR00125204
+    }else if (eventType.equals("ET38")) {
+    url = context + "Appeal_hearingReviewHomeViewOnlyPage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(eventID);
+   
+    } else if (eventType.equals("ET46")) {             
+    url = context + "ServicePlanDelivery_viewServicePlanApprovalRequestPage.do?servicePlanApprovalRequestID=" + curam.omega3.request.RequestUtils.escapeURL(eventID);
+    
+    } else if (eventType.equals("ET47")) {             
+    url = context + "ServicePlanDelivery_viewServicePlanApprovalRequestPage.do?servicePlanApprovalRequestID=" + curam.omega3.request.RequestUtils.escapeURL(eventID);
+    
+    } else if (eventType.equals("ET48")) {             
+    url = context + "ServicePlanDelivery_viewServicePlanApprovalRequestPage.do?servicePlanApprovalRequestID=" + curam.omega3.request.RequestUtils.escapeURL(eventID);
+    
+    
+    } else if (eventType.equals("ET101")) {
+    url = context + "ServicePlanDelivery_viewClosureDetailsPage.do?closureID=" 
+    + curam.omega3.request.RequestUtils.escapeURL(eventID) + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+    
+    
+    } else if (eventType.equals("ET128")) {
+    url = context + "ServicePlanDelivery_viewContractPrintCalendarDetailsPage.do?servicePlanContractID=" + curam.omega3.request.RequestUtils.escapeURL(eventID)
+    + "&amp;startDate=" + curam.omega3.request.RequestUtils.escapeURL(startDate) + "&amp;calendarViewType=" + curam.omega3.request.RequestUtils.escapeURL(calendarViewType)
+    + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+    
+    } else if (eventType.equals("ET3")) {
+    url = context + "Case_viewReviewViewOnlyPage.do?reviewID=" + curam.omega3.request.RequestUtils.escapeURL(eventID);
+    
+    } else if (eventType.equals("ET4")) {
+    url = context + "Case_viewReferralViewOnlyPage.do?referralID=" + curam.omega3.request.RequestUtils.escapeURL(eventID);
+    
+    } else if (eventType.equals("ET10")) {
+    url = context + "Financial_viewPaymentInstructionModalPage.do?finInstructionID=" + curam.omega3.request.RequestUtils.escapeURL(eventID);
+    
+    // BEGIN, CR00146763, GYH
+    
+    } else if (eventType.equals("ET2")) {
+    url = context + "Case_viewAppealViewOnlyPage.do?appealID=" + curam.omega3.request.RequestUtils.escapeURL(eventID);
+    
+    } else if (eventType.equals("ET12")) {
+    url = context + "ProductDelivery_viewCloseViewOnlyPage.do?closureID=" 
+    + curam.omega3.request.RequestUtils.escapeURL(eventID) + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+    
+    } else if (eventType.equals("ET129")) {
+    url = context + "IssueDelivery_viewApprovalRequestPage.do?issueApprovalRequestID=" + curam.omega3.request.RequestUtils.escapeURL(eventID)
+    + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);      
+    
+    } else if (eventType.equals("ET130")) {
+    url = context + "IssueDelivery_viewApprovalRequestPage.do?issueApprovalRequestID=" + curam.omega3.request.RequestUtils.escapeURL(eventID)
+    + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+    
+    } else if (eventType.equals("ET131")) {
+    url = context + "IssueDelivery_viewApprovalRequestPage.do?issueApprovalRequestID=" + curam.omega3.request.RequestUtils.escapeURL(eventID)
+    + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+    
+    } else if (eventType.equals("ET133")) {
+    url = context + "IssueDelivery_viewClosureDetailsPage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID); 
+    
+    } else if (eventType.equals("ET134")) {
+    url = context + "ProductDelivery_viewMilestoneModalPage.do?milestoneDeliveryID=" + curam.omega3.request.RequestUtils.escapeURL(eventID)
+    + "&amp;caseID=" + caseID;   
+    // END, CR00146763    
+    
+    } else if (eventType.equals("ET37") ) {
+      url = context + "Appeal_hearingCaseHomeDetailsForICPage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(eventID);
+      
+    } else {
+    
+    url = context + "Case_noEventDetailsPage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID); 
+    
+    }       
+    
+    
+    } else {
+    
+    if (eventType == null) {        
+    
+    if (activityType.equals("AT2")) { // Activity of type meeting          
+    url = context + "CalendarMeeting_viewMeetingPage.do?activityID=" 
+    + curam.omega3.request.RequestUtils.escapeURL(eventID);        
+    } else {  // Standard Activity
+    
+    if (isRecurring.equals("false") &amp;&amp; (isReadOnly.equals("false"))) {
+    url = context + "Activity_viewStandardUserActivityViewOnlyPage.do?activityID=" 
+    + curam.omega3.request.RequestUtils.escapeURL(eventID) + "&amp;description=" +curam.omega3.request.RequestUtils.escapeURL(description);
+    
+    } else if (isRecurring.equals("false") &amp;&amp; (isReadOnly.equals("true"))) {
+    url = context + "Activity_viewReadOnlyStandardUserActivityPage.do?activityID=" 
+    + curam.omega3.request.RequestUtils.escapeURL(eventID) + "&amp;description=" +curam.omega3.request.RequestUtils.escapeURL(description);
+    
+    } else if (isRecurring.equals("true") &amp;&amp; (isReadOnly.equals("false"))) {
+    url = context + "Activity_viewRecurringUserActivityViewOnlyPage.do?activityID=" 
+    + curam.omega3.request.RequestUtils.escapeURL(eventID) + "&amp;description=" +curam.omega3.request.RequestUtils.escapeURL(description);
+    
+    } else if (isRecurring.equals("true") &amp;&amp; (isReadOnly.equals("true"))) {
+    url = context + "Activity_viewReadOnlyRecurringUserActivityPage.do?activityID=" 
+    + curam.omega3.request.RequestUtils.escapeURL(eventID) + "&amp;description=" +curam.omega3.request.RequestUtils.escapeURL(description);
+    } 
+    } 
+    } else {
+    
+    url = context + "Case_noEventDetailsPage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID); 
+    
+    }
+    
+    }
+    // END, CR00267858  
+    
+    url += "&amp;" + rh.getSystemParameters();
+    response.sendRedirect(response.encodeRedirectURL(url));
+    
+    
+  </JSP_SCRIPTLET>
+</PAGE>

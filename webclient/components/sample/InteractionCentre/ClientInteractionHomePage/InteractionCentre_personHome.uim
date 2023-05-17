@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003, 2008 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Reads a person's interaction home page details and their recent        -->
+<!-- interactions with the organization. The number of recent client        -->
+<!-- intractions displayed on person's interaction home page is predefined  -->
+<PAGE
+  PAGE_ID="InteractionCentre_personHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SHORTCUT_TITLE ICON="person.icon">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="description"
+      />
+    </CONNECT>
+  </SHORTCUT_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="InteractionCentre"
+    NAME="DISPLAY"
+    OPERATION="readHomePage"
+  />
+
+
+  <PAGE_PARAMETER NAME="participantID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="participantID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="readPersonInteractionHomePageKey$participantID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Label.PersonalDetails"
+  >
+
+
+    <CLUSTER>
+      <FIELD LABEL="Field.Label.Name">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleName"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="Person_resolveHomePage">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="participantID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Address">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="address"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <CLUSTER>
+      <FIELD LABEL="Field.Label.ReferenceNumber">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="primaryAlternateID"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.DOB">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dateOfBirth"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Gender">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="gender"
+          />
+        </CONNECT>
+      </FIELD>
+      <CONTAINER LABEL="Container.Label.Phone">
+        <FIELD>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="phoneCountryCode"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="phoneAreaCode"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="phoneNumber"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="phoneExtension"
+            />
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.RecentInteractions">
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="15"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.View">
+        <LINK PAGE_ID="InteractionCentre_viewInteraction">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="clientInteractionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="clientInteractionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.InteractionType"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="interactionTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.InteractionDateTime"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="interactionDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

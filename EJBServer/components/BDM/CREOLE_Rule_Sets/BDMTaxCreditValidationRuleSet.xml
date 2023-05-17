@@ -1,0 +1,629 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMTaxCreditValidationRuleSet">
+
+	<Class extends="DefaultEvidenceValidationResult"
+		extendsRuleSet="EvidenceValidationRuleSet" name="ValidationResult">
+		
+		<!-- Setting rule class to IncomeRuleSet -->
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="BDMTaxCredit" ruleset="BDMTaxCreditRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="evidenceSuccessionID">
+	<type>
+		<javaclass name="Number" />
+	</type>
+	<derivation>
+		<reference attribute="successionID">
+			<reference attribute="evidence" />
+		</reference>
+	</derivation>
+</Attribute>
+		<!--OOTB Attribute that needs to be initialized-->
+		<Attribute name="standardValidations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="Validation"
+						ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="taxCreditStandardValidations" />
+			</derivation>
+		</Attribute>
+		<Attribute name="taxCreditEvidence">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="BDMTaxCredit"
+						ruleset="BDMTaxCreditDataRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<readall ruleclass="BDMTaxCredit"
+					ruleset="BDMTaxCreditDataRuleSet">
+					<match retrievedattribute="caseID">
+						<reference attribute="caseID">
+							<reference attribute="evidence"/>
+						</reference>
+					</match>
+				</readall>
+			</derivation>
+		</Attribute>
+		<!--  Validate that tax year is a numerical value -->
+		<Attribute name="taxCreditStandardValidations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="Validation"
+						ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="Validation"
+							ruleset="EvidenceValidationRuleSet" />
+					</listof>
+					<members>
+						<reference attribute="validateNumberOfDependantsForSK" />
+						<reference attribute="validateNumberOfDependantsForNonSK" />
+						<reference attribute="validateTaxCreditOverlap" />
+					</members>
+				</fixedlist>
+			</derivation>
+		</Attribute>
+		
+		<!--  Error message throw of year not being numeric-->
+		<Attribute name="validateNumberOfDependantsForSK">
+			<type>
+				<ruleclass name="Validation"
+					ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation"
+					ruleset="EvidenceValidationRuleSet">
+					<not>
+						<reference attribute="isValidNumberOfDependantsForSK" />
+					</not>
+					<ResourceMessage key="ERR_NOT_VALID_DEPENDANTS_SK"
+						resourceBundle="curam.bdm.pdc.rules.BDMTaxCreditValidationRuleSet">
+					</ResourceMessage>
+				</create>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="isValidNumberOfDependantsForSK">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Boolean"/>
+					</type>
+					<when>
+						<condition>
+							<reference attribute="isSaskatchewanResident"/>
+						</condition>
+						<value>
+							<choose>
+								<type>
+									<javaclass name="Boolean"/>
+								</type>
+								<when>
+									<condition>
+										<equals>
+											<reference attribute="numberOfdependant">
+												<reference attribute="evidence"/>
+											</reference>
+											<Number value="0"/>
+										</equals>
+									</condition>
+									<value>
+										<false/>
+									</value>
+								</when>
+								<otherwise>
+									<value>
+										<true/>
+									</value>
+								</otherwise>
+							</choose>							
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<true/>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="isValidtaxDeductAndNativeStatus">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Boolean"/>
+					</type>
+					<when>
+						<condition>
+							<all>
+								<fixedlist>
+									<listof>
+										<javaclass name="Boolean"/>
+									</listof>
+									<members>
+										<equals>
+											<reference attribute="nativeStatus">
+												<reference attribute="evidence"/>
+											</reference>
+											<Code table="BDMAlertsChoice">
+												<String value="BDMDAC8001" />
+											</Code>
+										</equals>
+										<equals>
+											<reference attribute="incomeTaxOnlyPart">
+												<reference attribute="evidence"/>
+											</reference>
+											<null/>
+										</equals>
+									</members>
+								</fixedlist>
+							</all>
+						</condition>
+						<value>
+							<false/>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<choose>
+								<type>
+									<javaclass name="Boolean"/>
+								</type>
+								<when>
+									<condition>
+										<equals>
+											<reference attribute="nativeStatus">
+												<reference attribute="evidence"/>
+											</reference>
+											<Code table="BDMAlertsChoice">
+												<String value="BDMDAC8002" />
+											</Code>
+										</equals>
+									</condition>
+									<value>
+										<false/>
+									</value>
+								</when>
+								<otherwise>
+									<value>
+										<true/>
+									</value>
+								</otherwise>
+							</choose>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="isValidtaxDeductAndPartPay">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Boolean"/>
+					</type>
+					<when>
+						<condition>
+							<all>
+								<fixedlist>
+									<listof>
+										<javaclass name="Boolean"/>
+									</listof>
+									<members>
+										<equals>
+											<reference attribute="incomeTaxFromPay">
+												<reference attribute="evidence"/>
+											</reference>
+											<Code table="BDMAlertsChoice">
+												<String value="BDMDAC8001" />
+											</Code>
+										</equals>
+										<equals>
+											<reference attribute="incomeTaxOnlyPart">
+													<reference attribute="evidence"/>
+											</reference>
+											<null/>
+										</equals>
+									</members>
+								</fixedlist>
+							</all>
+						</condition>
+						<value>
+							<false/>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<choose>
+								<type>
+									<javaclass name="Boolean"/>
+								</type>
+								<when>
+									<condition>
+										<any>
+											<fixedlist>
+												<listof>
+													<javaclass name="Boolean"/>
+												</listof>
+												<members>
+													<equals>
+														<reference attribute="incomeTaxFromPay">
+															<reference attribute="evidence"/>
+														</reference>
+														<Code table="BDMAlertsChoice">
+															<String value="BDMDAC8002" />
+														</Code>
+													</equals>
+													<equals>
+														<reference attribute="incomeTaxFromPay">
+																<reference attribute="evidence"/>
+														</reference>
+														<null/>
+													</equals>
+												</members>
+											</fixedlist>
+										</any>
+									</condition>
+									<value>
+										<false/>
+									</value>
+								</when>
+								<otherwise>
+									<value>
+										<true/>
+									</value>
+								</otherwise>
+							</choose>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="isSaskatchewanResident">
+			<type>
+				<javaclass name="Boolean"/>
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.Statics" method="isValidProvinceTypeResident">
+        			<type>
+						<javaclass name="Boolean"/>
+			        </type>
+					<arguments>
+				        <reference attribute="participantRoleID">
+                      		 <reference attribute="related_caseParticipant">
+                         		 <reference attribute="evidence"/>
+							</reference>
+                      	</reference>
+                      	 <String value="SK"/>		
+			        </arguments>
+			    </call>
+			</derivation>
+		</Attribute>
+	
+	<Attribute name="validateNumberOfDependantsForNonSK">
+			<type>
+				<ruleclass name="Validation"
+					ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation"
+					ruleset="EvidenceValidationRuleSet">
+					<not>
+						<reference attribute="isValidNumberOfDependantsForNonSK" />
+					</not>
+					<ResourceMessage key="ERR_NUM_DEPENDANTS_MUST_BE_BLANK"
+						resourceBundle="curam.bdm.pdc.rules.BDMTaxCreditValidationRuleSet">
+					</ResourceMessage>
+				</create>
+			</derivation>
+		</Attribute>
+	<Attribute name="isValidNumberOfDependantsForNonSK">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Boolean"/>
+					</type>
+					<when>
+						<condition>
+							<not>
+								<reference attribute="isSaskatchewanResident"/>
+							</not>
+						</condition>
+						<value>
+							<choose>
+								<type>
+									<javaclass name="Boolean"/>
+								</type>
+								<when>
+									<condition>
+										<not>
+											<equals>
+												<reference attribute="numberOfdependant">
+													<reference attribute="evidence"/>
+												</reference>
+												<Number value="0"/>
+											</equals>
+										</not>
+									</condition>
+									<value>
+										<false/>
+									</value>
+								</when>
+								<otherwise>
+									<value>
+										<true/>
+									</value>
+								</otherwise>
+							</choose>							
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<true/>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="validateTaxCreditOverlap">
+		<type>
+			<ruleclass name="Validation"
+				ruleset="EvidenceValidationRuleSet" />
+		</type>
+		<derivation>
+			<create ruleclass="Validation"
+					ruleset="EvidenceValidationRuleSet">
+						<reference attribute="validateOverlapTaxCreditEvd" />
+					<ResourceMessage key="ERR_OVERLAPPING_TAX_CREDIT"
+						resourceBundle="curam.bdm.pdc.rules.BDMTaxCreditValidationRuleSet">
+					</ResourceMessage>
+				</create>
+		</derivation>
+	</Attribute>
+		
+			
+	<Attribute name="validateOverlapTaxCreditEvd">
+	<type>
+		<javaclass name="Boolean" />
+	</type>
+	<derivation>
+		<choose>
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<when>
+				<condition>
+					<not>
+						<equals>
+							<reference attribute="toDate">
+								<reference attribute="evidence" />
+							</reference>
+							<null />
+						</equals>
+					</not>
+				</condition>
+				<value>
+					<reference attribute="validateOverlapWithEndDate" />
+				</value>
+			</when>
+			<otherwise>
+				<value>
+					<reference attribute="validateOverlapNoEndDate" />
+				</value>
+			</otherwise>
+		</choose>
+	</derivation>
+</Attribute>
+	<!-- Check if there there is overlap with end date -->
+	
+	<Attribute name="validateOverlapWithEndDate">
+	<type>
+		<javaclass name="Boolean" />
+	</type>
+	<derivation>
+		<any>
+			<dynamiclist>
+				<list>
+					<reference
+						attribute="taxCreditEvidenceForClient" />
+				</list>
+				<listitemexpression>
+					<choose>
+						<type>
+							<javaclass name="Boolean" />
+						</type>
+						<when>
+							<condition>
+								<all>
+									<fixedlist>
+										<listof>
+											<javaclass name="Boolean" />
+										</listof>
+										<members>
+											<any>
+												<fixedlist>
+													<listof>
+														<javaclass name="Boolean" />
+													</listof>
+													<members>
+														<compare comparison="&lt;=">
+															<reference attribute="fromDate">
+																<reference attribute="evidence" />
+															</reference>
+															<reference attribute="toDate">
+																<current />
+															</reference>
+														</compare>
+														<equals>
+															<reference attribute="toDate">
+																<current />
+															</reference>
+															<null />
+														</equals>
+													</members>
+												</fixedlist>
+											</any>
+											<compare comparison="&gt;=">
+												<reference attribute="toDate">
+													<reference attribute="evidence" />
+												</reference>
+												<reference attribute="fromDate">
+													<current />
+												</reference>
+											</compare>
+										</members>
+									</fixedlist>
+								</all>
+							</condition>
+							<value>
+								<true />
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<false />
+							</value>
+						</otherwise>
+					</choose>
+				</listitemexpression>
+			</dynamiclist>
+		</any>
+	</derivation>
+</Attribute>
+	<Attribute name="validateOverlapNoEndDate">
+		<type>
+			<javaclass name="Boolean" />
+		</type>
+		<derivation>
+			<any>
+				<dynamiclist>
+					<list>
+						<reference
+							attribute="taxCreditEvidenceForClient" />
+					</list>
+					<listitemexpression>
+						<choose>
+							<type>
+								<javaclass name="Boolean" />
+							</type>
+							<when>
+								<condition>
+									<any>
+										<fixedlist>
+											<listof>
+												<javaclass name="Boolean" />
+											</listof>
+											<members>
+												<equals>
+													<reference attribute="toDate">
+														<current />
+													</reference>
+													<null />
+												</equals>
+												<compare comparison="&lt;=">
+													<reference attribute="fromDate">
+														<reference attribute="evidence" />
+													</reference>
+													<reference attribute="toDate">
+														<current />
+													</reference>
+												</compare>
+											</members>
+										</fixedlist>
+									</any>
+								</condition>
+								<value>
+									<true />
+								</value>
+							</when>
+							<otherwise>
+								<value>
+									<false />
+								</value>
+							</otherwise>
+						</choose>
+					</listitemexpression>
+				</dynamiclist>
+			</any>
+		</derivation>
+	</Attribute>
+	
+	
+	<!-- Get list of all tax Credit evidence -->
+	
+<Attribute name="taxCreditEvidenceForClient">
+	<type>
+		<javaclass name="List">
+			<ruleclass name="BDMTaxCredit"
+				ruleset="BDMTaxCreditDataRuleSet" />
+		</javaclass>
+	</type>
+	<derivation>
+		<filter>
+			<list>
+				<reference attribute="taxCreditEvidence" />
+			</list>
+			<listitemexpression>
+				<all>
+					<fixedlist>
+						<listof>
+							<javaclass name="Boolean" />
+						</listof>
+						<members>
+							<not>
+								<equals>
+									<reference attribute="evidenceSuccessionID" />
+									<reference attribute="successionID">
+										<current />
+									</reference>
+								</equals>
+							</not>
+							
+							<equals>
+
+								<reference attribute="participantRoleID">
+									<reference attribute="related_caseParticipant">
+										<reference attribute="evidence" />
+									</reference>
+								</reference>
+								<reference attribute="participantRoleID">
+									<reference attribute="related_caseParticipant">
+										<current />
+									</reference>
+								</reference>
+							</equals>
+						</members>
+					</fixedlist>
+				</all>
+			</listitemexpression>
+		</filter>
+	</derivation>
+</Attribute>	
+	</Class>
+</RuleSet>

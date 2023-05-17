@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2006-2008, 2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows you to view the list of questions to be added to the  -->
+<!-- decision matrix widget.  
+-->
+<!-- BEGIN, CR00291203, PB -->
+<?curam-deprecated Since Curam 6.0 SP2, 
+  content of this uim has been moved to 'DecisionMatrixQuestionPopup.uim'.
+  Now this uim is no more called from 'DecisionMatrixQuestionPopup.uim'.
+  See release note:CR00291203?>
+<!-- END, CR00291203 -->
+<PAGE
+  PAGE_ID="DecisionAssistAdmin_decisionMatrixQuestionPopup"
+  SCRIPT_FILE="DecisionAssistAdmin_decisionMatrixWidget.js"
+  WINDOW_OPTIONS="height=600"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <SCRIPT
+    ACTION="addMatrixQuestionsPopupListener()"
+    EVENT="ONLOAD"
+  />
+  <PAGE_PARAMETER NAME="matrixID"/>
+  <PAGE_PARAMETER NAME="existingQuestionIds"/>
+  <PAGE_PARAMETER NAME="questionnaireVersionId"/>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="DecisionMatrix"
+    NAME="DISPLAY"
+    OPERATION="getQuestionsForMatrix"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="matrixID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="existingQuestionDetails$decisionMatrixVersionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="existingQuestionIds"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="existingQuestionDetails$existingQuestionIds"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionnaireVersionId"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$dtls$questionnaireVersionID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="DecisionMatrix"
+    NAME="ACTION"
+    OPERATION="readMultiSelect"
+    PHASE="ACTION"
+  />
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Questionnaire"
+  >
+    <FIELD LABEL="Field.Label.QuestionnaireName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$questionnaireDtls$dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$questionnaireDtls$dtls$versionStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireFrom">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$questionnaireDtls$dtls$fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireVersion">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$questionnaireDtls$dtls$questionnaireVersionNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$questionnaireDtls$dtls$type"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST
+    
+    TITLE="List.Title"
+  >
+    <!-- BEGIN, CR00246242, AK -->
+    <CONTAINER
+      ALIGNMENT="LEFT"
+      LABEL="List.Multiselect.Header"
+      WIDTH="5"
+    >
+      <WIDGET
+        ALIGNMENT="LEFT"
+        TYPE="MULTISELECT"
+        WIDTH="10"
+      >
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$questionList$dtlsList$multiselectQuestionParam"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="key$multiselect"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Title.Question"
+    >
+      <!-- END, CR00246242 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$questionList$dtlsList$questionLabel"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- BEGIN, CR00246242, AK -->
+  <ACTION_SET TOP="false">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.AddQuestions"
+      TYPE="SUBMIT"
+    >
+      <SCRIPT
+        ACTION="addQuestionsFromPopup(arguments[0])"
+        EVENT="ONCLICK"
+      />
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel">
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="DecisionMatrixQuestionPopup"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="matrixID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="matrixID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="existingQuestionIds"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="existingQuestionIds"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- END, CR00246242 -->
+</PAGE>

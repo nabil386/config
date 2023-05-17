@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2004, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to select the appellant for a hearing case   -->
+<PAGE
+  PAGE_ID="Appeal_selectAppellant"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Appeal"
+    NAME="DISPLAY"
+    OPERATION="listCaseParticipantsForAppellant"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="HearingCase"
+    NAME="ACTION"
+    OPERATION="enterAppellantDetails"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="parentCaseID"/>
+  <PAGE_PARAMETER NAME="implCaseID"/>
+  <PAGE_PARAMETER NAME="contextDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="implCaseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="implCaseID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="Continue"
+      LABEL="ActionControl.Label.Continue"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        PAGE_ID="Appeal_resolveSelectOrCreateHearingCase"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="activeAppealsIndicator"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="activeAppealsIndicator"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="participantRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="participantRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="implCaseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="implCaseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="parentCaseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="parentCaseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+  </ACTION_SET>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="implCaseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.Description"
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SelectAppellant"
+  >
+
+
+    <FIELD LABEL="Field.Label.Appellant">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="caseParticipantRoleID"
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="caseParticipantRoleID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

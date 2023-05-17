@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed Materials - Property of IBM
+ 
+ PID 5725-H26
+ 
+ Copyright IBM Corporation 2021. All Rights Reserved.
+ 
+ US Government Users Restricted Rights - Use, duplication or disclosure
+ restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<workflow-process
+  category="PC1"
+  createdBy="admin"
+  creationDate="20210909T120000"
+  id="1126999418470748"
+  language-version="1.0"
+  process-version="3"
+  released="true"
+>
+  <name>RemoveUser</name>
+  <process-display-name>
+    <localized-text>
+      <locale language="en">Remove User</locale>
+    </localized-text>
+  </process-display-name>
+  <description>
+    <localized-text>
+      <locale language="en">This workflow process handles processing when an administrator chooses to delete a user from the organisation structure. If there are tasks or cases assigned to the deleted user, then a task is created for the organisation's lead user to request the workload be reassigned.</locale>
+    </localized-text>
+  </description>
+  <enactment-mappings>
+    <mapping>
+      <source-attribute
+        name="userName"
+        struct-name="curam.core.struct.CancelUserKeyStruct"
+      />
+      <target-attribute
+        name="userName"
+        wdo-name="RemoveUserWDO"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="fullname"
+        struct-name="curam.core.struct.UserFullname"
+      />
+      <target-attribute
+        name="userFullName"
+        wdo-name="RemoveUserWDO"
+      />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo
+      initialize-attributes="false"
+      is-list-wdo="false"
+    >
+      <wdo-name>RemoveUserWDO</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">RemoveUserWDO</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>isUserDeleted</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">isUserDeleted</locale>
+            </localized-text>
+          </display-name>
+          <type>BOOLEAN</type>
+          <required-at-enactment>false</required-at-enactment>
+          <process-output>false</process-output>
+          <initial-value>false</initial-value>
+        </attribute>
+        <attribute>
+          <attribute-name>userName</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">userName</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>userFullName</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">userFullName</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="1">
+      <name>
+        <localized-text>
+          <locale language="en">Start Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The start process activity</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="1"/>
+      </split>
+    </start-process-activity>
+    <end-process-activity id="2">
+      <name>
+        <localized-text>
+          <locale language="en">End Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+    </end-process-activity>
+    <automatic-activity
+      category="AC1"
+      id="3"
+    >
+      <name>
+        <localized-text>
+          <locale language="en">Remove User</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">This activity validates the user's status, tasks and cases before removing the user. </locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+      <split type="xor">
+        <transition-id idref="3"/>
+        <transition-id idref="4"/>
+      </split>
+      <bpo-mapping
+        interface-name="curam.core.sl.intf.UserAccess"
+        method-name="cancelUserInWF"
+      >
+        <formal-parameters>
+          <formal-parameter index="0">
+            <struct type="curam.core.struct.CancelUserKeyStruct">
+              <field name="userName">
+                <base-type type="STRING">
+                  <wdo-attribute
+                    name="userName"
+                    wdo-name="RemoveUserWDO"
+                  />
+                </base-type>
+              </field>
+            </struct>
+          </formal-parameter>
+        </formal-parameters>
+        <return>
+          <struct>
+            <field name="booleanResult">
+              <base-type>
+                <wdo-attribute
+                  name="isUserDeleted"
+                  wdo-name="RemoveUserWDO"
+                />
+              </base-type>
+            </field>
+          </struct>
+        </return>
+      </bpo-mapping>
+    </automatic-activity>
+    <manual-activity
+      category="AC1"
+      id="4"
+    >
+      <name>
+        <localized-text>
+          <locale language="en">Reassign User Tasks &amp; Cases</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">This activity reassigns any tasks and cases for a user that is marked for removal. </locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="9"/>
+      </split>
+      <task>
+        <message>
+          <message-text>
+            <localized-text>
+              <locale language="en">Reallocate all the tasks and Cases assigned to user %1s as he is marked for removal.</locale>
+            </localized-text>
+          </message-text>
+          <message-parameters>
+            <wdo-attribute
+              name="userFullName"
+              wdo-name="RemoveUserWDO"
+            />
+          </message-parameters>
+        </message>
+        <actions>
+          <action
+            open-modal="true"
+            page-id="Organization_closeRemoveUserTask"
+            principal-action="true"
+          >
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="en">Confirm Workload Reallocation</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="username">
+              <wdo-attribute
+                name="userFullName"
+                wdo-name="RemoveUserWDO"
+              />
+            </link-parameter>
+            <link-parameter name="taskID">
+              <wdo-attribute
+                name="taskID"
+                wdo-name="Context_Task"
+              />
+            </link-parameter>
+          </action>
+        </actions>
+        <allow-deadline-override>false</allow-deadline-override>
+        <allow-task-forwarding>true</allow-task-forwarding>
+      </task>
+      <allocation-strategy
+        identifier="curam.core.sl.intf.NotificationAllocationFunction.usersSupervisorStrategy"
+        type="function"
+      >
+        <function-mappings>
+          <formal-parameters>
+            <formal-parameter index="0">
+              <base-type type="STRING">
+                <wdo-attribute
+                  name="userName"
+                  wdo-name="RemoveUserWDO"
+                />
+              </base-type>
+            </formal-parameter>
+          </formal-parameters>
+        </function-mappings>
+      </allocation-strategy>
+      <event-wait wait-on-all-events="false">
+        <events>
+          <event
+            event-class="TASK"
+            event-type="CLOSED"
+            identifier="1"
+          >
+            <event-match-attribute
+              name="taskID"
+              wdo-name="Context_Task"
+            />
+          </event>
+        </events>
+      </event-wait>
+    </manual-activity>
+    <route-activity id="5">
+      <name>
+        <localized-text>
+          <locale language="en">Route 1</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">This activity routes the flow from reassign user tasks and cases activity and remove user activity to the end activity. </locale>
+        </localized-text>
+      </description>
+      <join type="xor"/>
+      <split type="none">
+        <transition-id idref="7"/>
+      </split>
+    </route-activity>
+	<loop-begin-activity id="7">
+       <name>
+           <localized-text>
+               <locale language="en">Remove user Loop [Begin]</locale>
+           </localized-text>
+       </name>
+       <join type="none"/>
+       <split type="none">
+           <transition-id idref="2"/>
+       </split>
+       <loop-type name="while"/>
+       <condition>
+           <expression conjunction="and" data-item-rhs="false" operation="==" data-item-lhs="RemoveUserWDO.isUserDeleted" id="1"/>
+       </condition>
+       <block-endpoint-ref activity-id="8"/>
+    </loop-begin-activity>
+    <loop-end-activity id="8">
+       <name>
+           <localized-text>
+               <locale language="en">Remove user Loop [End]</locale>
+           </localized-text>
+       </name>
+       <join type="none"/>
+       <split type="none">
+           <transition-id idref="8"/>
+       </split>
+       <block-endpoint-ref activity-id="7"/>
+    </loop-end-activity>
+  </activities>
+  <transitions>
+    <transition
+      from-activity-idref="1"
+      id="1"
+      to-activity-idref="7"
+    />
+    <transition
+      from-activity-idref="7"
+      id="2"
+      to-activity-idref="3"
+    />
+    <transition
+      from-activity-idref="3"
+      id="3"
+      to-activity-idref="4"
+    >
+      <condition>
+        <expression
+          conjunction="and"
+          data-item-lhs="RemoveUserWDO.isUserDeleted"
+          data-item-rhs="false"
+          id="1"
+          operation="=="
+        />
+      </condition>
+    </transition>
+    <transition
+      from-activity-idref="3"
+      id="4"
+      to-activity-idref="5"
+    />
+    <transition
+      from-activity-idref="5"
+      id="7"
+      to-activity-idref="8"
+    />
+    <transition
+      from-activity-idref="8"
+      id="8"
+      to-activity-idref="2"
+    />
+    <transition
+      from-activity-idref="4"
+      id="9"
+      to-activity-idref="5"
+    />
+  </transitions>
+</workflow-process>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- Copyright (c) 2005, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Reads a Task's home page details. -->
+<PAGE
+  PAGE_ID="Supervisor_reassignCaseIssuesByType"
+  WINDOW_OPTIONS="width=800"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorUsers"
+    NAME="DISPLAY"
+    OPERATION="listSupervisorUsers"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorCase"
+    NAME="ACTION"
+    OPERATION="reassignCaseIssuesByAge"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorCase"
+    NAME="DISPLAY1"
+    OPERATION="listCaseIssuesOfAType"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="description"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="issueType"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$dtls$caseDtls$caseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="issueType"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$dtls$caseDtls$issueType"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+        </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+        </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="30">
+    <FIELD LABEL="Field.Label.IssueType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="result$issueDesc"
+        />
+      </CONNECT>
+    </FIELD>
+    <CONTAINER LABEL="Container.Label.Owner">
+      <FIELD WIDTH="28">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="organisationObject"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD WIDTH="49">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="newUserID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.Autoreassign">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="autoReassign"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.CaseIssues">
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      WIDTH="5"
+    >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="result$typeDetails$dtls$dtls$caseID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="reassignCasesList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <CONTAINER
+      LABEL="Container.Label.Issue"
+      SEPARATOR="Container.Separator"
+      WIDTH="30"
+    >
+      <FIELD LABEL="Field.Label.CaseReference">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="result$typeDetails$dtls$dtls$caseReference"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="result$issueDesc"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.Owner"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="result$typeDetails$dtls$dtls$owner"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.PrimaryClient"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="result$typeDetails$dtls$dtls$primaryClient"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Created"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="result$typeDetails$dtls$dtls$dateCreated"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="result$typeDetails$dtls$dtls$status"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

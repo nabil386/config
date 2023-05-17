@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant file for the DB2 tablespace post configuration step on distributed platforms.
+
+-->
+<project name="db2_postconfig" default="main">
+
+  <property environment="env."/>
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="${env.CURAMSDEJ}/bin/app_properties.xml" />
+  <import file="${env.CURAMSDEJ}/bin/app_utilities.xml" />
+  <import file="${env.CURAMSDEJ}/bin/app_macros.xml" />
+
+  <property name="tablespace.dir" value="${db2.dir}/tablespace"/>
+  <property name="curaml.tablespace" value="${tablespace.dir}/${curam.db.name}_L"/>
+  <property name="curamt.tablespace" value="${tablespace.dir}/${curam.db.name}_T"/>
+
+  <!--  **************************************  -->
+  <!--  ***   D B 2  P O S T  C O N F I G  ***  -->
+  <!--  **************************************  -->
+  <target name="main"
+        description="DB2 tablespace post configuration step on distributed platforms"
+        depends="check.db2.dir,get.decrypted.db.password" >
+
+    <echo message="DB2 installation path = ${db2.dir}" />
+
+    <echo message="DB2 Tablespace Post Configuration..."/>
+    <sql
+       driver="com.ibm.db2.jcc.DB2Driver"
+       url="jdbc:db2://${curam.db.servername}:${curam.db.serverport}/${curam.db.name}"
+       userid="${curam.db.username}"
+       password="${decrypted.db.password}"
+       autocommit="true"
+       encoding="UTF-8"
+       onerror="continue">
+       <transaction>
+        DROP TABLESPACE ${curam.db.name}_L;
+        DROP TABLESPACE ${curam.db.name}_T;
+        DROP BUFFERPOOL highmem;
+       </transaction>
+       <connectionProperty name="sslConnection" value="${curam.db2.ssl}"/>
+       <classpath>
+         <path refid="database.common.classpath"/>
+       </classpath>
+    </sql>
+
+    <mkdir dir="${tablespace.dir}" />
+
+    <taskdef name="string" classname="curam.util.tools.AntStrings"
+      classpath="${jar.coreinf}:${jar.tools}"/>
+    <string to="curaml.tablespace.replace"
+      oldchar="/" newchar="${file.separator}" from="${curaml.tablespace}" type="replace" />
+    <string to="curamt.tablespace.replace"
+      oldchar="/" newchar="${file.separator}" from="${curamt.tablespace}" type="replace" />
+
+    <sql
+       driver="com.ibm.db2.jcc.DB2Driver"
+       url="jdbc:db2://${curam.db.servername}:${curam.db.serverport}/${curam.db.name}"
+       userid="${curam.db.username}"
+       password="${decrypted.db.password}"
+       autocommit="true"
+       encoding="UTF-8"
+       onerror="abort">
+       <transaction>
+        CREATE BUFFERPOOL highmem SIZE 50 PAGESIZE 32K;
+        CREATE TABLESPACE ${curam.db.name}_L PAGESIZE 32K
+          MANAGED BY SYSTEM USING ('${curaml.tablespace.replace}') BUFFERPOOL highmem;
+        CREATE TEMPORARY TABLESPACE ${curam.db.name}_T PAGESIZE 32K
+          MANAGED BY SYSTEM USING ('${curamt.tablespace.replace}') BUFFERPOOL highmem
+       </transaction>
+       <connectionProperty name="sslConnection" value="${curam.db2.ssl}"/>
+       <classpath>
+         <path refid="database.common.classpath"/>
+       </classpath>
+    </sql>
+
+    <echo message="Your DB2 database must be restarted now to complete the configuration changes..."/>
+  </target>
+
+  <target name="check.db2.dir" unless="db2.dir">
+    <fail message="The property 'db2.dir' must be set." />
+  </target>
+
+</project>

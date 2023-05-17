@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Feature 99661 : Implement Manage VTW Evidence -->
+<RuleSet name="BDMVoluntaryTaxWithholdSummaryRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class extends="DefaultEvidenceSummary"
+		extendsRuleSet="EvidenceSummaryRuleSet"
+		name="BDMVoluntaryTaxWithholdSummary">
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="BDMVoluntaryTaxWithhold"
+					ruleset="BDMVoluntaryTaxWithholdRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="summary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Message" />
+					</type>
+					<when>
+						<condition>
+							<reference attribute="hasDollarAmountSepcified" />
+						</condition>
+						<value>
+							<ResourceMessage key="SummaryMessage.DollarAmount"
+								resourceBundle="curam.ca.gc.bdm.evidence.BDMVoluntaryTaxWithholdSummaryRuleSet">
+								<reference attribute="voluntaryTaxWithholdType">
+									<reference attribute="evidence" />
+								</reference>
+								<reference attribute="voluntaryTaxWithholdAmount">
+									<reference attribute="evidence" />
+								</reference>
+							</ResourceMessage>
+						</value>
+					</when>
+					<when>
+						<condition>
+							<reference attribute="hasPercentageNumberSepcified" />
+						</condition>
+						<value>
+							<ResourceMessage key="SummaryMessage.Percentage"
+								resourceBundle="curam.ca.gc.bdm.evidence.BDMVoluntaryTaxWithholdSummaryRuleSet">
+								<reference attribute="voluntaryTaxWithholdType">
+									<reference attribute="evidence" />
+								</reference>
+								<reference attribute="voluntaryTaxWithholdPercentage">
+									<reference attribute="evidence" />
+								</reference>
+							</ResourceMessage>
+						</value>
+					</when>
+
+					<otherwise>
+						<value>
+							<ResourceMessage key="SummaryMessage3"
+								resourceBundle="curam.ca.gc.bdm.evidence.BDMVoluntaryTaxWithholdSummaryRuleSet">
+							</ResourceMessage>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+
+		<Attribute name="hasDollarAmountSepcified">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<all>
+					<fixedlist>
+						<listof>
+							<javaclass name="Boolean" />
+						</listof>
+						<members>
+							<not>
+								<equals>
+									<reference attribute="voluntaryTaxWithholdAmount">
+										<reference attribute="evidence" />
+									</reference>
+									<Number value="0.00" />
+								</equals>
+							</not>
+							<compare comparison="&gt;">
+								<reference attribute="voluntaryTaxWithholdAmount">
+									<reference attribute="evidence" />
+								</reference>
+								<Number value="0.00" />
+							</compare>
+						</members>
+					</fixedlist>
+				</all>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="hasPercentageNumberSepcified">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<all>
+					<fixedlist>
+						<listof>
+							<javaclass name="Boolean" />
+						</listof>
+						<members>
+							<not>
+								<equals>
+									<reference attribute="voluntaryTaxWithholdPercentage">
+										<reference attribute="evidence" />
+									</reference>
+									<Number value="0" />
+								</equals>
+							</not>
+							<compare comparison="&gt;">
+								<reference attribute="voluntaryTaxWithholdPercentage">
+									<reference attribute="evidence" />
+								</reference>
+								<Number value="0" />
+							</compare>
+						</members>
+					</fixedlist>
+				</all>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

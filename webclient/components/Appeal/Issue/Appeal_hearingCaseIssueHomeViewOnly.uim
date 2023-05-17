@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2011, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows user to view hearing case issue for integrated case.  -->
+<PAGE
+  PAGE_ID="Appeal_hearingCaseIssueHomeViewOnly"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="hearingID"/>
+  <PAGE_PARAMETER NAME="implCaseID"/>
+  <PAGE_PARAMETER NAME="priorAppealCaseID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="HearingCase"
+    NAME="DISPLAY"
+    OPERATION="readHearingCaseSummary"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Appeal"
+    NAME="DISPLAY1"
+    OPERATION="multipleAppellantsIndicator"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="hearingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="hearingCaseID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="hearingID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$appealCaseKey$caseID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Decision"
+  >
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="hearingCaseDetails$decisionStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Resolution">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="hearingCaseDetails$decisionResolution"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="result$hearingCaseSummaryDetails$multipleAppellant$multipleAppellants"
+      />
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$hearingCaseSummaryDetails$hearingCaseDetails$hearingCaseReference"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Appellant">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="appellantName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="IntegratedCase_resolveParticipantHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="appellantParticipantRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseParticipantRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Owner">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="ownerFullName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="hearingCaseStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Difficulty">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="difficultyCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="result$hearingCaseSummaryDetails$multipleAppellant$multipleAppellants"
+      />
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$hearingCaseSummaryDetails$hearingCaseDetails$hearingCaseReference"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Appellant">
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.Label.MultipleAppellants"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Owner">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="ownerFullName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="hearingCaseStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Difficulty">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="difficultyCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.Hearings">
+
+
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.HearingOfficial">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="userFullname"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Date">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="hearingDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00417165, GK -->
+    <FIELD LABEL="Field.Label.Comments">
+      <!-- END, CR00417165 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER SHOW_LABELS="false">
+    <LIST TITLE="List.Title.RecentChanges">
+      <FIELD LABEL="Field.Label.EventType">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="eventTypeDesc"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Description">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="transactionDescription"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.TransactionDateTime">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="transactionDateTime"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.UserFullname">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="userFullName"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+</PAGE>

@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2004, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This process allows the user to view the organization browser          -->
+<PAGE
+  PAGE_ID="Organization_orgStructureBrowser"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAY"
+    OPERATION="listOrgStructureChildElements"
+    PHASE="DISPLAY"
+  />
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <MENU MODE="DYNAMIC">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="menuData"
+      />
+    </CONNECT>
+  </MENU>
+  <PAGE_PARAMETER NAME="organisationStructureID"/>
+  <PAGE_PARAMETER NAME="elementID"/>
+  <PAGE_PARAMETER NAME="elementType"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="elementID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="orgStructureBrowserKey$elementID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="organisationStructureID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="orgStructureBrowserKey$organisationStructureID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="elementType"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="orgStructureBrowserKey$elementType"
+    />
+  </CONNECT>
+  <LIST TITLE="List.Title.ChildElements">
+    <ACTION_SET BOTTOM="false">
+      <ACTION_CONTROL LABEL="ActionControl.Label.ViewParent">
+        <LINK PAGE_ID="Organization_resolveBrowserHome">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="browserElementDetails$organisationStructureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="browserElementDetails$elementID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="elementID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="browserElementDetails$elementType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="elementType"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="15"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.ViewChildren">
+        <LINK PAGE_ID="Organization_orgStructureBrowser">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="browserElementDetailsList$dtls$organisationStructureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="browserElementDetailsList$dtls$elementID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="elementID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="browserElementDetailsList$dtls$elementType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="elementType"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Title.Type"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="browserElementDetailsList$dtls$elementType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="55"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="browserElementDetailsList$dtls$elementName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Organization_resolveBrowserHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="browserElementDetailsList$dtls$organisationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationStructureID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="browserElementDetailsList$dtls$elementID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="elementID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="browserElementDetailsList$dtls$elementType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="elementType"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+  </LIST>
+  <LIST TITLE="List.Title.Users">
+    <FIELD LABEL="Field.Title.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="userElementDetailsList$dtls$elementName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Organization_userHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="userName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+  </LIST>
+</PAGE>

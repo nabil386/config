@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMIncarcerationValidationRuleSet">
+
+	<!-- Validation Ruleset for Incarceration Evidence. -->
+
+	<Class extends="DefaultEvidenceValidationResult"
+		extendsRuleSet="EvidenceValidationRuleSet" name="ValidationResult">
+
+		<!-- Setting rule class to IncarcerationRuleSet -->
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="BDMIncarceration"
+					ruleset="BDMIncarcerationRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="evidenceSuccessionID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<reference attribute="successionID">
+					<reference attribute="evidence" />
+				</reference>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="caseID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<reference attribute="caseID">
+					<reference attribute="evidence" />
+				</reference>
+			</derivation>
+		</Attribute>
+		
+		<!--OOTB Attribute that needs to be initialized -->
+		<Attribute name="standardValidations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="Validation"
+						ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="incarcerationStandardValidations" />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="incarcerationStandardValidations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="Validation"
+						ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="Validation"
+							ruleset="EvidenceValidationRuleSet" />
+					</listof>
+					<members>
+						<reference attribute="mandatoryIncarcerationInstitutionAndInvalidInstitutionValidation"/>
+						<reference
+							attribute="cscReleaseDateWithOffenderStatusValidation" />
+						<reference
+							attribute="OffenderStatusWithCSCReleaseDateWithValidation" />
+						<reference attribute="offenderIdentificationValidation" />
+					</members>
+				</fixedlist>
+			</derivation>
+		</Attribute>
+	
+		<Attribute name="mandatoryIncarcerationInstitutionAndInvalidInstitutionValidation">
+			<type>
+				<ruleclass name="Validation"
+					ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<ruleclass name="Validation"
+							ruleset="EvidenceValidationRuleSet" />
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<reference attribute="institution">
+									<reference attribute="evidence" />
+								</reference>
+								<Number value="0" />
+							</equals>
+						</condition>
+						<value>
+							<create ruleclass="Validation"
+								ruleset="EvidenceValidationRuleSet">
+								<true/>
+								<ResourceMessage
+									key="ERR_INCARCERATION_INSTITUTION_IS_MANDATORY"
+									resourceBundle="curam.ca.gc.bdm.evidence.BDMIncarcerationValidationRuleSet">
+								</ResourceMessage>
+							</create>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<reference attribute="invalidInstitutionValidation"/>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="cscReleaseDateWithOffenderStatusValidation">
+			<type>
+				<ruleclass name="Validation"
+					ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation"
+					ruleset="EvidenceValidationRuleSet">
+					<all>
+						<fixedlist>
+							<listof>
+								<javaclass name="Boolean" />
+							</listof>
+							<members>
+								<not>
+									<equals>
+										<reference attribute="endDate">
+											<reference attribute="evidence" />
+										</reference>
+										<null />
+									</equals>
+								</not>
+								<not>
+									<reference
+										attribute="isOffenderStatusSentenceCompletedOrSupervised" />
+								</not>
+							</members>
+						</fixedlist>
+					</all>
+					<ResourceMessage
+						key="ERR_OFFENDER_STATUS_NOT_VALID"
+						resourceBundle="curam.ca.gc.bdm.evidence.BDMIncarcerationValidationRuleSet">
+					</ResourceMessage>
+				</create>
+			</derivation>
+		</Attribute>
+
+		<Attribute
+			name="OffenderStatusWithCSCReleaseDateWithValidation">
+			<type>
+				<ruleclass name="Validation"
+					ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation"
+					ruleset="EvidenceValidationRuleSet">
+					<all>
+						<fixedlist>
+							<listof>
+								<javaclass name="Boolean" />
+							</listof>
+							<members>
+								<reference
+									attribute="isOffenderStatusSentenceCompletedOrSupervised" />
+								<equals>
+									<reference attribute="endDate">
+										<reference attribute="evidence" />
+									</reference>
+									<null />
+								</equals>
+							</members>
+						</fixedlist>
+					</all>
+					<ResourceMessage
+						key="ERR_CSC_RELEASE_DATE_EMPTY_FOR_VALID_OFFENDER_STATUS"
+						resourceBundle="curam.ca.gc.bdm.evidence.BDMIncarcerationValidationRuleSet">
+					</ResourceMessage>
+				</create>
+			</derivation>
+		</Attribute>
+
+		<Attribute
+			name="isOffenderStatusSentenceCompletedOrSupervised">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Boolean" />
+					</type>
+					<when>
+						<condition>
+							<any>
+								<fixedlist>
+									<listof>
+										<javaclass name="Boolean" />
+									</listof>
+									<members>
+										<equals>
+											<reference attribute="offenderStatus">
+												<reference attribute="evidence" />
+											</reference>
+											<!-- 'OST4' description 'Sentence Completed' -->
+											<Code table="BDMOffenderStatus">
+												<String value="OST4" />
+											</Code>
+										</equals>
+										<equals>
+											<reference attribute="offenderStatus">
+												<reference attribute="evidence" />
+											</reference>
+											<!-- 'OST5' description 'Supervised' -->
+											<Code table="BDMOffenderStatus">
+												<String value="OST5" />
+											</Code>
+										</equals>
+									</members>
+								</fixedlist>
+							</any>
+						</condition>
+						<value>
+							<true />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<false />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="offenderIdentificationValidation">
+			<type>
+				<ruleclass name="Validation"
+					ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation"
+					ruleset="EvidenceValidationRuleSet">
+					<not>
+						<reference attribute="isAplhaNumericOnly" />
+					</not>
+					<ResourceMessage
+						key="ERR_OFFENDER_ID_CONTAINS_NONALPHANUMERIC_CHARACTERS"
+						resourceBundle="curam.ca.gc.bdm.evidence.BDMIncarcerationValidationRuleSet">
+					</ResourceMessage>
+				</create>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="isAplhaNumericOnly">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.Statics"
+					method="isAlphaNumericOnly">
+					<type>
+						<javaclass name="Boolean" />
+					</type>
+					<arguments>
+						<reference attribute="offenderID">
+							<reference attribute="evidence" />
+						</reference>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+
+		
+		<Attribute name="invalidInstitutionValidation">
+		<type>
+			<ruleclass name="Validation"
+				ruleset="EvidenceValidationRuleSet" />
+		</type>
+		<derivation>
+			<create ruleclass="Validation"
+				ruleset="EvidenceValidationRuleSet">
+	
+				<reference attribute="failsInstitutionValidation" />
+	
+				<ResourceMessage
+					key="ERR_INVALID_INCARCERATION_INSTITUTION"
+					resourceBundle="curam.ca.gc.bdm.evidence.BDMIncarcerationValidationRuleSet">
+				</ResourceMessage>
+			</create>
+		</derivation>
+		</Attribute>
+		
+		
+		<Attribute name="institutionCaseParticipantRoleRecord">
+			<type>
+				<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<singleitem onMultiple="returnFirst" onEmpty="error">
+					<readall ruleclass="CaseParticipantRole" ruleset="CaseEntitiesRuleSet">
+						<match retrievedattribute="caseParticipantRoleID">
+							<reference attribute="institution">
+								<reference attribute="evidence"/>
+							</reference>
+						</match>
+					</readall>
+				</singleitem>
+			</derivation>
+		</Attribute>
+	
+		<Attribute name="institutionConcernRoleID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<reference attribute="participantRoleID">
+					<reference
+						attribute="institutionCaseParticipantRoleRecord" />
+				</reference>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="institutionParticipantRole">
+		<type>
+			<ruleclass name="ConcernRole"
+				ruleset="ParticipantEntitiesRuleSet" />
+		</type>
+		<derivation>
+			<singleitem onEmpty="error" onMultiple="error">
+				<readall ruleclass="ConcernRole"
+					ruleset="ParticipantEntitiesRuleSet">
+					<match retrievedattribute="concernRoleID">
+						<reference attribute="institutionConcernRoleID" />
+					</match>
+				</readall>
+			</singleitem>
+		</derivation>
+		</Attribute>
+	
+		<Attribute name="failsInstitutionValidation">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Boolean" />
+					</type>
+					<when>
+						<condition>
+							<!-- Institution Starts after the Incarceration Evidence Admission Date  -->
+							<compare comparison=">">
+								<reference attribute="startDate">
+									<reference attribute="institutionParticipantRole" />
+								</reference>
+								<reference attribute="startDate">
+									<reference attribute="evidence" />
+								</reference>
+							</compare>
+						</condition>
+						<value>
+							<true/>
+						</value>
+					</when>
+					<when>
+						<condition>
+							<all>
+							<fixedlist>
+								<listof>
+									<javaclass name="Boolean" />
+								</listof>
+								<members>
+								<not>
+								<equals>
+									<reference attribute="effectiveFrom">
+										<reference attribute="evidence" />
+									</reference>
+									<null/>
+								</equals>
+								</not>
+								<!-- Institution Starts after the Incarceration Evidence Effective From Date  -->
+								<compare comparison=">">
+									<reference attribute="startDate">
+										<reference attribute="institutionParticipantRole" />
+									</reference>
+									<reference attribute="effectiveFrom">
+										<reference attribute="evidence" />
+									</reference>
+								</compare>
+								</members>
+							</fixedlist>
+							</all>
+						</condition>
+						<value>
+							<true/>
+						</value>
+					</when>
+					<when>
+						<condition>
+							<!-- Incarceration Evidence CSC Release Date is open ended and Institution is end dated  -->
+							<all>
+							<fixedlist>
+								<listof>
+									<javaclass name="Boolean" />
+								</listof>
+								<members>
+								<not>
+									<equals>
+										<reference attribute="endDate">
+											<reference attribute="institutionParticipantRole" />
+										</reference>
+										<null/>
+									</equals>
+								</not>
+								<equals>
+									<null/>
+									<reference attribute="endDate">
+										<reference attribute="evidence" />
+									</reference>
+								</equals>
+								</members>
+							</fixedlist>
+							</all>
+						</condition>
+						<value>
+							<true/>
+						</value>
+					</when>
+					<when>
+						<condition>
+							<all>
+							<fixedlist>
+								<listof>
+									<javaclass name="Boolean" />
+								</listof>
+								<members>
+								<not>
+									<equals>
+										<reference attribute="endDate">
+											<reference attribute="institutionParticipantRole" />
+										</reference>
+										<null/>
+									</equals>
+								</not>
+								<not>
+									<equals>
+										<null/>
+										<reference attribute="endDate">
+											<reference attribute="evidence" />
+										</reference>
+									</equals>
+								</not>
+								<!-- Incarceration Evidence CSC Release Date is greater than Institution End date  -->
+								<compare comparison=">">
+									<reference attribute="endDate">
+										<reference attribute="evidence" />
+									</reference>
+									<reference attribute="endDate">
+										<reference attribute="institutionParticipantRole" />
+									</reference>
+								</compare>
+								</members>
+							</fixedlist>
+							</all>
+						</condition>
+						<value>
+							<true/>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<false />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		
+	</Class>
+
+</RuleSet>

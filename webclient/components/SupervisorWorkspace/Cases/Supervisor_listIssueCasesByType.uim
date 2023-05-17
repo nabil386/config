@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- Copyright (c) 2005,2008, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Reads a Task's home page details. -->
+<PAGE
+  PAGE_ID="Supervisor_listIssueCasesByType"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorCase"
+    NAME="DISPLAY"
+    OPERATION="chartCaseIssuesByType"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorCase"
+    NAME="ACTION1"
+    OPERATION="filterIssuesByType"
+    PHASE="ACTION"
+  />
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="weekBeginDate"/>
+  <PAGE_PARAMETER NAME="taskOptionCode"/>
+  <PAGE_PARAMETER NAME="caseIssuesViewOptionCode"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseID$key$caseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="CONSTANT"
+      PROPERTY="supervisor.type"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseIssuesViewOption"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="Action.Control.ReassignIssues">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Supervisor_reassignCaseIssuesByAge"
+        SAVE_LINK="true"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="key$caseID$key$caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$caseIssuesViewOption"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseIssuesViewOptionCode"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$pageContext$description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.IssuesByType"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="THIS"/>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.IssuesByAge"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="Supervisor_caseIssuesByAge">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="supervisor.age"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseIssuesViewOptionCode"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <!-- END, CR00125009 -->
+    <FIELD CONFIG="IssueTypeCount.BarChart.Config">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$chartXMLString"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

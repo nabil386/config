@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMOASProductDecisionDetailsRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../build/svr/creole.gen/schema/RuleSet.xsd">
+
+	<Include>
+		<RelativePath
+			value="ProductDisplay\BDMOASEligibilityDisplay.xml" />
+	</Include>
+
+	<Include>
+		<RelativePath
+			value="ProductDisplay\BDMOASEntitlementDisplay.xml" />
+	</Include>
+
+	<Include>
+		<RelativePath
+			value="ProductDisplay\BDMOASCalculationDisplay.xml" />
+	</Include>
+
+	<Class name="BDMOASSummaryCategory" extends="DefaultCase"
+		extendsRuleSet="DefaultProductDecisionDetailsRuleSet">
+
+		<Attribute name="bdmoasCase">
+			<type>
+				<ruleclass name="BDMOASCase"
+					ruleset="BDMOASEligibilityEntitlementRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="BDMOASCase"
+					ruleset="BDMOASEligibilityEntitlementRuleSet">
+					<specify attribute="productDeliveryCase">
+						<reference attribute="productDeliveryCase" />
+					</specify>
+				</create>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="displayOASPension">
+			<Annotations>
+				<Display />
+			</Annotations>
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Timeline">
+							<javaclass name="Boolean" />
+						</javaclass>
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<null />
+								<reference attribute="oasPensionBenefitCalculator">
+									<reference attribute="determinationContext">
+										<reference attribute="bdmoasCase" />
+									</reference>
+								</reference>
+							</equals>
+						</condition>
+						<value>
+							<timelineoperation>
+								<false />
+							</timelineoperation>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<existencetimeline>
+								<intervaltype>
+									<javaclass name="Boolean" />
+								</intervaltype>
+								<intervalfromdate>
+									<call class="curam.ca.gc.bdm.creole.impl.Statics"
+										method="getSubsequentMonthStart">
+										<type>
+											<javaclass name="curam.util.type.Date" />
+										</type>
+										<arguments>
+											<reference attribute="earliestApprovalDate">
+												<reference attribute="earliestApplication">
+													<reference attribute="applicationCalculator">
+														<reference attribute="eligibilityCalculator">
+															<reference
+																attribute="oasPensionBenefitCalculator">
+																<reference attribute="determinationContext">
+																	<reference attribute="bdmoasCase" />
+																</reference>
+															</reference>
+														</reference>
+													</reference>
+												</reference>
+											</reference>
+										</arguments>
+									</call>
+								</intervalfromdate>
+								<intervaltodate>
+									<null />
+								</intervaltodate>
+								<preExistenceValue>
+									<false />
+								</preExistenceValue>
+								<existenceValue>
+									<true />
+								</existenceValue>
+								<postExistenceValue>
+									<true />
+								</postExistenceValue>
+							</existencetimeline>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="oasPensionEligibilityResult">
+			<Annotations>
+				<Display />
+			</Annotations>
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="curam.creole.value.Message" />
+				</javaclass>
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Timeline">
+							<javaclass name="curam.creole.value.Message" />
+						</javaclass>
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<null />
+								<reference attribute="oasPensionBenefitCalculator">
+									<reference attribute="determinationContext">
+										<reference attribute="bdmoasCase" />
+									</reference>
+								</reference>
+							</equals>
+						</condition>
+						<value>
+							<timelineoperation>
+								<ResourceMessage key="NotEligible"
+									resourceBundle="curam.ca.gc.bdmoas.rules.BDMOASProductDecisionDetailsRuleSet" />
+							</timelineoperation>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<timelineoperation>
+								<choose>
+									<type>
+										<javaclass name="curam.creole.value.Message" />
+									</type>
+									<when>
+										<condition>
+											<intervalvalue>
+												<reference attribute="isEligibleTimeline">
+													<reference attribute="eligibilityCalculator">
+														<reference
+															attribute="oasPensionBenefitCalculator">
+															<reference attribute="determinationContext">
+																<reference attribute="bdmoasCase" />
+															</reference>
+														</reference>
+													</reference>
+												</reference>
+											</intervalvalue>
+										</condition>
+										<value>
+											<ResourceMessage key="IsEligible"
+												resourceBundle="curam.ca.gc.bdmoas.rules.BDMOASProductDecisionDetailsRuleSet" />
+										</value>
+									</when>
+									<otherwise>
+										<value>
+											<ResourceMessage key="NotEligible"
+												resourceBundle="curam.ca.gc.bdmoas.rules.BDMOASProductDecisionDetailsRuleSet" />
+										</value>
+									</otherwise>
+								</choose>
+							</timelineoperation>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="isEligible">
+			<Annotations>
+				<Display domain="CURAM_INDICATOR" />
+			</Annotations>
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="isEligibleTimeline">
+					<reference attribute="bdmoasCase" />
+				</reference>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="oasPensionEntitlement">
+			<Annotations>
+				<Display domain="CURAM_AMOUNT" />
+			</Annotations>
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Timeline">
+							<javaclass name="Number" />
+						</javaclass>
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<null />
+								<reference attribute="oasPensionBenefitCalculator">
+									<reference attribute="determinationContext">
+										<reference attribute="bdmoasCase" />
+									</reference>
+								</reference>
+							</equals>
+						</condition>
+						<value>
+							<timelineoperation>
+								<Number value="0" />
+							</timelineoperation>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<reference attribute="issuanceAmountTimeline">
+								<reference attribute="oasPensionBenefitCalculator">
+									<reference attribute="determinationContext">
+										<reference attribute="bdmoasCase" />
+									</reference>
+								</reference>
+							</reference>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="totalEntitlementAmount">
+			<Annotations>
+				<Display domain="CURAM_AMOUNT" />
+			</Annotations>
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="entitlementAmountTimeline">
+					<reference attribute="bdmoasCase" />
+				</reference>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="meetsApplicationReqOAS">
+			<Annotations>
+				<Display />
+			</Annotations>
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="curam.creole.value.Message" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="curam.creole.value.Message" />
+						</type>
+						<when>
+							<condition>
+								<intervalvalue>
+									<reference attribute="isApplicantTimeline">
+										<reference attribute="applicationCalculator">
+											<reference attribute="eligibilityCalculator">
+												<reference attribute="oasPensionBenefitCalculator">
+													<reference attribute="determinationContext">
+														<reference attribute="bdmoasCase" />
+													</reference>
+												</reference>
+											</reference>
+										</reference>
+									</reference>
+								</intervalvalue>
+							</condition>
+							<value>
+								<ResourceMessage key="Yes"
+									resourceBundle="curam.ca.gc.bdmoas.rules.BDMOASProductDecisionDetailsRuleSet" />
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<ResourceMessage key="No"
+									resourceBundle="curam.ca.gc.bdmoas.rules.BDMOASProductDecisionDetailsRuleSet" />
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="isClientDeceased">
+			<Annotations>
+				<Display />
+			</Annotations>
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="curam.creole.value.Message" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="curam.creole.value.Message" />
+						</type>
+						<when>
+							<condition>
+								<intervalvalue>
+									<reference attribute="isAliveDuringMonthTimeline">
+										<reference attribute="participantCalculator">
+											<reference attribute="eligibilityCalculator">
+												<reference attribute="oasPensionBenefitCalculator">
+													<reference attribute="determinationContext">
+														<reference attribute="bdmoasCase" />
+													</reference>
+												</reference>
+											</reference>
+										</reference>
+									</reference>
+								</intervalvalue>
+							</condition>
+							<value>
+								<ResourceMessage key="No"
+									resourceBundle="curam.ca.gc.bdmoas.rules.BDMOASProductDecisionDetailsRuleSet" />
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<ResourceMessage key="Yes"
+									resourceBundle="curam.ca.gc.bdmoas.rules.BDMOASProductDecisionDetailsRuleSet" />
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="meetsAgeReqOAS">
+			<Annotations>
+				<Display />
+			</Annotations>
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="curam.creole.value.Message" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="curam.creole.value.Message" />
+						</type>
+						<when>
+							<condition>
+								<intervalvalue>
+									<reference attribute="meetsAgeRequirementTimeline">
+										<reference attribute="eligibilityCalculator">
+											<reference attribute="oasPensionBenefitCalculator">
+												<reference attribute="determinationContext">
+													<reference attribute="bdmoasCase" />
+												</reference>
+											</reference>
+										</reference>
+									</reference>
+								</intervalvalue>
+							</condition>
+							<value>
+								<ResourceMessage key="Yes"
+									resourceBundle="curam.ca.gc.bdmoas.rules.BDMOASProductDecisionDetailsRuleSet" />
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<ResourceMessage key="No"
+									resourceBundle="curam.ca.gc.bdmoas.rules.BDMOASProductDecisionDetailsRuleSet" />
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="meetsLegalStatusReqOAS">
+			<Annotations>
+				<Display />
+			</Annotations>
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="curam.creole.value.Message" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="curam.creole.value.Message" />
+						</type>
+						<when>
+							<condition>
+								<intervalvalue>
+									<reference
+										attribute="meetsLegalStatusRequirementTimeline">
+										<reference attribute="eligibilityCalculator">
+											<reference attribute="oasPensionBenefitCalculator">
+												<reference attribute="determinationContext">
+													<reference attribute="bdmoasCase" />
+												</reference>
+											</reference>
+										</reference>
+									</reference>
+								</intervalvalue>
+							</condition>
+							<value>
+								<ResourceMessage key="Yes"
+									resourceBundle="curam.ca.gc.bdmoas.rules.BDMOASProductDecisionDetailsRuleSet" />
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<ResourceMessage key="No"
+									resourceBundle="curam.ca.gc.bdmoas.rules.BDMOASProductDecisionDetailsRuleSet" />
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="meetsResidenceReqOAS">
+			<Annotations>
+				<Display />
+			</Annotations>
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="curam.creole.value.Message" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="curam.creole.value.Message" />
+						</type>
+						<when>
+							<condition>
+								<intervalvalue>
+									<reference
+										attribute="meetsResidenceRequirementTimeline">
+										<reference attribute="eligibilityCalculator">
+											<reference attribute="oasPensionBenefitCalculator">
+												<reference attribute="determinationContext">
+													<reference attribute="bdmoasCase" />
+												</reference>
+											</reference>
+										</reference>
+									</reference>
+								</intervalvalue>
+							</condition>
+							<value>
+								<ResourceMessage key="Yes"
+									resourceBundle="curam.ca.gc.bdmoas.rules.BDMOASProductDecisionDetailsRuleSet" />
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<ResourceMessage key="No"
+									resourceBundle="curam.ca.gc.bdmoas.rules.BDMOASProductDecisionDetailsRuleSet" />
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="isPortable">
+			<Annotations>
+				<Display />
+			</Annotations>
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="curam.creole.value.Message" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="curam.creole.value.Message" />
+						</type>
+						<when>
+							<condition>
+								<intervalvalue>
+									<reference attribute="isPortableTimeline">
+										<reference attribute="entitlementCalculator">
+											<reference attribute="oasPensionBenefitCalculator">
+												<reference attribute="determinationContext">
+													<reference attribute="bdmoasCase" />
+												</reference>
+											</reference>
+										</reference>
+									</reference>
+								</intervalvalue>
+							</condition>
+							<value>
+								<ResourceMessage key="Yes"
+									resourceBundle="curam.ca.gc.bdmoas.rules.BDMOASProductDecisionDetailsRuleSet" />
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<ResourceMessage key="No"
+									resourceBundle="curam.ca.gc.bdmoas.rules.BDMOASProductDecisionDetailsRuleSet" />
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="isDeferring">
+			<Annotations>
+				<Display />
+			</Annotations>
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="curam.creole.value.Message" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="curam.creole.value.Message" />
+						</type>
+						<when>
+							<condition>
+								<intervalvalue>
+									<reference attribute="isDeferringTimeline">
+										<reference attribute="entitlementCalculator">
+											<reference attribute="oasPensionBenefitCalculator">
+												<reference attribute="determinationContext">
+													<reference attribute="bdmoasCase" />
+												</reference>
+											</reference>
+										</reference>
+									</reference>
+								</intervalvalue>
+							</condition>
+							<value>
+								<ResourceMessage key="Yes"
+									resourceBundle="curam.ca.gc.bdmoas.rules.BDMOASProductDecisionDetailsRuleSet" />
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<ResourceMessage key="No"
+									resourceBundle="curam.ca.gc.bdmoas.rules.BDMOASProductDecisionDetailsRuleSet" />
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="countryOfResidence">
+			<Annotations>
+				<Display />
+			</Annotations>
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Object" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="countryOfResidenceTimeline">
+					<reference attribute="residenceCalculator">
+						<reference attribute="eligibilityCalculator">
+							<reference attribute="oasPensionBenefitCalculator">
+								<reference attribute="determinationContext">
+									<reference attribute="bdmoasCase" />
+								</reference>
+							</reference>
+						</reference>
+					</reference>
+				</reference>
+			</derivation>
+		</Attribute>
+
+	</Class>
+
+</RuleSet>

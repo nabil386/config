@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright (c) 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="CitizenWorkspaceAdmin_viewAuthenticationFactor" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="name" />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE CLASS="AuthenticationFactor" NAME="DISPLAY" OPERATION="readAuthenticationFactor" />
+  <PAGE_PARAMETER NAME="authFactorID" />
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="authFactorID" />
+    <TARGET NAME="DISPLAY" PROPERTY="key$authFactorID" />
+  </CONNECT>
+  <CLUSTER LABEL_WIDTH="30" NUM_COLS="2">
+    <FIELD LABEL="Field.Title.Name">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="name" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.DisplayOrder">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="displayOrder" />
+      </CONNECT>
+    </FIELD>    
+    <FIELD USE_BLANK="true" LABEL="Field.Title.Active">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="active" />
+      </CONNECT>
+    </FIELD>    
+    <FIELD LABEL="Field.Title.DomainName">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="domainName" />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER NUM_COLS="1" LABEL_WIDTH="15">
+    <CONTAINER LABEL="Field.Title.Title">
+			<FIELD>
+				<CONNECT>
+					<SOURCE NAME="DISPLAY" PROPERTY="titleText" />
+				</CONNECT>
+			</FIELD>
+      <ACTION_CONTROL IMAGE="CALocalizableTextTranslation" LABEL="ActionControl.Label.Translations">
+				<LINK PAGE_ID="LocalizableText_viewLocalizableText" OPEN_MODAL="true">
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="titleTextID" />
+						<TARGET NAME="PAGE" PROPERTY="localizableTextID" />
+					</CONNECT>
+				</LINK>
+			</ACTION_CONTROL>
+		</CONTAINER>
+		<CONTAINER LABEL="Field.Title.DescriptionText">
+			<FIELD>
+				<CONNECT>
+					<SOURCE NAME="DISPLAY" PROPERTY="descriptionText" />
+				</CONNECT>
+			</FIELD>
+		  <ACTION_CONTROL IMAGE="CALocalizableTextTranslation" LABEL="ActionControl.Label.Translations">
+				<LINK PAGE_ID="LocalizableText_viewLocalizableText" OPEN_MODAL="true">
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="descriptionTextID" />
+						<TARGET NAME="PAGE" PROPERTY="localizableTextID" />
+					</CONNECT>
+				</LINK>
+			</ACTION_CONTROL>
+		</CONTAINER>
+  </CLUSTER>
+</PAGE>

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+   
+  PID 5725-H26
+ 
+  Copyright IBM Corporation 2012, 2016. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Modifies a Product Period in the sandbox.                              -->
+<PAGE
+  PAGE_ID="CREOLEProductAdmin_modifyProductPeriod"
+  WINDOW_OPTIONS="width=900"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- The page title for this page -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="pagetitle.description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- Declare the 'display' server bean -->
+  <SERVER_INTERFACE
+    CLASS="CREOLEProductAdmin"
+    NAME="DISPLAY"
+    OPERATION="readProductPeriod"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- Declare the 'action' server bean -->
+  <SERVER_INTERFACE
+    CLASS="CREOLEProductAdmin"
+    NAME="ACTION"
+    OPERATION="modifyProductPeriod"
+    PHASE="ACTION"
+  />
+
+
+  <!-- Page parameters to this page -->
+  <PAGE_PARAMETER NAME="creoleProductPeriodID"/>
+  <PAGE_PARAMETER NAME="sandboxID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="creoleProductPeriodID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$recordID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="sandboxID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$adminKey$sandboxID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="creoleProductPeriodID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$dtls$creoleProductPeriodID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="sandboxID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$sandboxKey$sandboxID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="sandboxVersionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$sandboxKey$sandboxVersionNo"
+    />
+  </CONNECT>
+
+
+  <!-- Can't modify these fields from this page so connect directly -->
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$dtls$nameID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$dtls$nameID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$dtls$decisionRCLID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$dtls$decisionRCLID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$dtls$otherKeyDataRCLID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$dtls$otherKeyDataRCLID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$dtls$productStructureRCLID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$dtls$productStructureRCLID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$otherKeyDataRuleClassNameOpt"
+    />
+    <TARGET
+	  NAME="ACTION"
+      PROPERTY="details$otherKeyDataRuleClassNameOpt"
+    	/>
+   </CONNECT>
+   <CONNECT>
+     <SOURCE
+       NAME="DISPLAY"
+       PROPERTY="result$otherKeyDataClassSummary"
+      />
+      <TARGET
+	    NAME="ACTION"
+        PROPERTY="details$otherKeyDataClassSummary"
+       />
+    </CONNECT>
+
+
+  <!-- Fields on this page -->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="1"
+  >
+    <FIELD LABEL="field.label.result$name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="field.label.result$dtls$startDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$startDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$dtls$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="field.label.result$dtls$endDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$endDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$dtls$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="field.label.result$productStructureClassSummary"
+      USE_BLANK="false"
+      USE_DEFAULT="false"
+      WIDTH="100"
+    >
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="result$productStructureRuleClassNameOpt"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$productStructureClassSummary"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$productStructureClassSummary"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="field.label.result$decisionClassSummary"
+      USE_BLANK="false"
+      USE_DEFAULT="false"
+      WIDTH="100"
+    >
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="result$decisionRuleClassNameOpt"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$decisionClassSummary"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$decisionClassSummary"
+        />
+      </CONNECT>
+    </FIELD>
+    	
+  </CLUSTER>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL
+      LABEL="control.label.save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="control.label.cancel"/>
+  </ACTION_SET>
+
+
+</PAGE>

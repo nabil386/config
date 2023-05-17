@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software Ltd. ("Confidential Information"). You shall not        -->
+<!-- disclose such Confidential Information and shall use it only in        -->
+<!-- accordance with the terms of the license agreement you entered into    -->
+<!-- with Curam Software.                                                   -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Page to add resolutions to appealed items.   -->
+<PAGE
+  PAGE_ID="Appeal_addResolutionToAppealedItems"
+  WINDOW_OPTIONS="width=700"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Appeal"
+    NAME="DISPLAY"
+    OPERATION="listAllRelatedByAppealCase"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="AppealedCase"
+    NAME="ACTION"
+    OPERATION="addResolutionToAppealedItems"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="hearingDecisionID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="20">
+    <!-- BEGIN, CR00443740, MC -->
+    <FIELD
+      LABEL="Field.Label.Resolution"
+      WIDTH="50"
+    >
+      <!-- END, CR00443740 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="defaultResolutionCode"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="resolutionCode"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER TITLE="Cluster.Title.ApplyResolution">
+    <LIST>
+      <CONTAINER
+        ALIGNMENT="CENTER"
+        WIDTH="10"
+      >
+
+
+        <WIDGET TYPE="MULTISELECT">
+
+
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="appealRelationshipID"
+              />
+            </CONNECT>
+
+
+          </WIDGET_PARAMETER>
+
+
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="appealedItemsList"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+
+
+        </WIDGET>
+
+
+      </CONTAINER>
+      <FIELD
+        LABEL="Field.Label.ItemUnderAppeal"
+        WIDTH="40"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="appealObjectDescription"
+          />
+        </CONNECT>
+
+
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.AppealedCaseType"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="appealObectType"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.Resolution"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dtls$resolutionCode"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+</PAGE>

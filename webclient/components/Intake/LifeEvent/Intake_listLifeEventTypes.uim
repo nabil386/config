@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- List LifeEvent Types                                                    -->
+<PAGE
+  PAGE_ID="Intake_listLifeEventTypes"
+  WINDOW_OPTIONS="width=1200"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="IntakeLifeEvent"
+    NAME="DISPLAY"
+    OPERATION="listLifeEventTypes"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="IntakeLifeEvent"
+    NAME="ACTION"
+    OPERATION="getConcernRoleIDAndLifeEventType"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$concernRoleId"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET TOP="false">
+    <ACTION_CONTROL
+      ALIGNMENT="RIGHT"
+      IMAGE="NextButton"
+      LABEL="ActionControl.Label.Next"
+      STYLE="screening-next-link"
+      TYPE="SUBMIT"
+    >
+
+
+      <LINK PAGE_ID="intake_startLifeEventScript">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$concernRoleId"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$lifeEventType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="lifeEventType"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      IMAGE="QuitButton"
+      LABEL="ActionControl.Label.Cancel"
+      STYLE="screening-link"
+    >
+      <LINK
+        DISMISS_MODAL="true"
+        PAGE_ID="Intake_listLifeEvents"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST
+    
+    STYLE="screening-select-list"
+  >
+
+
+    <CONTAINER
+      SEPARATOR="Container.Separator"
+      WIDTH="5"
+    >
+      <WIDGET
+        ALIGNMENT="CENTER"
+        TYPE="SINGLESELECT"
+        WIDTH="100"
+        WIDTH_UNITS="CHARS"
+      >
+        <WIDGET_PARAMETER NAME="SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$list$lifeEventType"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="key$lifeEventType"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Label.Category"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$list$category"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.LifeEventType"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$list$lifeEventType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.LifeEventDescription"
+      WIDTH="60"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$list$description"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

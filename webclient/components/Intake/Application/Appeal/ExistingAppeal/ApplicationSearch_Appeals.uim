@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                        -->
+<!-- All rights reserved.                                                      -->
+<!-- This software is the confidential and proprietary information of Curam    -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose       -->
+<!-- such Confidential Information and shall use it only in accordance with    -->
+<!-- the terms of the license agreement you entered into with Curam            -->
+<!-- Software.                                                                 -->
+<PAGE
+  PAGE_ID="ApplicationSearch_Appeals"
+  WINDOW_OPTIONS="width=860"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="appealCaseID"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionString"
+    CLASS="ApplicationAppeal"
+    NAME="ACTION"
+    OPERATION="appealsApplicationSearch"
+    PHASE="ACTION"
+  />
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+
+
+    <FIELD LABEL="Field.Label.ApplicationReference">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="applicationSearchKey$applicationReference"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.FirstName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="applicationSearchKey$firstName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ApplicationType"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="applicationSearchKey$applicationTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="applicationSearchKey$applicationStatusCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ApplicationDate"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="applicationSearchKey$applicationDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LastName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="applicationSearchKey$surName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Program"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="applicationSearchKey$programType"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      BOTTOM="false"
+    >
+      <ACTION_CONTROL
+        ACTION_ID="Search"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"> </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="ApplicationSearch_Appeals"> </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <ACTION_SET TOP="false">
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      IMAGE="QuitButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      ACTION_ID="Next"
+      ALIGNMENT="RIGHT"
+      IMAGE="NextButton"
+      LABEL="ActionControl.Label.Next"
+      STYLE="application-next-link"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="Appeal_selectAppealableProgram"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="applicationKey$applicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="appealCaseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="appealCaseID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <INCLUDE FILE_NAME="ApplicationSearch_appealsListApplications.vim"/>
+
+
+</PAGE>

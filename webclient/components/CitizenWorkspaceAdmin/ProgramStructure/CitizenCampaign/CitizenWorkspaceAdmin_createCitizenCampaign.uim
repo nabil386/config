@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2022. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright 2010 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:/C:/Curam/UIMSchema.xsd" PAGE_ID="CitizenWorkspaceAdmin_createCitizenCampaign" WINDOW_OPTIONS="width=500">
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+        </CONNECT>
+    </PAGE_TITLE>
+    <SERVER_INTERFACE CLASS="CitizenCampaign" NAME="ACTION" OPERATION="createCitizenCampaign" PHASE="ACTION"/>
+<!--
+    <SERVER_INTERFACE CLASS="CREOLERuleSetAdmin" NAME="DISPLAY" OPERATION="listAllRuleSetsForCategory" />
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Campaigns.Category" />
+      <TARGET NAME="DISPLAY" PROPERTY="key$creoleRuleSetCategoryID" />
+    </CONNECT>
+-->
+    <SERVER_INTERFACE CLASS="CitizenCampaign" NAME="DISPLAY" OPERATION="listAllCampaignRuleSets"/>
+    
+    <ACTION_SET>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+    </ACTION_SET>
+    <CLUSTER LABEL_WIDTH="30">
+        <FIELD LABEL="Field.Title.Name">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="name"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Title.ExpiryDateTime" WIDTH="50">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="expiryDateTime"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Title.Ruleset">
+            <CONNECT>
+                <INITIAL NAME="DISPLAY" PROPERTY="name"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="creoleRulesetName"/>
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+</PAGE>

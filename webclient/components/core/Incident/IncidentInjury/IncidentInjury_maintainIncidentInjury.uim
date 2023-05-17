@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright  2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify an incident.                           -->
+<PAGE PAGE_ID="IncidentInjury_maintainIncidentInjury" WINDOW_OPTIONS="width=700,height=950" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE CLASS="IncidentInjuries" NAME="ACTION" OPERATION="modifyIncidentInjury" PHASE="ACTION"/>
+  <SERVER_INTERFACE CLASS="IncidentInjuries" NAME="DISPLAY" OPERATION="viewIncidentInjury" PHASE="DISPLAY"/>
+  <SERVER_INTERFACE CLASS="Incidents" NAME="DISPLAY_PARTICIPANT" OPERATION="listIncidentActiveParticipantRole" PHASE="DISPLAY"/>
+  <SERVER_INTERFACE CLASS="Incidents" NAME="DISPLAY_RESPONSIBLE" OPERATION="listIncidentActiveParticipantRole" PHASE="DISPLAY"/>
+  <PAGE_PARAMETER NAME="incidentID"/>
+  <PAGE_PARAMETER NAME="incidentInjuryID"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="incidentID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$incidentID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="incidentInjuryID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$incidentInjuryID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="incidentID"/>
+    <TARGET NAME="ACTION" PROPERTY="details$dtls$incidentID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="incidentInjuryID"/>
+    <TARGET NAME="ACTION" PROPERTY="details$dtls$incidentInjuryID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="versionNo"/>
+    <TARGET NAME="ACTION" PROPERTY="versionNo"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="incidentID"/>
+    <TARGET NAME="DISPLAY_PARTICIPANT" PROPERTY="incidentID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="incidentID"/>
+    <TARGET NAME="DISPLAY_RESPONSIBLE" PROPERTY="incidentID"/>
+  </CONNECT>
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+  <CLUSTER LABEL_WIDTH="33" NUM_COLS="2">
+    <FIELD LABEL="Field.Label.Severity" USE_BLANK="true" USE_DEFAULT="false" WIDTH="47">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="injurySeverity"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="injurySeverity"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Source" USE_BLANK="true" USE_DEFAULT="false" WIDTH="47">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="sourceOfInjury"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="sourceOfInjury"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Injured" USE_DEFAULT="false" WIDTH="85">
+      <CONNECT>
+        <INITIAL HIDDEN_PROPERTY="incidentParticipantRoleID" NAME="DISPLAY_PARTICIPANT" PROPERTY="participantName"/>
+      </CONNECT>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$injuredParticipant"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="details$dtls$injuredParticipant"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="CHECKBOXED_LIST" LABEL="Field.Label.Responsible">
+      <CONNECT>
+        <INITIAL HIDDEN_PROPERTY="incidentParticipantRoleID" NAME="DISPLAY_RESPONSIBLE" PROPERTY="participantName"/>
+      </CONNECT>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$responsibleParticipantTab"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="details$responsibleParticipantTab"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER SHOW_LABELS="FALSE" STYLE="cluster-cpr-no-internal-padding" TITLE="Cluster.Description.Title">
+    <FIELD>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="description"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="description"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER SHOW_LABELS="FALSE" STYLE="cluster-cpr-no-internal-padding" TITLE="Cluster.ActionTaken.Title">
+    <FIELD>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="actionTaken"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="actionTaken"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

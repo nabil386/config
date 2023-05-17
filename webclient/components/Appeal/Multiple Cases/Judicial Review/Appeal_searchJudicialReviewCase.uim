@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows users to search for a Case to add to an appeal        -->
+<PAGE
+  PAGE_ID="Appeal_searchJudicialReviewCase"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <!-- BEGIN, CR00285568, ZV -->
+  <SERVER_INTERFACE
+    CLASS="Case"
+    NAME="ACTION"
+    OPERATION="caseSearch2"
+    PHASE="ACTION"
+  />
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00285568 -->
+
+  <PAGE_PARAMETER NAME="judicialReviewID"/>
+  <PAGE_PARAMETER NAME="contextDescription"/>
+  <PAGE_PARAMETER NAME="decisionVersionNo"/>
+  <PAGE_PARAMETER NAME="priorAppealCaseID"/>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD
+      LABEL="Field.Label.CaseReference"
+      USE_DEFAULT="false"
+    >
+      <!-- BEGIN, CR00095199, RKi -->
+      <!-- BEGIN, CR00225696, ASN -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$caseReference"
+        />
+      </CONNECT>
+      <!-- END, CR00225696 -->
+      <!-- END, CR00095199 -->
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResult">
+    <FIELD LABEL="Field.Label.Select">
+      <!-- BEGIN, CR00095199, RKi -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$listDtls$searchDtls$caseReference"
+        />
+      </CONNECT>
+      <!-- END, CR00095199 -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Appeal_addJudicialReviewCaseIC"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="judicialReviewID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="judicialReviewID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="priorAppealCaseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="priorAppealCaseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="searchDtls$caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="implCaseID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00095199, RKi -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$listDtls$searchDtls$caseReference"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseReference"
+          />
+        </CONNECT>
+        <!-- END, CR00095199 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contextDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="decisionVersionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="decisionVersionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PrimaryClient">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="searchDtls$concernRoleName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00199030, GP -->
+      <LINK PAGE_ID="Person_homePagePDC">
+        <!-- END, CR00199030 -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="searchDtls$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CaseType">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="searchDtls$caseTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="searchDtls$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="searchDtls$statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      DEFAULT="true"
+      IMAGE="SearchButton"
+      LABEL="ActionControl.Label.Search"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        PAGE_ID="THIS"
+        SAVE_LINK="false"
+      />
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="ResetButton"
+      LABEL="ActionControl.Label.Reset"
+    >
+      <LINK
+        PAGE_ID="Appeal_searchJudicialReviewCase"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="judicialReviewID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="judicialReviewID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contextDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="decisionVersionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="decisionVersionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+</PAGE>

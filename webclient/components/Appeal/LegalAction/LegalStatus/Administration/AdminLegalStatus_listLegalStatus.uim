@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+    * Copyright 2008, 2010-2011 Curam Software Ltd.
+    * All rights reserved.
+    *
+    * This software is the confidential and proprietary information of Curam
+    * Software, Ltd. ("Confidential Information"). You shall not disclose
+    * such Confidential Information and shall use it only in accordance with
+    * the terms of the license agreement you entered into with Curam
+    * Software.
+    *
+    * Description
+    * ===========
+    *  This page to a list all reservations done pertaining to a case.
+    *
+-->
+<PAGE
+  PAGE_ID="AdminLegalStatus_listLegalStatus"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- The page title for this page -->
+  <PAGE_TITLE>
+
+
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="AdminLegalStatus"
+    NAME="DISPLAYLIST"
+    OPERATION="listAllAdminLegalStatuses"
+    PHASE="DISPLAY"
+  />
+
+
+  <ACTION_SET
+    ALIGNMENT="LEFT"
+    BOTTOM="FALSE"
+  >
+    <ACTION_CONTROL
+      LABEL="Control.Label.New"
+      TYPE="ACTION"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="AdminLegalStatus_addLegalStatus"
+      >
+                </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.LegalStatus"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="AdminLegalStatus_listLegalStatus"
+        SAVE_LINK="false"
+      >
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ConfigureCaseType"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="AdminLegalStatus_listSelectedCaseTypes"
+        SAVE_LINK="false"
+      >
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <!-- BEGIN, CR00237041, SS -->
+  <LIST>
+    <!-- END, CR00237041 -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="AdminLegalStatus_viewLegalStatus">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAYLIST"
+            PROPERTY="legalStatusID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="legalStatusID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="AdminLegalStatus_modifyLegalStatus"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAYLIST"
+              PROPERTY="legalStatusID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="legalStatusID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <!-- BEGIN, CR00237041, SS -->
+    <FIELD
+      LABEL="Field.Label.LegalStatusName"
+      WIDTH="45"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYLIST"
+          PROPERTY="legalStatusTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYLIST"
+          PROPERTY="recordStatusCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00237041 -->
+  </LIST>
+</PAGE>

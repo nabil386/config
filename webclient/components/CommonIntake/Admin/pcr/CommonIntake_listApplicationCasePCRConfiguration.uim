@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012,2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Lists PCR configuration records.                                       -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="CommonIntake_listApplicationCasePCRConfiguration"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="PCRAdmin"
+    NAME="DISPLAY"
+    OPERATION="listByCaseConfigurationAndType"
+  />
+
+
+<PAGE_PARAMETER NAME="applicationCaseAdminID"/>
+  
+ <CONNECT>
+   <SOURCE NAME="PAGE" PROPERTY="applicationCaseAdminID" />
+   <TARGET NAME="DISPLAY" PROPERTY="key$caseConfigurationID" />
+ </CONNECT>
+  
+ <CONNECT>
+   <SOURCE NAME="CONSTANT" PROPERTY="Constant.ApplicationCaseType" />
+   <TARGET NAME="DISPLAY" PROPERTY="key$caseType" />
+ </CONNECT>  
+ 
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+      
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="CommonIntake_newPCRConfiguration"
+      >
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="applicationCaseAdminID" />
+          <TARGET NAME="PAGE" PROPERTY="applicationCaseAdminID" />
+      </CONNECT>
+      </LINK>
+ 
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST PAGINATED="false">
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CommonIntake_modifyPCRConfiguration"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pcrConfigurationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pcrConfigurationID"
+            />
+          </CONNECT>
+          <CONNECT>
+       <SOURCE NAME="PAGE" PROPERTY="applicationCaseAdminID" />
+        <TARGET NAME="PAGE" PROPERTY="applicationCaseAdminID" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      
+      <SEPARATOR/>
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.PCRRangeMapping">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="PCRAdmin_newPCRRangeMapping"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pcrConfigurationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pcrConfigurationID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Publish">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isUnpublished"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CommonIntake_publishPCRConfiguration"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pcrConfigurationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pcrConfigurationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+      <SEPARATOR/>
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CommonIntake_deletePCRConfiguration"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pcrConfigurationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pcrConfigurationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="43"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.From"
+      WIDTH="17"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.To"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Status"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="pcrConfigurationStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="CommonIntake_viewPCRConfiguration">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="pcrConfigurationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pcrConfigurationID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+  </LIST>
+
+
+</PAGE>

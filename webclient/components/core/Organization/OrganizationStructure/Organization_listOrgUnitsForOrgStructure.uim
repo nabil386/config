@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  IBM Confidential
+  
+  OCO Source Materials
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2003, 2013
+  
+  The source code for this program is not published or otherwise divested
+  of its trade secrets, irrespective of what has been deposited with the US Copyright Office
+-->
+<!-- Copyright (c) 2003-2005, 2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- List the organization units for a specified organization structure.    -->
+<PAGE
+  PAGE_ID="Organization_listOrgUnitsForOrgStructure"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAY"
+    OPERATION="listOrgUnitForOrgStructureWithVersionNo"
+  />
+  <!-- BEGIN, CR00388421, AC-->
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionIDProperty"
+    CLASS="Organization"
+    NAME="ACTION"
+    OPERATION="searchOrganisationUnitDetails"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAY1"
+    OPERATION="isOrganisationUnitSearchEnabled"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="organisationStructureID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="organisationStructureID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$dtls$organisationStructureID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="organisationStructureID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="organisationStructureKey$organisationStructureID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY1"
+        PROPERTY="result$OrganisationUnitSearchInd"
+      />
+    </CONDITION>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        ACTION_ID="SEARCH"
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        ACTION_ID="RESETPAGE"
+        DEFAULT="false"
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+        TYPE="SUBMIT"
+      >
+
+
+        <LINK PAGE_ID="Organization_listOrgUnitsForOrgStructure"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.Type"
+      USE_BLANK="true"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$dtls$businessTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.LocationName"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$dtls$locationName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.Status"
+      USE_BLANK="true"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$dtls$statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    NUM_COLS="1"
+    TITLE="Cluster.Title.SearchResults"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY1"
+        PROPERTY="result$OrganisationUnitSearchInd"
+      />
+    </CONDITION>
+    <LIST>
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+        <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="Organization_modifyOrgUnitFromList"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="ACTION"
+                PROPERTY="result$dtls$dtls$organisationStructureID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="organisationStructureID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="ACTION"
+                PROPERTY="result$dtls$dtls$organisationUnitID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="organisationUnitID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="Organization_cancelOrgUnit"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="ACTION"
+                PROPERTY="dtls$dtls$name"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="name"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="ACTION"
+                PROPERTY="result$dtls$dtls$organisationStructureID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="organisationStructureID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="ACTION"
+                PROPERTY="result$dtls$dtls$organisationUnitID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="organisationUnitID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="ACTION"
+                PROPERTY="result$dtls$dtls$versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+
+
+      <FIELD
+        LABEL="Field.Label.Name"
+        WIDTH="60"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$dtls$dtls$name"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="Organization_orgUnitHome">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$dtls$dtls$organisationStructureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$dtls$dtls$organisationUnitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.CreationDate"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$dtls$dtls$creationDate"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.Status"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$dtls$dtls$statusCode"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+  <LIST>
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY1"
+        PROPERTY="result$OrganisationUnitSearchInd"
+      />
+    </CONDITION>
+    <!-- END, CR00388421, AC-->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_modifyOrgUnitFromList"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="organisationStructureKey$organisationStructureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="organisationUnitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_cancelOrgUnit"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="name"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="organisationStructureKey$organisationStructureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="organisationUnitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="60"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Organization_orgUnitHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="organisationStructureKey$organisationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationStructureID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="organisationUnitID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationUnitID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.CreationDate"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <MENU MODE="NAVIGATION">
+    <ACTION_CONTROL LABEL="Field.Label.Browse">
+      <LINK PAGE_ID="Organization_resolveOrganisationStructureTree">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="organisationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationStructureID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+</PAGE>

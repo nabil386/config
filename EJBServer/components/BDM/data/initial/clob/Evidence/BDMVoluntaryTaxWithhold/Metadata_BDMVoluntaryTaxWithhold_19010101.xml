@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Feature 99661 : Implement Manage VTW Evidence -->
+<EvidenceTypeVersion correctionOnly="true"
+    enableSaveAndNew="false" modifiable="true"
+    relatedParticipant="caseParticipantRoleID" 
+    businessStartDate="startDate" businessEndDate="endDate"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../../../../../../DynamicEvidenceMetadata.xsd">
+	<Model>
+		<Attributes>
+			<Attribute>
+				<RelatedCPAttribute cpRoleType="MEM"
+					name="caseParticipantRoleID" participantType="Person"
+					mandatory="true">
+					<CPSearchType code="PRI" />
+					<CPSearchType code="MEM" />
+				</RelatedCPAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="voluntaryTaxWithholdPercentage">
+					<DomainType dataType="Integer" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="voluntaryTaxWithholdAmount">
+					<DomainType dataType="Money" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="startDate">
+					<DomainType dataType="Date">
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="endDate">
+					<DomainType dataType="Date" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="voluntaryTaxWithholdType"
+					mandatory="true">
+					<DomainType dataType="Codetable">
+						<CodetableOptions codetableName="BDMVTWType" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<CommentsAttribute name="comments" />
+			</Attribute>
+		</Attributes>
+		<Relationships />
+	</Model>
+	<Validations>
+		<PatternValidations>
+			<Validator>
+				<ComparisonValidator
+					operator="GreaterThanOrEqualTo" shallow="false" source="endDate"
+					target="startDate" useClause="false" useLiteral="false">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_START_DATE_CAN_NOT_BE_AFTER_END_DATE" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</ComparisonValidator>
+			</Validator>
+			<Validator>
+				<DuplicateValidator conjunction="AND"
+					endDate="endDate" startDate="startDate">
+					<DuplicateAttributes conjunction="AND">
+						<DuplicateAttribute
+							name="caseParticipantRoleID" />
+						<DuplicateAttribute
+							name="voluntaryTaxWithholdType" />
+						<ValidationMessageInformation>
+							<ValidationMessageMapping>
+								<ValidationMessage>
+									<ValidationMessageResource
+										id="ERR_VTW_OVERLAP" />
+								</ValidationMessage>
+							</ValidationMessageMapping>
+						</ValidationMessageInformation>
+					</DuplicateAttributes>
+				</DuplicateValidator>
+			</Validator>
+		</PatternValidations>
+		<CustomRulesValidation
+			ruleSetName="BDMVoluntaryTaxWithholdValidationRuleSet" />
+	</Validations>
+
+	<SummaryInformation>
+		<SummaryRuleset
+			ruleSetName="BDMVoluntaryTaxWithholdSummaryRuleSet" />
+	</SummaryInformation>
+
+	<UserInterface>
+		<Cluster>
+			<RelCPCluster defaultToBlank="false"
+				enableMultiMemberUpdates="false" fullCreateParticipant="false"
+				isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true"
+				modifyOption="no" showParticipantTypeFilter="true"
+				useSingleName="false">
+				<StandardField source="caseParticipantRoleID"
+					modifiable="false" />
+				<ClusterName id="Related.CaseParticipant.Cluster.ID1" />
+				<LabelName id="Name.Label.ID1" />
+				<RelCpPfx id="CaseParticipant.Description.ID1" />
+				<FirstName id="First.Name.Label.ID1" />
+				<SecondName id="Second.Name.Label.ID1" />
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true" labelWidth="40"
+				numberOfColumns="2">
+				<Title id="TaxWithholdDetails.Cluster.Title.ID2" />
+				<StandardClusterField>
+					<StandardField modifiable="false"
+						source="voluntaryTaxWithholdType" useBlank="true">
+						<Label id="VoluntaryTaxWithholdType.Field.Label.ID2" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<SkipField />
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="voluntaryTaxWithholdPercentage">
+						<Label id="VoluntaryTaxWithholdPercentage.Field.Label.ID2" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="voluntaryTaxWithholdAmount">
+						<Label id="VoluntaryTaxWithholdAmount.Field.Label.ID2" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="startDate"
+						useDefault="false">
+						<Label id="StartDate.Field.Label.ID2" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="endDate">
+						<Label id="EndDate.Field.Label.ID2" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<CommentsCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true">
+				<Title id="Comments.Cluster.Title.ID3" />
+				<StandardField source="comments" />
+			</CommentsCluster>
+		</Cluster>
+	</UserInterface>
+</EvidenceTypeVersion>

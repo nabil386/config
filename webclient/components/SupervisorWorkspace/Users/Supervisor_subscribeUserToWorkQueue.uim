@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  OCO Source Materials
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2008, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information"). You                 -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to subscribe to a work queue.                -->
+<?curam-deprecated Since Curam 6.0.5.5, replaced with 
+  Supervisor_searchSubscribeUserToWorkQueue.
+  This page is being deprecated, since the WorkQueue select option is not able to accomodate 
+  the all the workqueues used by the customers in the production environment. See Release note: SPMP-13075.
+?>
+<PAGE
+  PAGE_ID="Supervisor_subscribeUserToWorkQueue"
+  WINDOW_OPTIONS="width=450"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorUsers"
+    NAME="ACTION"
+    OPERATION="subscribeUserToWorkqueue"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorUsers"
+    NAME="DISPLAY"
+    OPERATION="listAvailableWorkQueuesForCurrentUser"
+    PHASE="DISPLAY"
+  />
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <PAGE_PARAMETER NAME="userName"/>
+  <PAGE_PARAMETER NAME="userFullName"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="userName"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="userName"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$userName"
+    />
+  </CONNECT>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.SaveButton.label"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.CancelButton.label"
+    />
+  </ACTION_SET>
+  <CLUSTER LABEL_WIDTH="29">
+    <!--BEGIN CR00109753, SK-->
+    <FIELD LABEL="Field.Label.WorkQueue">
+      <!--END CR00109753, SK-->
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="workQueueID"
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="workQueueID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

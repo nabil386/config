@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 116400: DEV: Implement Manage Creditable Periods for OAS under IA - R2 -->
+<EvidenceTypeVersion correctionOnly="true"
+	enableSaveAndNew="true" modifiable="true"
+	relatedParticipant="caseParticipantRole"
+	ruleSetNameForCalculatedAttributes="BDMForeignContributionPeriodCalculatedAttributesRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/DynamicEvidenceSchema.xsd">
+	<Model>
+		<Attributes>
+			<Attribute>
+				<RelatedCPAttribute cpRoleType="MEM"
+					name="caseParticipantRole" participantType="Person">
+					<CPSearchType code="PRI" />
+					<CPSearchType code="MEM" />
+				</RelatedCPAttribute>
+			</Attribute>
+			<Attribute>
+				<CalculatedAttribute name="countryCalc">
+					<DomainType dataType="Codetable">
+						<CodetableOptions codetableName="BDMSourceCountry"/>
+					</DomainType>
+				</CalculatedAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="country" onCreateCalculator="countryCalc">
+					<DomainType dataType="Codetable">
+						<CodetableOptions codetableName="BDMSourceCountry"/>
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="creditablePeriodsource" defaultValue="CPSRC01" mandatory="true">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMCreditablePeriodSource" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="isVoluntary">
+					<DomainType dataType="Boolean" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="startDate" mandatory="true">
+					<DomainType dataType="Date" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="endDate" mandatory="true">
+					<DomainType dataType="Date">
+						<DateOptions currentDate="LessThanOrEqualTo">
+							<ValidationMessageInformation>
+								<ValidationMessageMapping>
+									<ValidationMessage>
+										<ValidationMessageResource
+											id="ERR_FUTURE_END_DATE_DISALLOWED" />
+									</ValidationMessage>
+								</ValidationMessageMapping>
+							</ValidationMessageInformation>
+						</DateOptions>
+                    </DomainType> 
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<CommentsAttribute name="comments" />
+			</Attribute>
+		</Attributes>
+		<Relationships />
+	</Model>
+	<Validations>
+		<PatternValidations>
+			<Validator>
+				<ComparisonValidator source="startDate"
+					target="endDate" operator="LessThan">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource id="ERR_START_DATE_BEFORE_END_DATE" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</ComparisonValidator>
+			</Validator>
+            <Validator>
+              <DuplicateValidator startDate="startDate" endDate="endDate">
+                <DateRangeValidationMessageInformation>
+                  <ValidationMessageMapping>
+                    <ValidationMessage>
+                      <ValidationMessageResource id="ERR_OVERLAPPING_FOREIGN_CONTRIBUTION_PERIOD" />
+                    </ValidationMessage>
+                  </ValidationMessageMapping>
+                </DateRangeValidationMessageInformation>
+              </DuplicateValidator>
+            </Validator>
+		</PatternValidations>
+	</Validations>
+	<SummaryInformation>
+		<SummaryRuleset ruleSetName="BDMForeignContributionPeriodSummaryRuleSet"/>
+	</SummaryInformation>
+	<UserInterface>
+		<Cluster>
+			<RelCPCluster defaultToBlank="false"
+				enableMultiMemberUpdates="false" fullCreateParticipant="false"
+				isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true"
+				modifyOption="no" showParticipantTypeFilter="true"
+				useSingleName="false">
+				<StandardField source="caseParticipantRole" />
+				<ClusterName id="Participant.Cluster.Title" />
+				<LabelName id="Participant.Field.Label" />
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="false"
+				isOnModifyPage="false" isOnViewPage="true" labelWidth="40"
+				numberOfColumns="2">
+				<Title id="Country.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField modifiable="false" source="country">
+						<Label id="Country.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true" labelWidth="40"
+				numberOfColumns="2">
+				<Title id="ForeignContributionPeriod.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="creditablePeriodsource" useDefault="false" useBlank="true">
+						<Label id="CreditablePeriodsource.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+                    <StandardField modifiable="true"
+                        source="isVoluntary" useDefault="false" useBlank="true">
+                        <Label id="IsVountary.Field.Label" />
+                    </StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="startDate"
+						useDefault="false" useBlank="true">
+						<Label id="StartDate.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="endDate"
+						useDefault="false" useBlank="true">
+						<Label id="EndDate.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<CommentsCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true">
+				<Title id="Comments.Cluster.Title" />
+				<StandardField source="comments" />
+			</CommentsCluster>
+		</Cluster>
+	</UserInterface>
+</EvidenceTypeVersion>

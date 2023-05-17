@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2005, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2005-2008, 2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<PAGE
+  PAGE_ID="DecisionAssistAdmin_modifyPresentationData"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="QUESTIONHEADER"
+        PROPERTY="result$headerDtls$dtls$dPackageName"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.Hypne"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="QUESTIONHEADER"
+        PROPERTY="result$headerDtls$dtls$questionnaireName"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="DecisionMatrix"
+    NAME="LISTDECISIONMATRICES"
+    OPERATION="readAllLatestVersionDecisionMatrices"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="QuestionnaireDecisionOutcomeMetaData"
+    NAME="LISTOUTCOMES"
+    OPERATION="readAllActiveOutcomes"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="QuestionnaireDecisionOutcomeMetaData"
+    NAME="QUESTIONHEADER"
+    OPERATION="readPresentationDataHeaderDetails"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="QuestionnaireDecisionOutcomeMetaData"
+    NAME="MODIFY_QUESTIONNAIRE_PRESENTATION_DATA"
+    OPERATION="modifyPresentationData"
+    PHASE="ACTION"
+  />
+  <!-- BEGIN, CR00237410, AK -->
+  <SERVER_INTERFACE
+    CLASS="QuestionnaireDecisionOutcomeMetaData"
+    NAME="VIEW_QUESTIONNAIRE_PRESENTATION_DATA"
+    OPERATION="readQuestionnairePresentationData"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00237410 -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="presentationDataID"
+    />
+    <TARGET
+      NAME="VIEW_QUESTIONNAIRE_PRESENTATION_DATA"
+      PROPERTY="key$key$key$presentationDataID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="dpQuestionnaireLinkID"
+    />
+    <TARGET
+      NAME="QUESTIONHEADER"
+      PROPERTY="key$key$key$dpQuestionnaireLinkID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="dpQuestionnaireLinkID"
+    />
+    <TARGET
+      NAME="MODIFY_QUESTIONNAIRE_PRESENTATION_DATA"
+      PROPERTY="dpQuestionnaireLinkID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="VIEW_QUESTIONNAIRE_PRESENTATION_DATA"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="MODIFY_QUESTIONNAIRE_PRESENTATION_DATA"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="VIEW_QUESTIONNAIRE_PRESENTATION_DATA"
+      PROPERTY="recordStatus"
+    />
+    <TARGET
+      NAME="MODIFY_QUESTIONNAIRE_PRESENTATION_DATA"
+      PROPERTY="recordStatus"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="presentationDataID"
+    />
+    <TARGET
+      NAME="MODIFY_QUESTIONNAIRE_PRESENTATION_DATA"
+      PROPERTY="modifyPresentationDataDetails$dtls$dtls$presentationDataID"
+    />
+  </CONNECT>
+  <PAGE_PARAMETER NAME="presentationDataID"/>
+  <PAGE_PARAMETER NAME="dpQuestionnaireLinkID"/>
+  <PAGE_PARAMETER NAME="determinationPackageVersionID"/>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+    <FIELD LABEL="Field.Label.DecisionMatrix">
+      <!-- BEGIN, CR00237410, AK -->
+      <CONNECT>
+        <INITIAL
+          NAME="VIEW_QUESTIONNAIRE_PRESENTATION_DATA"
+          PROPERTY="result$presentationDtls$dtls$dtls$decisionMatrixName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_QUESTIONNAIRE_PRESENTATION_DATA"
+          PROPERTY="result$presentationDtls$dtls$dtls$decisionMatrixID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="MODIFY_QUESTIONNAIRE_PRESENTATION_DATA"
+          PROPERTY="modifyPresentationDataDetails$dtls$dtls$decisionMatrixID"
+        />
+      </CONNECT>
+      <!-- END, CR00237410 -->
+    </FIELD>
+    <FIELD LABEL="Field.Label.Presentation">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_QUESTIONNAIRE_PRESENTATION_DATA"
+          PROPERTY="questionnairePresentationCode"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="MODIFY_QUESTIONNAIRE_PRESENTATION_DATA"
+          PROPERTY="modifyPresentationDataDetails$dtls$dtls$questionnairePresentationCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Outcome"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="100"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_QUESTIONNAIRE_PRESENTATION_DATA"
+          PROPERTY="outcomeID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="outcomeID"
+          NAME="LISTOUTCOMES"
+          PROPERTY="outcomeName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="MODIFY_QUESTIONNAIRE_PRESENTATION_DATA"
+          PROPERTY="outcomeID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00407812, RB -->
+    <FIELD
+      HEIGHT="3"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00407812 -->
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_QUESTIONNAIRE_PRESENTATION_DATA"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="MODIFY_QUESTIONNAIRE_PRESENTATION_DATA"
+          PROPERTY="modifyPresentationDataDetails$dtls$dtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="DecisionAssistAdmin_listQuestionnairePresentationDetails">
+        <CONNECT>
+          <SOURCE
+            NAME="MODIFY_QUESTIONNAIRE_PRESENTATION_DATA"
+            PROPERTY="dpQuestionnaireLinkID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="dpQuestionnaireLinkID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="MODIFY_QUESTIONNAIRE_PRESENTATION_DATA"
+            PROPERTY="presentationDataID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="presentationDataID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    > </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

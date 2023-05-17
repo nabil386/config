@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright (c) 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="CitizenWorkspaceAdmin_viewCategory" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="result$details$name" />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE CLASS="CitizenWorkspaceAdmin" NAME="DISPLAY" OPERATION="viewApplicationCategory" />
+  <PAGE_PARAMETER NAME="applicationCategoryID" />
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="applicationCategoryID" />
+    <TARGET NAME="DISPLAY" PROPERTY="key$applicationCategoryID" />
+  </CONNECT>
+  
+  <CLUSTER LABEL_WIDTH="15" STYLE="outer-cluster-borderless">
+    <FIELD LABEL ="Field.Title.URL">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$details$dtls$url" />
+      </CONNECT>
+      <LINK OPEN_NEW="true" URI_SOURCE_NAME="DISPLAY" URI_SOURCE_PROPERTY="result$details$dtls$url"/>
+    </FIELD>    
+  </CLUSTER>
+  
+  <CLUSTER TITLE="Cluster.Title.Description" SHOW_LABELS="false">
+    <CONTAINER>
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result$details$description" />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL IMAGE="CALocalizableTextTranslation" LABEL="ActionControl.Label.Translations">
+        <LINK PAGE_ID="LocalizableText_viewLocalizableText" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$details$dtls$descriptionTextID" />
+            <TARGET NAME="PAGE" PROPERTY="localizableTextID" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>
+  
+  <CLUSTER NUM_COLS="2" STYLE="outer-cluster-borderless">
+    <LIST TITLE="List.Title.IntakeApplications">
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+        <ACTION_CONTROL LABEL="ActionControl.Label.Change">
+          <LINK PAGE_ID="CitizenWorkspaceAdmin_modifyIntakeLinkDisplayOrder" OPEN_MODAL="true">
+            <CONNECT>
+              <SOURCE NAME="PAGE" PROPERTY="applicationCategoryID" />
+              <TARGET NAME="PAGE" PROPERTY="applicationCategoryID" />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE NAME="DISPLAY" PROPERTY="intakeApplicationTypeID" />
+              <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+          <LINK PAGE_ID="CitizenWorkspaceAdmin_removeIntakeCategoryLink" OPEN_MODAL="true">
+            <CONNECT>
+              <SOURCE NAME="DISPLAY" PROPERTY="intakeApplicationTypeID" />
+              <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE NAME="PAGE" PROPERTY="applicationCategoryID" />
+              <TARGET NAME="PAGE" PROPERTY="applicationCategoryID" />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>        
+      </ACTION_SET>
+      <FIELD LABEL="Field.Title.Name" WIDTH="79">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="intakeApplications$name" />
+        </CONNECT>
+      </FIELD>
+      
+        <FIELD LABEL="Field.Title.DisplayOrder" WIDTH="19">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="intakeApplications$displayOrder" />
+          </CONNECT>
+        </FIELD>
+      
+    </LIST>
+    
+    <LIST TITLE="List.Title.Screenings">
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+        <ACTION_CONTROL LABEL="ActionControl.Label.Change">
+          <LINK PAGE_ID="CitizenWorkspaceAdmin_modifyScreeningLinkDisplayOrder" OPEN_MODAL="true">
+            <CONNECT>
+              <SOURCE NAME="PAGE" PROPERTY="applicationCategoryID" />
+              <TARGET NAME="PAGE" PROPERTY="applicationCategoryID" />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE NAME="DISPLAY" PROPERTY="screeningTypeID" />
+              <TARGET NAME="PAGE" PROPERTY="screeningTypeID" />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+          <LINK PAGE_ID="CitizenWorkspaceAdmin_removeScreeningCategoryLink" OPEN_MODAL="true">
+            <CONNECT>
+              <SOURCE NAME="DISPLAY" PROPERTY="screeningTypeID" />
+              <TARGET NAME="PAGE" PROPERTY="screeningTypeID" />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE NAME="PAGE" PROPERTY="applicationCategoryID" />
+              <TARGET NAME="PAGE" PROPERTY="applicationCategoryID" />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+      <FIELD LABEL="Field.Title.Name" WIDTH="81">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="screenings$name" />
+        </CONNECT>
+      </FIELD>
+    
+        <FIELD LABEL="Field.Title.DisplayOrder" WIDTH="21">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="screenings$displayOrder" />
+          </CONNECT>
+        </FIELD>
+      
+    </LIST>
+  </CLUSTER>
+ 
+</PAGE>
+

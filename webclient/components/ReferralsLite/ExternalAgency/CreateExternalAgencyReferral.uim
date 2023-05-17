@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c)2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!--Create External Agency Referral                              -->
+<PAGE
+  PAGE_ID="CreateExternalAgencyReferral"
+  WINDOW_OPTIONS="width=750,height=550"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="externalAgencyBranchOfferingID"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="LiteAgencyReferral"
+    NAME="ACTION"
+    OPERATION="createLiteAgencyReferral"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ExternalAgency"
+    NAME="DISPLAYWIZARD"
+    OPERATION="readWizardDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="LiteAgencyReferral"
+    NAME="DISPLAY"
+    OPERATION="getExistingClientDetails"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="externalAgencyBranchOfferingID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="externalAgencyBranchOfferingID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.ContactDetails"
+  >
+    <FIELD LABEL="Field.Label.FirstName">
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="firstName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="firstName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.LastName">
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="lastName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="lastName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER NUM_COLS="2">
+    <FIELD LABEL="Field.Label.Address">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="address"
+        />
+      </CONNECT>
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="address"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+  <CLUSTER NUM_COLS="2">
+
+
+    <FIELD LABEL="Field.Label.HomePhoneNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="homePhoneNumber"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="homePhoneNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.WorkPhoneNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="workPhoneNumber"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="workPhoneNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.MobilePhoneNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="mobilePhoneNumber"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="mobilePhoneNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EmailAddress">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="emailAddress"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="emailAddress"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+    TITLE="Field.Label.AdditionalInformation"
+  >
+    <FIELD HEIGHT="12">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="additionalInformation"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET BOTTOM="true">
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    > </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="RIGHT"
+      IMAGE="BackButton"
+      LABEL="ActionControl.Label.Back"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="SearchForExternalAgencyBranchOffering"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="programType"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="state"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="city"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="zip"
+          />
+        </CONNECT>
+
+
+      </LINK>
+
+
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="RIGHT"
+      DEFAULT="true"
+      IMAGE="FinishButton"
+      LABEL="ActionControl.Label.Finish"
+      TYPE="SUBMIT"
+    > </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

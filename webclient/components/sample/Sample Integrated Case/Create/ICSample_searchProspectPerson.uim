@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2002, 2012, 2015. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2002-2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to search for the client for whom the        -->
+<!-- integrated case is being created.                                      -->
+<!-- BEGIN, CR00341996, MR -->
+<PAGE PAGE_ID="ICSample_searchProspectPerson" WINDOW_OPTIONS="width=1200" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <!-- END, CR00341996 -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="ProspectPerson" NAME="ACTION" OPERATION="searchCurrentProspectPersons" PHASE="ACTION"/>
+
+
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+    <ACTION_CONTROL IMAGE="PreviousButton" LABEL="ActionControl.Label.Previous">
+      <LINK DISMISS_MODAL="false" OPEN_MODAL="false" PAGE_ID="ICSample_selectPersonType" SAVE_LINK="false"/>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="SearchButton" LABEL="ActionControl.Label.Search" TYPE="SUBMIT">
+      <LINK PAGE_ID="THIS"/>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="ResetButton" LABEL="ActionControl.Label.Reset">
+      <LINK PAGE_ID="ICSample_searchProspectPerson" SAVE_LINK="false"/>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel">
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="50" NUM_COLS="2" TITLE="Cluster.Title.SearchCriteria">
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$referenceNumber"/>
+      </CONNECT>
+    </FIELD>
+    <CONTAINER LABEL="Field.Label.LastName">
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD LABEL="Field.Label.LastName" WIDTH="85">
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$surname"/>
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Soundex" WIDTH="15">
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$soundsLikeInd"/>
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.DateOfBirth" USE_DEFAULT="false">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$dateOfBirth"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AddressLineOne">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$address"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.BirthLastName">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$birthSurname"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <FIELD LABEL="Field.Label.FirstName">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$forename"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Gender" USE_BLANK="true" USE_DEFAULT="false">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$sex"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.City">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$city"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MotherBirthName">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="prospectPersonSearchKey$motherSurname"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+    <FIELD WIDTH="5">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="duplicateInd"/>
+      </CONNECT>
+      <!-- BEGIN, CR00151260, PDN -->
+      <LINK OPEN_MODAL="true" PAGE_ID="Person_duplicateHomePage">
+        <CONNECT>
+          <SOURCE NAME="ACTION" PROPERTY="dtls$originalConcernRoleID"/>
+          <TARGET NAME="PAGE" PROPERTY="concernRoleID"/>
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00151260 -->
+    </FIELD>
+    <CONTAINER LABEL="Container.Label.Action" WIDTH="7">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Select">
+        <LINK DISMISS_MODAL="false" OPEN_MODAL="false" PAGE_ID="ICSample_selectIntegratedCaseType" SAVE_LINK="true">
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="concernRoleID"/>
+            <TARGET NAME="PAGE" PROPERTY="concernRoleID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD LABEL="Field.Title.ReferenceNumber" WIDTH="10">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="dtls$referenceNumber"/>
+      </CONNECT>
+      <!-- BEGIN, CR00361188, BD -->
+      <LINK DISMISS_MODAL="false" PAGE_ID="ProspectPerson_resolveHomePage">
+        <!-- END, CR00361188 -->
+        <CONNECT>
+          <SOURCE NAME="ACTION" PROPERTY="concernRoleID"/>
+          <TARGET NAME="PAGE" PROPERTY="concernRoleID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Title.FirstName" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="dtls$forename"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.LastName" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="dtls$surname"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.AddressLineOne" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="dtls$address"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.City" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="dtls$city"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.DateOfBirth" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="dtls$dateOfBirth"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

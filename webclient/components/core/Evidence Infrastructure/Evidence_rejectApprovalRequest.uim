@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2006, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2006, 2012 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!--  Infrastructure page used for rejecting evidence approval request.     -->
+<!-- BEGIN, CR00334444, MV -->
+<?curam-deprecated Since Curam 6.0 SP4, this UIM has been deprecated because the evidence 
+reject functionality requires evidenceDescriptorID to be passed as page parameter. 
+This UIM has been replaced with Evidence_rejectApprovalRequest1.uim. 
+See release note: CR00320587?>
+<!-- END, CR00334444 -->
+<PAGE
+  PAGE_ID="Evidence_rejectApprovalRequest"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="contextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Evidence"
+    NAME="DISPLAY"
+    OPERATION="getContextDescription"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Evidence"
+    NAME="ACTION"
+    OPERATION="rejectApprovalRequest"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="evidenceID"/>
+  <PAGE_PARAMETER NAME="evidenceType"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="evidenceID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="evidenceID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="evidenceType"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="evidenceType"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="25"
+    TITLE="Cluster.Title.RejectionInformation"
+  >
+
+
+    <FIELD LABEL="Field.Label.RejectionReason">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="rejectionReason"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.RejectionComments"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      IMAGE="RejectButton"
+      LABEL="ActionControl.Label.RejectEvidence"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="Inbox_listAssignedTasks"/>
+
+
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp redirects the user to the appropriate details panel for the   -->
+<!-- over under payment statement view, depending on whether or not there   -->
+<!-- are breakdown records for the over or under payment.   -->
+<PAGE
+  PAGE_ID="ProductDelivery_resolveViewSingleComponentBenefitStatement"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+  
+    curam.omega3.request.RequestHandler 
+      rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+      
+    String url = "";
+    String context = request.getContextPath() + "/";
+    context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+    
+    String caseID = request.getParameter("caseID");
+    String nomineeOverUnderPaymentID = request.getParameter("nomineeOverUnderPaymentID");
+    String rulesObjectiveID = request.getParameter("rulesObjectiveID");
+    
+    curam.interfaces.ProductDeliveryPkg.ProductDelivery_benefitStatementBreakdownExists_TH 
+     th = new curam.interfaces.ProductDeliveryPkg.ProductDelivery_benefitStatementBreakdownExists_TH();
+          
+    th.setFieldValue(th.key$caseID_idx, caseID);    
+    th.setFieldValue(th.key$nomineeOverUnderPaymentID_idx, nomineeOverUnderPaymentID); 
+    th.setFieldValue(th.key$rulesObjectiveID_idx, rulesObjectiveID); 
+    
+    th.callServer();              
+        
+    String breakdownInfoExistsInd  = th.getFieldValue("result$breakdownInfoExistsInd");
+          
+    if (breakdownInfoExistsInd.equals("true")) {
+    
+      url = context + "ProductDelivery_viewSingleComponentBenefitStatementPage.do?nomineeOverUnderPaymentID=" 
+        + curam.omega3.request.RequestUtils.escapeURL(nomineeOverUnderPaymentID)
+        + "&amp;rulesObjectiveID=" + curam.omega3.request.RequestUtils.escapeURL(rulesObjectiveID)
+        + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+      
+    } else {
+        
+     
+      url = context + "ProductDelivery_viewSingleComponentBenefitStatementNoBreakdownPage.do?nomineeOverUnderPaymentID=" 
+        + curam.omega3.request.RequestUtils.escapeURL(nomineeOverUnderPaymentID)
+        + "&amp;rulesObjectiveID=" + curam.omega3.request.RequestUtils.escapeURL(rulesObjectiveID)
+        + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);  
+    }
+        
+    url += "&amp;" + rh.getSystemParameters();     
+    response.sendRedirect(response.encodeRedirectURL(url));
+        
+  </JSP_SCRIPTLET>
+</PAGE>

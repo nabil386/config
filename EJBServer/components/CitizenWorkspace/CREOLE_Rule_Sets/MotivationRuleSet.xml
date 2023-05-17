@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed Materials - Property of IBM
+    
+    Copyright IBM Corporation 2012. All Rights Reserved.
+    
+    US Government Users Restricted Rights - Use, duplication or disclosure 
+    restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<RuleSet name="MotivationRuleSet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+  <Class abstract="true" name="AbstractEligibility">
+    <Attribute name="context">
+      <type>
+        <ruleclass name="AbstractContext"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+    <Attribute name="results">
+      <type>
+        <ruleclass name="AbstractResults"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+  </Class>
+
+  <Class
+    abstract="true"
+    name="AbstractContext"
+  >
+    <Attribute name="summary">
+      <type>
+          <ruleclass name="AbstractSummary"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    
+    
+    <Attribute name="householdMembers">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="AbstractPerson"/>
+        </javaclass>
+      </type>
+      <derivation>
+          <abstract/>
+      </derivation>
+    </Attribute>
+
+  </Class>
+
+  <Class
+    abstract="true"
+    name="AbstractSummary"
+    >
+    <Attribute name="title">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>        
+    
+    <Attribute name="summaryText">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>    
+  </Class>
+
+  <Class
+    abstract="true"
+    name="AbstractResults"
+  >
+    <Attribute name="category">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="AbstractCategory"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+  </Class>
+
+  <Class
+    abstract="true"
+    name="AbstractCategory"
+  >
+    <Attribute name="categoryID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>    
+    <Attribute name="isPrimary">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    
+    <Attribute name="status">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>    
+            
+    <Attribute name="result">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="AbstractResult"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+  </Class>
+
+  <Class
+    abstract="true"
+    name="AbstractResult"
+  >
+   <!-- result id could be a program type reference, for example -->
+    <Attribute name="resultID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    
+    <!-- From code table TODO -->
+    <Attribute name="status">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+    <!-- If a static, configured description is not sufficient a
+      calculated description can be used. The results page will
+      display the description from the rules if available. The concrete
+      ruleset can leave this attribute as specified. -->
+    <Attribute name="resultDescription">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>    
+            
+    <Attribute name="members">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="AbstractPerson"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class
+    abstract="true"
+    name="AbstractPerson"
+  >
+    <Attribute name="personID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <Attribute name="firstName">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <Attribute name="lastName">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <Attribute name="gender">
+      <type>
+        <codetableentry table="Gender"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <Attribute name="dateOfBirth">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <!-- This reflects the person’s status within a particular result 
+         For example eligible, potentially eligible or not eligible -->
+    <Attribute name="status">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class
+    abstract="true"
+    name="ResultContext"
+    >
+    <Attribute name="resultContextName">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <Attribute name="displayInTooltips">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>        
+  </Class>  
+</RuleSet>

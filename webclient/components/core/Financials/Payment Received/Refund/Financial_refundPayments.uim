@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2012 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to create an audit team for the audit plan.  -->
+<PAGE PAGE_ID="Financial_refundPayments" WINDOW_OPTIONS="width=1200" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.Title"/>
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="searchMessage"/>
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <SERVER_INTERFACE CLASS="Financial" NAME="ACTION" OPERATION="refundMultipleReceivedPayments" PHASE="ACTION"/>
+
+
+  <SERVER_INTERFACE CLASS="Financial" NAME="DISPLAY" OPERATION="listUnallocatedPaymentReceived"/>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+
+
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="concernRoleID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$concernRoleID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="concernRoleID"/>
+    <TARGET NAME="ACTION" PROPERTY="details$concernRoleID"/>
+  </CONNECT>
+
+
+  <LIST>
+    <CONTAINER WIDTH="8">
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="finInstructionID"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+
+
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="refundILITabList"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.IssuerName" WIDTH="19">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="issuerName"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ClientName" WIDTH="19">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="clientName"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ReceiptMethod" WIDTH="16">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="receiptMethodCode"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ReceivedDate" WIDTH="16">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="receivedDate"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Amount" WIDTH="10">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="amount"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Unallocated" WIDTH="12">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="unallocatedAmount"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright (c) 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="CitizenWorkspaceAdmin_viewProgramGroup" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+        </CONNECT>
+        <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="result$details$name" />
+        </CONNECT>
+    </PAGE_TITLE>
+    <SERVER_INTERFACE CLASS="CitizenWorkspaceAdmin" NAME="DISPLAY" OPERATION="viewProgramGroup" />
+    <PAGE_PARAMETER NAME="onlineProgramGroupID" />
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="onlineProgramGroupID" />
+        <TARGET NAME="DISPLAY" PROPERTY="key$onlineProgramGroupID" />
+    </CONNECT>
+    
+    <LIST TITLE="List.Title.Programs">
+        <ACTION_SET TYPE="LIST_ROW_MENU">
+            <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+                <LINK PAGE_ID="CitizenWorkspaceAdmin_removeProgramFromGroup" OPEN_MODAL="true">
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="programTypeID" />
+                        <TARGET NAME="PAGE" PROPERTY="programTypeID" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="PAGE" PROPERTY="onlineProgramGroupID" />
+                        <TARGET NAME="PAGE" PROPERTY="onlineProgramGroupID" />
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+        </ACTION_SET>
+        <DETAILS_ROW>
+            <INLINE_PAGE PAGE_ID="CitizenWorkspaceAdmin_viewProgram">
+                <CONNECT>
+                    <SOURCE
+                        NAME="DISPLAY"
+                        PROPERTY="programTypeID"
+                    />
+                    <TARGET
+                        NAME="PAGE"
+                        PROPERTY="programTypeID"
+                    />
+                </CONNECT>
+            </INLINE_PAGE>
+        </DETAILS_ROW>
+        
+        <FIELD LABEL="Field.Title.Name" WIDTH="100">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="programs$details$name" />
+            </CONNECT>
+        </FIELD>
+    </LIST>
+</PAGE>

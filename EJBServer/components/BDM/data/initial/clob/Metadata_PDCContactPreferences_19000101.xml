@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EvidenceTypeVersion
+  modifiable="true"
+  relatedParticipant="participant"
+>
+  <Model>
+    <Attributes>
+      <Attribute>
+        <RelatedCPAttribute
+          cpRoleType="MEM"
+          name="participant"
+          participantType="Person"
+        >
+          <CPSearchType code="PRI"/>
+          <CPSearchType code="MEM"/>
+        </RelatedCPAttribute>
+      </Attribute>
+     <!-- ADA-9375, Start -->
+     <Attribute>
+        <DataAttribute
+          name="preferredLanguage"
+          volatile="true"
+        >
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="Language"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          name="preferredCommunication"
+          volatile="true"
+          mandatory="false"
+        >
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="CommunicationMethod"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          name="preferredCommunicationMethod"
+          volatile="true"
+          mandatory="true"
+          default="false"
+        >
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="BDMCorrespondanceDelivery"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          name="preferredOralLanguage"
+          volatile="true"
+           mandatory="true"
+        >
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="BDMLanguage"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute
+          name="preferredWrittenLanguage"
+          volatile="true"
+           mandatory="true"
+        >
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="BDMLanguage"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <!-- ADA-9375 End-->
+      <Attribute>
+        <CommentsAttribute name="comments"/>
+      </Attribute>
+    </Attributes>
+    <Relationships/>
+  </Model>
+  <Validations>
+    <CustomRulesValidation ruleSetName="PDCContactPreferencesValidationRuleSet"/>
+  </Validations>
+  <SummaryInformation>
+    <SummaryMapping>
+      <Summary>
+        <parameter name="preferredOralLanguage"/>
+        <parameter name="preferredWrittenLanguage"/>
+        <SummaryResource id="PDCContactPreference.SummaryMessage"/>
+      </Summary>
+    </SummaryMapping>
+  </SummaryInformation>
+  <UserInterface
+    createDialogWidth="700"
+    modifyDialogWidth="700"
+  >
+    <Cluster>
+      <RelCPCluster
+        defaultToBlank="true"
+        fullCreateParticipant="false"
+        isOnCreatePage="true"
+        isOnModifyPage="true"
+        isOnViewPage="true"
+        modifyOption="no"
+        showParticipantTypeFilter="true"
+        useSingleName="false"
+      >
+        <StandardField source="participant"/>
+        <ClusterName id="ClusterID2"/>
+        <LabelName id="Participant.Description.ID2"/>
+      </RelCPCluster>
+    </Cluster>
+    <Cluster>
+      <StandardCluster
+        isOnCreatePage="true"
+        isOnModifyPage="true"
+        isOnViewPage="true"
+        numberOfColumns="1"
+      >
+        <Title id="Cluster.Title.Preferences"/>
+        <!-- ADA-9375, Start -->
+       <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="preferredOralLanguage"
+            useBlank="true"
+            useDefault="false"
+          >
+            <Label id="Field.Label.PreferredOralLanguage"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="preferredWrittenLanguage"
+            useBlank="true"
+            useDefault="false"
+          >
+            <Label id="Field.Label.PreferredWrittenLanguage"/>
+          </StandardField>
+        </StandardClusterField>
+         <StandardClusterField>
+          <StandardField
+            modifiable="true"
+            source="preferredCommunicationMethod"
+            useBlank="true"
+            useDefault="false"
+          >
+            <Label id="Field.Label.PreferredCommunication"/>
+          </StandardField>
+        </StandardClusterField>
+      </StandardCluster>
+      <!-- ADA-9375, End -->
+    </Cluster>
+    <Cluster>
+      <CommentsCluster
+        isOnCreatePage="true"
+        isOnModifyPage="true"
+        isOnViewPage="true"
+      >
+        <Title id="Cluster.Title.Comments"/>
+        <StandardField source="comments"/>
+      </CommentsCluster>
+    </Cluster>
+  </UserInterface>
+</EvidenceTypeVersion>

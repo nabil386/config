@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2006, 2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2006, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify the authorized unit details of a   -->
+<!-- service unit delivery planned item                                     -->
+<PAGE PAGE_ID="ServicePlanDelivery_modifyAuthorizedUnits" WINDOW_OPTIONS="width=700" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="ServicePlanDelivery" NAME="ACTION" OPERATION="modifyAuthorizedUnits" PHASE="ACTION"/>
+
+
+  <SERVER_INTERFACE CLASS="ServicePlanDelivery" NAME="DISPLAY" OPERATION="readAuthorizedUnitDetailsForModify" PHASE="DISPLAY"/>
+
+
+  <PAGE_PARAMETER NAME="plannedItemID"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT">
+    </ACTION_CONTROL>
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="plannedItemID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$plannedItemIDKey$plannedItemIDKey$plannedItemID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="plannedItemID"/>
+    <TARGET NAME="ACTION" PROPERTY="key$plannedItemIDKey$plannedItemIDKey$plannedItemID"/>
+  </CONNECT>
+
+
+  <CLUSTER LABEL_WIDTH="60" NUM_COLS="2">
+
+
+    <FIELD LABEL="Field.Label.AuthorizedUnits">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorizedUnits"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.NewAuthorizedUnits" WIDTH="40">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="authorizedUnits"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="authorizedUnits"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.UnitsReceivedToDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="unitsReceivedToDate"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.MaximumUnits">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="maximumUnits"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Label.Comments">
+    <!-- BEGIN, CR00417389, VT -->
+    <FIELD HEIGHT="4" LABEL="Field.Label.Comments">
+      <!-- END, CR00417389 -->
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="comments"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

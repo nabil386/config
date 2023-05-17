@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2022. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright (c) 2012 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="CitizenWorkspaceAdmin_createSocialRecordEvidenceType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd" WINDOW_OPTIONS="width=500">
+  
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>  
+  
+  <SERVER_INTERFACE CLASS="EvidenceTypesLink" NAME="DISPLAY" OPERATION="listAvailableEvidenceTypes"/>
+  <SERVER_INTERFACE CLASS="EvidenceTypesLink" NAME="ACTION" OPERATION="createEvidenceLink" PHASE="ACTION"/>
+  
+  <CONNECT>
+    <SOURCE NAME="CONSTANT" PROPERTY="Constant.Social.Record.Case.Admin.ID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="caseAdminID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="CONSTANT" PROPERTY="Constant.Social.Record.Case.Admin.Type"/>
+    <TARGET NAME="DISPLAY" PROPERTY="caseType"/>
+  </CONNECT> 
+  
+  <CONNECT>
+    <SOURCE NAME="CONSTANT" PROPERTY="Constant.Social.Record.Case.Admin.ID"/>
+    <TARGET NAME="ACTION" PROPERTY="associatedID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="CONSTANT" PROPERTY="Constant.Social.Record.Case.Admin.Type"/>
+    <TARGET NAME="ACTION" PROPERTY="associatedCaseTypeOpt"/>
+  </CONNECT>   
+  <CONNECT>
+    <SOURCE NAME="CONSTANT" PROPERTY="Constant.True"/>
+    <TARGET NAME="ACTION" PROPERTY="shareableInd"/>
+  </CONNECT>     
+  
+  
+  <CLUSTER LABEL_WIDTH="50" NUM_COLS="1">
+    <FIELD LABEL="Field.Title.EvidenceType" USE_BLANK="TRUE">
+      <CONNECT>
+        <INITIAL HIDDEN_PROPERTY="evidenceTypeIDAndCode" NAME="DISPLAY" PROPERTY="evidenceTypeCode"/>
+      </CONNECT>    
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="evidenceTypeIDAndCode"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.Category" USE_BLANK="TRUE">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="category"/>
+      </CONNECT>
+    </FIELD>  
+    <FIELD LABEL="Field.Title.Visible">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="visibleToCitizenInd"/>
+      </CONNECT>
+    </FIELD>    
+  </CLUSTER>
+
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET> 
+  
+</PAGE>

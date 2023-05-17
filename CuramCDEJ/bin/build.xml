@@ -1,0 +1,1253 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2004,2022. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<project name="ClientBuild" default="client">
+
+  <!-- =================================================================== -->
+  <!-- ========================== I M P O R T S ========================== -->
+  <!-- =================================================================== -->
+  <import file="build-properties.xml"/>
+  <import file="build-app.xml"/>
+  <import file="build-taskdefs.xml"/>
+
+  <!-- =================================================================== -->
+  <!-- ========================== T A R G E T S ========================== -->
+  <!-- =================================================================== -->
+  <!--=============================
+        Display usage information
+      =============================-->
+  <target name="usage" description="Display usage information">
+    <echo
+      message="Use the '-projecthelp' argument to list the available targets"/>
+  </target>
+
+  <!--========================
+        Initialize the build
+      ========================-->
+  <target name="-init" depends="-init-directories">
+
+    <echo message="Project Name=${prp.project.name}"/>
+    <echo message="basedir=${dir.client}"/>
+    <echo message="CuramCDEJ=${dir.cde}"/>
+  </target>
+
+  <!--===========================
+        Start logging the build.
+      ===========================-->
+  <target name="-start-log" unless="fil.log">
+
+    <!-- Set the starting time stamp for use in file names -->
+    <tstamp>
+      <format property="time.stamp" pattern="yyyyMMddHHmmss"/>
+    </tstamp>
+    <property name="fil.log" value="${dir.bld.log}/${time.stamp}.log"/>
+    <!-- Start recording progress to a log file -->
+    <mkdir dir="${dir.bld.log}"/>
+    <record name="${fil.log}" loglevel="${prp.loglevel}"/>
+  </target>
+
+  <!--===========================
+        Output build start time
+      ===========================-->
+  <target name="-start-time">
+    <tstamp>
+      <format property="tim.now" pattern="${prp.time.format}"/>
+    </tstamp>
+    <echo message="Build started at ${tim.now}"/>
+  </target>
+
+  <!--=======================================
+        Create required project directories
+      =======================================-->
+  <target name="-init-directories" depends="-start-time">
+    <mkdir dir="${dir.bld.uim}"/>
+    <mkdir dir="${dir.bld.classes}"/>
+    <mkdir dir="${dir.bld.stylesheets}"/>
+    <mkdir dir="${dir.bld.xim}"/>
+    <mkdir dir="${dir.bld.tmp}"/>
+    <mkdir dir="${dir.bld.svg}"/>
+    <mkdir dir="${dir.gen.actions}"/>
+    <mkdir dir="${dir.gen.accessors}"/>
+    <mkdir dir="${dir.gen.texthelpers}"/>
+    <mkdir dir="${dir.tmp.actions}"/>
+    <mkdir dir="${dir.tmp.texthelpers}"/>
+    <mkdir dir="${dir.web.images}"/>
+    <mkdir dir="${dir.web.genimages}"/>
+    <mkdir dir="${dir.web.inf.classes}"/>
+    <mkdir dir="${dir.web.inf.lib}"/>
+    <mkdir dir="${dir.web.inf.config}"/>
+    <mkdir dir="${dir.bld.properties.page}"/>
+    <mkdir dir="${dir.bld.properties.global}"/>
+    <mkdir dir="${dir.bld.properties.widget}"/>
+    <mkdir dir="${dir.bld.properties.widget.default}"/>
+    <mkdir dir="${dir.client}/work"/>
+    <mkdir dir="${dir.bld.xim}/uimreg/curam"/> <!-- for uimreg.json file-->
+
+    <for list="${prp.locale.list}" delimiter="," param="locale" trim="true">
+      <sequential>
+        <mkdir dir="${dir.bld.xim}/@{locale}"/>
+        <mkdir dir="${dir.web}/@{locale}"/>
+        <mkdir dir="${dir.web}/@{locale}/common"/>
+      </sequential>
+    </for>
+  </target>
+
+  <!--======================================================================
+        Copy resources to the locations required by a J2EE web application
+      ======================================================================-->
+  <target name="setup" depends="-init, -dojoSetup"
+      description="Copy resources to standard J2EE web application locations">
+
+    <!-- Copy JAR files needed at runtime -->
+    <copy todir="${dir.web.inf}/lib">
+      <fileset dir="${dir.curam.jar}">
+        <include name="*.jar"/>
+        <!-- Exclude JAR files that are only required at build time. -->
+        <exclude name="${jar.bopi.generator}"/>
+        <exclude name="${jar.generator.omega3}"/>
+        <exclude name="*-test-classes.jar"/>
+      </fileset>
+      <fileset dir="${dir.ext.jar}">
+        <include name="*.jar"/>
+        <!-- Exclude JAR files that are only required at build time. -->
+        <exclude name="ant-contrib.jar"/>
+        <exclude name="derby.jar"/>
+      </fileset>
+      <!-- Include Bean interfaces. -->
+      <fileset dir="${dir.sde}/lib">
+        <include name="coreinf-ejb-interfaces.jar"/>
+      </fileset>
+    </copy>
+    
+    <!-- Copy XML Resources -->
+    <copy todir="${dir.web.inf.cdej}">
+      <fileset dir="${dir.curam.xml}">
+        <exclude name="config/**"/>
+        <exclude name="build/**"/>
+        <exclude name="xsl/bean-doc/**"/>
+        <exclude name="xsl/jsp/**"/>
+        <exclude name="xsl/struts/**"/>
+      </fileset>
+    </copy>
+
+    <!-- Copy WEB Resources
+    NB: Infrastructure JSPs are indentifed by their location in the
+    CDEJ/popups folder in ModalDialog.js. Do not change the name of
+    the popups folder below without updating ModalDialog.js also.
+    -->
+    <copy todir="${dir.web.cdej}">
+      <fileset dir="${dir.curam.web}">
+        <include name="themes/**/*"/>
+        <include name="jscript/**/*"/>
+        <include name="vbscript/**/*"/>
+        <include name="active-x/**/*"/>
+        <include name="popups/**/*"/>
+        <exclude name="jscript/*.zip"/>
+      </fileset>
+    </copy>
+
+    <echo message="Copying resources from ${dir.ext.js} to ${dir.web.jscript}..." />
+    <copy todir="${dir.web.jscript}">
+      <fileset dir="${dir.ext.js}">
+        <include name="*.js"/>
+      </fileset>
+    </copy>
+
+    <!--
+      NB: Dojo zips will be be expanded by the -dojoSetup target which this target is dependent on.
+      The previous command copies our JavaScript to the WebContent\CDEJ\jscript folder.
+      Only then are we ready to create the curam.js file. DO NOT move this concat command anywhere else in the file.
+      It must always directly follow the previous copy command.
+    -->
+    <echo message="Creating ${dir.web.jscript}/curam.js"/>
+    <concat destfile="${dir.web.jscript}/curam.js">
+      <filelist dir="${dir.web.jscript}/cm/_base" files="_form.js,_behavior.js,_dom.js,_topics.js,_pageBehaviors.js,_validation.js"/>
+    </concat>
+
+    <!--
+    NB: The call to "-createCdejJavascript" must come after CDEJ JavaScript
+    code has been copied. TODO: Refactor scripts to use "depends" rather
+    than an explicit "antcall".
+    -->
+    <antcall target="-createCdejJavascript" />
+
+    <mkdir dir="${dir.web.cdej}/css"/>
+    <!-- CDEJ HTML and JSPs need to go at the root of web app -->
+    <copy todir="${dir.web}">
+      <fileset dir="${dir.curam.web}/jsp"/>
+      <fileset dir="${dir.curam.web}/html"/>
+      <fileset dir="${dir.curam.web}" includes="WEB-INF/*.xmi,WEB-INF/*.tld,WEB-INF/web-j2ee-engine.xml,WEB-INF/struts-tab-application.xml" />
+    </copy>
+
+    <!-- Word file edit applet libraries. -->
+    <!-- Deprecated Since Curam 8.0.0.0 word-integ-applet. The Word Integration Applet solution is being deprecated. -->
+    <mkdir dir="${dir.applet.lib}"/>
+    <copy file="${jar.fileedit}"             todir="${dir.applet.lib}" />
+    <copy file="${jar.jacob.signed}"         todir="${dir.applet.lib}" />
+    <copy file="${jar.commons.codec.signed}" todir="${dir.applet.lib}" />
+
+    <!-- Always copy web.xml from the CDEJ and run the replace filter
+         to pick up changes to LOCALE_LIST.
+      -->
+    <copy todir="${dir.web.inf}" file="${dir.curam.web}/WEB-INF/web.xml"
+          overwrite="true"/>
+
+    <echo message="Getting server messages from ${fil.server.messages}"/>
+    <copy file="${fil.server.messages}" todir="${dir.web.inf}/lib"/>
+    <echo message="Getting server structs from ${fil.server.struct}"/>
+    <copy file="${fil.server.struct}"   tofile="${dir.web.inf}/lib/1_struct.jar"/>
+
+    <copy todir="${dir.web.inf}/lib" flatten="true">
+      <fileset dir="${env.CURAM_DIR}/webclient/components"
+          includes="*/WebContent/WEB-INF/lib/2_*_struct.jar"
+          erroronmissingdir="false"/>
+    </copy>
+
+  </target>
+
+
+  <target name="-checkCdejJavaScript">
+
+    <uptodate property="cdej.js.uptodate"
+      srcfile="${dir.web.jscript}/cdej.js"
+      targetfile="${dir.bld}/cdej.js.marker"/>
+
+  </target>
+
+  <target name="-createCdejJavascript" depends="-checkCdejJavaScript" unless="cdej.js.uptodate">
+    <!-- Modify cdej.js to avoid preloading unnecessary locales. -->
+
+    <!-- Find out is the layer files we'll be operating on are compressed.
+         Assuming that when cdej.js is compressed then all other layers
+         are also compressed and we process them the same way. -->
+    <loadfile property="line-with-locales-compressed" srcfile="${dir.web.jscript}/cdej.js">
+      <filterchain>
+        <linecontainsregexp>
+          <regexp pattern="r\(\[&quot;dojo\/i18n\!\*preload\*dojo\/nls\/"/>
+        </linecontainsregexp>
+      </filterchain>
+    </loadfile>
+    <condition property="is-compressed">
+      <isset property="line-with-locales-compressed" />
+    </condition>
+
+    <!-- Load the list of locales from one of the layer files.
+         Assuming that the locale list is the same in all layers. It is the case at the moment. -->
+    <loadfile property="layer-locales" srcfile="${dir.web.jscript}/cdej.js">
+      <filterchain>
+        <linecontainsregexp>
+          <regexp pattern="dojo\/i18n\!\*preload\*dojo\/nls\/.*?\*\[(.*?)\]"/>
+        </linecontainsregexp>
+      </filterchain>
+    </loadfile>
+
+    <!-- Get the preload module spec that only contains the locales we build for. -->
+    <getLocalePreloadModule outputPropertyName="locale-preload-module"
+      curamLocaleList="${prp.locale.list}"
+      layerLocaleList="${layer-locales}"
+      layerCompressed="${is-compressed}"/>
+
+    <!-- In all layer files: update the preload module with full locale list
+         to only contain the locales we build for. -->
+    <replaceregexp match="dojo\/i18n\!\*preload\*dojo\/nls\/(.*?)\*\[(.*?)\]"
+                   replace="${locale-preload-module}"
+                   flags="g">
+      <fileset dir="${dir.web.jscript}">
+        <include name="cdej.js*" />
+        <include name="cdej-main.js*" />
+        <include name="cdej-cm.js*" />
+        <include name="cdej-ua-ieg.js*" />
+        <include name="curam-ext-app.js*" />
+        <include name="decisionMatrix_all.js*" />
+        <include name="menu-layer.js*" />
+        <include name="dojo.layer.js*" />
+      </fileset>
+    </replaceregexp>
+
+    <!-- The file is already there, copied by ?????? -->
+    <touch file="${dir.bld}/cdej.js.marker"/>
+    <echo message="Updated ${dir.web.jscript}/cdej.js"/>
+
+  </target>
+
+  <target name="-checkdojo">
+
+    <uptodate property="dojo.uptodate" targetfile="${dir.bld}/dojo.marker">
+      <srcfiles file="${dir.curam.web.jscript.dojotk}"/>
+      <srcfiles file="${dir.curam.web.jscript.ibmidx}" />
+    </uptodate>
+
+  </target>
+
+  <target name="-dojoSetup" depends="-checkdojo" unless="dojo.uptodate">
+
+    <unzip src="${dir.curam.web.jscript.dojotk}" dest="${dir.web.jscript}">
+      <patternset>
+        <include name="**/**"/>
+      </patternset>
+    </unzip>
+
+    <dojoLocalizationWorkaround localeList="${prp.locale.list}">
+      <fileset dir="${dir.web.jscript}/dojotk">
+        <include name="dijit" />
+        <include name="dojo" />
+      </fileset>
+    </dojoLocalizationWorkaround>
+
+
+    <unzip src="${dir.curam.web.jscript.ibmidx}" dest="${dir.web.jscript}/ibmidxtk">
+      <patternset>
+        <include name="idx/*"/>
+        <include name="idx/app/**/*"/>
+        <include name="idx/bench/**/*"/>
+        <include name="idx/bidi/**/*"/>
+        <include name="idx/border/**/*"/>
+        <include name="idx/bus/**/*"/>
+        <include name="idx/data/**/*"/>
+        <include name="idx/dnd/**/*"/>
+        <include name="idx/form/**/*"/>
+        <include name="idx/grid/**/*"/>
+        <include name="idx/gridx/**/*"/>
+        <include name="idx/icons/**/*"/>
+        <include name="idx/layout/**/*"/>
+        <include name="idx/mobile/**/*"/>
+        <include name="idx/nls/**/*"/>
+        <include name="idx/resources/**/*"/>
+        <include name="idx/templates/**/*"/>
+        <include name="idx/themes/oneui/**/*"/>
+        <include name="idx/widget/**/*"/>
+        <exclude name="**/tests/**"/>
+        <exclude name="**/demos/**"/>
+      </patternset>
+    </unzip>
+
+    <touch file="${dir.bld}/dojo.marker"/>
+
+  </target>
+
+  <!--======================================================
+        Generate texthelpers from the latest model extract
+      ======================================================-->
+  <target name="-generate-texthelpers" unless="beansNotRequired"
+          depends="-init, -checkbeans">
+    <echo message="Generating client beans..."/>
+
+    <generatetexthelpers outputDir="${dir.gen.texthelpers}">
+      <fileset dir="${dir.server}">
+        <include name="build/svr/gen/client/Texthelpers.xml"/>
+        <include name="components/*/client/Texthelpers.xml"/>
+      </fileset>
+    </generatetexthelpers>
+
+    <!-- Copy generated JavaScript type definitions into place. -->
+    <copy
+      file="${dir.server}/build/svr/gen/client/TypeDefinitions.js"
+      tofile="${dir.web.jscript}/TypeDefinitions.js"/>
+
+    <!--
+    Compile and JAR TextHelpers and include the bopi-model.xml and
+    ServerAccessBeans.xml files in the JAR.
+    -->
+    <javac
+      srcdir="${dir.gen.texthelpers}"
+      destdir="${dir.tmp.texthelpers}"
+      memoryMaximumSize="${cmp.maxmemory}"
+      memoryInitialSize="${cmp.maxmemory}"
+      includeantruntime="false"
+      fork="yes"
+      debug="${debug.info}"
+      debuglevel="${debug.level}"
+      classpathref="compile.cp">
+      <compilerarg value="-Xbootclasspath/p:${toString:xml.cp}" />
+      <compilerarg value="-proc:none"/>
+      <compilerarg value="-Xmaxwarns"/>
+      <compilerarg value="${cmp.maxwarnings}"/>
+      <compilerarg line="${cmp.compilerarg}"/>
+    </javac>
+
+    <copy file="${dir.server}/build/svr/gen/${prp.project.relPath}/bopi-model.xml"
+      todir="${dir.tmp.texthelpers}/${prp.project.relPath}"/>
+    <copy file="${dir.server}/build/svr/gen/${prp.project.relPath}/bopi-model-interfaces.xml"
+      todir="${dir.tmp.texthelpers}/${prp.project.relPath}"/>
+
+    <jar jarfile="${dir.web.inf.lib}/text-helpers.jar" level="0"
+         basedir="${dir.tmp.texthelpers}"/>
+
+    <touch file="${dir.bld}/beangen.marker"/>
+
+  </target>
+
+  <!--======================================================
+        Generate texthelpers from the latest model extract
+      ======================================================-->
+  <target name="-checkbeans">
+    <uptodate property="beansNotRequired" targetfile="${dir.bld}/beangen.marker">
+      <srcfiles dir="${dir.server}/build/svr/gen/client" includes="*.*"/>
+      <srcfiles dir="${dir.server}/components"           includes="*/client/*.*"/>
+    </uptodate>
+  </target>
+
+  <!--=========================================
+        Set the diffBeansNotRequired property
+      =========================================-->
+  <target name="-checkbeandiff">
+    <!--
+    No need to check bean differences if there is no previous file to compare
+    or beans haven't been generated
+    -->
+    <condition property="diffBeansRequired">
+      <and>
+        <available file="${fil.xml.beans.lastbuild}"/>
+        <not>
+          <isset property="beansNotRequired"/>
+        </not>
+      </and>
+    </condition>
+  </target>
+
+  <!--=================================================
+        Check client visible server interface changes
+      =================================================-->
+  <target name="-beandiff" if="diffBeansRequired" depends="-checkbeandiff">
+    <echo message="Checking for client visible interface updates"/>
+
+    <serveraccessbeansdiff originalServerAccessBeans="${fil.xml.beans.lastbuild}"
+             updatedServerAccessBeans="${dir.server}/build/svr/gen/client/ServerAccessBeans.xml"
+             diffBeans="${dir.bld.xim}/${fil.xml.diff-beans}"/>
+
+  </target>
+
+  <!--=================================
+        Stage the client source files
+      =================================-->
+  <target name="-staging">
+    <echo message="Staging client screens..."/>
+    <!-- Set up external Compiler property -->
+    <property name="build.compiler"
+              value="org.apache.tools.ant.taskdefs.compilers.JavacExternal"/>
+    <echo message="System encoding is ${file.encoding}."/>
+
+    <stage uimdir="${dir.bld.uim}"
+           classpathpropsdir="${dir.bld.classes}"
+           xsldir="${dir.curam.xsl.build}"
+           webcontentdir="${dir.web}"
+           imagesdir="${dir.images.name}"
+           configdir="${dir.web.inf.config}"
+           locales="${prp.locale.list}"
+           clientDir="${dir.client}"
+           encoding="${prp.encoding}"
+           components="${components.path}"
+           curamconfig="${fil.xml.config}"
+           classpathref="special.cp"
+           validateFileReference="${validateFileReference}"/>
+
+    <!--
+
+    Copy files produced during staging to a temp location. Jar these files up and
+    place the jar in the WebContent/WEB-INF/lib directory. We don't copy to
+    WEB-INF/clases because IDE's like Eclipse see that folder as the build output
+    and sometimes clean it when doing a build in the IDE. This would force the
+    developer to re-run the command line build.
+    -->
+
+    <!-- copy files to a temp build location as we need the files jarred up in reference
+         to a specific java package
+    -->
+    <delete dir="${dir.bld.uim}/temp" failonerror="false"/>
+    <mkdir dir="${dir.bld.uim}/temp"/>
+
+  	<!-- copying over cdsl-config.txt so that it can be picked up in the
+  	     client-config-files.jar. -->
+  	<if>
+  	  <available file="${dir.bld.uim}/cdsl-config/cdsl-config.txt"/>
+  	  <then>
+  	    <copy file="${dir.bld.uim}/cdsl-config/cdsl-config.txt"
+  		        tofile="${dir.bld.uim}/temp/cdsl-config.txt"/>
+  	  </then>
+  	</if>
+
+    <copy file="${dir.bld.uim}/CDEJBuildSettings.properties"
+          tofile="${dir.bld.uim}/temp/curam/omega3/CDEJBuildSettings.properties"
+          overwrite="true"/>
+    <updateBuildSettingsWithModulePaths
+      componentProjectsRoot="${env.COMPONENT_PROJECTS_ROOT}"
+      cdejBuildSettingsFile="${dir.bld.uim}/temp/curam/omega3/CDEJBuildSettings.properties" />
+    <copy file="${dir.bld.uim}/DomainsConfig.xml"
+          tofile="${dir.bld.uim}/temp/${dir.domains.config}/DomainsConfig.xml" overwrite="true"
+          failonerror="false"/>
+    <copy file="${dir.bld.uim}/DomainPlugInsConfig.xml"
+          tofile="${dir.bld.uim}/temp/${dir.domains.config}/PlugInsConfig.xml" overwrite="true"
+          failonerror="false"/>
+    <copy file="${dir.bld.uim}/StylesConfig.xml"
+          tofile="${dir.bld.uim}/temp/${dir.styles.config}/StylesConfig.xml" overwrite="true"
+          failonerror="false"/>
+    <copy file="${dir.bld.uim}/StylePlugInsConfig.xml"
+          tofile="${dir.bld.uim}/temp/${dir.styles.config}/PlugInsConfig.xml" overwrite="true"
+          failonerror="false"/>
+    <copy file="${dir.bld.uim}/GanttConfig.xml"
+          tofile="${dir.bld.uim}/temp/${dir.client.config}/GanttConfig.xml" overwrite="true"
+          failonerror="false"/>
+    <copy file="${dir.curam.web}/about/default/AboutBox.xml"
+          tofile="${dir.bld.uim}/temp/${dir.client.config}/about/defaultproperties/AboutBox.xml" overwrite="true"
+          failonerror="false"/>
+    <copy file="${dir.curam.web}/about/default/AboutBox.properties"
+              tofile="${dir.bld.uim}/temp/${dir.client.config}/about/defaultproperties/AboutBox.properties" overwrite="true"
+              failonerror="false"/>
+
+    <!-- jar the config files and copy to the webcontent/web-inf/lib directory. -->
+    <jar destfile="${dir.web.inf.lib}/client-config-files.jar"
+         basedir="${dir.bld.uim}/temp"/>
+
+    <!-- delete the temp directory -->
+    <delete dir="${dir.bld.uim}/temp"/>
+
+    <!--
+    Copy properties files from all componentized javasource directories specified in the
+    CLIENT_COMPONENT_ORDER environment variable to WEB-INF/classes.
+    These need to be translated to ASCII first.
+    -->
+    <echo message="Copying resources to ${dir.web.inf.classes}"/>
+
+    <native2ascii src="${dir.src.java}" dest="${dir.web.inf.classes}" encoding="${prp.encoding}">
+      <include name="**/*.properties"/>
+    </native2ascii>
+
+	<antcall target="-copy-inspector-props"/>
+
+    <componentorder to="component.order.includes.core" coredir="${dir.core}"
+                    componentsdir="${dir.src.components}"
+                    locales="${prp.locale.list}"
+                    components="${prp.component.order}"/>
+
+    <for list="${component.order.includes.core}" delimiter=";" param="component.dir">
+      <sequential>
+      <if>
+        <available file="@{component.dir}/javasource" type="dir"/>
+        <then>
+          <native2ascii src="@{component.dir}/javasource" dest="${dir.web.inf.classes}" encoding="${prp.encoding}">
+              <include name="**/*.properties" />
+        </native2ascii>
+        </then>
+      </if>
+      </sequential>
+    </for>
+
+    <!-- Dependency check on rules images embedding. -->
+    <uptodate property="svgGen.not.required"
+              targetfile="${dir.web.cdej}/svg/tree.svg">
+      <srcfiles file="${dir.bld.uim}/RulesDecisionConfig.xml"/>
+      <srcfiles file="${dir.bld.uim}/RulesEditorConfig.xml"/>
+    </uptodate>
+    <!-- Dependency check on workflow images embedding. -->
+    <uptodate property="workflow.svgGen.not.required"
+              targetfile="${dir.web.cdej}/svg/workflow.svg">
+      <srcfiles file="${dir.web.inf.config}/WorkflowConfig.xml"/>
+    </uptodate>
+    <!-- Extract useful properties from curam-config.xml -->
+    <transform in="${fil.xml.config}"
+               out="${dir.bld}/curam-config.properties"
+               style="${fil.xsl.properties}" classpathref="xml.cp"/>
+    <property file="${dir.bld}/curam-config.properties"/>
+  </target>
+
+  <target name="check-inspector-dir">
+    <condition property="inspectors.available">
+	  <available file="${dir.cde.inspectors}" type="dir"/>
+	</condition>
+  </target>
+
+  <target name="-copy-inspector-props" depends="check-inspector-dir" if="inspectors.available">
+    <!-- optional inspectors -->
+	<copy todir="${dir.web.inf.classes}/curam/omega3">
+	  <fileset dir="${dir.cde.inspectors}">
+	    <include name="*.properties"/>
+	  </fileset>
+	</copy>
+  </target>
+
+  <!--===============================
+        Stage the client components
+      ===============================-->
+  <target name="-staging-components">
+    <echo message="Staging client components..."/>
+
+    <componentorder to="components.path" coredir="${dir.core}"
+                    locales="${prp.locale.list}"
+                    componentsdir="${dir.src.components}"
+                    components="${prp.component.order}"/>
+
+    <for list="${components.path}" delimiter=";" param="component">
+      <sequential>
+        <!-- Copy files from components to WebContent directory -->
+        <copy todir="${dir.web}" overwrite="true">
+          <fileset dir="@{component}" includes="${dir.images.name}/**/*"/>
+        </copy>
+        <copy todir="${dir.web.jscript}" overwrite="true" flatten="true">
+          <!-- CustomValidation JavaScript files are merged by the stager. -->
+          <fileset dir="@{component}" includes="**/*.js"
+                   excludes="**/CustomValidation*.js, intern-config/*.js, intern-config/**/*.js, jscript/tests/**/*.js"/>
+        </copy>
+        <copy todir="${dir.bld.stylesheets}" overwrite="true" flatten="true">
+          <fileset dir="@{component}" includes="**/*.xsl"/>
+        </copy>
+        <!-- Copy all config files for runtime XSL transformations -->
+        <copy todir="${dir.web.inf.config}" overwrite="true"
+              flatten="true">
+          <fileset dir="@{component}">
+            <include name="**/DynamicMenuConfig.xml"/>
+            <include name="**/ICDynamicMenuConfig.xml"/>
+            <include name="**/RatesTableConfig.xml"/>
+            <include name="**/GanttSVGConfig.xml"/>
+            <include name="**/IEGPlayerConfig.xml"/>
+            <include name="**/EvidenceComparisonConfig.xml"/>
+            <include name="**/EvidenceTabContainerConfig.xml"/>
+          </fileset>
+        </copy>
+        <!--
+        Copy all JS source files from the source directory recommended by UIToolkit,
+        if it exists.
+        -->
+        <if>
+          <available file="@{component}/jscript/src" type="dir" />
+          <then>
+            <copy todir="${dir.web}/jscript" overwrite="true">
+              <fileset dir="@{component}/jscript/src"/>
+            </copy>
+          </then>
+        </if>
+        <!-- Copy all static web content. -->
+        <copy todir="${dir.client}" overwrite="true">
+          <fileset dir="@{component}" includes="WebContent/**"/>
+        </copy>
+      </sequential>
+    </for>
+
+    <!-- NB: Run the replace filter on web.xml *after* component level
+             WebContent folders have been copied to allow for overrides of
+             web.xml in these folders.
+      -->
+    <delete file="${dir.bld}/web-init-params.xml"
+            failonerror="false"/>
+    <for list="${prp.locale.list}" delimiter="," param="locale" trim="true">
+      <sequential>
+        <echo file="${dir.bld}/web-init-params.xml" append="true"
+              message="&lt;init-param id=&quot;InitParam_@{locale}&quot;&gt;&lt;param-name&gt;config/@{locale}&lt;/param-name&gt;&lt;param-value&gt;/WEB-INF/struts-config.xml&lt;/param-value&gt;&lt;/init-param&gt;"/>
+      </sequential>
+    </for>
+    <loadfile property="init.params.text"
+              srcfile="${dir.bld}/web-init-params.xml"/>
+    <replace dir="${dir.web.inf}">
+      <include name="web.xml"/>
+      <replacefilter token="@LOCALE_INIT_PARAMS@" value="${init.params.text}"/>
+      <replacefilter token="@APP_NAME@"           value="${prp.project.name}" />
+      <replacefilter token="@CLIENT_PORT@"		  value="${curam.environment.tnameserv.port}" />
+      <!-- A boolean used to enable or disable the secure URLs solution -->
+      <replacefilter  token="@ENABLE_SECURE_URLS@" value="${enable.secure.urls}" />
+    </replace>
+
+    <echo message="Copy ${dir.curam.web}/jscript/ibmidxtk/idx/themes/oneui/oneui-curam-custom.css to ${dir.web.cdej}/jscript/ibmidxtk/idx/themes/oneui/oneui-curam-custom.css" />
+    <copy todir="${dir.web.cdej}/jscript/ibmidxtk/idx/themes/oneui" overwrite="true" >
+      <fileset dir="${dir.curam.web}/jscript/ibmidxtk/idx/themes/oneui/">
+        <include name="oneui-curam-custom.css*" />
+      </fileset>
+    </copy>
+
+
+  </target>
+
+  <!--==================================
+        Embed icon images in svg files
+      ==================================-->
+  <target name="-do-svg-gen" unless="svgGen.not.required">
+    <transform destdir="${dir.web.cdej}/svg" style="${fil.svg.style}"
+               extension=".svg" basedir="${dir.curam.svg}" force="true"
+               classpathref="xml.cp" xmlcatalogref="cat.svg">
+      <outputproperty name="standalone" value="no"/>
+      <outputproperty name="encoding" value="UTF-8"/>
+      <param name="rules-config-file"
+             expression="${dir.web.inf.config}/RulesDecisionConfig.xml"/>
+      <param name="rules-editor-config-file"
+             expression="${dir.web.inf.config}/RulesEditorConfig.xml"/>
+      <include name="tree*.svg"/>
+    </transform>
+  </target>
+
+  <target name="-do-workflow-svg-gen" unless="workflow.svgGen.not.required">
+    <transform in="${dir.curam.svg}/workflow.svg"
+               out="${dir.web.cdej}/svg/workflow.svg"
+               style="${fil.workflow.svg.style}" force="true"
+               classpathref="xml.cp" xmlcatalogref="cat.svg">
+      <param name="workflow-config-file"
+             expression="${dir.web.inf.config}/WorkflowConfig.xml"/>
+    </transform>
+  </target>
+
+  <!--===========================
+        Generate UIM Files only
+      ===========================-->
+  <target name="uim-only">
+
+    <!-- A quick UIM generate target, which generates UIM files only without checking
+         dependency changes.
+         This target has limitations, which include:
+          * It requires a full client build before usage.
+          * It rebuilds UIM pages only and will not pick-up changes to configuration,
+            JavaScript or CSS.
+          * It will not pick up new files added
+          * It will not pick up dependency changes, e.g.
+            * Reference of a new VIM file in an existing UIM
+            * Removal/addition of an overwritten UIM/VIM from a higher component
+          * It will not pick up changes to SUBMIT links, i.e. ACTION_CONTROL elements of
+            type SUBMIT where the LINK element PAGE_ID has been changed.
+          * Where the signature of the page has been changed, i.e. addition or removal
+            of page parameters, a refresh in the browser may not be sufficient to ensure
+            all required parameters are provided.
+          * It will not pick up changes made to the SERVER_INTERFACE elements.
+          * A change to the server interfaces used by a UIM page requires a full
+            server and client build.
+    -->
+
+    <property name="prp.preview" value="false"/>
+    <property name="prp.cc.path" value="${dir.web.inf}/curam-config.xml" />
+
+    <path id="serveraccessbeans.path">
+      <fileset dir="${dir.server}">
+        <include name="build/svr/gen/client/ServerAccessBeans.xml"/>
+        <include name="components/*/client/ServerAccessBeans.xml"/>
+      </fileset>
+    </path>
+    <pathconvert pathsep=";" property="serveraccessbeanfiles" refid="serveraccessbeans.path"/>
+
+    <processUim localelist="${prp.locale.list}"
+                projname="${prp.project.name.lower}"
+                beansfiles="${serveraccessbeanfiles}"
+                popupfile="${fil.js.config}"
+                configfile="${fil.xml.config}"
+                webcontentdir="${dir.web}"
+                actionsdir="${dir.gen.actions}"
+                accessorsdir="${dir.gen.accessors}"
+                ximdir="${dir.bld.xim}"
+                stylesheetdir="${dir.curam.xml}"
+                cdedir="${dir.cde}"
+                clientdir="${dir.client}"
+                genpreviews="${prp.preview}"
+                previewsfailonerror="${prp.previews.failonerror}"
+                previewdir="${dir.web.previews}"
+                packageprefix="${prp.project.package}"
+                savexim="${prp.xim.output}"
+                multiplevalidationerrors="${prp.multiple.validation.errors}"
+                classpathref="special.cp"
+                chunksize="${chunk.size}"
+                dir="${dir.bld.uim}"
+                encoding="${prp.encoding}"
+                pagepropertiesdir="${dir.bld.properties.page}"
+                deprecation="${curam.deprecation.reporting}"
+                serverDir="${dir.server}"
+                previewsfallbackmodalheight="${prp.previews.fallbackmodalheight}"
+                previewsfallbackmodalwidth="${prp.previews.fallbackmodalwidth}"
+    	        validateFileReference="${validateFileReference}"
+                />
+  </target>
+
+   <!--===========================
+          Process JavaScript Property Files only
+       ===========================-->
+  <target name="-processJSProps" depends="-staging">
+    <mkdir dir="${dir.web.jscript}"/>
+
+    <processJSProperties encoding="${prp.encoding}"
+      dir="${dir.bld.uim}"
+      jsBundleDir="${dir.web.jscript}"
+      defaultModuleName="${dir.curam.app.module}"/>
+
+    <dojoLocalizationWorkaround localeList="${prp.locale.list}">
+      <fileset dir="${dir.web.jscript}/curam">
+        <include name="application" />
+      </fileset>
+    </dojoLocalizationWorkaround>
+  </target>
+
+  <!--===========================
+        Generate client screens
+      ===========================-->
+  <target name="-uim">
+    <property name="prp.preview" value="false"/>
+    <property name="prp.cc.path" value="${dir.web.inf}/curam-config.xml" />
+
+    <!--
+    "ximTemp" is also defined in GeneratorConfiguration.java. NOTE:
+    there is also a screen preview specific "XIM" folder, but this files
+    aren't required in that folder.
+    -->
+    <copy todir="${dir.bld.xim}/ximTemp" encoding="UTF-8"
+          outputencoding="UTF-8">
+      <fileset dir="${dir.curam.jsp}">
+        <include name="wizard.xml"/>
+        <include name="treecontrol.xml"/>
+      </fileset>
+    </copy>
+
+    <for list="${prp.locale.list}" delimiter="," param="locale" trim="true">
+
+    	<sequential>
+
+    		<!-- Localize various JSP files -->
+        <copy todir="${dir.web}/@{locale}" encoding="UTF-8"
+              outputencoding="UTF-8">
+          <fileset dir="${dir.curam.jsp}">
+            <include name="wizardnav.jspx"/>
+            <include name="loading.jspx"/>
+            <include name="generic-modal-error.jspx"/>
+            <include name="session-timeout-warning-dialog.jspx"/>
+            <include name="external-session-timeout-dialog.jspx"/>
+            <include name="file-edit-chrome.jsp"/>
+	   	    <!-- Deprecated Since Curam 8.0.0.0 word-integ-applet. The Word Integration Applet solution is being deprecated. -->
+			<include name="file-edit-chrome-applet.jsp"/>
+			<!-- Deprecated Since Curam 8.0.0.0 word-integ-applet. The Word Integration Applet solution is being deprecated. -->
+            <include name="file-edit-ie.jsp"/>
+            <include name="file-edit-dialog.jsp"/>
+            <include name="modal-closing.jspx"/>
+            <include name="user-prefs-editor.jspx"/>
+            <include name="user-locale-selector.jspx"/>
+            <include name="empty-error-page.jspx"/>
+            <include name="about.jsp"/>
+          	<include name="internal-logout-wrapper.jspx"/>
+          </fileset>
+        </copy>
+        <copy todir="${dir.web}/@{locale}"
+              file="${dir.curam.jsp}/wizard-header.jspx"
+              encoding="UTF-8" outputencoding="UTF-8">
+        </copy>
+        <!-- Localize frequency pattern editor -->
+        <copy todir="${dir.web}/@{locale}" encoding="UTF-8"
+              outputencoding="UTF-8">
+          <fileset dir="${dir.web.popups}">
+            <include name="frequency-editor.jsp"/>
+          </fileset>
+        </copy>
+        <!-- Copy empty.html to each locale folder -->
+        <copy todir="${dir.web}/@{locale}"
+              file="${dir.curam.web}/html/empty.html"/>
+        <copy todir="${dir.web}/@{locale}"
+              file="${dir.curam.web}/jsp/user-prefs-editor.jspx"/>
+
+      </sequential>
+    </for>
+
+    <path id="serveraccessbeans.path">
+      <fileset dir="${dir.server}">
+        <include name="build/svr/gen/client/ServerAccessBeans.xml"/>
+        <include name="components/*/client/ServerAccessBeans.xml"/>
+      </fileset>
+    </path>
+    <pathconvert pathsep=";" property="serveraccessbeanfiles" refid="serveraccessbeans.path"/>
+
+    <processUim localelist="${prp.locale.list}"
+                projname="${prp.project.name.lower}"
+                beansfiles="${serveraccessbeanfiles}"
+                popupfile="${fil.js.config}"
+                configfile="${fil.xml.config}"
+                webcontentdir="${dir.web}"
+                actionsdir="${dir.gen.actions}"
+                accessorsdir="${dir.gen.accessors}"
+                ximdir="${dir.bld.xim}"
+                stylesheetdir="${dir.curam.xml}"
+                cdedir="${dir.cde}"
+                clientdir="${dir.client}"
+                genpreviews="${prp.preview}"
+                previewsfailonerror="${prp.previews.failonerror}"
+                previewdir="${dir.web.previews}"
+                packageprefix="${prp.project.package}"
+                savexim="${prp.xim.output}"
+                multiplevalidationerrors="${prp.multiple.validation.errors}"
+                classpathref="special.cp"
+                chunksize="${chunk.size}"
+                dir="${dir.bld.uim}"
+                encoding="${prp.encoding}"
+                pagepropertiesdir="${dir.bld.properties.page}"
+                deprecation="${curam.deprecation.reporting}"
+                serverDir="${dir.server}"
+                previewsfallbackmodalheight="${prp.previews.fallbackmodalheight}"
+                previewsfallbackmodalwidth="${prp.previews.fallbackmodalwidth}"
+    	        validateFileReference="${validateFileReference}"
+                />
+
+    <!--
+    Create a JAR file for the properties files. The global properties files
+    are first copied into place beside the page-specific properties files.
+    -->
+    <copy todir="${dir.bld.properties.global}">
+      <fileset dir="${dir.bld.classes}" includes="*.properties"/>
+    </copy>
+    <jar jarfile="${dir.web.inf.lib}/properties.jar" level="0" update="true"
+         basedir="${dir.bld.properties}"/>
+
+    <jar destfile="${dir.web.inf.lib}/uim-registry.jar"
+         basedir="${dir.bld.xim}/uimreg" update="true"/>
+
+    <for param="localeDir">
+      <path>
+        <dirset dir="${dir.bld.properties.page}" includes="*"/>
+      </path>
+      <sequential>
+        <local name="localeDirName"/>
+        <basename property="localeDirName" file="@{localeDir}"/>
+        <jar jarfile="${dir.web.inf.lib}/pageprops_${localeDirName}.jar"
+             level="0" update="true"
+             basedir="@{localeDir}"/>
+      </sequential>
+    </for>
+  </target>
+
+  <!--===================================
+        Generate struts-config.xml file
+      ===================================-->
+  <target name="-nav" depends="-uim">
+    <echo message="Generating Struts configuration file..."/>
+    <transform in="${fil.xml.config}" out="${dir.bld.xim}/error.xml"
+               style="${dir.curam.xml}/xsl/struts/gen-error-forward.xsl"
+               classpathref="xml.cp"/>
+    <concat destfile="${fil.xml.struts}" append="false">
+      <fileset dir="${dir.curam.xml.build}">
+        <include name="struts-top-1.txt"/>
+      </fileset>
+      <fileset dir="${dir.bld.xim}">
+        <include name="error.xml"/>
+      </fileset>
+      <fileset dir="${dir.curam.xml.build}">
+        <include name="struts-top-2.txt"/>
+      </fileset>
+      <fileset dir="${dir.bld.xim}">
+        <include name="*.nim"/>
+      </fileset>
+      <fileset dir="${dir.curam.xml.build}">
+        <include name="struts-bottom.txt"/>
+      </fileset>
+    </concat>
+  </target>
+
+  <!--===================
+        Generate themes
+      ===================-->
+  <target name="-generate-themes">
+    <echo message="Generating client themes..."/>
+    <copy todir="${dir.web}">
+      <fileset dir="${dir.curam.web}">
+        <include name="themes/**/*"/>
+        <exclude name="themes/**/*.css"/>
+      </fileset>
+    </copy>
+    <copy todir="${dir.web}">
+      <fileset dir="${dir.curam.web}">
+        <include name="themes/**/*.css"/>
+      </fileset>
+      <filterchain>
+        <trim/>
+        <stripjavacomments/>
+        <replaceregex pattern="\s+"  replace=" " flags="g"/>
+        <replaceregex pattern=" \{ " replace="{" flags="g"/>
+        <replaceregex pattern="; "   replace=";" flags="g"/>
+        <replaceregex pattern=";\} " replace="}" flags="g"/>
+        <replaceregex pattern=": "   replace=":" flags="g"/>
+        <ignoreblank/>
+      </filterchain>
+    </copy>
+    <generatethemes sourceDir="${dir.web.themes}" destDir="${dir.web.themes}"
+                    configFile="${fil.xml.themes}"
+                    clientDir="${dir.client}"
+                    validateFileReference="${validateFileReference}"/>
+  </target>
+
+  <!--====================
+        Build the client
+      ====================-->
+  <target name="client" description="Build texthelpers and client screens"
+          depends="-start-log, setup, -staging-components, -generate-texthelpers, -beandiff,
+                   beandoc, -staging, -do-svg-gen,
+                   -do-workflow-svg-gen, -generate-themes, -processJSProps, -nav, -compile"/>
+
+  <!--=========================================
+        Build the client plus preview screens
+      =========================================-->
+  <!--
+  Building previews is a two stage process. First we run the client target,
+  then the client target is run a second time with the preview flag set
+  -->
+  <target name="client-with-previews">
+    <!-- run the client target -->
+    <antcall target="client"/>
+    <!-- this runs the client target again, but with the preview flag set -->
+    <antcall target="-client-with-previews">
+        <param name="env.XIM_OUTPUT" value="true"/>
+        <param name="prp.xim.output" value="true"/>
+    </antcall>
+  </target>
+
+  <target name="-client-with-previews" depends="-enable-previews, client"/>
+
+  <target name="-enable-previews">
+    <echo message="Creating previews in folder ${dir.web.previews}"/>
+    <mkdir dir="${dir.web.previews}"/>
+    <property name="prp.preview" value="true"/>
+    <property name="env.XIM_OUTPUT" value="true"/>
+    <property name="prp.xim.output" value="true"/>
+  </target>
+
+  <target name="client-previews-only">
+    <antcall target="-client-previews-only"/>
+  </target>
+
+  <target name="-client-previews-only" depends="-backup-screen-previews, -enable-previews">
+    <antcall target="client">
+          <param name="env.XIM_OUTPUT" value="true"/>
+          <param name="prp.xim.output" value="true"/>
+    </antcall>
+  </target>
+
+  <target name="-backup-screen-previews">
+    <if>
+      <and>
+      	<isset property="backup.screen.previews"/>
+      	<equals arg1="${backup.screen.previews}" arg2="true"/>
+      </and>
+      <then>
+        <tstamp>
+     	  <format property="time" pattern="hh-mm--dd-MM-yyyy"/>
+        </tstamp>
+        <echo message="Backing up screen previews folder ${dir.web.previews} to ${dir.web.previews}-${time}"/>
+        <move file="${dir.web.previews}" tofile="${dir.web.previews}-${time}" failonerror="false"/>
+      </then>
+    </if>
+  </target>
+
+
+  <!--===============================
+        Delete all generated output
+      ===============================-->
+  <target name="clean" description="Delete all generated output">
+    <!-- build folder -->
+    <delete dir="${dir.bld}" failonerror="false"/>
+    <!-- WebContent -->
+    <delete dir="${dir.web}" failonerror="false"/>
+    <!-- Generated configuration files. -->
+  </target>
+
+  <target name="check.javasource">
+    <available file="javasource" type="dir" filepath="${components.path}" property="javasource.present"/>
+  </target>
+
+  <target name="check.accessors">
+    <available file="curam" type="dir" filepath="${dir.gen.accessors}" property="accessors.present"/>
+  </target>
+
+  <!--===================================================
+        Compile generated beans and copy property files
+      ===================================================-->
+  <target name="-compile-javasource" depends="check.javasource" if="javasource.present">
+    <!--
+    Copy XML resources (e.g., domain configuration files, etc.) produced
+    earlier in the build and any other non-properties and non-Java files.
+    Properties files were transcoded and copied earlier. Other files will be
+    included to allow them to be loaded from the classpath at runtime (e.g.,
+    stylesheets for use by renderer plug-ins, etc.).
+    -->
+
+    <for list="${components.path}" delimiter=";" param="component">
+      <sequential>
+        <copy todir="${dir.web.inf.classes}">
+          <!-- a javasource directory may not exist for each component. -->
+          <fileset dir="@{component}/javasource" excludes="**/*.properties,**/*.java" erroronmissingdir="false"/>
+        </copy>
+      </sequential>
+    </for>
+
+    <!-- Jar the current built version. -->
+    <jar destfile="${dir.web.inf.lib}/${prp.project.name}_classes.jar">
+      <fileset dir="${dir.web.inf.classes}">
+        <exclude name="**/*.java" />
+      </fileset>
+    </jar>
+
+    <componentorder to="javasource.components.path" coredir="${dir.core}"
+                    locales="${prp.locale.list}"
+                    componentsdir="${dir.src.components}"
+                    components="${prp.component.order}"
+                    suffix="javasource"/>
+
+    <echo
+      message="Compiling source from all components/componentName/javasource directories to ${dir.web.inf.classes}"/>
+    <javac
+      memoryMaximumSize="${cmp.maxmemory}"
+      memoryInitialSize="${cmp.maxmemory}"
+      fork="yes"
+      includeantruntime="false"
+      destdir="${dir.web.inf.classes}"
+      debug="${debug.info}"
+      deprecation="${cmp.deprecation}"
+      debuglevel="${debug.level}"
+      classpathref="compile.cp">
+      <src path="${javasource.components.path}"/>
+      <include name="**/*.java"/>
+      <compilerarg value="-Xbootclasspath/p:${toString:xml.cp}" />
+      <compilerarg value="-Xmaxwarns"/>
+      <compilerarg value="${cmp.maxwarnings}"/>
+      <compilerarg line="${cmp.compilerarg}"/>
+    </javac>
+  </target>
+
+  <target name="-compile-accessors" depends="check.accessors" if="accessors.present">
+    <echo
+      message="Compiling accessor classes..."/>
+  	<javac
+      memoryMaximumSize="${cmp.maxmemory}"
+      memoryInitialSize="${cmp.maxmemory}"
+      fork="yes"
+      srcdir="${dir.gen.accessors}"
+      destdir="${dir.tmp.actions}"
+      debug="${debug.info}"
+      includeantruntime="false"
+      deprecation="${cmp.deprecation}"
+      debuglevel="${debug.level}"
+      classpathref="compile.cp">
+      <compilerarg value="-Xbootclasspath/p:${toString:xml.cp}" />
+      <compilerarg value="-Xmaxwarns"/>
+      <compilerarg value="${cmp.maxwarnings}"/>
+      <compilerarg line="${cmp.compilerarg}"/>
+    </javac>
+  </target>
+
+  <target name="-compile-actions">
+    <javac
+      memoryMaximumSize="${cmp.maxmemory}"
+      memoryInitialSize="${cmp.maxmemory}"
+      fork="yes"
+      srcdir="${dir.gen.actions}"
+      destdir="${dir.tmp.actions}"
+      debug="${debug.info}"
+      includeantruntime="false"
+      deprecation="${cmp.deprecation}"
+      debuglevel="${debug.level}"
+      classpathref="compile.cp">
+      <compilerarg value="-Xbootclasspath/p:${toString:xml.cp}" />
+      <compilerarg value="-Xmaxwarns"/>
+      <compilerarg value="${cmp.maxwarnings}"/>
+      <compilerarg line="${cmp.compilerarg}"/>
+    </javac>
+    <jar jarfile="${dir.web.inf.lib}/struts-actions.jar" level="0"
+         basedir="${dir.tmp.actions}"/>
+  </target>
+
+  <target name="-compile" depends="-compile-javasource, -compile-accessors, -compile-actions"/>
+
+  <!--=================================
+        Start UIM page generator tool
+      =================================-->
+  <target name="uimgen" description="Start UIM page generator tool">
+    <echo message="Starting UIM generator tool..."/>
+    <java classname="curam.omega3.xml.generator.ServerInterfaceSelector"
+          maxmemory="${prp.big.heap}"
+          fork="true" classpathref="generator.cp">
+      <jvmarg value="-Xms${prp.big.heap}"/>
+      <jvmarg value="${java.jvmargs}" />
+      <jvmarg value="-Dlog4j.configuration=log4j2.properties"/>
+      <arg value="-cd"/>
+      <arg path="${dir.client}"/>
+      <arg value="-cn"/>
+      <arg value="${prp.project.name}"/>
+    </java>
+  </target>
+
+  <!--==============================================
+        Generate server access beans documentation
+      ==============================================-->
+  <target name="beandoc" depends="-generate-texthelpers" unless="beansNotRequired"
+          description="Generate documentation from ServerAccessBeans.xml">
+    <echo message="Starting bean documentation tool..."/>
+    <tstamp>
+      <format property="doc.time.now" pattern="dd-MMM-yyyy hh:mm"/>
+    </tstamp>
+    <mkdir dir="${dir.bld.doc}"/>
+    <transform in="${dir.server}/build/svr/gen/client/ServerAccessBeans.xml"
+               out="${dir.bld.doc}/index.html"
+               style="${dir.curam.xsl.doc}/bean-doc.xsl"
+               classpathref="xml.cp">
+      <param name="time-stamp" expression="${doc.time.now}"/>
+      <param name="file-name" expression="${dir.server}/build/svr/gen/client/ServerAccessBeans.xml"/>
+      <param name="output-dir" expression="${dir.bld.doc}"/>
+    </transform>
+
+    <!--
+    Backup the existing SAB.xml file for comparison. Don't fail if it doesn't
+    exist, i.e. a clean build.
+    -->
+    <copy
+      file="${dir.server}/build/svr/gen/client/ServerAccessBeans.xml"
+      tofile="${fil.xml.beans.lastbuild}"/>
+
+  </target>
+
+  <!--===================================================
+          Create a zip of Static Content Server Content
+      ===================================================-->
+  <target name="zip-static-content" description="Create a zip file containing all static content.">
+    <property name="static.content.zip" value="${dir.bld}/StaticContent.zip"/>
+    <delete file="${static.content.zip}"/>
+
+    <zip destfile="${static.content.zip}" duplicate="preserve">
+      <!-- All static HTML files -->
+      <fileset dir="${dir.client}" includes="WebContent/**/*.htc"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.html"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.htm"/>
+
+      <!-- All image or media files -->
+      <fileset dir="${dir.client}" includes="WebContent/**/*.bmp"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.cur"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.gif"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.GIF"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.ico"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.jpeg"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.jpg"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.JPG"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.mov"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.png"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.PNG"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.psd"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.svg"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.swc"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.swf"/>
+
+      <!-- All font files -->
+      <fileset dir="${dir.client}" includes="WebContent/**/*.eot"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.ttf"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.woff"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.woff2"/>
+
+      <!-- All scripting files -->
+      <fileset dir="${dir.client}" includes="WebContent/**/*.as"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.js"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.vbs"/>
+
+      <!-- All stylesheet files -->
+      <fileset dir="${dir.client}" includes="WebContent/**/*.css"/>
+      <fileset dir="${dir.client}" includes="WebContent/**/*.less"/>
+      
+      <!-- All data files, except test/build data -->
+      <fileset dir="${dir.client}">
+        <include name="WebContent/**/*.json" />
+        <exclude name="**/*testData/**"/>
+        <exclude name="**/bower.json"/>
+        <exclude name="**/package.json"/>
+      </fileset>
+    </zip>
+  </target>
+
+  <target name="update-ui-style">
+	<antcall target="-generate-themes"/>
+  </target>
+</project>

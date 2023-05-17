@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012, 2020. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:curam="http://www.curamsoftware.com/curam"
+          version="2.0">
+  <jsp:directive.page buffer="32kb"
+                      contentType="text/html;charset=UTF-8"
+                      isErrorPage="false"
+                      language="java"
+                      isELIgnored="false"
+                      pageEncoding="UTF-8"/>
+  <jsp:output omit-xml-declaration="yes"/>
+  <curam:userPreferences/>  
+      <jsp:scriptlet>
+        String ctx =
+              request.getParameter(curam.omega3.taglib.ScreenContext.CTX_PARAM);
+        curam.omega3.taglib.ScreenContext agendaContext =
+                                        new curam.omega3.taglib.ScreenContext();
+        agendaContext.clearLayout();
+        if (ctx != null &amp;&amp; !ctx.equals("")) {
+          agendaContext.set(ctx);
+        }
+        agendaContext.clearStates();
+        if (agendaContext.hasContextBits(
+            curam.omega3.taglib.ScreenContext.TAB)) {
+          
+          if (agendaContext.hasContextBits(
+              curam.omega3.taglib.ScreenContext.MODAL)) {
+            
+            pageContext.setAttribute("contextError","false");
+          
+          } else {
+            pageContext.setAttribute("contextError","true");
+          }
+        }
+        agendaContext.clear(curam.omega3.taglib.ScreenContext.TREE
+            | curam.omega3.taglib.ScreenContext.TAB);
+        agendaContext.addContextBits(curam.omega3.taglib.ScreenContext.AGENDA);
+        pageContext.setAttribute("currentContext",agendaContext.getValue());
+      </jsp:scriptlet>
+  <c:url value="" var="navUrl">
+    <c:forEach var="current" items="${param}">
+      <c:forEach var="paramValue" items="${paramValues[current.key]}">
+        <c:choose>
+        <c:when test="${current.key=='o3ctx'}">
+          <c:param name="o3ctx" value="${currentContext}"/>
+        </c:when>
+        <c:otherwise>
+          <c:param name="${current.key}" value="${paramValue}"/>
+        </c:otherwise>
+        </c:choose>
+      </c:forEach>
+    </c:forEach>
+    <c:if test="${empty param.o3ctx}">
+      <c:param name="o3ctx" value="${currentContext}"/>
+    </c:if>
+  </c:url>
+  <jsp:scriptlet>
+    pageContext.setAttribute("wizard_frameset_title", 
+      curam.omega3.util.CDEJResources.getProperty("wizard.frameset.title"));
+    pageContext.setAttribute("wizard_header_frame_title", 
+	      curam.omega3.util.CDEJResources.getProperty("wizard.header.frame.title"));
+    pageContext.setAttribute("wizard_navigation_frame_title", 
+      curam.omega3.util.CDEJResources.getProperty("wizard.navigation.frame.title"));
+    if(pageContext.getAttribute("htmlDirection").equals("rtl")) {
+      pageContext.setAttribute("classDirection", "rtl");
+    } else {
+      pageContext.setAttribute("classDirection", "");
+    }
+  </jsp:scriptlet>
+  
+  <c:url var="headerUrl" value="wizard-header.jspx"/>
+  <c:url var="buttonsUrl" value="wizardnav.jspx"/>
+<jsp:text><![CDATA[<!DOCTYPE html>]]></jsp:text>
+  <jsp:scriptlet><![CDATA[out.print("<html lang=\"");]]></jsp:scriptlet>
+    <c:out value="${htmlLanguage}"/> 
+    <jsp:scriptlet><![CDATA[out.print("\" >");]]></jsp:scriptlet>
+    <head>
+      <title><c:out value="${wizard_frameset_title}"/></title>
+      <script type="text/javascript" src="/CDEJ/jscript/dojotk/dojo/dojo.js" data-dojo-config="async:0,parseOnLoad:true"/>
+      <script type="text/javascript">
+      <jsp:scriptlet>curam.util.client.jsp.JspUtil.outputJSModulePaths(pageContext);</jsp:scriptlet>
+      </script>
+      <link rel="stylesheet" media="all" type="text/css" href="../themes/v6/css/v6_main.css" />
+      <link rel="stylesheet" media="all" type="text/css" href="../themes/curam/css/curam_main.css" />
+      <link rel="stylesheet" media="all" type="text/css" href="../themes/curam/fonts/main-ibm-font.css" />
+      <script type="text/javascript" src="/CDEJ/jscript/cdej-cm.js">// script content</script>
+      <script type="text/javascript" src="/CDEJ/jscript/cdej.js">// script content</script>
+      <script type="text/javascript">
+        require(["curam/core-uim", "curam/dialog"]);
+      </script>
+      <script src="/CDEJ/jscript/curam/widget/wizard/wizardFrameset.js" type="text/javascript">// script content</script>
+      <script type="text/javascript">
+        var wizard = new Wizard();
+        window.rootObject = 'wizard';
+        var jsBaseURL = curam.util.retrieveBaseURL();
+        var jsScreenContext = new curam.util.ScreenContext();
+        <jsp:scriptlet><![CDATA[out.print("jsScreenContext.setContext('");]]></jsp:scriptlet>
+        <c:out value="${currentContext}"/>
+        <jsp:scriptlet><![CDATA[out.print("');");]]></jsp:scriptlet>
+
+        if (jsScreenContext.hasContextBits('MODAL')) {
+        	require(["curam/wizard"]);
+        	curam.wizard.setupTargetFrameForModals('<c:out value="${wizard_frameset_title}"/>');
+        } 
+      </script>
+      <curam:jsUserPreferences />
+      <script type="text/javascript">
+        function getIdFromUrl(navUrl) {
+          return navUrl.substring(0, navUrl.indexOf('Frame.do'));
+        }
+        curam.util.onLoad.addPublisher(function(context){
+          context.helpEnabled = jsHelpEnabled;
+          context.helpExtension = jsHelpExtension;
+          context.pageID = getIdFromUrl('<c:out value="${navUrl}"/>');
+        });
+        var navigatorMode = false;
+		var domAttr, currentCaption;
+		require(['dojo/dom-attr'], function(dAttr) {
+		  domAttr = dAttr;
+		});
+		dojo.subscribe('curam/agendaplayer/navigator/loaded', function(navtitle){
+		  dojo.byId('headerframe').tabIndex ='1';
+		  dojo.byId('targetframe').tabIndex = '2'
+		  dojo.byId('navframe').tabIndex ='3';
+		  dojo.byId('buttonframe').tabIndex = '4';
+		  navigatorMode = true;
+		  dojo.byId('headerframe').focus();
+		});
+		dojo.subscribe('curam/agendaplayer/content/loaded', function(entryLabel, progressInfo) {
+		  domAttr.set(dojo.byId('targetframe'), 'title', entryLabel);
+		  currentCaption = entryLabel + ','+ progressInfo;
+          dojo.byId('headerframe').focus();
+		});
+		dojo.subscribe('curam/agendaplayer/page/loaded', function(bodyTitle, pageTitle){
+		  if (currentCaption) {
+		    bodyTitle.innerHTML = currentCaption;
+		    pageTitle.innerHTML = currentCaption;
+		  }
+		  if (navigatorMode) {
+			dojo.byId('headerframe').focus();
+		  } else {
+            var hFrame = dojo.byId('headerframe');
+			dojo.byId('headerframe').tabIndex = '0';
+            dojo.byId('targetframe').tabIndex = '0';
+		    dojo.byId('buttonframe').tabIndex = '0';
+            hFrame.focus();
+		  }
+        });
+        dojo.addOnLoad(function(){
+		  dojo.byId('headerframe').tabIndex = '0';
+          dojo.byId('targetframe').tabIndex = '0';
+		  dojo.byId('buttonframe').tabIndex = '0';
+		  dojo.byId('headerframe').focus();		  
+		});
+      </script>
+    </head>
+    <c:if test="${contextError=='true'}">
+      <body class="${classDirection} curam agenda-error">
+        <div class="error-message">
+          <span class="errorText">
+            The Agenda Player widget is not supported in the Content Panel of the tabbed application.
+            Please open Agenda Player in the modal dialog instead.
+          </span>
+          <script type="text/javascript">
+            require(["curam/util"], function(util) {
+              util.getTopmostWindow().dojo.publish("/curam/progress/unload");
+            });
+          </script>
+        </div>
+      </body>
+    </c:if>
+    
+    <c:if test="${empty contextError || contextError=='false'}">
+    <jsp:scriptlet><![CDATA[out.print("<frameset rows=\"30,*,83\" border=\"0\" tabindex=\"-1\" class=\"outer-frame\" title=\"");]]></jsp:scriptlet>
+    <c:out value="${wizard_frameset_title}"/> 
+    <jsp:scriptlet><![CDATA[out.print("\" >");]]></jsp:scriptlet>
+      <jsp:scriptlet><![CDATA[out.print("<frame src=\"");]]></jsp:scriptlet>
+      <c:out value="${headerUrl}"/>
+      <jsp:scriptlet><![CDATA[out.print("\" name=\"headerframe\" id=\"headerframe\" role=\"banner\" scrolling=\"no\" aria-label=\"");]]></jsp:scriptlet>
+      <c:out value="${wizard_header_frame_title}"/>
+      <jsp:scriptlet><![CDATA[out.print("\" />");]]></jsp:scriptlet>
+      <jsp:scriptlet>
+        if(pageContext.getAttribute("htmlDirection").equals("rtl")) {
+          </jsp:scriptlet>
+            <frameset id="navset" cols="*,210" class="rtl">
+              <frame name="targetframe" id="targetframe" tabindex="1" src="loading.jspx?o3ctx=${currentContext}"/>
+              <jsp:scriptlet><![CDATA[out.print("<frame src=\"");]]></jsp:scriptlet>
+              <c:out value="${navUrl}"/>
+              <jsp:scriptlet><![CDATA[out.print("\" name=\"navframe\" tabindex=\"-1\" id=\"navframe\" aria-label=\"");]]></jsp:scriptlet>
+              <c:out value="${wizard_navigation_frame_title}"/>
+              <jsp:scriptlet><![CDATA[out.print("\" />");]]></jsp:scriptlet>
+            </frameset>
+          <jsp:scriptlet>
+        } else {
+          </jsp:scriptlet>
+            <frameset id="navset" cols="210,*" class="ltr">
+              <jsp:scriptlet><![CDATA[out.print("<frame src=\"");]]></jsp:scriptlet>
+              <c:out value="${navUrl}"/>
+              <jsp:scriptlet><![CDATA[out.print("\" name=\"navframe\" id=\"navframe\" tabindex=\"-1\" aria-label=\"");]]></jsp:scriptlet>
+              <c:out value="${wizard_navigation_frame_title}"/>
+              <!-- <jsp:scriptlet><![CDATA[out.print("\" aria-label=\"");]]></jsp:scriptlet>
+              <c:out value="${wizard_navigation_frame_title}"/>-->
+              <jsp:scriptlet><![CDATA[out.print("\" />");]]></jsp:scriptlet>
+              <frame name="targetframe" id="targetframe" tabindex="1" src="loading.jspx?o3ctx=${currentContext}"/>
+            </frameset>
+          <jsp:scriptlet>
+        }
+      </jsp:scriptlet>
+      <jsp:scriptlet><![CDATA[out.print("<frame src=\"");]]></jsp:scriptlet>
+      <c:out value="${buttonsUrl}"/>
+      <jsp:scriptlet><![CDATA[out.print("\" id=\"buttonframe\" name=\"buttonframe\"  tabindex=\"2\" style=\"height:85px;\" />");]]></jsp:scriptlet>
+    <jsp:scriptlet><![CDATA[out.print("</frameset>");]]></jsp:scriptlet>
+    </c:if>
+  <jsp:scriptlet><![CDATA[out.print("</html>");]]></jsp:scriptlet>
+</jsp:root>

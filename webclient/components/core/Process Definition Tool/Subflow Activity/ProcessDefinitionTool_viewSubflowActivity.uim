@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="ProcessDefinitionTool_viewSubflowActivity"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="processID"/>
+  <PAGE_PARAMETER NAME="processVersionNo"/>
+  <PAGE_PARAMETER NAME="activityID"/>
+  <SERVER_INTERFACE
+    CLASS="SubflowActivityAdmin"
+    NAME="DISPLAY"
+    OPERATION="readSubflowActivity"
+    PHASE="DISPLAY"
+  />
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="result$dtls$dtls$message"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="activityKey$processID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processVersionNo"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="activityKey$processVersionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="activityID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="activityKey$activityID"
+    />
+  </CONNECT>
+  <CLUSTER
+    LABEL_WIDTH="50%"
+    NUM_COLS="2"
+  >
+    <FIELD LABEL="Field.Label.ActivityName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.SplitType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$splitType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Category">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$category"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ActivityType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$type"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.JoinType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$joinType"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.SubflowDetails"
+  >
+    <FIELD LABEL="Field.Label.WorkflowProcess">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$subflowProcessDisplayName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.SynchronousExecution">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$synchronousExecution"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <INCLUDE FILE_NAME="ProcessDefinitionTool_Activity.vim"/>
+</PAGE>

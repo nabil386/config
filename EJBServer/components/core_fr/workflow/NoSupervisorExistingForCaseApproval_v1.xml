@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--  BEGIN CR00168004 , AK  -->
+<workflow-process category="PC3" createdBy="admin" creationDate="20080306T133231" id="76" language-version="1.0" process-version="1" released="true"> 
+  <!-- END CR00168004 -->  
+  <name>NoSupervisorExistingForCaseApproval</name>  
+  <!--BEGIN, CR00361282, CL -->  
+  <process-display-name> 
+    <localized-text> 
+      <locale language="fr">Aucun superviseur existant pour l'approbation de dossier</locale>  
+      <locale language="en">No Supervisor Existing For Case Approval</locale>
+    </localized-text> 
+  </process-display-name>  
+  <!--END, CR00361282 -->  
+  <!-- BEGIN, CR00248295, NS -->  
+  <description> 
+    <localized-text> 
+      <locale language="fr">Crée une tâche pour la file d'attente des travaux par défaut lorsque le système ne parvient pas à déterminer un superviseur de manière dynamique pour un dossier après la soumission de ce dernier pour approbation. La tâche est affectée à la file d'attente des travaux de sorte que l'utilisateur qui travaille sur la tâche peut être défini manuellement en tant que superviseur pour le dossier. Le processus avertit également l'administrateur et tous les abonnés de la file d'attente des travaux qu'une tâche a été affectée à la file d'attente des travaux, car le système ne pouvait pas déterminer de superviseur de manière dynamique.</locale>  
+      <locale language="en">Creates a task for the default work queue when the system is unable to determine a supervisor dynamically for a case after the case has been submitted for approval. The task is assigned to the work queue so that the user working on the task can set a supervisor for the case manually. The process also notifies the administrator and all subscribers of the work queue that a task has been assigned to the work queue as the system could not determine a supervisor dynamically.</locale>
+    </localized-text> 
+  </description>  
+  <!-- END, CR00248295 -->  
+  <enactment-mappings> 
+    <mapping> 
+      <source-attribute name="caseID" struct-name="curam.core.struct.CaseHeaderKey"/>  
+      <target-attribute name="caseID" wdo-name="NoSupervisorExistsWDO"/> 
+    </mapping>  
+    <mapping> 
+      <source-attribute name="caseReference" struct-name="curam.core.struct.CaseReference"/>  
+      <target-attribute name="caseReference" wdo-name="NoSupervisorExistsWDO"/> 
+    </mapping> 
+  </enactment-mappings>  
+  <wdos> 
+    <wdo initialize-attributes="false" is-list-wdo="false"> 
+      <wdo-name>NoSupervisorExistsWDO</wdo-name>  
+      <display-name> 
+        <localized-text> 
+          <locale language="fr">NoSupervisorExistsWDO</locale>  
+          <locale language="en">NoSupervisorExistsWDO</locale>
+        </localized-text> 
+      </display-name>  
+      <attributes> 
+        <attribute> 
+          <attribute-name>caseID</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">ID du dossier</locale>  
+              <locale language="en">caseID</locale>
+            </localized-text> 
+          </display-name>  
+          <type>INT64</type>  
+          <required-at-enactment>true</required-at-enactment>  
+          <process-output>false</process-output> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>caseReference</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Référence du dossier</locale>  
+              <locale language="en">caseReference</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>true</required-at-enactment>  
+          <process-output>false</process-output> 
+        </attribute> 
+      </attributes> 
+    </wdo> 
+  </wdos>  
+  <activities> 
+    <start-process-activity id="1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité de processus de début</locale>  
+          <locale language="en">Start Process Activity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de début</locale>  
+          <locale language="en">The start process activity</locale>
+        </localized-text> 
+      </description>  
+      <split type="none"> 
+        <transition-id idref="1"/> 
+      </split> 
+    </start-process-activity>  
+    <end-process-activity id="2"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de fin</locale>  
+          <locale language="en">End Process Activity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de fin</locale>  
+          <locale language="en">The end process activity</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/> 
+    </end-process-activity>  
+    <manual-activity category="AC1" id="3"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Approbation de la distribution de produits</locale>  
+          <locale language="en">Product Delivery Approval</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="2"/> 
+      </split>  
+      <task> 
+        <message> 
+          <message-text> 
+            <localized-text> 
+              <locale language="fr">Il n'existe aucun superviseur pour le dossier %1s soumis pour approbation.</locale>  
+              <locale language="en">No Supervisor existing for Case %1s submitted for approval.</locale>
+            </localized-text> 
+          </message-text>  
+          <message-parameters> 
+            <wdo-attribute name="caseReference" wdo-name="NoSupervisorExistsWDO"/> 
+          </message-parameters> 
+        </message>  
+        <actions> 
+          <action page-id="Case_resolveCaseHome" principal-action="false"> 
+            <message> 
+              <message-text> 
+                <localized-text> 
+                  <locale language="fr">Page d'accueil du dossier</locale>  
+                  <locale language="en">Case Home Page</locale>
+                </localized-text> 
+              </message-text> 
+            </message>  
+            <link-parameter name="caseID"> 
+              <wdo-attribute name="caseID" wdo-name="NoSupervisorExistsWDO"/> 
+            </link-parameter> 
+          </action>  
+          <action open-modal="true" page-id="WorkflowEvents_confirmSupervisorExists" principal-action="true"> 
+            <message> 
+              <message-text> 
+                <localized-text> 
+                  <locale language="fr">Confirmer que le superviseur existe ?</locale>  
+                  <locale language="en">Confirm supervisor exists?</locale>
+                </localized-text> 
+              </message-text> 
+            </message>  
+            <link-parameter name="caseID"> 
+              <wdo-attribute name="caseID" wdo-name="NoSupervisorExistsWDO"/> 
+            </link-parameter> 
+          </action> 
+        </actions>  
+        <allow-deadline-override>false</allow-deadline-override>  
+        <allow-task-forwarding>true</allow-task-forwarding> 
+      </task>  
+      <allocation-strategy identifier="curam.core.sl.intf.WorkflowAllocationFunction.caseSupervisorAllocationStrategy" type="function"> 
+        <function-mappings> 
+          <formal-parameters> 
+            <formal-parameter index="0"> 
+              <struct type="curam.core.sl.struct.CaseIDKey"> 
+                <field name="caseID"> 
+                  <base-type type="INT64"> 
+                    <wdo-attribute name="caseID" wdo-name="NoSupervisorExistsWDO"/> 
+                  </base-type> 
+                </field> 
+              </struct> 
+            </formal-parameter> 
+          </formal-parameters> 
+        </function-mappings> 
+      </allocation-strategy>  
+      <event-wait wait-on-all-events="false"> 
+        <events> 
+          <event event-class="CASE" event-type="NO_SUPERVISOR_EXISTS" identifier="1"> 
+            <event-match-attribute name="caseID" wdo-name="NoSupervisorExistsWDO"/> 
+          </event> 
+        </events> 
+      </event-wait> 
+    </manual-activity> 
+  </activities>  
+  <transitions> 
+    <transition from-activity-idref="1" id="1" to-activity-idref="3"/>  
+    <transition from-activity-idref="3" id="2" to-activity-idref="2"/> 
+  </transitions> 
+</workflow-process>

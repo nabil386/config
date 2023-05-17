@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2016. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="page-schema.xsd">
+    <identifier name="Page1" />
+    <server alias="DISPLAY" class="ScreeningResults" method="getScreeningResultsLite">
+        <param name="key$playerID" path="id" />
+    </server>
+    <header>
+        <title id="Page.Title" />
+        <description id="Page.Description" />
+        <icon id="title_selectprogram" />
+    </header>
+    <content>
+        <forward source="/PAGE/screeningID" target="/ans/applicationID" name="screeningID"/>
+        <container conditionalSource="/DISPLAY/xmlData/program[@eligible='true'][]" false="$empty">
+            <title id="Eligible.Title" /> 
+            <description id="Eligible.Description" />
+            <container style="select-all">
+                <title id="SelectAll.Title">Select All Programs</title>
+                <param name="target" value="in-cluster" />
+            </container>
+            <list>
+                <field type="CW_PROGRAM_SELECT" target="/prog[]/eligible" source="/DISPLAY/xmlData/program[@eligible='true'][]/id" width="30">
+                    <title source="/DISPLAY/xmlData/program[@eligible='true'][]/name/label" />
+                    <description source="/DISPLAY/xmlData/program[@eligible='true'][]/description" />
+                    <help source="/DISPLAY/xmlData/program[@eligible='true'][]/name/uri" />
+                    <param name="help-label" id="More.Info" />
+                    <param name="enabled" source="/DISPLAY/xmlData/program[@eligible='true'][]/inScreening" />
+                </field>
+            </list>
+        </container>
+        <container conditionalSource="/DISPLAY/xmlData/program[@eligible='false'][]" false="$empty">
+            <title id="Not.Eligible.Title" />
+            <description id="Not.Eligible.Description" />
+            <container style="select-all">
+                <title id="SelectAll.Title">Select All Programs</title>
+                <param name="target" value="in-cluster" />
+            </container>
+            <list>
+                <field type="CW_PROGRAM_SELECT" target="/prog[]/not-eligible" source="/DISPLAY/xmlData/program[@eligible='false'][]/id" width="30">
+                    <title source="/DISPLAY/xmlData/program[@eligible='false'][]/name/label" />
+                    <description source="/DISPLAY/xmlData/program[@eligible='false'][]/description" />
+                    <help source="/DISPLAY/xmlData/program[@eligible='false'][]/name/uri" />
+                    <param name="help-label" id="More.Info" />
+                    <param name="enabled" source="/DISPLAY/xmlData/program[@eligible='false'][]/inScreening" />
+                </field>
+            </list>
+        </container>
+    </content>
+    <navigation>
+        <nav-button name="exit" page="ResolveCitizenHome" page-type="resolve" />
+        <nav-button name="next" type="action"/>
+    </navigation>
+</page>

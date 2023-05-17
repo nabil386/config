@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+ 
+  Copyright IBM Corporation 2009,2023. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009 - 2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to manage the cases assigned to them.        -->
+<PAGE
+  PAGE_ID="Organization_userCases"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="Case"
+    NAME="DISPLAY"
+    OPERATION="getMyCasesFilterList"
+  />
+
+
+  <!-- BEGIN, CR00409511, SG -->
+  <SERVER_INTERFACE
+    CLASS="Case"
+    NAME="ACTION"
+    OPERATION="storeCaseSearchCriteria1"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00409511 -->
+
+
+  <!-- BEGIN, CR00274833, ELG -->
+  <SERVER_INTERFACE
+    CLASS="Case"
+    NAME="DISPLAYDEFAULT"
+    OPERATION="caseDefaultSearchByOwner1"
+  />
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYDEFAULT"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+    <!-- BEGIN, CR00409511, SG -->
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+    <!-- END, CR00409511 -->
+  </INFORMATIONAL>
+  <!-- END, CR00274833 -->
+
+
+  <CLUSTER SHOW_LABELS="FALSE">
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="100"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYDEFAULT"
+          PROPERTY="result$dtls$criteriaText"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="3"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Filter"
+  >
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.CategoryType"
+    >
+      <FIELD
+        CONTROL="CHECKBOXED_LIST"
+        HEIGHT="7"
+        USE_BLANK="false"
+        WIDTH="100"
+      >
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="categoryType"
+            NAME="DISPLAY"
+            PROPERTY="typeDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="categoryTypeList"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="categoryTypeList"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.OwnerType"
+    >
+      <FIELD
+        CONTROL="CHECKBOXED_LIST"
+        HEIGHT="7"
+        USE_BLANK="false"
+        WIDTH="100"
+      >
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="ownerType"
+            NAME="DISPLAY"
+            PROPERTY="ownerDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="ownerList"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="ownerList"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.Status"
+    >
+      <FIELD
+        CONTROL="CHECKBOXED_LIST"
+        HEIGHT="7"
+        USE_BLANK="false"
+        WIDTH="100"
+      >
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="statusCode"
+            NAME="DISPLAY"
+            PROPERTY="statusDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="statusList"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="statusList"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK
+          PAGE_ID="THIS"
+          SAVE_LINK="false"
+        />
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResult">
+
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAYDEFAULT"
+          PROPERTY="displayClientsOpt"
+        />
+      </CONDITION>
+    <DETAILS_ROW>
+
+
+      <INLINE_PAGE
+        URI_SOURCE_NAME="DISPLAYDEFAULT"
+        URI_SOURCE_PROPERTY="caseContextDetailsURL"
+      />
+
+
+    </DETAILS_ROW>
+
+
+    <FIELD
+      LABEL="Field.Label.CaseReference"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYDEFAULT"
+          PROPERTY="result$dtls$searchDtls$caseReference"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAYDEFAULT"
+            PROPERTY="result$dtls$searchDtls$caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYDEFAULT"
+          PROPERTY="result$dtls$searchDtls$caseCatTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.PrimaryClient"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYDEFAULT"
+          PROPERTY="result$dtls$searchDtls$concernRoleName"
+        />
+      </CONNECT>
+      <!--BEGIN, CR00139966, MC-->
+      <LINK PAGE_ID="Participant_resolve">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAYDEFAULT"
+            PROPERTY="result$dtls$searchDtls$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAYDEFAULT"
+            PROPERTY="result$dtls$searchDtls$concernRoleType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleType"
+          />
+        </CONNECT>
+      </LINK>
+      <!--END, CR00139966-->
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.LatestTransaction"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYDEFAULT"
+          PROPERTY="result$dtls$searchDtls$transactionDescription"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="11"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYDEFAULT"
+          PROPERTY="result$dtls$searchDtls$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="9"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYDEFAULT"
+          PROPERTY="result$dtls$searchDtls$statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+ <LIST TITLE="List.Title.SearchResult">
+
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAYDEFAULT"
+          PROPERTY="displayClientsOpt"
+        />
+      </CONDITION>
+    <DETAILS_ROW>
+
+
+      <INLINE_PAGE
+        URI_SOURCE_NAME="DISPLAYDEFAULT"
+        URI_SOURCE_PROPERTY="caseContextDetailsURL"
+      />
+
+
+    </DETAILS_ROW>
+
+
+    <FIELD
+      LABEL="Field.Label.CaseReference"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYDEFAULT"
+          PROPERTY="result$dtls$searchDtls$caseReference"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAYDEFAULT"
+            PROPERTY="result$dtls$searchDtls$caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYDEFAULT"
+          PROPERTY="result$dtls$searchDtls$caseCatTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Clients"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYDEFAULT"
+          PROPERTY="result$dtls$searchDtls$caseClientsOpt"
+        />
+      </CONNECT>
+
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.LatestTransaction"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYDEFAULT"
+          PROPERTY="result$dtls$searchDtls$transactionDescription"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="11"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYDEFAULT"
+          PROPERTY="result$dtls$searchDtls$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="9"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYDEFAULT"
+          PROPERTY="result$dtls$searchDtls$statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+</PAGE>

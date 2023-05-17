@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- When registration is complete this pages gives the user the option of -->
+<!-- registering another person or navigating to the home page of the      -->
+<!-- registered person. -->
+<?curam-deprecated Since Curam 6.0, replaced with RegisterPersonWizard_register.uim?>
+<PAGE PAGE_ID="Person_registrationComplete" WINDOW_OPTIONS="width=500" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="alternateID"/>
+
+
+  <!-- BEGIN, CR00114322, PA -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="informationMsgTxt"/>
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <!-- Declare the 'DISPLAY' server bean -->
+  <SERVER_INTERFACE CLASS="Person" NAME="DISPLAY" OPERATION="readInformationalMessage" PHASE="DISPLAY"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="concernRoleID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="concernRoleID"/>
+  </CONNECT>
+
+
+  <!-- END, CR00114322, PA -->
+
+
+  <CLUSTER SHOW_LABELS="false" STYLE="outer-cluster-borderless">
+    <FIELD>
+      <CONNECT>
+        <SOURCE NAME="TEXT" PROPERTY="Field.StaticText.RegistrationComplete"/>
+      </CONNECT>
+    </FIELD>
+    <CONTAINER>
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="TEXT" PROPERTY="Field.StaticText.PersonReferenceNumber"/>
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="alternateID"/>
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+  <CLUSTER SHOW_LABELS="false">
+    <CONTAINER>
+      <ACTION_CONTROL LABEL="ActionControl.Label.PersonHome">
+        <!-- BEGIN,CR00081706, GM -->
+        <LINK PAGE_ID="Person_resolveHomePage">
+          <!-- END, CR00081706 -->
+          <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="concernRoleID"/>
+            <TARGET NAME="PAGE" PROPERTY="concernRoleID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <CONTAINER>
+      <ACTION_CONTROL LABEL="ActionControl.Label.RegisterAnother">
+        <LINK DISMISS_MODAL="false" OPEN_MODAL="false" PAGE_ID="Person_previousRegistrationCheck" SAVE_LINK="false"/>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>
+</PAGE>

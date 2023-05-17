@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Copyright © 2004 Curam Software Ltd.
+All rights reserved.
+
+This software is the confidential and proprietary information of Curam
+Software, Ltd. ("Confidential Information"). You shall not disclose
+such Confidential Information and shall use it only in accordance with the
+terms of the license agreement you entered into with Curam Software.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <xs:annotation>
+    <xs:documentation>XML Schema for Cúram Type Information</xs:documentation>
+  </xs:annotation>
+
+  <xs:element name="type">
+
+    <xs:annotation>
+      <xs:documentation>
+        Details about a type or "domain definition".
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:complexType mixed="false">
+      <xs:attribute name="name" type="xs:NMTOKEN" use="required">
+        <xs:annotation>
+          <xs:documentation>The name of the type.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="base-type" type="xs:NMTOKEN" use="optional">
+        <xs:annotation>
+          <xs:documentation>
+            The type from which this type is directly derived.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="primitive-type" type="xs:NMTOKEN" use="optional">
+        <xs:annotation>
+          <xs:documentation>
+            The type from which this type is ultimately derived.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="size" type="xs:integer" use="optional" default="0">
+        <xs:annotation>
+          <xs:documentation>
+            The size of the type, if it is a bounded string.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="code-table-name" type="xs:string" use="optional">
+        <xs:annotation>
+          <xs:documentation>
+            The name of the associated code table (if any).
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="attributes" type="xs:string" use="optional">
+        <xs:annotation>
+          <xs:documentation>
+            Additional attributes of the type needed for validation.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+
+  </xs:element>
+
+  <xs:element name="types">
+
+    <xs:annotation>
+      <xs:documentation>A group of unique type elements.</xs:documentation>
+    </xs:annotation>
+
+    <xs:complexType mixed="false">
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="type" />
+      </xs:sequence>
+    </xs:complexType>
+
+    <xs:key name="type-name">
+      <xs:selector xpath="type" />
+      <xs:field xpath="@name">
+        <xs:annotation>
+          <xs:documentation>
+            The "name" attribute of a type is its unique, non-null key.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:field>
+    </xs:key>
+
+    <xs:keyref name="base-type-ref" refer="type-name">
+      <xs:selector xpath="type" />
+      <xs:field xpath="@base-type">
+        <xs:annotation>
+          <xs:documentation>
+            The "base-type" attribute (if it exists), must refer to a declared
+            type.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:field>
+    </xs:keyref>
+
+    <xs:keyref name="primitive-type-ref" refer="type-name">
+      <xs:selector xpath="type" />
+      <xs:field xpath="@primitive-type">
+        <xs:annotation>
+          <xs:documentation>
+            The "primitive-type" attribute (if it exists), must refer to a
+            declared type.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:field>
+    </xs:keyref>
+
+  </xs:element>
+
+</xs:schema>

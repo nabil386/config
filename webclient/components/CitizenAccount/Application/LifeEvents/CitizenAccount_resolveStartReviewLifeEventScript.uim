@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- Copyright (c) 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp redirects the action owner to a Home Page.                    -->
+<PAGE
+  PAGE_ID="CitizenAccount_resolveStartReviewLifeEventScript"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    <![CDATA[
+      javax.servlet.http.HttpServletRequest hsRequest;
+      javax.servlet.http.HttpSession httpSession;
+      hsRequest = (javax.servlet.http.HttpServletRequest) request;
+      httpSession = hsRequest.getSession();
+      java.security.Principal userPrincipal = hsRequest.getUserPrincipal();
+      String context = request.getContextPath() + "/cw/";
+      String url = context + "StartIEGScript.jspx?";
+      
+      String lifeEventID = request.getParameter("lifeEventID");
+      
+      // If the script being reviewed has no answer script, then we launch the question script
+      // in read-only mode. We set the parameter 'readOnly' so that when quitting, the
+      // QuitLifeEventScript.jspx file knows to not prompt us to save our changes.
+      String hasAnswerScript = request.getParameter("hasAnswerScript");
+      String readOnly = "true";
+      if("true".equals(hasAnswerScript)) {
+        readOnly = "false";
+      }
+
+      // Call the Server to Create the Life Event
+      curam.interfaces.CitizenLifeEventsPkg.CitizenLifeEvents_startReviewLifeEvent_TH startReviewLifeEvent_TH = 
+        new curam.interfaces.CitizenLifeEventsPkg.CitizenLifeEvents_startReviewLifeEvent_TH(); 
+      startReviewLifeEvent_TH.setFieldValue(startReviewLifeEvent_TH.input$playerExecutionID_idx, "");       
+      startReviewLifeEvent_TH.setFieldValue(startReviewLifeEvent_TH.input$lifeEventID_idx, lifeEventID);
+      
+      try {
+      	startReviewLifeEvent_TH.callServer();
+      } catch(Exception e) {
+        System.out.println("Got exception message " + e.getMessage());
+        e.printStackTrace();
+      }
+      
+      String iegExecutionID = startReviewLifeEvent_TH.getFieldValue(startReviewLifeEvent_TH.result$scriptExecutionID_idx); 
+      
+      String playerID = startReviewLifeEvent_TH.getFieldValue(startReviewLifeEvent_TH.result$sessionID_idx);
+      
+      url = url + "executionID=" +  curam.omega3.request.RequestUtils.escapeURL(iegExecutionID) + "&playerID=" + curam.omega3.request.RequestUtils.escapeURL(playerID) + "&readOnly=" + readOnly;
+
+      response.sendRedirect(response.encodeRedirectURL(url));
+   ]]>
+  </JSP_SCRIPTLET>
+</PAGE>  

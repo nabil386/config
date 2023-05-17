@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2020. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="CitizenWorkspace_listVerificationsForCaseworkerTask"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+<JSP_SCRIPTLET>
+
+    curam.omega3.request.RequestHandler 
+    rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+    
+    String context = request.getContextPath() + "/";
+    context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+    String caseID = request.getParameter("caseID");
+    String resolvedPageName = "";
+    String url = "";
+    
+    if (caseID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "caseID");
+       System.out.println(e);
+       throw e;
+    }
+    
+     curam.interfaces.CasePkg.Case_resolveCaseHomePageName_TH
+     th = new curam.interfaces.CasePkg.Case_resolveCaseHomePageName_TH();
+        
+     th.setFieldValue(th.key$caseID_idx,caseID);
+
+     th.callServer();
+     
+    resolvedPageName = th.getFieldValue(th.result$homePageName_idx);
+    
+    curam.interfaces.CasePkg.Case_resolveCaseType_TH
+    th2 = new curam.interfaces.CasePkg.Case_resolveCaseType_TH();
+    th2.setFieldValue(th2.readCaseTypeDetails$caseID_idx,caseID);
+    th2.callServer();
+    
+    String caseType = th2.getFieldValue(th2.result$caseTypeCode$caseTypeCode_idx);
+    
+    // Checking the type of case and handling each of the types of interest; which are application case, product delivery,
+    // and integrated case.
+    
+    // For an application case set it to be the Verifications for Common intake
+    if (caseType.equals("CT10201")) {
+      resolvedPageName = "CommonIntake_listVerificationsForCase";
+    } else if (caseType.equals("CT5")) {
+       // For integrated case (code table value out of the box), set the page to be the default verification page for
+       // an integrated case
+      resolvedPageName = "DefaultIC_listVerificationsForCase";
+    }
+    // check if a product delivery case   
+    else if (caseType.equals("CT2")) {
+      curam.interfaces.ProductDeliveryPkg.ProductDelivery_readProductType_TH thProductType = new curam.interfaces.ProductDeliveryPkg.ProductDelivery_readProductType_TH();
+      thProductType.setFieldValue(thProductType.productDeliveryKey$caseID_idx,caseID);
+      thProductType.callServer();
+      String productType = thProductType.getFieldValue(thProductType.result$productType_idx);
+        
+      // check if the product type is for Employment Benefit by inspecting the code table value
+      // can do custom checks here to look up product type
+      if (productType != null) {
+    	// ADD CUSTOM CHECKS HERE to HANDLE PRODUCT CODES
+    	// if (productType.equals("PT2501")) {
+    	//   resolvedPageName = "IncomeAssistanceBenefitSample__listAllVerificationsForCase";
+    	// }
+    	resolvedPageName = "DefaultICProduct_listVerificationsForCase";   	
+      }
+    }
+    // if it is an application case or any other type of case let it fallback to default page
+    
+    // default page or the specified page
+    if ((resolvedPageName==null) ||(resolvedPageName.equals(""))) { 
+      url = context + "Case_resolveCaseHomePage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);       
+    } else { 
+      url = context + resolvedPageName + "Page.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+    }
+    
+    url += "&amp;" + rh.getSystemParameters();
+    response.sendRedirect(response.encodeRedirectURL(url)); 
+    
+  </JSP_SCRIPTLET>
+
+
+</PAGE>

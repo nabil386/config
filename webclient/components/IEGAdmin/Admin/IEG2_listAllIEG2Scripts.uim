@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2017. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<!-- Copyright (c) 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Page used to list all of the available IEG scripts.                    -->
+<PAGE PAGE_ID="IEG2_listAllIEG2Scripts" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+	<PAGE_TITLE>
+	    <CONNECT>
+	      <SOURCE
+	        NAME="TEXT"
+	        PROPERTY="PageTitle.title"
+	      />
+	    </CONNECT>
+	  </PAGE_TITLE>
+
+    <SERVER_INTERFACE CLASS="IEGScriptAdmin" NAME="ACTION" OPERATION="searchScripts" PHASE="ACTION" />
+	
+	<ACTION_SET BOTTOM="false">
+        <ACTION_CONTROL LABEL="ActionControl.Label.CreateScript">
+            <LINK OPEN_MODAL="true" PAGE_ID="System_createScript"/>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL LABEL="ActionControl.Label.ImportScript">
+            <LINK OPEN_MODAL="true" PAGE_ID="System_importScript"/>
+        </ACTION_CONTROL>
+    </ACTION_SET>
+	
+  <CLUSTER NUM_COLS="2" SHOW_LABELS="true" LABEL_WIDTH="35" TITLE="Cluster.Title.SearchCriteria">
+    <FIELD LABEL="Cluster.Label.ScriptName">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="key$name" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Cluster.Label.ScriptType">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="key$scriptType" />
+      </CONNECT>
+    </FIELD>
+    
+    <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+      <ACTION_CONTROL DEFAULT="true" LABEL="ActionControl.Label.Search" TYPE="SUBMIT">
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="IEG2_listAllIEG2Scripts" SAVE_LINK="false"/>
+       </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+	
+    <LIST PAGINATED="true" TITLE="List.Title.SearchResults">
+        <ACTION_SET TYPE="LIST_ROW_MENU">
+            <ACTION_CONTROL LABEL="ActionControl.Label.EditDisplayName" APPEND_ELLIPSIS="true">
+                <LINK PAGE_ID="IEG2_editDisplayName" OPEN_MODAL="true">
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="scriptID" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptID" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="dtls$scriptType" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptType" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="scriptVersion" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptVersion" />
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>		
+            <ACTION_CONTROL LABEL="ActionControl.Label.Edit" APPEND_ELLIPSIS="true">
+                <LINK PAGE_ID="System_editScript">
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="scriptID" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptID" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="dtls$scriptType" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptType" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="scriptVersion" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptVersion" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="dtls$name" />
+                        <TARGET NAME="PAGE" PROPERTY="name" />
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+            <ACTION_CONTROL LABEL="ActionControl.Label.Run" APPEND_ELLIPSIS="true">
+                <LINK PAGE_ID="System_runScript">
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="scriptID" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptID" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="dtls$scriptType" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptType" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="scriptVersion" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptVersion" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="dtls$name" />
+                        <TARGET NAME="PAGE" PROPERTY="name" />
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+            <ACTION_CONTROL LABEL="ActionControl.Label.RunInModal" APPEND_ELLIPSIS="true">
+                <LINK PAGE_ID="System_runScriptModal" OPEN_MODAL="true" WINDOW_OPTIONS="width=800,height=600">
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="scriptID" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptID" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="dtls$scriptType" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptType" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="scriptVersion" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptVersion" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="dtls$name" />
+                        <TARGET NAME="PAGE" PROPERTY="name" />
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>			
+            <ACTION_CONTROL LABEL="ActionControl.Label.Validate" APPEND_ELLIPSIS="true">
+                <LINK PAGE_ID="System_validateScript" OPEN_MODAL="true">
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="scriptID" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptID" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="dtls$scriptType" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptType" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="scriptVersion" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptVersion" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="dtls$name" />
+                        <TARGET NAME="PAGE" PROPERTY="name" />
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+            <ACTION_CONTROL LABEL="ActionControl.Label.Export" TYPE="FILE_DOWNLOAD" APPEND_ELLIPSIS="true">
+                <LINK>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="scriptID" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptID" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="dtls$scriptType" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptType" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="scriptVersion" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptVersion" />
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+            <ACTION_CONTROL LABEL="ActionControl.Label.Remove" APPEND_ELLIPSIS="true">
+                <LINK OPEN_MODAL="true" PAGE_ID="System_deleteScript">
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="scriptID" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptID" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="dtls$scriptType" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptType" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="scriptVersion" />
+                        <TARGET NAME="PAGE" PROPERTY="scriptVersion" />
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+        </ACTION_SET>
+        <FIELD LABEL="Field.Title.ScriptName" WIDTH="80">
+            <CONNECT>
+                <SOURCE NAME="ACTION" PROPERTY="dtls$name" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Title.ScriptVersion" WIDTH="15">
+            <CONNECT>
+                <SOURCE NAME="ACTION" PROPERTY="scriptVersion" />
+            </CONNECT>
+        </FIELD>
+		
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="IEG2_viewScriptInline">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="scriptID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="scriptID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$scriptType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="scriptType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="scriptVersion"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="scriptVersion"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+	
+    </LIST>
+
+</PAGE>

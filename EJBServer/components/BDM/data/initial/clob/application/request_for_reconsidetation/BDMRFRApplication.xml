@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ieg-script
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ieg-schema.xsd"
+	finish-page="cw/FinishAppealScript.jspx"
+	quit-page="cw/ExitIEGScript.jspx" show-sections="true"
+	show-progress-bar="true" validate-save-and-exit="false"
+	config-properties="bdm-app-config">
+	
+	<identifier id="BDMRFRApplication" scriptversionnumber="V1" type="Appeal" />
+
+	<section>
+		<title id="PersonalInformation.RFR.Title"><![CDATA[Request for Reconsideration]]></title>
+		<callout expression="PrepopulateRFRDetails()" id="Person.PrepopulateDetails" />
+		<question-page id="PersonalInformation" entity="Person"
+			progress="0" 
+			show-back-button="false"
+			show-exit-button="true"
+			show-next-button="true" 
+			show-save-exit-button="false">
+			<description id="MandatoryFieldsDescription"><![CDATA[All fields are mandatory unless specified as optional.]]></description>
+			<validation expression="Person.confirmInformation==&quot;YN1&quot;">
+				<message id="PersonalInformation.Confirmation.Validation"><![CDATA[Please select Yes to proceed. Otherwise, click on Delete & exit and return to the client account to update.]]></message>
+			</validation>
+			<cluster>
+				<title id="PersonalInformation.YourDetails.Title"><![CDATA[Your Details]]></title>
+				<description id="PersonalInformation.YourDetails.Desc"><![CDATA[<p>Please review your information below:</br></br></p>]]></description>
+				<display-text id="PersonalInformation.FName"><![CDATA[<b>First Name</b>   %1s]]>
+					<argument id="Person.firstName"/>
+				</display-text>
+				<display-text id="PersonalInformation.FamName"><![CDATA[<b>Last Name</b>   %1s]]>
+					<argument id="Person.lastName"/>
+				</display-text>
+				<display-text id="AddressInformation.MailAddr.Title"><![CDATA[<b>Mailing Address</b>   %1s]]>
+					<argument id="Person.mailingAddress"/>
+				</display-text>
+				<display-text id="PersonalInformation.PTelephoneNumber"><![CDATA[<b>Preferred Phone Number</b>   %1s]]>
+					<argument id="Person.preferredPhoneNumber"/>
+				</display-text>
+				<display-text id="PersonalInformation.Email"><![CDATA[<b>Preferred Email Address</b>   %1s]]>
+					<argument id="Person.preferredEmail"/>
+				</display-text>
+				<display-text id="PersonalInformation.LanguageCommunicationQuestion"><![CDATA[<b>Language of Communication</b>   %1s]]>
+					<argument id="Person.languageCommunication"/>
+				</display-text>
+			</cluster>
+			<cluster>
+				<title id="PersonalInformation.ConfirmInformation.Title"><![CDATA[Confirmation]]></title>
+				<question id="confirmInformation" mandatory="true">
+					<label id="PersonalInformation.ConfirmInformation"><![CDATA[Please confirm and proceed by clicking Next if the above information is correct. If not, please click on Delete & exit and return to the client account to update.]]></label>
+					<layout><type>radio</type></layout>
+				</question>
+			</cluster>
+		</question-page>
+		
+ 		<callout expression="evaluateLateReconsideration()" id="RFRInformation.evaluateLateConsideration"/>
+
+        <question-page id="RFRInformation" 
+			progress="60" 
+			entity="ApplicationDetails"
+			show-back-button="true"
+			show-exit-button="true"
+			show-next-button="true" 
+			show-save-exit-button="true">
+			<description id="MandatoryFieldsDescription"><![CDATA[All fields are mandatory unless specified as optional.]]></description>
+			<validation expression="ValidateFutureDate(RFRDetails.decisionDate)">
+				<message id="RFRInformation.DecisionDate.Validation"><![CDATA[Date of decision cannot be in the future.]]></message>
+		    </validation>
+			
+    		<validation expression="validateValueConditionalMandatory(CommunicationDetails.countryCode,CommunicationDetails.phoneNumber) and validateValueConditionalMandatory(CommunicationDetails.countryCode,CommunicationDetails.phoneAreaCode) ">
+      			<message id="RFRInformation.phoneCountryCode.Validation"><![CDATA[Country code must be selected when Area code or Phone number has been provided.]]></message>
+    		</validation>
+    		<validation expression="validateValueConditionalMandatory(RFRDetails.phoneAreaCode,RFRDetails.phoneNumber)">
+      			<message id="RFRInformation.AreadCode.Madatory.With.PhoneNumber.Validation"><![CDATA[Area code must be provided when phone number has been entered.]]></message>
+    		</validation>
+    		
+    		<validation expression="ValidatePhoneAreaCode(RFRDetails.countryCode,RFRDetails.phoneAreaCode)">
+		      	<message id="RFRInformation.AreaCode.Validation"><![CDATA[Area code must be numeric and 3 digits for all countries which have a country phone code of + 1.]]></message>
+		    </validation>
+    		<validation expression="validateValueConditionalMandatory(RFRDetails.phoneAreaCode,RFRDetails.phoneType)">
+      			<message id="RFRInformation.AreaCode.Mandatory.With.PhoneType.Validation"><![CDATA[Area code must be provided when Type of phone number is selected.]]></message>
+    		</validation>
+    		<validation expression="not(isNotNull(RFRDetails.phoneAreaCode)) or validateOnlyNumeric(RFRDetails.phoneAreaCode)">
+	      		<message id="RFRInformation.AreadCode.Numeric.Validation"><![CDATA[Area code must be numeric.]]></message>
+	    	</validation>
+			 <validation expression="validateValueConditionalMandatory(RFRDetails.phoneNumber,RFRDetails.phoneAreaCode)">
+      			<message id="RFRInformation.PhoneNumber.Manatory.With.AreaCode.Validation"><![CDATA[Phone number must be provided when Area code has been entered.]]></message>
+    		</validation>
+    		<validation expression="validateValueConditionalMandatory(RFRDetails.phoneNumber,RFRDetails.phoneType)">
+				<message id="RFRInformation.PhoneNumber.With.PhoneType.Validation"><![CDATA[Phone number must be provided when Type of phone number is selected.]]></message>
+	    	</validation>
+	    	
+	    	<validation expression="not(isNotNull(RFRDetails.phoneNumber) and RFRDetails.phoneNumber!=&quot;&quot;) or validateOnlyNumeric(RFRDetails.phoneNumber)">
+	      		<message id="RFRInformation.PhoneNumber.Numeric.Validation"><![CDATA[Phone number must be numeric.]]></message>
+	    	</validation>
+	    	
+			<validation expression="ValidatePhoneNumber(RFRDetails.countryCode,RFRDetails.phoneNumber)">
+      			<message id="RFRInformation.PhoneNumber.Validation"><![CDATA[Phone Number must be numeric and 7 digits for all countries which have a country phone code of + 1.]]></message>
+    		</validation>
+			
+	    	<validation expression="not(isNotNull(RFRDetails.phoneExt)) or validateOnlyNumeric(RFRDetails.phoneExt)">
+      			<message id="RFRInformation.ExtensionNumber.Validation"><![CDATA[Please enter only numeric values for the extension number.]]></message>
+    		</validation>
+    		
+    		<!-- Personal mobile phone number or Business mobile phone number cannot have extension -->
+	    	<validation expression="ValidatePhoneNumberExtAndType(RFRDetails.phoneExt,RFRDetails.phoneType)">
+					<message id="RFRInformation.phoneExtMobile.Validation"><![CDATA[Personal mobile phone number or Business mobile phone number cannot have an extension.]]></message>
+			</validation>
+			<cluster>
+				<title id="RFRInformation.RequestDetails.Title"><![CDATA[Request Details]]></title>
+                <list-question entity="BenefitDetails"
+                    id="benefitSelected" mandatory="true" show-field-help="true"
+                    single-select="false" criteria="name!=&quot;&quot;">
+                    <label id="RFRInformation.BenefitSelect.Title"><![CDATA[Benefit]]></label>
+                    <hint-text id="RFRInformation.BenefitSelection.Text"><![CDATA[Select at least one]]></hint-text>
+                    <item-label><label-element attribute-id="name"/></item-label>
+                    <help-text id="RFRInformation.BenefitSelect.HText"><![CDATA[Please ignore the reference numbers written alongside the benefit names. These are for reference of the ESDC officer.]]></help-text>
+                </list-question>
+              </cluster>
+              <cluster entity="RFRDetails">
+				<question id="decisionDate" mandatory="true"  show-field-help="true">
+					<label id="RFRInformation.DateDecisionCommunicated.Title"><![CDATA[Date of Decision]]></label>
+					<hint-text id="RFRInformation.Date.DecisionCommunicated"><![CDATA[Please provide the date when you became aware of the decision]]></hint-text>
+					<help-text id="RFRInformation.DateDecisionCommunicated.Help"><![CDATA[For the decision you disagree with, enter the date the decision letter was received or the date you became aware of the decision."]]></help-text>
+					<layout>
+						<type>date-picker</type>
+						<class-names>wds-js-input-mask-yyyy-mm-dd</class-names>
+					</layout>
+				</question>
+				<question id="reconsiderationReason" mandatory="true">
+					<label id="RFRInformation.ReconsiderationReason.Title"><![CDATA[Reason for Request for Reconsideration]]></label>
+					<hint-text id="RFRInformation.ReconsiderationReason"><![CDATA[Please explain the reason(s) you disagree with the decision and any relevant information that was not previously provided.]]></hint-text>
+					<layout><num-cols>1</num-cols><num-rows>5</num-rows></layout>
+				</question>
+			</cluster>
+			<condition expression="(ApplicationDetails.referenceDateForLastRequest &gt; RFRDetails.decisionDate)">
+				<cluster entity="RFRDetails">
+				<question id="lateReconsiderationReason"  mandatory="true"  show-field-help="true">
+					<label id="RFRInformation.LateRequest.ReconsiderationReason.Title"><![CDATA[Late Request for Reconsideration]]></label>
+					<hint-text id="RFRInformation.LateRequest.ReconsiderationReason"><![CDATA[Please explain why you are late in applying for a reconsideration and the steps you took that show you were always planning to request a reconsideration.]]></hint-text>
+					<help-text id="RFRInformation.LateRequest.ReconsiderationReason.Help"><![CDATA[If this Request for Reconsideration is being filed more than 30 days after the decision was communicated to you, you must explain why you require the time period to be extended."]]></help-text>
+					<layout><num-cols>1</num-cols><num-rows>5</num-rows></layout>
+				</question>
+			</cluster>
+			</condition>
+			<cluster entity="RFRDetails">
+				<title id="RFRInformation.ContactNumber.Title"><![CDATA[Phone Number]]></title>
+				<display-text id="RFRInformation.ContactNumber.Text"><![CDATA[Provide the telephone number where you can be contacted in the next 2 weeks]]></display-text>
+				<question id="countryCode" default-value-expression="&quot;BDMPC80035&quot;" mandatory="true" >
+					<label id="RFRInformation.ContactNumber.PTelephoneCCode"><![CDATA[Country code]]></label>
+				</question>
+				<layout><type>flow</type><num-cols>3</num-cols></layout>
+				<container>
+					<question id="phoneAreaCode" mandatory="true"  >
+						<label id="RFRInformation.ContactNumber.PAreaCode"><![CDATA[Area Code (555)]]></label>
+						<layout><width>40</width></layout>
+					</question>
+					<question id="phoneNumber" mandatory="true"  >
+						<label id="RFRInformation.ContactNumber.PTelephoneNumber">
+						<![CDATA[Phone number (5551212)]]>
+						</label>
+						<layout><width>60</width></layout>
+					</question>
+					<question id="phoneExt">
+						<label id="RFRInformation.ContactNumber.PTelephoneExt"><![CDATA[Extension]]></label>
+						<layout><width>40</width></layout>
+					</question>
+				</container>
+				<layout><type>flow</type><num-cols>1</num-cols></layout>
+				<question id="phoneType" mandatory="true"  >
+					<label id="RFRInformation.ContactNumber.PTelephoneType"><![CDATA[Type of phone number.]]></label>
+				</question>
+			</cluster>
+		</question-page>
+		<callout expression="setContactNumberForRFR()" id="RFRInformation.setContactNumberForRFR" />
+		<callout expression="setLateRequestIndForRFR()" id="RFRInformation.setLateRequestIndrForRFR" />
+		<summary-page id="SummaryPage" 
+			entity="Application" 
+			show-back-button="true"
+			show-exit-button="true"
+			show-next-button="true" 
+			show-save-exit-button="true">
+			<title id="SummaryPage.Title"><![CDATA[Summary]]></title>
+			<cluster entity="Person" grouping-id="PersonDetailsCluster">
+				<title id="SummaryPage.PersonalInformation.Title"><![CDATA[Your Details]]></title>
+				<description id="PersonalInformation.ApplicantDetails"><![CDATA[Please review your information below:]]></description>
+				<edit-link start-page="PersonalInformation" />	
+				<question id="firstName">
+					<label id="PersonalInformation.FName"><![CDATA[First Name]]></label>
+				</question>
+				<question id="lastName">
+					<label id="PersonalInformation.FamName"><![CDATA[Last Name]]></label>
+				</question>
+			</cluster>
+			<cluster entity="Person" grouping-id="PersonDetailsCluster">
+				<question id="mailingAddress" >
+					<label id="AddressInformation.MailAddr"><![CDATA[Mailing Address]]></label>
+				</question>
+				<question id="preferredPhoneNumber" >
+					<label id="PersonalInformation.PTelephoneNumber"><![CDATA[Preferred Phone Number]]></label>
+				</question>
+				<question id="preferredEmail" >
+					<label id="PersonalInformation.PEmail"><![CDATA[Preferred Email Address]]></label>
+				</question>
+			</cluster>
+			<cluster entity="Person" grouping-id="PersonDetailsCluster">
+				<question id="languageCommunication">
+					<label id="PersonalInformation.LanguageCommunicationQuestion"><![CDATA[Language of Communication]]></label>
+					<hint-text id="PersonalInformation.LanguageCommunicationQuestion.Desc"><![CDATA[Which official language do you require us to use to communicate with you?]]></hint-text>
+				</question>
+			</cluster>
+			<cluster entity="Person" grouping-id="PersonDetailsCluster">
+				<question id="confirmInformation" mandatory="true">
+					<label id="PersonalInformation.ConfirmInformation.Title"><![CDATA[Confirmation]]></label>
+					<hint-text id="PersonalInformation.ConfirmInformation"><![CDATA[Please confirm and proceed by clicking Next if the above information is correct. If not, please click on Delete & exit and return to the client account to update.]]></hint-text>
+				</question>
+			</cluster> 
+			<cluster entity="ApplicationDetails" grouping-id="RFRDetailsCluster">
+				<title id="SummaryPage.RFR.Title"><![CDATA[Request for Reconsideration]]></title>
+				<edit-link start-page="RFRInformation" />	
+				<list-question entity="BenefitDetails"
+                    id="benefitSelected" criteria="name!=&quot;&quot;">
+                    <label id="RFRInformation.BenefitSelect.Title"><![CDATA[>Benefit]]></label>
+                    <hint-text id="RFRInformation.BenefitSelection.Text"><![CDATA[Select at least one]]></hint-text>
+                    <item-label><label-element attribute-id="name"/></item-label>
+                </list-question>
+            </cluster>
+			<cluster entity="RFRDetails" grouping-id="RFRDetailsCluster">
+				<question id="decisionDate" >
+					<label id="RFRInformation.DateDecisionCommunicated.Title"><![CDATA[Date of Decision]]></label>
+					<hint-text id="RFRInformation.DateDecisionCommunicated"><![CDATA[Date on which the decision was communication to you (yyyy/mm/dd)]]></hint-text>
+				</question>
+			</cluster>
+			<cluster entity="RFRDetails" grouping-id="RFRDetailsCluster">
+				<question id="reconsiderationReason" >
+					<label id="RFRInformation.ReconsiderationReason.Title"><![CDATA[Reason for Request for Reconsideration]]></label>
+					<hint-text id="RFRInformation.ReconsiderationReason"><![CDATA[Please explain the reason(s) you disagree with the decision and any relevant information that was not previously provided.]]></hint-text>
+				</question>
+			</cluster>
+			<condition expression="ApplicationDetails.lateRequestInd ">
+			<cluster entity="RFRDetails" grouping-id="RFRDetailsCluster">
+				<question id="lateReconsiderationReason">
+					<label id="RFRInformation.LateRequest.ReconsiderationReason.Title"><![CDATA[Late Request for Reconsideration]]></label>	
+					<hint-text id="RFRInformation.LateRequest.ReconsiderationReason"><![CDATA[Please explain why you are late in applying for a reconsideration and the steps you took that show you were always planning to request a reconsideration.]]></hint-text>
+				</question>
+			</cluster>
+			</condition>
+			<cluster entity="RFRDetails" grouping-id="RFRDetailsCluster">
+				<question id="fullPhoneNumber">
+					<label id="RFRInformation.ContactNumber.Title"><![CDATA[Contact Number]]></label>
+					<hint-text id="RFRInformation.ContactNumber"><![CDATA[Provide the telephone number where you can be contacted in the next 2 weeks]]></hint-text>
+				</question>
+			</cluster>
+		</summary-page>
+	</section>
+	<callout expression="setLateRequestIndForRFR()" id="RFRInformation.setLateRequestIndrForRFR" />
+	<section>
+		<title id="Attestation.RFR.Title"><![CDATA[Attestation]]></title>
+		<question-page 
+			id="Attestation" 
+			entity="RFRDetails"
+			progress="100" 
+			show-back-button="true"
+			show-exit-button="true"
+		    show-next-button="true" 
+		    show-save-exit-button="false">
+		    <description id="MandatoryFieldsDescription"><![CDATA[All fields are mandatory unless specified as optional.]]></description>
+			<next-button-label id="RFRInformation.NextButton.Label"><![CDATA[Submit]]></next-button-label> 
+			<validation expression="RFRDetails.acceptAttestation==&quot;YN1&quot;">
+				<message id="Attestation.Confirmation.Validation"><![CDATA[You must select 'Yes' and accept the attestation to submit the benefit application.]]></message>
+			</validation>
+			<validation expression="evaluateLateReconsiderationOnSubmit()">
+				<message id="Attestation.LateRequest.Validation"><![CDATA[Late Request for Reconsideration must be completed before submitting the form.]]></message>
+			</validation>
+			<cluster>
+				<title id="RFRInformation.Attestation.Title"><![CDATA[Attestation]]></title>
+				<question id="acceptAttestation" mandatory="true">
+					<label id="RFRInformation.Attestation.Text"><![CDATA[I hereby give notice that I disagree with a decision regarding my claim for benefits and wish to exercise my right to request a reconsideration of this decision. I declare that the information on this form is true and accurate and that I have disclosed all information and attached all relevant documents.]]></label>
+					<layout><type>radio</type></layout>
+				</question>
+			</cluster>
+		</question-page>
+	</section>
+</ieg-script>

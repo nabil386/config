@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2004-2005, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<PAGE
+  PAGE_ID="Appeal_modifyDecisionAttachment"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  
+  <SERVER_INTERFACE
+    CLASS="DecisionAttachment"
+    NAME="DISPLAY"
+    OPERATION="readForModifyExternal"
+    PHASE="DISPLAY"
+  />
+  
+  <SERVER_INTERFACE
+    CLASS="DecisionAttachment"
+    NAME="ACTION"
+    OPERATION="modifyExternal"
+    PHASE="ACTION"
+  />
+  
+  <PAGE_PARAMETER NAME="attachmentLinkID"/>
+  <PAGE_PARAMETER NAME="description"/>
+  
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="attachmentLinkID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="attachmentLinkID"
+    />
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="attachmentLinkID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="attachmentLinkID"
+    />
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="attachmentVersionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="attachmentVersionNo"
+    />
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="hearingDecisionVersionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="hearingDecisionVersionNo"
+    />
+  </CONNECT>
+  
+  
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+    </ACTION_CONTROL>
+    
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    LABEL_WIDTH="37"
+  >
+    <WIDGET TYPE="FILE_DOWNLOAD" LABEL="Cluster.Title.Attachment">
+      <WIDGET_PARAMETER NAME="LINK_TEXT">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="attachmentName"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+      <WIDGET_PARAMETER NAME="PARAMS">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="attachmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="attachmentID"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+    </WIDGET>
+
+    <WIDGET TYPE="FILE_UPLOAD" LABEL="Field.Label.NewAttachment">
+      <WIDGET_PARAMETER NAME="CONTENT">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="attachmentContents"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+      <WIDGET_PARAMETER NAME="FILE_NAME">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="attachmentName"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+    </WIDGET>
+  </CLUSTER>
+
+  <CLUSTER
+    NUM_COLS="2"
+    LABEL_WIDTH="37"
+  >
+    <FIELD LABEL="Field.Label.Location">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="documentLocation"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fileLocation"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.Reference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="documentReference"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fileReference"
+        />
+      </CONNECT>
+    </FIELD>
+    
+  </CLUSTER>
+  
+
+</PAGE>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<xs:schema targetNamespace="http://www.curamsoftware.com/WorkspaceServices/UpdateApplication"
+    xmlns:tns="http://www.curamsoftware.com/WorkspaceServices/UpdateApplication"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <!-- argument for updateIntakeProgramApplication -->
+    <xs:element name="intakeProgramApplicationUpdate">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- Reference for the IntakeApplication -->
+                <xs:element ref="tns:applicationReference" maxOccurs="1" minOccurs="1"/>
+                <!-- Reference for the Program applied for -->
+                <xs:element ref="tns:applicationProgramReference" maxOccurs="1" minOccurs="1"/>
+                <xs:element maxOccurs="1" minOccurs="1" name="programApplicationStatus"
+                    type="tns:programApplicationStatusType"/>
+                <xs:element maxOccurs="1" minOccurs="1" name="programApplicationDisposedDateTime"
+                    type="xs:string"/>
+                <xs:element maxOccurs="1" minOccurs="0" name="programApplicationDenialReason"
+                    type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="applicationReference" type="xs:string"/>    
+    
+    <xs:element name="applicationProgramReference" type="xs:string"/>
+
+<!-- These relate to values taken from the ProgramApplicationStatus codetable -->
+    <xs:simpleType name="programApplicationStatusType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="IPAS1002"/>
+            <xs:enumeration value="IPAS1003"/>
+            <xs:enumeration value="IPAS1004"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    
+    <xs:simpleType name="withdrawalRequestStatusType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="WREQ1002"/>
+            <xs:enumeration value="WREQ1003"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <!-- arg for updateWithdrawalRequest -->
+    <xs:element name="withdrawalRequestUpdate">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="1" minOccurs="1" name="curamReferenceID" type="xs:long"/>
+                <xs:element maxOccurs="1" minOccurs="1" name="withdrawalRequestStatus"
+                    type="tns:withdrawalRequestStatusType"/>
+                <xs:element maxOccurs="1" minOccurs="1" name="resolvedDateTime"
+                type="xs:string"/>
+                <xs:element maxOccurs="1" minOccurs="0" name="withdrawalRequestDenialReason"
+                    type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

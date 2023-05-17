@@ -1,0 +1,222 @@
+<EvidenceTypeVersion businessStartDate="receiptDate"
+	businessEndDate="withdrawalDate" correctionOnly="true"
+	modifiable="true" relatedParticipant="caseParticipantRole"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../../../../../../../DynamicEvidenceMetadata.xsd">
+	<Model>
+		<Attributes>
+			<Attribute>
+				<RelatedCPAttribute cpRoleType="MEM"
+					name="caseParticipantRole" participantType="Person">
+					<CPSearchType code="PRI" />
+				</RelatedCPAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="benefitType">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMOASBenefitType" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true"
+					name="applicationStatus">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMOASApplicationStatus" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="receiptDate">
+					<DomainType dataType="Date">
+						<DateOptions currentDate="LessThanOrEqualTo" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true"
+					name="methodOfApplication">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMOASMethodOfApplication" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="requestedPensionStartDate">
+					<DomainType dataType="Date" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="withdrawalDate">
+					<DomainType dataType="Date">
+						<DateOptions currentDate="LessThanOrEqualTo" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<CommentsAttribute name="comments" />
+			</Attribute>
+		</Attributes>
+		<Relationships />
+	</Model>
+	<Validations>
+		<PatternValidations>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustNotEnter" source="benefitType"
+					sourceLiteral="Guaranteed Income Supplement"
+					target="applicationStatus" targetLiteral="Withdrawn"
+					unidirectional="true" useSourceLiteral="true"
+					useTargetLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_WITHDRAWAL_FORBIDDEN_GIS" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustNotEnter" source="benefitType"
+					sourceLiteral="Allowance or Allowance for the Survivor"
+					target="applicationStatus" targetLiteral="Withdrawn"
+					unidirectional="true" useSourceLiteral="true"
+					useTargetLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_WITHDRAWAL_FORBIDDEN_ALW" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="withdrawalDate"
+					target="applicationStatus" targetLiteral="Withdrawn"
+					unidirectional="false" useSourceLiteral="false"
+					useTargetLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_WITHDRAWAL_DATE_REQUIRED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustNotEnter" source="benefitType"
+					sourceLiteral="Guaranteed Income Supplement"
+					target="requestedPensionStartDate" unidirectional="true"
+					useSourceLiteral="true" useTargetLiteral="false">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_REQUESTED_PENSION_START_DATE_GIS" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustNotEnter" source="benefitType"
+					sourceLiteral="Allowance or Allowance for the Survivor"
+					target="requestedPensionStartDate" unidirectional="true"
+					useSourceLiteral="true" useTargetLiteral="false">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_REQUESTED_PENSION_START_DATE_ALW" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+		</PatternValidations>
+		<CustomRulesValidation
+			ruleSetName="BDMOASApplicationDetailsValidationRuleSet" />
+	</Validations>
+	<SummaryInformation>
+		<SummaryRuleset
+			ruleSetName="BDMOASApplicationDetailsSummaryRuleSet" />
+	</SummaryInformation>
+	<UserInterface>
+		<Cluster>
+			<RelCPCluster defaultToBlank="false"
+				enableMultiMemberUpdates="false" fullCreateParticipant="false"
+				isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true"
+				modifyOption="no" showParticipantTypeFilter="true"
+				useSingleName="false">
+				<StandardField source="caseParticipantRole" />
+				<ClusterName id="Participant.Cluster.Label" />
+				<LabelName id="Participant.Field.Label" />
+				<FirstName id="First.Name.Label.ID5" />
+				<SecondName id="Second.Name.Label.ID5" />
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true" labelWidth="40"
+				numberOfColumns="2">
+				<Title id="ApplicationDetails.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField modifiable="false"
+						source="benefitType" useBlank="true" useDefault="false">
+						<Label id="BenefitType.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="applicationStatus" useBlank="true" useDefault="false">
+						<Label id="ApplicationStatus.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="receiptDate"
+						useDefault="false">
+						<Label id="ReceiptDate.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="false"
+						source="methodOfApplication" useBlank="true" useDefault="false">
+						<Label id="MethodOfApplication.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="requestedPensionStartDate" useDefault="false">
+						<Label id="RequestedPensionStartDate.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="withdrawalDate" useDefault="false">
+						<Label id="WithdrawalDate.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<CommentsCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true">
+				<Title id="Comments.Cluster.Title" />
+				<StandardField source="comments" />
+			</CommentsCluster>
+		</Cluster>
+	</UserInterface>
+</EvidenceTypeVersion>

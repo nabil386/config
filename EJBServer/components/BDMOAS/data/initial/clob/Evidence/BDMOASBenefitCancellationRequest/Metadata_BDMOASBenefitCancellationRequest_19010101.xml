@@ -1,0 +1,233 @@
+<EvidenceTypeVersion correctionOnly="true"
+	modifiable="true" relatedParticipant="caseParticipantRole"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../../../../../../../DynamicEvidenceMetadata.xsd">
+	<Model>
+		<Attributes>
+			<Attribute>
+				<RelatedCPAttribute cpRoleType="MEM"
+					name="caseParticipantRole" participantType="Person">
+					<CPSearchType code="PRI" />
+				</RelatedCPAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="requestDate">
+					<DomainType dataType="Date">
+						<DateOptions currentDate="LessThanOrEqualTo" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true"
+					name="cancellationStatus">
+					<DomainType dataType="Codetable">
+						<CodetableOptions
+							codetableName="BDMOASCancellationStatus" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="grantDate">
+					<DomainType dataType="Date">
+						<DateOptions currentDate="LessThanOrEqualTo" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="repaymentDueDateOverride">
+					<DomainType dataType="Date" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<CommentsAttribute name="comments" />
+			</Attribute>
+		</Attributes>
+		<Relationships>
+			<Relationship>
+				<MandatoryParent evidenceTypeCode="OASDET0006"
+					name="applicationDetails" />
+			</Relationship>
+		</Relationships>
+	</Model>
+	<Validations>
+		<PatternValidations>
+			<Validator>
+				<ComparisonValidator
+					operator="GreaterThanOrEqualTo" shallow="false" source="grantDate"
+					target="requestDate" useClause="false" useLiteral="false">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_GRANT_DATE_AFTER_REQUEST_DATE" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</ComparisonValidator>
+			</Validator>
+			<Validator>
+				<ComparisonValidator operator="GreaterThan"
+					shallow="false" source="repaymentDueDateOverride"
+					target="grantDate" useClause="false" useLiteral="false">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_REPAYMENT_DATE_AFTER_GRANT_DATE" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</ComparisonValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustNotEnter" source="cancellationStatus"
+					sourceLiteral="Requested" target="grantDate" unidirectional="true"
+					useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_GRANT_DATE_FORBIDDEN_REQUESTED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustNotEnter" source="cancellationStatus"
+					sourceLiteral="Denied" target="grantDate" unidirectional="true"
+					useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_GRANT_DATE_FORBIDDEN_DENIED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustNotEnter" source="cancellationStatus"
+					sourceLiteral="Rescinded" target="grantDate" unidirectional="true"
+					useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_GRANT_DATE_FORBIDDEN_RESCINDED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="cancellationStatus"
+					sourceLiteral="Granted" target="grantDate" unidirectional="true"
+					useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_GRANT_DATE_REQUIRED_GRANTED" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="cancellationStatus"
+					sourceLiteral="Repaid" target="grantDate" unidirectional="true"
+					useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_GRANT_DATE_REQUIRED_REPAID" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+			<Validator>
+				<DependentAttributeValidator
+					dependency="MustEnter" source="cancellationStatus"
+					sourceLiteral="Delinquent" target="grantDate" unidirectional="true"
+					useSourceLiteral="true">
+					<ValidationMessageInformation>
+						<ValidationMessageMapping>
+							<ValidationMessage>
+								<ValidationMessageResource
+									id="ERR_GRANT_DATE_REQUIRED_DELINQUENT" />
+							</ValidationMessage>
+						</ValidationMessageMapping>
+					</ValidationMessageInformation>
+				</DependentAttributeValidator>
+			</Validator>
+		</PatternValidations>
+		<CustomRulesValidation
+			ruleSetName="BDMOASBenefitCancellationRequestValidationRuleSet" />
+	</Validations>
+	<SummaryInformation>
+		<SummaryRuleset
+			ruleSetName="BDMOASBenefitCancellationRequestSummaryRuleSet" />
+	</SummaryInformation>
+	<UserInterface>
+		<Cluster>
+			<RelCPCluster defaultToBlank="false"
+				enableMultiMemberUpdates="false" fullCreateParticipant="false"
+				isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true"
+				modifyOption="no" showParticipantTypeFilter="true"
+				useSingleName="false">
+				<StandardField source="caseParticipantRole" />
+				<ClusterName id="Participant.Cluster.Title" />
+				<LabelName id="Participant.Field.Label" />
+				<FirstName id="First.Name.Label.ID3" />
+				<SecondName id="Second.Name.Label.ID3" />
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true" labelWidth="40"
+				numberOfColumns="2">
+				<Title id="CancellationDetails.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField modifiable="true" source="requestDate"
+						useDefault="false">
+						<Label id="RequestDate.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="cancellationStatus" useDefault="false" useBlank="true">
+						<Label id="CancellationStatus.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="grantDate"
+						useDefault="false">
+						<Label id="GrantDate.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true"
+						source="repaymentDueDateOverride" useDefault="false">
+						<Label id="RepaymentDueDateOverride.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<CommentsCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true">
+				<Title id="Comments.Cluster.Title" />
+				<StandardField source="comments" />
+			</CommentsCluster>
+		</Cluster>
+	</UserInterface>
+</EvidenceTypeVersion>

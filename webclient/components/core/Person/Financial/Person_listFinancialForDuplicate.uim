@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- List all the financials for a duplicate person.                        -->
+<?curam-deprecated Since Curam 6.0, replaced by Person_listFinancialForDuplicate1.uim?>
+<PAGE
+  PAGE_ID="Person_listFinancialForDuplicate"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Participant"
+    NAME="DISPLAY"
+    OPERATION="listParticipantFinancialForDuplicate"
+  />
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <!-- Map concernRoleID parameter to display-phase bean -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00223618, MC -->
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MenuTransactions"
+      STYLE="in-page-current-link"
+    >
+
+
+      <LINK
+        PAGE_ID="Person_listFinancialForDuplicate"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MenuPaymentIssued"
+      STYLE="in-page-link"
+    >
+
+
+      <LINK
+        PAGE_ID="Person_listFinancialInstrumentForDuplicate"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <!-- END, CR00223618 -->
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="tab-renderer"
+  >
+
+
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="data"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <LIST>
+
+
+      <DETAILS_ROW>
+
+
+        <INLINE_PAGE PAGE_ID="Financial_resolveInstructionView">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="finInstructionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="instructionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="typeCode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="instructionType"
+            />
+          </CONNECT>
+        </INLINE_PAGE>
+
+
+      </DETAILS_ROW>
+
+
+      <FIELD
+        LABEL="Field.Label.Type"
+        WIDTH="25"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="typeCode"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.Status"
+        WIDTH="15"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="statusCode"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.CreationDate"
+        WIDTH="15"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="postingDate"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.EffectiveDate"
+        WIDTH="15"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="effectiveDate"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.Currency"
+        WIDTH="15"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="currencyType"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        ALIGNMENT="RIGHT"
+        LABEL="Field.Label.Amount"
+        WIDTH="15"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="amount"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </LIST>
+
+
+  </CLUSTER>
+
+
+</PAGE>

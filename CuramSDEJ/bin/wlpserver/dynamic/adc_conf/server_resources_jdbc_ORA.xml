@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2020,2021. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+
+<server description="Server JDBC Resource Configuration">
+
+  <!-- ========================== Libraries ========================== -->
+  <library id="OracleLib">
+    <fileset dir="${shared.resource.dir}/drivers"
+      includes="ojdbc8.jar" />
+  </library>
+
+  <!-- ========================== Drivers ========================== -->
+  <jdbcDriver id="CuramJdbcDriverORA" libraryRef="OracleLib" />
+
+  <!-- ========================== Data Sources ========================== -->
+  <dataSource id="curamdb" jndiName="jdbc/curamdb"
+    isolationLevel="TRANSACTION_READ_COMMITTED"
+    jdbcDriverRef="CuramJdbcDriverORA" type="javax.sql.XADataSource"
+  >
+    <properties.oracle 
+      URL="${%curam.db.oracle.url%}" 
+      password="${%curam.db.password%}" 
+      user="${%curam.db.username%}" />
+  </dataSource>
+
+  <dataSource id="curamsib" jndiName="jdbc/curamsib"
+    isolationLevel="TRANSACTION_READ_COMMITTED"
+    jdbcDriverRef="CuramJdbcDriverORA" type="javax.sql.XADataSource"
+  >
+    <properties.oracle 
+      URL="${%curam.db.oracle.url%}" 
+      password="${%curam.db.password%}" 
+      user="${%curam.db.username%}" />
+  </dataSource>
+
+  <!-- For EJB timer support -->
+  <!-- ID of DefaultDataSource IS REQUIRED TO SUPPORT EJB TIMERS -->
+  <dataSource id="DefaultDataSource"
+    isolationLevel="TRANSACTION_READ_COMMITTED"
+    jdbcDriverRef="CuramJdbcDriverORA" jndiName="jdbc/curamtimerdb"
+    type="javax.sql.XADataSource"
+  >
+    <properties.oracle 
+      URL="${%curam.db.oracle.url%}" 
+      password="${%curam.db.password%}" 
+      user="${%curam.db.username%}" />
+  </dataSource>
+  <!-- Note: createTables is set to "false" as the EJB timer tables are created via the configure target using static SQL. -->
+  <databaseStore id="EJBTimerDatabaseStore" tablePrefix="EJBTimer_" dataSourceRef="DefaultDataSource" createTables="false" />
+  <persistentExecutor id="defaultEJBPersistentTimerExecutor" taskStoreRef="EJBTimerDatabaseStore" missedTaskThreshold="5m"/>
+
+  
+  <!-- DataSource for Liberty session persistence -->
+  <dataSource id="curamsessdb"
+    isolationLevel="TRANSACTION_READ_COMMITTED"
+    jdbcDriverRef="CuramJdbcDriverORA" jndiName="jdbc/curamsessdb"
+    type="javax.sql.XADataSource"
+  >
+    <properties.oracle 
+      URL="${%curam.db.oracle.url%}" 
+      password="${%curam.db.password%}" 
+      user="${%curam.db.username%}" />
+  </dataSource>
+  
+  <httpSessionDatabase
+    id="SessionDB" dataSourceRef="curamsessdb" tableName="WLP_SESSION"
+    skipIndexCreation="true"
+  />
+
+</server>

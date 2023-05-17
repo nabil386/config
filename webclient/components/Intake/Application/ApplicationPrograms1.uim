@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 							                                              -->
+<!-- =========== 							    -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ApplicationPrograms1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProgramApplication"
+    NAME="DISPLAY"
+    OPERATION="listProgramApplications2"
+  />
+
+
+  <PAGE_PARAMETER NAME="applicationID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="applicationID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="RIGHT">
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.AddProgramRequest"
+    >
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="addProgramDisableIndOpt"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Intake_addProgramApplication"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+
+
+    <FIELD LABEL="Field.Label.ProgramName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="programName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ProgramRequestDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="programRequestDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Disposition">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DispositionDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="disposedDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!--BEGIN,CR00264222,ZT -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.EditDetails">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="editDetailsInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Application_editProgramApplicationDetails"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="programApplicationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="programApplicationID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!--END,CR00264222,ZT -->
+
+
+      <!--BEGIN, CR00302253, JD-->
+      <SEPARATOR/>
+      <!--END, CR00302253-->
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Withdraw">
+
+
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="withdrawInd"
+          />
+        </CONDITION>
+
+
+        <!--BEGIN, CR00302253, JD-->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Intake_createProgramWithdrawalRequest1"
+        >
+          <!--END, CR00302253-->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="programApplicationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="programApplicationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="programName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="programName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="NewButton"
+        LABEL="ActionControl.Label.ConfirmRequest"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="confirmRequestInd"
+          />
+        </CONDITION>
+        <!--BEGIN, CR00307454, CC-->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Intake_confirmProgramWithdrawalRequest"
+          SAVE_LINK="false"
+        >
+          <!--END, CR00307454-->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="programApplicationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="programApplicationID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!--BEGIN,CR00278266,BF -->
+      <ACTION_CONTROL
+        IMAGE="NewButton"
+        LABEL="ActionControl.Label.ReopenRequest"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="reopenRequestInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Intake_createReopening"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="programApplicationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="programApplicationID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!--END,CR00278266 -->
+
+
+    </ACTION_SET>
+    <!--BEGIN,CR00278266,BF -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Intake_listReopenings">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="programApplicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="programApplicationID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!--END,CR00278266 -->
+
+
+  </LIST>
+
+
+</PAGE>

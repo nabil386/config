@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                           		  -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Page containing options for case audit listing of manually selected cases  -->
+<PAGE
+  PAGE_ID="CaseAudit_manualFilterListForAuditPlan"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="auditPlanID"/>
+  <PAGE_PARAMETER NAME="caseAuditReference"/>
+  <PAGE_PARAMETER NAME="focusAreasMet"/>
+  <PAGE_PARAMETER NAME="auditor"/>
+  <PAGE_PARAMETER NAME="caseAuditStatus"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="CaseAudit"
+    NAME="ACTION"
+    OPERATION="getCaseAuditFilterKey"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="CaseAudit"
+    NAME="DISPLAY"
+    OPERATION="filterCaseAuditsListForAuditPlan"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="CaseAudit"
+    NAME="AUDITORS"
+    OPERATION="listAuditPlanMembers"
+    PHASE="DISPLAY"
+  />
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="auditPlanID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$auditPlanID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseAuditReference"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseAuditReference"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="focusAreasMet"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$focusAreasMet"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="auditor"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$auditor"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseAuditStatus"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseAuditStatus"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="auditPlanID"
+    />
+    <TARGET
+      NAME="AUDITORS"
+      PROPERTY="key$auditPlanID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    BOTTOM="false"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddCases">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="result$showAddCasesLink"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="CaseAudit_selectManualSelectionMethod"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.AssignCaseAudits">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="result$showAssignLink"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="CaseAudit_assignCaseAudits"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    TITLE="Cluster.SearchDetails.Title"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.Reference"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="key$caseAuditReference"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$caseAuditReference"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.FocusAreaSatisfied"
+      USE_BLANK="TRUE"
+      USE_DEFAULT="FALSE"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="key$focusAreasMet"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$focusAreasMet"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AssignedTo"
+      USE_BLANK="TRUE"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$dtls$auditorID"
+          NAME="AUDITORS"
+          PROPERTY="result$dtls$auditorName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="key$auditor"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$auditor"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      USE_BLANK="TRUE"
+      USE_DEFAULT="FALSE"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="key$caseAuditStatus"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$caseAuditStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+
+
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+
+
+        <LINK PAGE_ID="CaseAudit_manualFilterListForAuditPlan">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="auditPlanID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="auditPlanID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$caseAuditReference"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseAuditReference"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$focusAreasMet"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="focusAreasMet"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$auditor"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="auditor"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$caseAuditStatus"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseAuditStatus"
+            />
+          </CONNECT>
+        </LINK>
+
+
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+
+
+        <LINK PAGE_ID="CaseAudit_manualFilterListForAuditPlan">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="auditPlanID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="auditPlanID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.EmptyField"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseAuditReference"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.EmptyField"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="focusAreasMet"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.EmptyField"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="auditor"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.EmptyField"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseAuditStatus"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+
+
+    <CONTAINER WIDTH="10">
+      <ACTION_CONTROL LABEL="ActionControl.Label.RemoveCaseFromAuditPlan">
+        <LINK
+          OPEN_MODAL="TRUE"
+          PAGE_ID="CaseAudit_confirmDeleteFromPlan"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$caseAuditID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseAuditID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$caseAuditReference"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseAuditReference"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="List.Title.AuditReference"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$caseAuditReference"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="CaseAudit_resolveCaseAuditHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$caseAuditID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseAuditID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="List.Title.Details"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$caseDetails"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </FIELD>
+
+
+    <FIELD
+      LABEL="List.Title.AssignedTo"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$auditorFullName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="List.Title.Status"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$caseAuditStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.SatisfyingFocusArea"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$numSatisfied"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.NotSatisfyingFocusArea"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$numNotSatisfied"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.YetToExamine"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$numNotExamined"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

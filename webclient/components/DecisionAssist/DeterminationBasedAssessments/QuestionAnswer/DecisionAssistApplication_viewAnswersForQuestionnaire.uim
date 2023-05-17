@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view questions and answers details record. -->
+<PAGE
+  PAGE_ID="DecisionAssistApplication_viewAnswersForQuestionnaire"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_PARAMETER NAME="determinationDeliveryID"/>
+  <PAGE_PARAMETER NAME="questionnaireVersionID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="VIEW_QUESTION_ANSWER"
+      PROPERTY="key$key$key$determinationDeliveryID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionnaireVersionID"
+    />
+    <TARGET
+      NAME="VIEW_QUESTION_ANSWER"
+      PROPERTY="key$key$key$questionnaireVersionID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="QuestionAnswer"
+    NAME="VIEW_QUESTION_ANSWER"
+    OPERATION="viewQuestionnaireAnswersDetails"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="DeterminationDelivery"
+    NAME="ASSESSMENTCONTEXT"
+    OPERATION="viewAssessmentContextDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="ASSESSMENTCONTEXT"
+      PROPERTY="key$dtls$dtls$determinationDeliveryID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="QuestionAnswer"
+    NAME="VIEW_CONSOLIDATED_ANSWERS"
+    OPERATION="readConsolidatedAnswers"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="VIEW_CONSOLIDATED_ANSWERS"
+      PROPERTY="key$key$key$determinationDeliveryID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionnaireVersionID"
+    />
+    <TARGET
+      NAME="VIEW_CONSOLIDATED_ANSWERS"
+      PROPERTY="key$key$key$questionnaireVersionID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00217013 -->
+    <FIELD LABEL="Field.Label.QuestionnaireName">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_CONSOLIDATED_ANSWERS"
+          PROPERTY="result$dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireType">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_CONSOLIDATED_ANSWERS"
+          PROPERTY="result$dtls$type"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireVersion">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_CONSOLIDATED_ANSWERS"
+          PROPERTY="result$dtls$versionNumber"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <INCLUDE FILE_NAME="DecisionAssistApplication_QuestionnaireMenu.vim"/>
+
+
+</PAGE>

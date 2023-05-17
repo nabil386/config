@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                                          -->
+<!-- ===========                                                                          -->
+<!-- This page allows the user to administer Dynamic Evidence Type Versions -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="DynamicEvidence_listEvidenceTypeVersions"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.EvidenceTypeVersions"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="DynamicEvidence_listEvidenceTypeVersions"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="evidenceTypeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="evidenceTypeID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="userLocale"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userLocale"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="evidenceTypeName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="evidenceTypeName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Details"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="DynamicEvidence_viewEvidenceType"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="evidenceTypeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="evidenceTypeID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="userLocale"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userLocale"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="evidenceTypeName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="evidenceTypeName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <SERVER_INTERFACE
+    CLASS="DynamicEvidenceAdmin"
+    NAME="DISPLAY"
+    OPERATION="listEvidenceTypeVersions"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="evidenceTypeID"/>
+  <PAGE_PARAMETER NAME="userLocale"/>
+  <PAGE_PARAMETER NAME="evidenceTypeName"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="evidenceTypeID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="evidenceTypeID"
+    />
+  </CONNECT>
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.ViewMetadata">
+        <LINK PAGE_ID="DynamicEvidence_viewEvidenceTypeVersion">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="evidenceTypeVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="evidenceTypeVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="userLocale"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userLocale"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="evidenceTypeName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="evidenceTypeName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="effectiveFrom"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="effectiveFrom"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.EditMetadata">
+        <LINK PAGE_ID="DynamicEvidence_modifyEvidenceTypeVersion">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="evidenceTypeVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="evidenceTypeVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="userLocale"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userLocale"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="evidenceTypeName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="evidenceTypeName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="effectiveFrom"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="effectiveFrom"
+            />
+          </CONNECT>
+        </LINK>
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="showActivateAndEditLinks"
+          />
+        </CONDITION>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.EditEffectiveFrom">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DynamicEvidence_modifyEffectiveFromDate"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="evidenceTypeVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="evidenceTypeVersionID"
+            />
+          </CONNECT>
+        </LINK>
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="showActivateAndEditLinks"
+          />
+        </CONDITION>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.NewInEditCopy">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DynamicEvidence_createInEditEvidenceTypeVersionCopy"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="evidenceTypeVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="evidenceTypeVersionID"
+            />
+          </CONNECT>
+        </LINK>
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="showNewInEditCopyLink"
+          />
+        </CONDITION>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Activate">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DynamicEvidence_activateEvidenceTypeVersion"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="evidenceTypeVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="evidenceTypeVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="showActivateAndEditLinks"
+          />
+        </CONDITION>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Cancel">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DynamicEvidence_cancelEvidenceTypeVersion"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="evidenceTypeVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="evidenceTypeVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="showDeleteLink"
+          />
+        </CONDITION>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <CONTAINER WIDTH="3%">
+      <ACTION_CONTROL IMAGE="ExclamationIcon">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="activationFailedInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DynamicEvidence_activationFailureReport"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="evidenceTypeVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="evidenceTypeVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL IMAGE="ExclamationIcon">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="cancellationFailedInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DynamicEvidence_cancellationFailureReport"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="evidenceTypeVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="evidenceTypeVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.effectiveFromDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="effectiveFrom"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

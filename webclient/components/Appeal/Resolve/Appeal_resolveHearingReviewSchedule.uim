@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2003-2005, 2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view an activity.                         -->
+<PAGE
+  PAGE_ID="Appeal_resolveHearingReviewSchedule"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <JSP_SCRIPTLET>
+    
+    
+       curam.omega3.request.RequestHandler 
+         rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+ 
+       String context = request.getContextPath() + "/";
+       context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/"; 
+        
+       String returnPage = request.getParameter("__o3rpu");
+       String forwardPage = null;
+       
+       if (returnPage.indexOf("reschedule") != -1) {
+         if (returnPage.indexOf("IC") != -1) {
+           forwardPage = "Appeal_confirmRescheduleHearingReviewHearingForICPage.do";              
+         } else {
+           forwardPage = "Appeal_confirmRescheduleHearingReviewHearingPage.do";             
+         }              
+       } else {
+         if (returnPage.indexOf("HearingReviewForIC") != -1) {
+           forwardPage = "Appeal_confirmHearing_HearingReviewForICPage.do";
+         }else if (returnPage.indexOf("IC") != -1) {
+           forwardPage = "Appeal_confirmHearingReviewHearingForICPage.do";              
+         } else {
+           forwardPage = "Appeal_confirmHearingReviewHearingPage.do";             
+         }
+       }
+       
+       // BEGIN, CR00247643, GBA          
+       String url = context + forwardPage 
+       + "?date=" + curam.omega3.request.RequestUtils.escapeURL(request.getParameter("date"))       
+       + "&amp;userNameListString=" + curam.omega3.request.RequestUtils.escapeURL(request.getParameter("selectedUsers"))
+       + "&amp;contextDescription=" + curam.omega3.request.RequestUtils.escapeURL(request.getParameter("pageDescription"))
+       + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(request.getParameter("caseID"))
+       + "&amp;" + rh.getSystemParameters();               
+       // END, CR00247643
+           
+       
+       response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+</PAGE>

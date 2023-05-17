@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2012, 2014. All Rights Reserved.
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2012, 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to create a Verification Requirement record. -->
+<PAGE
+  PAGE_ID="VerificationApplication_createParticipantVerificationItemProvision"
+  WINDOW_OPTIONS="width=700"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="VerificationApplication"
+    NAME="LIST_NAME"
+    OPERATION="readAllUserProvidedVerificationItems"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="VerificationApplication"
+    NAME="DISPLAY"
+    OPERATION="readPageContextDescriptionForCreateItemProvided"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="VerificationApplication"
+    NAME="ACTION"
+    OPERATION="newUserProvidedVerificationItem"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="VDIEDLinkID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+  <!-- BEGIN, CR00400972, RPB -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="message"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!--END, CR00400972 -->
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="VDIEDLinkID"
+    />
+    <TARGET
+      NAME="LIST_NAME"
+      PROPERTY="VDIEDLinkID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="VDIEDLinkID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="VDIEDLinkID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="LIST_NAME"
+      PROPERTY="VDIEDLinkID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="VDIEDLinkID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="20.5">
+    <FIELD
+      LABEL="Field.Label.Item"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="verificationItemUtilizationID"
+          NAME="LIST_NAME"
+          PROPERTY="description"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="verificationItemUtilizationID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.DateReceived"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dateReceived"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="38.5"
+    TITLE="Cluster.Title.ProvidedBy"
+  >
+
+
+    <CLUSTER
+      DESCRIPTION="Field.Label.Description1"
+      LABEL_WIDTH="20.5"
+      STYLE="cluster-cpr-no-border"
+    >
+
+
+      <CONTAINER LABEL="Field.Label.Participant">
+        <FIELD WIDTH="25">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="participantType"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD WIDTH="55">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="participantConcernRoleID"
+            />
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <CLUSTER
+      DESCRIPTION="Field.Label.Description2"
+      LABEL_WIDTH="41"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD LABEL="Field.Label.Name">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="providerName"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <CLUSTER
+    DESCRIPTION="Field.Label.Description3"
+    LABEL_WIDTH="38.5"
+    TITLE="Cluster.Title.Attachment"
+  >
+
+
+    <CLUSTER
+      LABEL_WIDTH="20.5"
+      STYLE="cluster-cpr-no-border"
+    >
+      <WIDGET
+        LABEL="Field.Label.File"
+        TYPE="FILE_UPLOAD"
+      >
+        <WIDGET_PARAMETER NAME="CONTENT">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="attachmentContents"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="FILE_NAME">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="attachmentName"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CLUSTER>
+
+
+    <CLUSTER
+      LABEL_WIDTH="41"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD LABEL="Field.Label.FileLocation">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="fileLocation"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Description">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="createLinkDtls$description"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.FileReference">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="fileReference"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.DocumentType">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="documentType"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00408407, VT -->
+    <FIELD HEIGHT="4" LABEL="Field.Label.Comments">
+      <!-- END, CR00408407 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="newUserProvidedVerificationInfo$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

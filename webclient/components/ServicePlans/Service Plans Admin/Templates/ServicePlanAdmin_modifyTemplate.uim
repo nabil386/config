@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012, 2015. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2004 - 2006, 2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify service plan template.             -->
+<PAGE
+  PAGE_ID="ServicePlanAdmin_modifyTemplate"
+  WINDOW_OPTIONS="width=550"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServicePlan"
+    NAME="DISPLAY"
+    OPERATION="readTemplateForModify"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ServicePlan"
+    NAME="ACTION"
+    OPERATION="modifyTemplate"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ServicePlanAdmin_templateHome">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="planTemplateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="planTemplateID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+      <LINK PAGE_ID="ServicePlanAdmin_templateHome">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="planTemplateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="planTemplateID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="planTemplateID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="planTemplateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$key$planTemplateKey$planTemplateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="planTemplateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$details$dtls$planTemplateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="planTemplateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$key$planTemplateKey$planTemplateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="dateCreated"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="dateCreated"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="recordStatus"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="recordStatus"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="daysToExpiry"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="daysToExpiry"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00226647, GP -->
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="nameTextID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="nameTextID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="descriptionTextID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="descriptionTextID"
+    />
+  </CONNECT>
+  <!-- END, CR00226647 -->
+
+
+  <CLUSTER LABEL_WIDTH="25">
+
+
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="79"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$dtls$name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Goal"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$goalList$goalNameAndIDDetailsList$dtls$goalID"
+          NAME="DISPLAY"
+          PROPERTY="result$goalList$goalNameAndIDDetailsList$dtls$name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="goalID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Description"
+  >
+
+
+    <!-- BEGIN, CR00463142, EC -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Cluster.Title.Description"
+    >
+      <!-- END, CR00463142 -->
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="description"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

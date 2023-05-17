@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Allows the user to invite an attendee                                  -->
+<!-- coming from the view page.                                             -->
+<!--BEGIN, CR00275297, JD -->
+<PAGE
+  PAGE_ID="Intake_inviteAttendee"
+  WINDOW_OPTIONS="width=780"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!--END, CR00275297 -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.InviteAttendee"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Application"
+    NAME="ACTION"
+    OPERATION="inviteInterviewAttendee"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="Application"
+    NAME="DISPLAY"
+    OPERATION="readForInviteAttendee"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="Application"
+    NAME="DISPLAY_ATTENDEELIST"
+    OPERATION="viewInterviewAttendees"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="interviewID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="interviewID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="interviewID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="interviewID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$interviewID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="interviewID"
+    />
+    <TARGET
+      NAME="DISPLAY_ATTENDEELIST"
+      PROPERTY="interviewID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Close"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER NUM_COLS="2">
+    <!-- BEGIN,CR00273055,AM -->
+    <LIST
+      
+      TITLE="Cluster.Invite.Clients"
+      WIDTH="100"
+    >
+      <!-- END,CR00273055,AM -->
+      <CONTAINER
+        ALIGNMENT="CENTER"
+        LABEL="List.Title.Select"
+      >
+        <WIDGET TYPE="MULTISELECT">
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="concernRoleID"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="clientList"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="clientList"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+      <FIELD
+        LABEL="Field.Label.ClientName"
+        WIDTH="50"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="clientName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.ClientGender"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="clientGender"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.ClientAge"
+        WIDTH="20"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="clientAge"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+    <!-- BEGIN,CR00273055,AM -->
+    <LIST
+      
+      TITLE="Invite.Users"
+      WIDTH="100"
+    >
+      <!-- END,CR00273055,AM -->
+      <CONTAINER
+        ALIGNMENT="CENTER"
+        LABEL="List.Title.Select"
+      >
+        <WIDGET TYPE="MULTISELECT">
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="userName"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="userList"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="userList"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+      <FIELD
+        LABEL="Field.Label.UserName"
+        WIDTH="50"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="fullName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.label.Role"
+        WIDTH="50"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="userRole"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.AttendeeSearch.Description"
+    LABEL_WIDTH="15"
+    NUM_COLS="1"
+  >
+    <CONTAINER LABEL="Container.Label.Attendee">
+      <FIELD WIDTH="35">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="type"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD WIDTH="40">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="attendeeID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SaveButton"
+        LABEL="ActionControl.Label.Add"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+  <!--BEGIN, CR00275297, JD -->
+  <!-- BEGIN,CR00280612,AM -->
+  <LIST
+    
+    TITLE="List.Title.Attendees"
+    WIDTH="95"
+  >
+    <!--END, CR00275297 -->
+    <!-- END,CR00280612,AM -->
+
+
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ATTENDEELIST"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Response"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ATTENDEELIST"
+          PROPERTY="invitationStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

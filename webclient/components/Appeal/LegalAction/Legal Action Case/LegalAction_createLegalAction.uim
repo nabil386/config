@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2008, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010-2011 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This Page allows users to create a new legal action -->
+<PAGE
+  PAGE_ID="LegalAction_createLegalAction"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="CuramUIMSchema"
+>
+
+
+  <PAGE_TITLE DESCRIPTION="PageTitle.Description">
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Statement"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="configLegalActionCategoryID"/>
+  <PAGE_PARAMETER NAME="configLegalActionID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="LegalAction"
+    NAME="ACTION"
+    OPERATION="createLegalAction"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="LegalAction"
+    NAME="DISPLAY"
+    OPERATION="listParticipantsLegalActionCategory"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="configLegalActionCategoryID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$configLegalActionCategoryID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="configLegalActionID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$configLegalActionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+  <!-- Start CR00111580 AS -->
+  <JSP_SCRIPTLET>
+
+
+        curam.omega3.request.RequestHandler
+           rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+
+        String contextValue = rh.getSystemParameters();
+        StringBuffer strBuffpcInd = new StringBuffer();
+            strBuffpcInd.append("&lt;input type='hidden' id='hiddenPageContextPath_");
+            strBuffpcInd.append(0);
+            strBuffpcInd.append("' value='");
+            strBuffpcInd.append(contextValue+"");
+            strBuffpcInd.append("' /&gt;");
+
+    </JSP_SCRIPTLET>
+  <!-- End CR00111580 AS -->
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+
+      
+      
+      
+      
+      
+      <!-- Start CR00111580 AS
+         Link is removed
+         End CR00111580 AS -->
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+
+      
+      
+      
+      
+      
+      <!-- Start CR00111580 AS
+         Link is removed
+         End CR00111580 AS -->
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Details"
+  >
+    <FIELD
+      LABEL="Field.Label.LegalCategory"
+      USE_BLANK="TRUE"
+    >
+      <SCRIPT
+        ACTION="doCompletion('dtls$dtls$dtls$configLegalActionID','LegalAction_getLegalActionValues','caseID')"
+        EVENT="ONCHANGE"
+        SCRIPT_FILE="AjaxCombo.js"
+      />
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="legalActionCategoryID"
+          NAME="DISPLAY"
+          PROPERTY="legalCategoryNameCode"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="configLegalActionCategoryID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$configLegalActionCategoryID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.LegalAction"
+      USE_BLANK="TRUE"
+    >
+      <SCRIPT
+        ACTION="doRedirecr('caseID','dtls$dtls$dtls$configLegalActionCategoryID','LegalAction_getCreatePageName',document.forms[0].hiddenPageContextPath_0)"
+        EVENT="ONCHANGE"
+        SCRIPT_FILE="AjaxPageResolver.js"
+      />
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="legalActionID"
+          NAME="DISPLAY"
+          PROPERTY="legalActionNameCode"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="configLegalActionID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$configLegalActionID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Participant">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="multiParticipantInd"
+      />
+    </CONDITION>
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      WIDTH="5"
+    >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="caseParticipantMultiselect"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Age"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="age"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Gender"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="gender"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <LIST TITLE="List.Respondent">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="multiParticipantInd"
+      />
+    </CONDITION>
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      WIDTH="5"
+    >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="respondentMultiselect"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Age"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="age"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Gender"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="gender"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.CaseParticipant"
+  >
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="multiParticipantInd"
+      />
+    </CONDITION>
+    <FIELD
+      LABEL="Field.Label.Participant"
+      USE_BLANK="TRUE"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="concernRoleID"
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="participantRoleID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Respondent"
+      USE_BLANK="TRUE"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="concernRoleID"
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="respondentRoleID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00407812, RB -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00407812 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

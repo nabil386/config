@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2002, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002-2008 Curam Software Ltd. -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- BEGIN CR00322298, SG -->
+<?curam-deprecated Since Curam 6.0 SP4. This has been deprecated as it is no
+    longer used. See release note: CR00322298 ?>
+<!-- END CR00322298 -->
+<PAGE
+  PAGE_ID="Caseworker_cases"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.Home"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="Case"
+    NAME="SI_CASE_SEARCH"
+    OPERATION="getCaseID"
+    PHASE="ACTION"
+  />
+  <CLUSTER
+    NUM_COLS="2"
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.CaseShortcuts"
+    >
+      <CONTAINER>
+        <ACTION_CONTROL LABEL="ActionControl.Label.CreateNewCase">
+          <LINK PAGE_ID="ICSample_selectPersonType"/>
+        </ACTION_CONTROL>
+      </CONTAINER>
+      <CONTAINER>
+        <ACTION_CONTROL LABEL="ActionControl.Label.MyCases">
+          <LINK PAGE_ID="Organization_userCases"/>
+        </ACTION_CONTROL>
+      </CONTAINER>
+      <CONTAINER>
+        <ACTION_CONTROL LABEL="ActionControl.Label.SearchCase">
+          <LINK PAGE_ID="Case_search1"/>
+        </ACTION_CONTROL>
+      </CONTAINER>
+    </CLUSTER>
+    <CLUSTER TITLE="Cluster.Title.CaseSearchCriteria">
+      <CONTAINER
+        LABEL="Field.Label.CaseReference"
+        WIDTH="90"
+      >
+        <FIELD
+          LABEL="Field.Label.CaseReference"
+          USE_DEFAULT="false"
+        >
+          <CONNECT>
+            <TARGET
+              NAME="SI_CASE_SEARCH"
+              PROPERTY="key$caseReference"
+            />
+          </CONNECT>
+        </FIELD>
+        <!--BEGIN CR00088768, GM-->
+        <ACTION_CONTROL
+          IMAGE="SearchIcon"
+          LABEL="Search.Icon.Text"
+          TYPE="SUBMIT"
+        >
+          <!--END CR00088768-->
+          <LINK PAGE_ID="Case_resolveCaseHome">
+            <CONNECT>
+              <SOURCE
+                NAME="SI_CASE_SEARCH"
+                PROPERTY="result$caseID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </CONTAINER>
+    </CLUSTER>
+  </CLUSTER>
+</PAGE>

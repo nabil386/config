@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007, 2010 - 2011 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Person search page -->
+<PAGE
+  PAGE_ID="CalendarMeetingMinutes_viewSummary"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MeetingMinutesManagement"
+    NAME="DISPLAY"
+    OPERATION="readMeetingDetailsForCase"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MeetingMinutesManagement"
+    NAME="DISPLAY_NOTES"
+    OPERATION="readMeetingNotes"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MeetingMinutesManagement"
+    NAME="DISPLAY_DECISIONS"
+    OPERATION="readMeetingDecisions"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MeetingMinutesManagement"
+    NAME="DISPLAY_ATTENDEES"
+    OPERATION="readMeetingAttendence"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MeetingMinutesManagement"
+    NAME="DISPLAY_ACTIONS"
+    OPERATION="listActionsForMeeting"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MeetingMinutesManagement"
+    NAME="DISPLAY_ATTACHMENTS"
+    OPERATION="listAttachments"
+  />
+
+
+  <PAGE_PARAMETER NAME="meetingID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="meetingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="meetingKey$meetingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="meetingID"
+    />
+    <TARGET
+      NAME="DISPLAY_ATTACHMENTS"
+      PROPERTY="meetingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="meetingID"
+    />
+    <TARGET
+      NAME="DISPLAY_ACTIONS"
+      PROPERTY="meetingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="meetingID"
+    />
+    <TARGET
+      NAME="DISPLAY_NOTES"
+      PROPERTY="key$meetingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="meetingID"
+    />
+    <TARGET
+      NAME="DISPLAY_DECISIONS"
+      PROPERTY="key$meetingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="meetingID"
+    />
+    <TARGET
+      NAME="DISPLAY_ATTENDEES"
+      PROPERTY="key$meetingID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00224441 -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY_ATTENDEES"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+  <!-- END, CR00224441 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="meetingID"
+    />
+    <TARGET
+      NAME="DISPLAY_ACTIONS"
+      PROPERTY="meetingID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+  >
+    <FIELD LABEL="Field.Label.Subject">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="subject"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.StartTime">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Duration">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="duration"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Organizer">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="organizerFullName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Location">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="location"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EndTime">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.MinutedBy">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="minutesTakerFullName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- TODO create renderer for this -->
+  <CLUSTER
+    SHOW_LABELS="FALSE"
+    TITLE="Cluster.Title.Agenda"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$meetingDtls$meetingAgenda"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="FALSE"
+    TITLE="Cluster.Title.Notes"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_NOTES"
+          PROPERTY="result$notesDtls$notes"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="FALSE"
+    TITLE="Cluster.Title.Decisions"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_DECISIONS"
+          PROPERTY="result$decisions"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.Invitations">
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ATTENDEES"
+          PROPERTY="attendeeFullName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Acceptance"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ATTENDEES"
+          PROPERTY="invitationAcceptanceStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Attended"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ATTENDEES"
+          PROPERTY="attendedInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Comment"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ATTENDEES"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <LIST TITLE="List.Title.Actions">
+    <FIELD
+      LABEL="Field.Label.Subject"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ACTIONS"
+          PROPERTY="result$dtls$subject"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AssignedTo"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ACTIONS"
+          PROPERTY="result$dtls$assignedTo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.DueDate"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ACTIONS"
+          PROPERTY="result$dtls$dueDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ACTIONS"
+          PROPERTY="result$dtls$status"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <LIST TITLE="List.Title.Files">
+    <FIELD
+      LABEL="Field.Label.Description"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ATTACHMENTS"
+          PROPERTY="result$listAttachmentLinkDtls$attachmentLinkDetails$attachmentLinkDtls$description"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Date"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ATTACHMENTS"
+          PROPERTY="result$listAttachmentLinkDtls$attachmentLinkDetails$attachmentDtls$receiptDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ATTACHMENTS"
+          PROPERTY="result$listAttachmentLinkDtls$attachmentLinkDetails$attachmentDtls$statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

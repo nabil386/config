@@ -1,0 +1,2 @@
+//>>built
+define("dojo/nls/ieg-oneui-layer_it",{"idx/widget/nls/HoverHelpTooltip":{"learnMoreLabel":"Ulteriori informazioni","_localized":{}},"idx/widget/nls/Dialog":{"closeButtonLabel":"Chiudi","_localized":{}},"dijit/form/nls/ComboBox":{"previousMessage":"Scelte precedenti","_localized":{},"nextMessage":"Scelte successive"},"dijit/form/nls/validate":{"invalidMessage":"Il valore immesso non è valido.","rangeMessage":"Questo valore è fuori dall'intervallo consentito.","_localized":{},"missingMessage":"Questo valore è obbligatorio."}});

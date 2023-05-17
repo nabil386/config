@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify the association details            -->
+<!-- between the decision matrix version and the outcome.                   -->
+<PAGE
+  PAGE_ID="DecisionAssistAdmin_modifyAssociateOutcomes"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_PARAMETER NAME="decisionMatrixVersionID"/>
+  <PAGE_PARAMETER NAME="decisionMatrixName"/>
+  <PAGE_PARAMETER NAME="versionNumber"/>
+  <PAGE_PARAMETER NAME="outcomeScoreAssociationID"/>
+  <PAGE_PARAMETER NAME="outcomeID"/>
+  <PAGE_PARAMETER NAME="outcomeName"/>
+  <PAGE_PARAMETER NAME="determinationConfigID"/>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="decisionMatrixName"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText2"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="versionNumber"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="DecisionMatrix"
+    NAME="READ_OUTCOME_ASSOCIATION"
+    OPERATION="readOutcomeScoreAssociation"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="outcomeScoreAssociationID"
+    />
+    <TARGET
+      NAME="READ_OUTCOME_ASSOCIATION"
+      PROPERTY="key$dtls$outcomeScoreAssociationID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="DecisionMatrix"
+    NAME="MODIFY_OUTCOME_ASSOCIATION"
+    OPERATION="modifyOutcomeAssociation"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="outcomeScoreAssociationID"
+    />
+    <TARGET
+      NAME="MODIFY_OUTCOME_ASSOCIATION"
+      PROPERTY="key$dtls$outcomeScoreAssociationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="decisionMatrixVersionID"
+    />
+    <TARGET
+      NAME="MODIFY_OUTCOME_ASSOCIATION"
+      PROPERTY="dtls$decisionMatrixVersionID"
+    />
+  </CONNECT>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+  <!-- BEGIN, CR00198297, SS -->
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+  >
+    <FIELD
+      LABEL="Field.Label.MinimumScore"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="READ_OUTCOME_ASSOCIATION"
+          PROPERTY="result$outcomeScoreDtls$minimumScore"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="MODIFY_OUTCOME_ASSOCIATION"
+          PROPERTY="dtls$minimumScore"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Value"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="READ_OUTCOME_ASSOCIATION"
+          PROPERTY="result$outcomeScoreDtls$value"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="MODIFY_OUTCOME_ASSOCIATION"
+          PROPERTY="dtls$value"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.MaximumScore"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="READ_OUTCOME_ASSOCIATION"
+          PROPERTY="result$outcomeScoreDtls$maximumScore"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="MODIFY_OUTCOME_ASSOCIATION"
+          PROPERTY="dtls$maximumScore"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Outcome"
+      USE_DEFAULT="false"
+      WIDTH="52"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$outcomeList$dtls$dtls$outcomeID"
+          NAME="READ_OUTCOME_ASSOCIATION"
+          PROPERTY="result$outcomeList$dtls$dtls$outcomeName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="READ_OUTCOME_ASSOCIATION"
+          PROPERTY="result$outcomeScoreDtls$outcomeID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="MODIFY_OUTCOME_ASSOCIATION"
+          PROPERTY="dtls$outcomeID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00198297 -->
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00198297,CR00407812, SS, RB -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00198297, CR00407812 -->
+      <CONNECT>
+        <SOURCE
+          NAME="READ_OUTCOME_ASSOCIATION"
+          PROPERTY="result$outcomeScoreDtls$comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="MODIFY_OUTCOME_ASSOCIATION"
+          PROPERTY="dtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

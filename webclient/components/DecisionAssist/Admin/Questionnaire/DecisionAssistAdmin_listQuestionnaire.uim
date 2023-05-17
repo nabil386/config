@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2022. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to display a list of questionnaires.         -->
+<PAGE PAGE_ID="DecisionAssistAdmin_listQuestionnaire" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <SERVER_INTERFACE CLASS="Questionnaire" NAME="LIST_QUESTIONNAIRE" OPERATION="listQuestionnaires" PHASE="DISPLAY"/>
+  <!-- BEGIN, CR00237620, AK -->
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL IMAGE="NewButton" LABEL="ActionControl.Label.New">
+      <LINK OPEN_MODAL="true" PAGE_ID="DecisionAssistAdmin_createQuestionnaire"/>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- END, CR00237620 -->
+
+
+  <LIST>
+    <!-- BEGIN, CR00207167, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.EditQuestionnaireDetails">
+        <!-- BEGIN, CR00237410, AK -->
+        <LINK OPEN_MODAL="true" PAGE_ID="DecisionAssistAdmin_modifyQuestionnaire" WINDOW_OPTIONS="width=700">
+          <!-- END, CR00237410 -->
+          <CONNECT>
+            <SOURCE NAME="LIST_QUESTIONNAIRE" PROPERTY="result$dtls$dtls$dtls$questionnaireVersionID"/>
+            <TARGET NAME="PAGE" PROPERTY="questionnaireVersionID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.CreateNewVersion">
+        <LINK OPEN_MODAL="true" PAGE_ID="DecisionAssistAdmin_createQuestionnaireVersion" WINDOW_OPTIONS="width=500">
+          <CONNECT>
+            <SOURCE NAME="LIST_QUESTIONNAIRE" PROPERTY="result$dtls$dtls$dtls$questionnaireID"/>
+            <TARGET NAME="PAGE" PROPERTY="questionnaireID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="LIST_QUESTIONNAIRE" PROPERTY="result$dtls$dtls$dtls$questionnaireVersionID"/>
+            <TARGET NAME="PAGE" PROPERTY="questionnaireVersionID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.DeleteQuestionnaire">
+        <!-- BEGIN, CR00237410, AK -->
+        <LINK OPEN_MODAL="true" PAGE_ID="DecisionAssistAdmin_deleteQuestionnaireVersion" WINDOW_OPTIONS="width=500">
+          <!-- END, CR00237410 -->
+          <CONNECT>
+            <SOURCE NAME="LIST_QUESTIONNAIRE" PROPERTY="result$dtls$dtls$dtls$questionnaireVersionID"/>
+            <TARGET NAME="PAGE" PROPERTY="questionnaireVersionID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="LIST_QUESTIONNAIRE" PROPERTY="result$dtls$dtls$dtls$version"/>
+            <TARGET NAME="PAGE" PROPERTY="qVersionNumber"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="LIST_QUESTIONNAIRE" PROPERTY="result$dtls$dtls$dtls$name"/>
+            <TARGET NAME="PAGE" PROPERTY="qName"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD LABEL="Field.Label.QuestionnaireName" WIDTH="32">
+      <!-- END, CR00207167 -->
+      <CONNECT>
+        <SOURCE NAME="LIST_QUESTIONNAIRE" PROPERTY="result$dtls$dtls$dtls$name"/>
+      </CONNECT>
+      <LINK PAGE_ID="DecisionAssistAdmin_viewQuestionnaire">
+        <CONNECT>
+          <SOURCE NAME="LIST_QUESTIONNAIRE" PROPERTY="result$dtls$dtls$dtls$questionnaireVersionID"/>
+          <TARGET NAME="PAGE" PROPERTY="questionnaireVersionID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="CONSTANT" PROPERTY="QuestionnairePageID"/>
+          <TARGET NAME="PAGE" PROPERTY="pageID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <!-- BEGIN, CR00207167, SS -->
+    <FIELD LABEL="Field.Label.QuestionnaireType" WIDTH="15">
+      <!-- END, CR00207167 -->
+      <CONNECT>
+        <SOURCE NAME="LIST_QUESTIONNAIRE" PROPERTY="result$dtls$dtls$dtls$type"/>
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207167, SS -->
+    <FIELD LABEL="Field.Label.QuestionnaireVersion" WIDTH="10">
+      <!-- END, CR00207167 -->
+      <CONNECT>
+        <SOURCE NAME="LIST_QUESTIONNAIRE" PROPERTY="result$dtls$dtls$dtls$version"/>
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207167, SS -->
+    <FIELD LABEL="Field.Label.QuestionnaireStatus" WIDTH="10">
+      <!-- END, CR00207167 -->
+      <CONNECT>
+        <SOURCE NAME="LIST_QUESTIONNAIRE" PROPERTY="result$dtls$dtls$dtls$status"/>
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207167, SS -->
+    <FIELD LABEL="Field.Label.QuestionnaireFrom" WIDTH="15">
+      <!-- END, CR00207167 -->
+      <CONNECT>
+        <SOURCE NAME="LIST_QUESTIONNAIRE" PROPERTY="result$dtls$dtls$dtls$fromDate"/>
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207167, SS -->
+    <FIELD LABEL="Field.Label.QuestionnaireTo" WIDTH="15">
+      <!-- END, CR00207167 -->
+      <CONNECT>
+        <SOURCE NAME="LIST_QUESTIONNAIRE" PROPERTY="result$dtls$dtls$dtls$toDate"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+ 
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+ <!-- 
+    Copyright 2008-2012 Curam Software Ltd.
+    All rights reserved.
+    
+    This software is the confidential and proprietary information of Curam
+    Software, Ltd. ("Confidential Information").  You shall not disclose such
+    Confidential Information and shall use it only in accordance with the
+    terms of the license agreement you entered into with Curam Software.
+  -->
+
+
+  <!-- 
+    The schema for the XML representation of a rule set.
+    
+    Additional validation of rule sets is performed by the system;
+    as such, XML documents conforming to this schema may NOT necessarily
+    be valid rule sets (i.e. conformance to this schema is necessary but
+    not sufficient in order to guarantee a valid rule set).
+  -->
+
+
+  <!--***************************-->
+  <!--* Basic Rule Set elements *-->
+  <!--***************************-->
+
+  <!-- All elements must inherit from this "identifiable" type -->
+  <xs:complexType name="Identifiable">
+    <xs:attribute name="internalID" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <!-- For lax validation, allow any annotations -->
+  <xs:element name="Annotations">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="Identifiable">
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <!-- Allow any elements-->
+            <xs:any processContents="skip"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+
+
+
+  <!-- Rule Set -->
+  <xs:element name="RuleSet">
+    <xs:complexType mixed="true">
+      <xs:complexContent>
+        <xs:extension base="Identifiable">
+          <xs:sequence minOccurs="1" maxOccurs="1">
+            <xs:sequence minOccurs="0" maxOccurs="1">
+              <xs:element ref="Annotations"/>
+            </xs:sequence>
+            <xs:sequence maxOccurs="unbounded" minOccurs="0">
+              <xs:choice>
+                <xs:element ref="Class"/>
+                <xs:element name="Include">
+                  <xs:complexType>
+                    <xs:complexContent>
+                      <xs:extension base="Identifiable">
+                        <xs:sequence>
+                          <xs:element ref="IncludeSpecifierType"/>
+                        </xs:sequence>
+                      </xs:extension>
+                    </xs:complexContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:choice>
+            </xs:sequence>
+          </xs:sequence>
+          <xs:attribute name="name" type="RuleSetNameType" use="required"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- permitted child elements for Include -->
+  <xs:element name="IncludeSpecifierType" abstract="true"/>
+
+  <xs:element name="RelativePath" substitutionGroup="IncludeSpecifierType">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="Identifiable">
+          <xs:attribute name="value" use="required" type="xs:string"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Classpath" substitutionGroup="IncludeSpecifierType">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="Identifiable">
+          <xs:attribute name="value" use="required" type="xs:string"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Rule Class -->
+  <xs:element name="Class">
+    <xs:complexType mixed="true">
+      <xs:complexContent>
+        <xs:extension base="Identifiable">
+
+          <xs:sequence>
+            <xs:sequence minOccurs="0" maxOccurs="1">
+              <xs:element ref="Annotations"/>
+            </xs:sequence>
+
+            <!-- optional block of initialized attributes -->
+            <xs:sequence minOccurs="0" maxOccurs="1">
+              <xs:element name="Initialization">
+                <xs:complexType>
+                  <xs:complexContent>
+                    <xs:extension base="Identifiable">
+
+                      <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                        <xs:element name="Attribute">
+                          <xs:complexType>
+                            <xs:complexContent>
+                              <xs:extension base="Identifiable">
+                                <xs:sequence>
+                                  <xs:sequence minOccurs="0" maxOccurs="1">
+                                    <xs:element ref="Annotations"/>
+                                  </xs:sequence>
+                                  <xs:element name="type" type="TypeIdentifier"/>
+                                </xs:sequence>
+                                <xs:attribute name="name" type="AttributeNameType" use="required"/>
+                              </xs:extension>
+                            </xs:complexContent>
+                          </xs:complexType>
+
+                        </xs:element>
+                      </xs:sequence>
+                    </xs:extension>
+                  </xs:complexContent>
+                </xs:complexType>
+              </xs:element>
+
+            </xs:sequence>
+
+            <!-- calculated attributes -->
+            <xs:sequence maxOccurs="unbounded" minOccurs="0">
+              <xs:element name="Attribute">
+                <xs:complexType>
+                  <xs:complexContent>
+                    <xs:extension base="Identifiable">
+                      <xs:sequence>
+                        <xs:sequence minOccurs="0" maxOccurs="1">
+                          <xs:element ref="Annotations"/>
+                        </xs:sequence>
+
+                        <xs:element name="type" type="TypeIdentifier"/>
+                        <xs:element name="derivation">
+                          <xs:complexType>
+                            <xs:complexContent>
+                              <xs:extension base="Identifiable">
+                                <xs:sequence minOccurs="1" maxOccurs="1">
+                                  <!-- For lax validation, any tree of XML with a single root is permitted as an expression-->
+                                  <xs:any processContents="skip"/>
+                                </xs:sequence>
+                              </xs:extension>
+                            </xs:complexContent>
+                          </xs:complexType>
+                        </xs:element>
+
+                      </xs:sequence>
+
+                      <xs:attribute name="name" type="AttributeNameType" use="required"/>
+                    </xs:extension>
+                  </xs:complexContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+
+
+          </xs:sequence>
+          <xs:attribute name="extends" type="RuleClassNameType" use="optional"/>
+          <xs:attribute name="extendsRuleSet" type="RuleSetNameType" use="optional"/>
+          <xs:attribute name="name" type="RuleClassNameType" use="required"/>
+          <xs:attribute name="abstract" type="xs:boolean" use="optional" default="false"/>
+        </xs:extension>
+      </xs:complexContent>
+
+    </xs:complexType>
+  </xs:element>
+
+  <!-- the elements that can be used to identify a type returned by an Attribute or Expression -->
+  <xs:element name="AbstractType" abstract="true"/>
+  <xs:element name="ruleclass" substitutionGroup="AbstractType">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="Identifiable">
+
+          <xs:attribute name="name" type="RuleClassNameType" use="required"/>
+          <xs:attribute name="ruleset" type="RuleSetNameType" use="optional"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="codetableentry" substitutionGroup="AbstractType">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="Identifiable">
+
+          <xs:attribute name="table" use="required" type="CodeTableNameType"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="javaclass" substitutionGroup="AbstractType">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="Identifiable">
+
+          <!-- The parameters to a parameterized Java type -->
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="AbstractType"/>
+          </xs:sequence>
+          <xs:attribute name="name" type="JavaClassNameType" use="required"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+
+
+  <!--********************-->
+  <!--* Simple Types     *-->
+  <!--********************-->
+  <xs:simpleType name="JavaClassNameType">
+    <xs:restriction base="xs:string">
+      <!-- can't end with a dot -->
+      <xs:pattern value="([a-z]|[A-Z]|[0-9]|[_.$])*([a-z]|[A-Z]|[0-9]|_)"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- BEGIN, AI-63, RB -->
+  <xs:simpleType name="AttributeNameType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|_)*"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!-- END, AI-63 -->
+
+  <xs:simpleType name="RuleClassNameType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[_])*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="RuleSetNameType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[_])*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- BEGIN, CEF-12095, CSH -->
+  <xs:simpleType name="CodeTableNameType">
+    <xs:restriction base="xs:NMTOKENS"/>
+  </xs:simpleType>
+  <!-- END, CEF-12095 -->
+
+  <xs:simpleType name="NumberValue">
+    <!-- We have our own regular expression, instead of xs:decimal, to allow for a percentage sign at the end -->
+    <xs:restriction base="xs:string">
+      <!-- optional minus sign, 1 or more digits, optional (decimal point and 1 or more digits), optional percentage sign -->
+      <xs:pattern value="(-)?([0-9])+((\.)([0-9])+)?(%)?"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!--********************-->
+  <!--* Complex Types    *-->
+  <!--********************-->
+
+  <xs:complexType name="TypeIdentifier">
+    <xs:complexContent>
+      <xs:extension base="Identifiable">
+        <xs:sequence>
+          <xs:element ref="AbstractType"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+</xs:schema>

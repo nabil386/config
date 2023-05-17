@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2017, 2018. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->                                                             
+<PAGE
+  COMPONENT_STYLE="page-omit-sidebar"
+  PAGE_ID="AdvancedEvidenceSharing_retainExistingResolveStart"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+      
+  curam.omega3.request.RequestHandler 
+  rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+  String context = request.getContextPath() + "/";
+  context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/"; 
+
+  curam.interfaces.IncomingEvidencePkg.IncomingEvidence_createWizardStore_TH
+  th = new   curam.interfaces.IncomingEvidencePkg.IncomingEvidence_createWizardStore_TH();
+  th.callServer();
+
+  String wizardStateID = th.getFieldValue(th.result$wizardStateID_idx);
+  String evidenceDescriptorID = request.getParameter("evidenceDescriptorID");
+  String activeDate = request.getParameter("activeDate");
+  String incomingEvidenceDescriptorIDs = request.getParameter("incomingEvidenceDescriptorIDs");
+        
+  String url = context + "AdvancedEvidenceSharing_retainExistingWizardSelectIncomingPage.do?wizardStateID=" + curam.omega3.request.RequestUtils.escapeURL(wizardStateID) + "&amp;evidenceDescriptorID=" + curam.omega3.request.RequestUtils.escapeURL(evidenceDescriptorID) + "&amp;activeDate=" + curam.omega3.request.RequestUtils.escapeURL(activeDate);
+  url += "&amp;incomingEvidenceDescriptorIDs=" + curam.omega3.request.RequestUtils.escapeURL(incomingEvidenceDescriptorIDs);
+  url += "&amp;" + rh.getSystemParameters();
+  response.sendRedirect(response.encodeRedirectURL(url));      
+
+  </JSP_SCRIPTLET>
+</PAGE>

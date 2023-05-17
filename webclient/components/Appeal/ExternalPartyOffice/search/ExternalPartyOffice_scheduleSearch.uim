@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010-2011 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Popup External Party Office search page -->
+<PAGE
+  PAGE_ID="ExternalPartyOffice_scheduleSearch"
+  WINDOW_OPTIONS="width=925"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00293187, SK -->
+  <SERVER_INTERFACE
+    CLASS="ExternalParty"
+    NAME="ACTION"
+    OPERATION="searchExternalPartyOfficeDetails"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00293187 -->
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      DEFAULT="true"
+      IMAGE="SearchButton"
+      LABEL="ActionControl.Label.Search"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="THIS"/>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="ResetButton"
+      LABEL="ActionControl.Label.Reset"
+    >
+      <LINK
+        PAGE_ID="ExternalPartyOffice_scheduleSearch"
+        SAVE_LINK="false"
+      />
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="PreviousButton"
+      LABEL="ActionControl.Label.Previous"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        OPEN_MODAL="false"
+        PAGE_ID="Appeal_scheduleHearingCaseHearingIC"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD LABEL="Field.Label.OfficeName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$key$externalPartyOfficeName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.OfficeAddressLineOne">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$key$addressDtls$addressLine1"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.OfficeType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$key$externalPartyOfficeType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.OfficeCity">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$key$addressDtls$city"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+  >
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$key$referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$key$externalPartyName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ExternalPartyType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$key$externalPartyType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.Select">
+        <LINK
+          DISMISS_MODAL="false"
+          OPEN_MODAL="false"
+          PAGE_ID="Appeal_confirmExternalLocationHearingIC"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$dtls$dtlsList$externalPartyOfficeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="locationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$dtls$dtlsList$externalPartyOfficeName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="locationName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Title.OfficeName"
+      WIDTH="90"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$dtlsList$externalPartyOfficeName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!--
+    <FIELD
+      LABEL="Field.Title.OfficeAddressLineOne"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$officeAddressLine1"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.ExternalPartyName"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$externalPartyName"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD
+      LABEL="Field.Title.ExternalPartyReferenceNumber"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$externalPartyReferenceNumber"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="ExternalParty_home">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="officeConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+    <FIELD
+      LABEL="Field.Title.ExternalPartyType"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$externalPartyType"
+        />
+      </CONNECT>
+    </FIELD>
+    -->
+  </LIST>
+
+
+</PAGE>

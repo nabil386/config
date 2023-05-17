@@ -1,0 +1,77 @@
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core" >
+  <jsp:directive.page buffer="32kb"
+    contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"/>
+  <jsp:directive.page import="curam.util.client.jsp.JspUtil"/>  
+  <jsp:output omit-xml-declaration="yes"/>
+  <jsp:text>
+    <![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]>
+  </jsp:text>
+  <jsp:scriptlet>pageContext.setAttribute("o3__serverURL", JspUtil.getServerRootURL(1));</jsp:scriptlet>
+  <html>
+    <head>
+      <title>IEGModalFinishRedirect</title>
+      <script data-dojo-config="async:0, parseOnLoad: true, locale: 'en',packages:[{name: 'curam', location: '../../curam'},
+        {name: 'cm', location: '../../cm'},{name: 'ieg', location: '../../../../jscript/ieg'}]"
+        src="${pageScope.o3__serverURL}CDEJ/jscript/dojotk/dojo/dojo.js" type="text/javascript">// script content</script>
+      <script src="${pageScope.o3__serverURL}CDEJ/jscript/dojotk/dijit/dijit.js" type="text/javascript">// script content</script>
+      <script src="${pageScope.o3__serverURL}CDEJ/jscript/cdej-cm.js" type="text/javascript">// script content</script>
+      <script src="${pageScope.o3__serverURL}CDEJ/jscript/cdej.js" type="text/javascript">// script content</script>
+      <script type="text/javascript">
+        require(["dojo/parser", "dijit/registry","curam/widget/FilteringSelect"]);
+      </script>
+      <script type="text/javascript">
+        require(["curam/dialog", "curam/util", "curam/util/Dialog", "curam/core-uim"]);
+      </script>
+      <script type="text/javascript">
+        require(["curam/ajax"]);
+      </script>
+      <script type="text/javascript">
+        require(['ieg/ieg-modal'], 
+          function(iegModal) {
+            iegModal.initDialog();
+          });
+      </script>
+      
+      <script type="text/javascript">
+        /**
+        * Provides a way for pages to navigate to a different URL programmatically.
+        * Please note there is no need to use this function on every link in your
+        * page.
+        * 
+        * The navigation will take place within the runtime context of the current
+        * window object. 
+        * 
+        * @param url
+        *    The URL to navigate to.
+        */
+        function Navigate(url) 
+        {
+          var cacheBusterValue = new Date().getTime() + "_" + curam.util.CACHE_BUSTER++;
+          var finalUrl = curam.util.replaceUrlParam(url, "o3nocache", cacheBusterValue);
+          // unregister any handlers when going to the next page
+          curam.util.Dialog._releaseHandlers();
+          window.location.assign(finalUrl);
+        }
+        
+      </script>
+      <script>
+        <jsp:scriptlet>
+          <![CDATA[
+          out.print("var redirectURL= \"");
+          // Ensure that the redirect URL is escaped properly before being output onto the page.
+          out.print(curam.util.common.util.JavaScriptEscaper.escapeText(request.getParameter("redirect"), true));
+          out.print("\"");
+        ]]> 
+        </jsp:scriptlet>
+      </script>
+      <script type="text/javascript">
+        dojo.addOnLoad(function() {
+        console.log("in add on load");
+        Navigate(redirectURL);
+        });
+      </script>
+    </head>
+    <body>
+    </body>
+  </html>
+</jsp:root>

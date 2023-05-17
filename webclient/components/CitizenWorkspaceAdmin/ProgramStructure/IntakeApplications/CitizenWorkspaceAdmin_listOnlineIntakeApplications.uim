@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2015. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<PAGE PAGE_ID="CitizenWorkspaceAdmin_listOnlineIntakeApplications"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <SERVER_INTERFACE CLASS="CitizenWorkspaceAdmin" NAME="DISPLAY"
+    OPERATION="listIntakeApplicationsByChannel"/>
+
+  <CONNECT>
+    <SOURCE NAME="CONSTANT" PROPERTY="Constant.ApplicationChannel.Online"/>
+    <TARGET NAME="DISPLAY" PROPERTY="applicationChannel"/>
+  </CONNECT>
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <LINK PAGE_ID="CitizenWorkspaceAdmin_newIntakeApplicationType" OPEN_MODAL="true"/>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK PAGE_ID="CitizenWorkspaceAdmin_modifyIntakeApplicationTypeFromList" OPEN_MODAL="true"
+          WINDOW_OPTIONS="width=900,height=768">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="intakeApplicationTypeID"/>
+            <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <SEPARATOR/>
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddProgram">
+        <LINK PAGE_ID="CitizenWorkspaceAdmin_addProgramToIntakeApplication" OPEN_MODAL="true"
+          WINDOW_OPTIONS="width=900,height=200">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="intakeApplicationTypeID"/>
+            <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddWithdrawalReason">
+        <LINK PAGE_ID="CitizenWorkspaceAdmin_addWithdrawalReasons" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="intakeApplicationTypeID"/>
+            <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <SEPARATOR/>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK PAGE_ID="CitizenWorkspaceAdmin_deleteIntakeApplicationType" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="intakeApplicationTypeID"/>
+            <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="CitizenWorkspaceAdmin_viewIntakeApplicationType">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="intakeApplicationTypeID"/>
+          <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeID"/>
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    
+<!-- BEGIN, CR00456644, SSK -->
+    
+    <CONTAINER LABEL="Field.Title.Name" WIDTH="30">
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="name"/>
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL IMAGE="CALocalizableTextTranslation" LABEL="ActionControl.Label.Translations">
+        <LINK PAGE_ID="LocalizableText_viewLocalizableText" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="nameTextID"/>
+            <TARGET NAME="PAGE" PROPERTY="localizableTextID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    
+    <!-- END, CR00456644, SSK -->
+
+    <CONTAINER LABEL="Field.Title.Summary" WIDTH="70">
+      <FIELD>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="summary"/>
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL IMAGE="CALocalizableTextTranslation" LABEL="ActionControl.Label.Translations">
+        <LINK PAGE_ID="LocalizableText_viewLocalizableText" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="summaryTextID"/>
+            <TARGET NAME="PAGE" PROPERTY="localizableTextID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </LIST>
+</PAGE>

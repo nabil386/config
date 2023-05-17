@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PAGE PAGE_ID="External_listNavigationBars">
+  <!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+  <!-- Copyright (c) 2012 Curam Software Ltd.                            -->
+  <!-- All rights reserved.                                                    -->
+  <!-- This software is the confidential and proprietary information of Curam  -->
+  <!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+  <!-- such Confidential Information and shall use it only in accordance with  -->
+  <!-- the terms of the license agreement you entered into with Curam          -->
+  <!-- Software.                                                               -->
+  <!-- Description -->
+  <!-- =========== -->
+  <!--   -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="applicationID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationView"
+    NAME="DISPLAY"
+    OPERATION="listApplicationNavigationNodes"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$applicationID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="Control.Label.New.Bar">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="External_createNavigationBar"
+        SAVE_LINK="true"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="key$applicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="navigationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST TITLE="List.Title.Navigation">
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="External_viewNavigationBar">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$applicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$navigationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="navBarID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <FIELD LABEL="Field.Label.Description">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="Control.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="External_modifyNavigationBar"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="key$applicationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="applicationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$navigationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="navigationID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="Control.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="External_deleteNavigationBar"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="key$applicationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="applicationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$navigationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="navigationID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="Control.Label.New">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="External_addNavigationPage"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$navigationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="navBarID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </LIST>
+</PAGE>

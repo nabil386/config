@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<api>
+  <version
+    number="v1"
+  >
+
+    <!-- BDM configuration for the Universal Access. -->
+
+    <!-- BEGIN - USER STORY 999 - PN - provide more detal for submitted applications -->
+    <resource path="/ua/bdm_submitted_applications" >
+      <method verb="GET">
+        <facade
+          class="BDMUAApplicationCardAPI"
+          method="listSubmittedApplications"
+        />
+        <tags>
+          <tag>Universal Access</tag>
+        </tags>
+      </method>
+    </resource>
+    <!-- END - USER STORY 999 - PN - provide more detal for submitted applications -->
+    
+    <!-- BEGIN - TASK 9862 - Expose BDMWSAddressAPI for Client portal -->
+    <resource path="/ua/bdm/address/search" >
+      <method verb="GET">
+        <facade
+          class="BDMWSAddressAPI"
+          method="searchAddress"
+        />
+        <tags>
+          <tag>Universal Access</tag>
+        </tags>
+      </method>
+    </resource>
+    <!-- END - TASK 9862 - Expose BDMWSAddressAPI for Client portal -->
+
+    
+    <!-- BEGIN - TASK 10101 - Correspondance is notice read -->
+    <resource path="/ua/bdm/communications/">
+      <!-- Search for a list of communication records -->
+      <method verb="GET">
+        <facade
+          class="BDMUACommunicationAPI"
+          method="listCommunications"
+        />
+        <tags>
+          <tag>Universal Access - Communication Record list </tag>
+        </tags>
+      </method>
+    </resource>
+
+    <resource path="/ua/bdm/communications/{communication_id}">
+      <!-- Retrieve a communication record-->
+      <method verb="GET">
+        <facade
+          class="BDMUACommunicationAPI"
+          method="getCommunication"
+        />
+        <tags>
+          <tag>Universal Access - Communication Details</tag>
+        </tags>
+      </method>
+    </resource>
+    <!-- END - TASK 10101 - Correspondance is notice read -->
+    
+    
+       <!-- BEGIN - TASK 10104 - Search  Correspondance  -->
+    <resource path="/ua/bdm/communications/searchCommunication" >
+      <method verb="GET">
+        <facade
+          class="BDMUACommunicationAPI"
+          method="searchCommunication"
+        />
+
+        <tags>
+          <tag>Universal Access - Search Communications</tag>
+        </tags>
+      </method>
+    </resource>
+
+    <!-- END - TASK 10104 - Search Correspondance -->
+    
+    <!-- Start: Bug: 122434 - Added new rest API to download correspondences via CCT -->
+    <resource path="/ua/bdm/communications/{communicationID}/attachments/{trackingNumber}">
+      <!-- Retrieve a communication attachment record-->
+      <method verb="GET">
+         <produces>
+          <type>application/octet-stream</type>
+        </produces>
+        <facade class="BDMUACommunicationAPI" method="downloadCommunicationAttachment"/>
+        <tags>
+          <tag>Universal Access - download communication attachment</tag>
+        </tags>
+      </method>
+    </resource>
+    <!--  End: Bug: 122434-->
+    
+    
+	<!-- BEGIN - Task 12797 - ExposeRESTForDECD -->
+    <resource path="/interface/bdm/submitted_applications" >
+      <method verb="GET">
+        <facade
+          class="BDMDECDApplicationAPI"
+          method="listSubmittedApplications"
+        />
+        <tags>
+          <tag>DECD Interface - List Submitted Applications</tag>
+        </tags>
+      </method>
+    </resource>
+	
+	<resource path="/interface/bdm/payments" >
+    <method verb="GET">
+        <facade
+          class="BDMDECDPaymentsAPI"
+          method="listPayments"
+        />
+        <tags>
+          <tag>DECD Interface - List Payments </tag>
+        </tags>
+      </method>
+    </resource>
+	
+	<resource path="/interface/bdm/payment_messages" >
+      <method verb="GET">
+        <facade
+          class="BDMDECDPaymentMessageAPI"
+          method="readPaymentMessages"
+        />
+        <tags>
+          <tag>DECD Interface - List Next Payments</tag>
+        </tags>
+      </method>
+    </resource>
+	
+	 <resource path="/interface/bdm/communications" >
+       <method verb="GET">
+        <facade
+          class="BDMDECDCommunicationAPI"
+          method="listCommunications"
+        />
+        <tags>
+          <tag>DECD Interface - List Communications</tag>
+        </tags>
+      </method>
+    </resource>
+    <!-- END -   Task 12797 -ExposeRESTForDECD  --> 
+
+	<!-- BEGIN - UA Specific Benefit Card -->
+    <resource path="/ua/bdm/specificbenefit" >
+	  <method verb="GET">
+        <facade 
+          class="BDMUASpecificBenefitCardAPI"
+          method="getSpecificBenefitDetails"
+        />
+        <tags>
+          <tag>Universal Access</tag>
+        </tags>
+      </method>
+    </resource>
+    <!-- END - UA Specific Benefit Card -->
+    
+    <!-- START -  Task 13815 - Case worker task to verify document upload by client -->
+    <resource path="/ua/bdm/verifications/create_caseworker_task">
+      <method verb="POST" no-content-response="true">
+        <facade
+          class="BDMUACaseworkerVerificationTaskManagerAPI"
+          method="createCaseworkerTaskOnUpload"
+        />
+        <tags>
+          <tag>Universal Access</tag>
+        </tags>
+      </method>
+    </resource>
+    <!-- END -  Task 13815 - Case worker task to verify document upload by client -->
+	
+	  <!-- BEGIN - Task 14339 - Expose DOJ Inbound API   -->
+   <resource path="/interface/bdm/obligation-exchange" open-api="true"> 
+       <method verb="POST" no-content-response="true"> 
+        <facade 
+          class="BDMDoJInboundAPI"
+          method="processDOJInbound" 
+        />
+        <tags>
+          <tag>DOJ Inbound Interface - Process Inbound data</tag>
+        </tags>
+      </method>
+    </resource>
+    <resource path="/interface/bdm/obligation-exchange/modify" open-api="true"> 
+       <method verb="PUT"> 
+        <facade 
+          class="BDMDoJInboundAPI"
+          method="modifyDOJInbound" 
+        />
+        <tags>
+          <tag>DOJ Inbound Interface - Modify Inbound data</tag>
+        </tags>
+      </method>
+    </resource>
+	
+    <resource path="/interface/bdm/obligation-exchange/delete" open-api="true"> 
+       <method verb="POST" no-content-response="true">   
+        <facade 
+          class="BDMDoJInboundAPI"
+          method="deleteDOJInbound" 
+        />
+        <tags>
+          <tag>DOJ Inbound Interface - Delete Inbound data</tag>
+        </tags>
+      </method> 
+    </resource>   
+	 
+	
+    <!-- END -  Task 14339 - Expose DOJ Inbound API -->
+	<!-- BEGIN - PN - Create AcceptedVerificationsAPI -->
+
+	<resource path="/ua/bdm/acceptedverifications" >
+
+      <!-- List all payments -->
+      <method verb="GET">
+        <facade
+          class="BDMUAAcceptedVerificationsAPI"
+
+          method="listAcceptedVerifications"
+		  />
+		<tags>
+          <tag>Universal Access</tag>
+        </tags>
+      </method>
+    </resource>
+	<!-- END - PN - Create AcceptedVerificationsAPI -->
+    <!-- BEGIN - Task 9284 - Expose REST for Cancelled Payments -->
+    <resource path="/interface/bdm/payment/cancel" >
+       <method verb="POST" no-content-response="true">
+        <facade
+          class="BDMCancelPaymentAPI"
+          method="listCancelPaymentData"
+        />
+        <tags>
+          <tag>Cancel Payments Interface - List Cancelled Payment info</tag>
+        </tags>
+      </method>
+    </resource>
+    <!-- END - Task 9284 - Expose REST for Cancelled Payments -->
+
+    <!-- BEGIN - DECD will use POST to pass info for UA application pre-pop -->
+    <resource path="/application-overview" >
+      <method verb="POST" no-content-response="true">
+        <facade class="BDMDecdToUAApplicationAPI" method="redirectToUAApplication" />
+        <tags>
+          <tag>DECD POST redirect to UA Application with Pre-population</tag>
+        </tags>
+      </method>
+    </resource>
+    <!-- END - DECD will use POST to pass info for UA application pre-pop -->
+	<!-- BEGIN - modify CitizenAccountAPI -->
+	<resource path="/ua/bdm/profile">
+      <!-- Search for profile record -->
+      <method verb="GET">
+        <facade class="BDMCitizenAccountAPI" method="readProfile"/>
+        <tags>
+          <tag>Universal Access</tag>
+        </tags>
+      </method>
+    </resource>
+    <!-- END - modify CitizenAccountAPI -->
+	<!-- BEGIN - BDMUAApplicationInfoVerificationCheckAPI -->
+	<resource path="/ua/bdm/application_verification_check">
+      <!-- Check if a verification should be created for the applcation info -->
+      <method verb="GET">
+        <facade class="BDMUAApplicationInfoVerificationCheckAPI" method="checkVerifications"/>
+        <tags>
+          <tag>Universal Access</tag>
+        </tags>
+      </method>
+    </resource>
+    <!-- END - BDMUAApplicationInfoVerificationCheckAPI -->
+    
+    <!-- BEGIN - Task-9270-DECD-RequestForCallback -->
+	<resource path="/ua/bdm/callback_request" open-api="true"> 
+      <method verb="POST"  response="true"> 
+        <facade class="BDMCallbackRequestAPI" method="callbackRequest"/>
+        <tags>
+          <tag>Request for Callback From UA </tag>
+        </tags>
+      </method>
+    </resource>  
+    <resource path="/ua/bdm/callback_request_exit">
+		<method verb="POST" response="true">
+			<facade class="BDMCallbackRequestAPI" method="exitCallBackRequest" />
+			<tags>
+				<tag>Request for Callback Exit from UA </tag>
+			</tags>
+		</method>
+	</resource>  
+	<resource path="/interface/bdm/callback_request" open-api="true"> 
+		<method verb="POST"  response="true"> 
+        <facade class="BDMDECDCallbackRequestAPI" method="callbackRequestFromDECD"/>
+        <tags>
+          <tag>Request for Callback From DECD</tag>
+		 </tags>
+		</method>
+	</resource>   
+    <!-- END - Task-9270-DECD-RequestForCallback -->
+
+    <!-- BEGIN - BDMDocumentUploadAPI for RFR -->
+    <resource path="/ua/bdm/documentupload/get">
+      <method verb="GET">
+        <facade class="BDMDocumentUploadAPI" method="getBDMDocumentUploads"/>
+        <tags>
+          <tag>Universal Access</tag>
+        </tags>
+      </method>
+    </resource>
+    <resource path="/ua/bdm/documentupload/link_file">
+      <method verb="POST" no-content-response="true">
+        <facade class="BDMDocumentUploadAPI" method="createBDMDocumentUploadAttachmentLink"/>
+        <tags>
+          <tag>Universal Access</tag>
+        </tags>
+      </method>
+    </resource>
+    <!-- End - BDMDocumentUploadAPI for RFR-->
+    <!-- BEGIN - Task 55408 - draft and submitted RFR details -->
+	<resource path="/ua/bdm/rfrs"> 
+      <method verb="GET"> 
+        <facade class="BDMUARequestForReconsiderationAPI" method="listOnlineRequests"/>
+        <tags>
+          <tag>Universal Access</tag>
+        </tags>
+      </method>
+    </resource>      
+    <resource path="/ua/bdm/appeals_form"> 
+      <method verb="POST" response="true" > 
+        <facade class="BDMUARequestForReconsiderationAPI" method="startAppealForm"/>
+        <tags>
+          <tag>Universal Access</tag>
+        </tags>
+      </method>
+    </resource>       
+    <resource path="/ua/bdm/appeals_form/exit">
+		<method verb="POST" response="true">
+			<facade class="BDMUARequestForReconsiderationAPI" method="exitAppealForm" />
+			<tags>
+				<tag>Universal Access Forms</tag>
+			</tags>
+		</method>
+	</resource>
+	<resource path="/ua/bdm/listApps">
+		<method verb="GET" response="true">
+			<facade class="BDMUARequestForReconsiderationAPI" method="listClosedApplications" />
+			<tags>
+				<tag>Universal Access Close Applications</tag>
+			</tags>
+		</method>
+	</resource>
+    <!-- END - Task 55408 -draft and submitted RFR details -->
+
+  <!-- BEGIN - Task-61288-Dev - Update TaxSlip Processing status -->
+    <resource path="/interface/bdm/updateTaxSlipProcStatus" open-api="true"> 
+      <method verb="POST"  response="true"> 
+        <facade class="BDMTaxSlipUpdateAPI" method="updateTaxSlipProcStatus"/>
+        <tags>
+          <tag>Update Tax Slip Proc Status From ADF </tag>
+        </tags>
+      </method>
+    </resource>   
+  <!-- END - Task-61288-Dev - Update TaxSlip Processing status  -->
+ 
+ <!-- BEGIN - Task 67971 - CCT WorkItem --> 
+   <resource path="/bdm/cct/work_items"> 
+      <method verb="POST"> 
+        <facade class="BDMCCTAPI" method="updateWorkItemStatus"/>
+        <tags>
+          <tag>Rest API to update the status of work item whenever there has been an update to the status of a work item in CCT.</tag>
+        </tags>
+      </method>
+    </resource>  
+<!-- BEGIN - Task 67971 -  CCT WorkItem -->
+<!-- BEGIN - Task 111160 - CCT Correspondence --> 
+   <resource path="/bdm/cct/correspondence"> 
+      <method verb="PUT"> 
+        <facade class="BDMCCTAPI" method="updateCorrespondenceStatus"/>
+        <tags>
+          <tag>Rest API to update the status of correspondence record whenever there has been an update to the status of a correspondence in CCT.</tag>
+        </tags>
+      </method>
+    </resource>  
+	<!-- BEGIN - Task 111160 -  CCT WorkItem -->
+  </version>
+
+  <version number="v2" >
+	<!-- BEGIN - USER STORY 1000 - PN - modify PaymentAPI -->
+	<resource path="/ua/payments" >
+      <!-- List all payments -->
+      <method verb="GET">
+        <facade
+          class="BDMPaymentAPI" method="bdmListPayments" />
+		<tags>
+          <tag>Universal Access</tag>
+        </tags>
+      </method>
+    </resource>
+	<!-- END - USER STORY 1000 - PN - modify PaymentAPI -->
+	
+	<!-- START - Task 54873 - Tax Slip API -->
+	<resource path="/ua/taxslips" >
+      <!-- List all payments -->
+      <method verb="GET">
+        <facade
+          class="BDMPaymentAPI" method="listTaxSlips" />
+		<tags>
+          <tag>Universal Access</tag>
+        </tags>
+      </method>
+    </resource>
+    <resource path="/ua/viewtaxslip" >
+      <!-- List all payments -->
+      <method verb="GET">
+        <facade
+          class="BDMPaymentAPI" method="viewTaxSlipDetails" />
+		<tags>
+          <tag>Universal Access</tag>
+        </tags>
+      </method>
+    </resource>
+    <!-- END - Task 54873 - Tax Slip API - JSHAH -->
+    
+    <!-- BEGIN - Tax Slip PDF generation  -->
+    <resource path="/ua/viewtaxslip/{taxSlipDataID}/generatePDF">
+      <method verb="GET">
+        <produces>
+          <type>application/octet-stream</type>
+        </produces>
+        <facade
+          class="BDMPaymentAPI"
+          method="getTaxSlipPDF"
+        />
+        <tags>
+          <tag>Universal Access - Tax Slip PDF Generation</tag>
+        </tags>
+      </method>
+    </resource>
+
+    <!-- END - Tax Slip PDF generation  -->
+ </version>
+</api>

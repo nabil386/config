@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+
+<!-- Copyright 2010 Curam Software Ltd.
+
+ All rights reserved.
+ This software is the confidential and proprietary information of Curam
+ Software, Ltd. ("Confidential Information").You shall not disclose such
+ Confidential Information and shall use it only in accordance with the
+ terms of the license agreement you entered into with Curam Software.
+
+ -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+  <xs:element name="table">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="column" minOccurs="1" maxOccurs="unbounded"/>
+        <xs:element ref="row" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:string" use="required"/>
+      <xs:attribute name="override" type="xs:boolean" use="optional"/>
+   </xs:complexType>
+  </xs:element>
+
+
+  <xs:element name="column">
+    <xs:complexType mixed="true">
+      <xs:attribute name="name" type="xs:string" use="optional"/>
+      <xs:attribute name="type" type="xs:string" use="required"/>
+      <xs:attribute name="encoding" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="row">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+         <xs:element ref="attribute" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="remove" type="xs:boolean" use="optional"/>
+      <xs:attribute name="locales" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="attribute">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="value" minOccurs="1" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:string" use="required"/>
+      <xs:attribute name="encoding" type="xs:string" use="optional"/>
+   </xs:complexType>
+  </xs:element>
+
+  <!-- value can have no language or country elements. However, if it has language
+    and country, the language must be 2 lowercase letters and the country must be
+    2 uppercase letters. -->
+  <xs:element name="value">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="language" use="optional">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:pattern value="[a-z][a-z]"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+          <xs:attribute name="country" use="optional">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:pattern value="[A-Z][A-Z]"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+
+
+</xs:schema>

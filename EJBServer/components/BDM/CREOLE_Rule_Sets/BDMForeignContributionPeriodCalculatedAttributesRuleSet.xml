@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 73158 DEV: Contribution details Evidence in Foreign Engagement Case -->
+<RuleSet name="BDMForeignContributionPeriodCalculatedAttributesRuleSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+  <Class name="CalculateOnCreateAttributes"
+    extends="DefaultCalculateOnCreateAttributes" extendsRuleSet="EvidenceCalculatedAttributesRuleSet">
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message" />
+      </type>
+      <derivation>
+        <XmlMessage>Calculate on create attributes class for BDMForeignContributionPeriod Evidence</XmlMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="evidence">
+      <type>
+        <ruleclass name="BDMForeignContributionPeriod" ruleset="BDMForeignContributionPeriodRuleSet"/>
+      </type>
+      <derivation>
+        <specified />
+      </derivation>
+    </Attribute>
+    <Attribute name="countryCalc">
+      <type>
+        <codetableentry table="BDMSourceCountry"/>
+      </type>
+      <derivation>
+        <call class="curam.ca.gc.bdm.creole.impl.Statics" method="getFecCountry">
+          <type>
+            <codetableentry table="BDMSourceCountry"/>
+          </type>
+          <arguments>
+            <reference attribute="caseID" />
+          </arguments>
+        </call>
+      </derivation>
+    </Attribute>
+    
+    <Attribute name="caseID">
+      <type>
+        <javaclass name="java.lang.Number" />
+      </type>
+      <derivation>
+        <reference attribute="caseID">
+          <reference attribute="related_caseParticipantRole">
+            <reference attribute="evidence" />
+          </reference>
+        </reference>
+      </derivation>
+    </Attribute>
+  </Class>
+</RuleSet>

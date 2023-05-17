@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012, 2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- ====================================================================== -->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ====================================================================== -->
+<!-- This page resumes the inprogress Application execution.                -->
+<PAGE
+  PAGE_ID="Intake_resumeApplication"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <JSP_SCRIPTLET>
+
+	curam.omega3.request.RequestHandler
+	  rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+	String context = request.getContextPath() + "/";
+	String executionID = request.getParameter("executionID");
+	String url = "";
+
+	
+	curam.interfaces.ApplicationPkg.Application_getConcernRoleIDByIEGExecutionID_TH
+	th1 = new curam.interfaces.ApplicationPkg.Application_getConcernRoleIDByIEGExecutionID_TH();
+	th1.setFieldValue(th1.iegExecutionID$executionID_idx, executionID);
+	th1.callServer();
+	
+	String concernRoleID = th1.getFieldValue(th1.result$concernRoleID_idx);
+	
+	curam.interfaces.ApplicationPkg.Application_getApplicationDetails_TH
+	th2 = new curam.interfaces.ApplicationPkg.Application_getApplicationDetails_TH();
+	th2.setFieldValue(th2.executionID$executionID_idx, executionID);
+	th2.callServer();
+	
+	String applicationStatus = th2.getFieldValue(th2.result$applicationStatus_idx);
+	
+	if(executionID == null) {
+	  core.ScriptletMissingParamException e = new
+   	  core.ScriptletMissingParamException(-20002, "executionID");
+	  throw e;
+	}
+
+	if(applicationStatus.equals("AS19003") || applicationStatus.equals("AS19006")){
+	    url = context + "Intake_listApplicationsForPersonPage.do" + "?concernRoleID="+ curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+    	url += "&amp;" + rh.getSystemParameters();
+    	String encodeRedirectURL = response.encodeURL(url);
+    	response.sendRedirect(response.encodeURL(request.getContextPath() + "/ieg/CloseAndRedirect.jspx?redirect=" + encodeRedirectURL));
+	}else{
+	url = context + "ieg/Screening.do?" + "executionID=" + curam.omega3.request.RequestUtils.escapeURL(executionID);
+	url += "&amp;" + rh.getSystemParameters();
+	response.sendRedirect(response.encodeRedirectURL(url));
+	
+}
+  </JSP_SCRIPTLET>
+
+
+</PAGE>

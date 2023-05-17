@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMIncomeValidationRuleSet">
+
+	<!-- Validation Ruleset for Income Evidence.
+		- Tax Year is A numerical value between 1900 to 2999 -->
+	<Class extends="DefaultEvidenceValidationResult"
+		extendsRuleSet="EvidenceValidationRuleSet" name="ValidationResult">
+		
+		<!-- Setting rule class to IncomeRuleSet -->
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="Income" ruleset="IncomeRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		
+		<!--OOTB Attribute that needs to be initialized-->
+		<Attribute name="standardValidations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="Validation"
+						ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="incomeStandardValidations" />
+			</derivation>
+		</Attribute>
+
+		<!--  Validate that tax year is a numerical value -->
+		<Attribute name="incomeStandardValidations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="Validation"
+						ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="Validation"
+							ruleset="EvidenceValidationRuleSet" />
+					</listof>
+					<members>
+						<reference attribute="validateYearIsNumber" />
+						<reference attribute="validateYearIsPrevoiusYear" />
+						<reference attribute="validateNetIncomeIsGreaterThanZero" />
+						
+						
+					</members>
+				</fixedlist>
+			</derivation>
+		</Attribute>
+		
+		<!--  Error message throw of year not being numeric-->
+		<Attribute name="validateYearIsNumber">
+			<type>
+				<ruleclass name="Validation"
+					ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation"
+					ruleset="EvidenceValidationRuleSet">
+					<not>
+						<reference attribute="yearValidation" />
+					</not>
+					<ResourceMessage key="ERR_YEAR_NOT_NUMERIC"
+						resourceBundle="curam.bdm.pdc.rules.BDMIncomeValidationRuleSet">
+					</ResourceMessage>
+				</create>
+			</derivation>
+		</Attribute>
+
+		<!--  Validate year with regex validation of year being between 1900-2999 -->
+		<Attribute name="yearValidation">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.Statics"
+					method="validateYear">
+					<type>
+						<javaclass name="Boolean" />
+					</type>
+					<arguments>
+						<reference attribute="evidence" />
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		
+		
+		<!-- START : Tax year can be only the year prior to the current year -->
+		
+		<!--  Error message throw of year not being numeric-->
+		<Attribute name="validateYearIsPrevoiusYear">
+			<type>
+				<ruleclass name="Validation"
+					ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation"
+					ruleset="EvidenceValidationRuleSet">
+					
+						<reference attribute="previousYearValidation" />
+					
+					<ResourceMessage key="ERR_TAXYEAR_CAN_BE_PRIOR_YEAR"
+						resourceBundle="curam.bdm.pdc.rules.BDMIncomeValidationRuleSet">
+					</ResourceMessage>
+				</create>
+			</derivation>
+		</Attribute>
+		
+		
+		
+		<Attribute name="previousYearValidation">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.Statics"
+					method="validateYearForPreviousYear">
+					<type>
+						<javaclass name="Boolean" />
+					</type>
+					<arguments>
+						<reference attribute="evidence" />
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		
+		<!-- END : Tax year can be only the year prior to the current year -->
+		
+		<!-- START: Net income must be numeric and completed. -->
+		
+		
+			<Attribute name="validateNetIncomeIsGreaterThanZero">
+			<type>
+				<ruleclass name="Validation"
+					ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation"
+					ruleset="EvidenceValidationRuleSet">
+					<not>
+						<reference attribute="isIncomeGreaterThanZero" />
+					</not>
+					<ResourceMessage key="ERR_NETINCOME_MUST_BE_NUMERIC"
+						resourceBundle="curam.bdm.pdc.rules.BDMIncomeValidationRuleSet">
+					</ResourceMessage>
+				</create>
+			</derivation>
+		</Attribute>
+				
+    <Attribute name="isIncomeGreaterThanZero">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <all>
+          <fixedlist>
+             <listof>
+               <javaclass name="Boolean"/>
+             </listof>
+             <members>
+               <compare comparison="&gt;=">
+              <reference attribute="income">
+              <reference attribute="evidence"/>
+              </reference>
+             <Number value="0.00"/>
+            </compare>
+               
+             </members>
+           </fixedlist>
+          </all>
+     </derivation>
+     </Attribute>
+		
+		
+		
+		<!-- END: Net income must be numeric and completed. -->
+		
+	</Class>
+</RuleSet>

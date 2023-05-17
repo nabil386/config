@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:curam="http://www.curamsoftware.com/curam" xmlns:cing="http://www.curamsoftware.com/curam/jde/client/curam-ng" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+  <jsp:directive.page isErrorPage="false" pageEncoding="UTF-8" contentType="text/html;charset=UTF-8" isELIgnored="false" language="java" buffer="32kb" errorPage="/cw/ErrorPage.do" />
+  <jsp:output omit-xml-declaration="yes" />
+  <jsp:text><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></jsp:text>
+  <jsp:scriptlet>
+    pageContext.setAttribute("pageLocale", 
+      curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+        pageContext.getSession()).getLocale().toString());
+  </jsp:scriptlet>
+  <curam:userPreferences localeCode="${pageScope.pageLocale}"/>
+  <jsp:scriptlet>
+      <![CDATA[
+
+      javax.servlet.http.HttpServletRequest hsRequest;
+      javax.servlet.http.HttpSession httpSession;
+      hsRequest = (javax.servlet.http.HttpServletRequest) request;
+      httpSession = hsRequest.getSession();
+      
+      String context = request.getContextPath() + "/cw/";
+      String url;
+
+      String iegExecutionID = request.getParameter("executionID");
+      
+      String pagePlayerID = request.getParameter("id");
+      
+      // Call the Server to determine the next page
+      curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_exitIEGSrciptBeforeComplete_TH th = 
+        new curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_exitIEGSrciptBeforeComplete_TH(); 
+      th.setFieldValue(th.key$iegExecutionID_idx, iegExecutionID);       
+      th.setFieldValue(th.key$playerID_idx, pagePlayerID);
+      th.callServer();
+      
+      String playerID = th.getFieldValue(th.result$playerID_idx); 
+      String nextPage = th.getFieldValue(th.result$nextPage_idx); 
+      String pageType = th.getFieldValue(th.result$pageType_idx); 
+      String pageParams = th.getFieldValue(th.result$pageParams_idx); 
+
+      // determine whether to route to ResolvePage or PagePlayerPage
+      if(pageType.equals("resolve")){
+      
+        // send to the resolve script
+        url = context + "ResolvePage.do?";
+      
+      } else {
+        
+        // Forward to the page player
+        url = context + "PlayerPage.do?";
+      
+      }
+
+      if (!citizenworkspace.util.StringHelper.isEmpty(playerID)) {
+       url += "id=" + curam.omega3.request.RequestUtils.escapeURL(playerID) + "&";
+      }
+      
+      if (!citizenworkspace.util.StringHelper.isEmpty(nextPage)) {
+       url += "page=" + curam.omega3.request.RequestUtils.escapeURL(nextPage) + "&";
+      }
+      
+      if (!citizenworkspace.util.StringHelper.isEmpty(pageParams)) {
+       url += citizenworkspace.util.ParameterEncodingHelper.getEncodedPageParms(pageParams);
+      }
+
+      response.sendRedirect(response.encodeRedirectURL(url));
+
+        ]]>
+  </jsp:scriptlet>
+</jsp:root>

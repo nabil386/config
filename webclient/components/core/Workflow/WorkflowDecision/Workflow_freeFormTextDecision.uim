@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="Workflow_freeFormTextDecision"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="WorkflowDecisionUtil"
+    NAME="DISPLAY"
+    OPERATION="readQuestionDetails"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="WorkflowDecisionUtil"
+    NAME="ACTION"
+    OPERATION="answerFreeFormQuestion"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="taskID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="taskID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="taskID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="taskID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="taskID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="OkButton"
+      LABEL="ActionControl.Label.OK"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="TaskManagement_taskHome">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="TaskManagement_taskHome">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    WIDTH="100%"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="questionText"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER LABEL_WIDTH="10%">
+    <FIELD LABEL="Answer.Label">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="freeFormText"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

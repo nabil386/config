@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to select the type of evidence where an      -->
+<!-- issue has been identified and the type of issue.                       -->
+<PAGE
+  PAGE_ID="IssueDelivery_selectEvidenceTypeForIC"
+  WINDOW_OPTIONS="width=450"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAYEVIDENCETYPE"
+    OPERATION="listAllEvidenceTypesByAdminIntegratedCaseID"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="IssueDelivery"
+    NAME="ACTION"
+    OPERATION="getIssueEvidenceTypeAndMemberDetails"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="relatedCaseID"/>
+  <PAGE_PARAMETER NAME="adminIntegratedCaseID"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="adminIntegratedCaseID"
+    />
+    <TARGET
+      NAME="DISPLAYEVIDENCETYPE"
+      PROPERTY="key$adminIntegratedCaseID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      IMAGE="NextButton"
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        OPEN_MODAL="true"
+        PAGE_ID="IssueDelivery_addEvidenceForIC"
+        SAVE_LINK="false"
+      >
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="adminIntegratedCaseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="adminIntegratedCaseID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$evidenceType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="evidenceType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="relatedCaseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="relatedCaseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="30">
+
+
+    <FIELD LABEL="Field.Label.EvidenceType">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$list$list$dtls$evidenceType"
+          NAME="DISPLAYEVIDENCETYPE"
+          PROPERTY="result$list$list$dtls$evidenceType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$evidenceType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

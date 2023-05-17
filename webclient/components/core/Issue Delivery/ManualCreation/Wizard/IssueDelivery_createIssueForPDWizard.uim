@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to select the type of evidence where an      -->
+<!-- issue has been identified and the type of issue.                       -->
+<PAGE
+  PAGE_ID="IssueDelivery_createIssueForPDWizard"
+  WINDOW_OPTIONS="width=650,height=450"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="IssueDelivery"
+    NAME="DISPLAYWIZARD"
+    OPERATION="getCreateIssueDeliveryForPDWizard"
+  />
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <SERVER_INTERFACE
+    CLASS="Product"
+    NAME="DISPLAYISSUE"
+    OPERATION="readIssueConfiguration"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="IssueDelivery"
+    NAME="DISPLAYEVIDENCE"
+    OPERATION="listEvidence"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="IntegratedCase"
+    NAME="DISPLAYMEMBER"
+    OPERATION="readMemberDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="IssueDelivery"
+    NAME="ACTION"
+    OPERATION="create"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="issueConfigurationID"/>
+  <PAGE_PARAMETER NAME="evidenceType"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="adminIntegratedCaseID"/>
+  <PAGE_PARAMETER NAME="caseParticipantRoleID"/>
+  <PAGE_PARAMETER NAME="description"/>
+  <PAGE_PARAMETER NAME="directionParam"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="evidenceType"
+    />
+    <TARGET
+      NAME="DISPLAYEVIDENCE"
+      PROPERTY="key$key$evidenceType"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="issueConfigurationID"
+    />
+    <TARGET
+      NAME="DISPLAYISSUE"
+      PROPERTY="key$issueConfigurationID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseParticipantRoleID"
+    />
+    <TARGET
+      NAME="DISPLAYMEMBER"
+      PROPERTY="key$dtls$caseParticipantRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAYEVIDENCE"
+      PROPERTY="key$key$caseID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="issueConfigurationID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$dtls$dtls$issueConfigurationID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$dtls$dtls$caseID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAYMEMBER"
+      PROPERTY="result$details$concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$dtls$dtls$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+      ALIGNMENT="LEFT"
+    />
+
+
+    <ACTION_CONTROL
+      IMAGE="PreviousButton"
+      LABEL="ActionControl.Label.Previous"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="IssueDelivery_selectEvidenceIssueTypeForPDWizard"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="adminIntegratedCaseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="adminIntegratedCaseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="directionParam"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="directionParam"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="IssueDelivery_home">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+  <INCLUDE FILE_NAME="IssueDelivery_createIssueWizardView.vim"/>
+
+</PAGE>

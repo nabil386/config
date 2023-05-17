@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page lists client participation for all PlanItems                 -->
+<!-- of the service plan delivery                                           -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_listClientParticipationForServicePlan"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <MENU MODE="INTEGRATED_CASE">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="menuData"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY"
+    OPERATION="listClienParticipationForServicePlan"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET BOTTOM="false">
+
+
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ServicePlanDelivery_listPlanItemsForClientParticipation"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <LIST>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+
+
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ServicePlanDelivery_modifyClientParticipation"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dailyAttendanceID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="dailyAttendanceID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="DeleteButton"
+        LABEL="ActionControl.Label.Delete"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ServicePlanDelivery_cancelClientParticipation_fromCaseClientParticipationList"
+          WINDOW_OPTIONS="width=500,height=150"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dailyAttendanceID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="dailyAttendanceID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+
+
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.Date"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="serviceDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.PlanItem"
+      WIDTH="20"
+    >
+      <LINK PAGE_ID="ServicePlanDelivery_resolveViewPlanItemPage">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="plannedItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="plannedItemID"
+          />
+        </CONNECT>
+      </LINK>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ParticipationType"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="attendance"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER
+      LABEL="Container.Label.TimeParticipated"
+      STYLE="date-time"
+      WIDTH="15"
+    >
+
+
+      <FIELD ALIGNMENT="RIGHT">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="totalHours"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD ALIGNMENT="CENTER">
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Container.TotalTime.Separator"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD ALIGNMENT="LEFT">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="totalMinutes"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+    <CONTAINER
+      LABEL="Container.Label.TimeAbsent"
+      STYLE="date-time"
+      WIDTH="15"
+    >
+
+
+      <FIELD ALIGNMENT="RIGHT">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="hoursAbsent"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD ALIGNMENT="CENTER">
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Container.TotalTime.Separator"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD ALIGNMENT="LEFT">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="minutesAbsent"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ServicePlanDelivery_viewClientParticipation_from_ServicePlanClientParticipationList">
+    </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+  </LIST>
+
+
+</PAGE>

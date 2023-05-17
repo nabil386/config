@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2021. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant file used to gather files for a release.
+
+-->
+<project name="app_release" default="main">
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="./app_properties.xml" />
+
+  <!--  **************************  -->
+  <!--  ***  Import Utilities  ***  -->
+  <!--  **************************  -->
+  <import file="./app_utilities.xml" />
+
+  <!--  ***********************  -->
+  <!--  ***  R E L E A S E  ***  -->
+  <!--  ***********************  -->
+  <target name="main" description="Gather release files">
+
+    <antcall target="dispmsg"><param name="prm.msg" value="Building release"/></antcall>
+
+    <delete dir="${dir.release}" />
+    <mkdir dir="${dir.release}" />
+
+    <!-- Copy Data Manager files -->
+    <copy todir="${dir.release}/components" includeEmptyDirs="false">
+      <fileset dir="${dir.base.components}" >
+        <include name="*/Data_Manager/**" />
+        <include name="*/data/**"/>
+        <include name="*/rulesets/**" />
+        <include name="*/batch/**" />
+        <include name="*/lib/**" />
+        <include name="*/properties/**" />
+        <include name="*/userpreferences/**" />
+        <include name="*/tab/**" />
+        <include name="*/clientapps/**" />
+        <exclude name="**/CVS/*" />
+        <exclude name="**/TestData/**" />
+      </fileset>
+    </copy>
+
+    <!-- Copy Data Manager Config file -->
+    <copy todir="${dir.release}/project/config" includeEmptyDirs="false" >
+      <fileset dir="${dir.project.config}" >
+        <exclude name="**/CVS/*" />
+      </fileset>
+    </copy>
+
+    <!-- Copy Application property files -->
+    <copy todir="${dir.release}/project/properties" includeEmptyDirs="false" >
+      <fileset dir="${dir.project.properties}" casesensitive="false">
+        <exclude name="**/CVS/*" />
+        <exclude name="Bootstrap.properties" />
+        <exclude name="AppServer.properties" />
+      </fileset>
+    </copy>
+
+    <!-- Copy Application DDL Files -->
+    <copy todir="${dir.release}/build/ddl" >
+      <fileset dir="${dir.bld}/ddl" >
+        <exclude name="**/CVS/*" />
+      </fileset>
+    </copy>
+    <copy todir="${dir.release}/build/svr/gen/ddl" >
+      <fileset dir="${dir.bld.svr.gen}/ddl" >
+        <exclude name="**/CVS/*" />
+      </fileset>
+    </copy>
+
+    <!-- Copy Application Jar Files -->
+    <copy todir="${dir.release}/build/jar" >
+      <fileset dir="${dir.bld.jar}" >
+        <exclude name="**/CVS/*" />
+        <exclude name="*_src.zip" />
+      </fileset>
+    </copy>
+
+    <!-- Copy Application CodeTables -->
+    <copy todir="${dir.release}/build/svr/codetable/sql" >
+      <fileset dir="${dir.bld.svr.ctx.sql}" >
+        <include name="**/*.sql" />
+        <exclude name="**/CVS/*" />
+      </fileset>
+    </copy>
+
+    <!-- Copy Application Events -->
+    <copy todir="${dir.release}/build/svr/events/gen" >
+      <fileset dir="${j.gen.events}" >
+        <include name="**/*.dmx" />
+        <exclude name="**/CVS/*" />
+      </fileset>
+    </copy>
+
+    <!-- Copy SDEJ ant files necessary -->
+    <copy todir="${dir.release}/CuramSDEJ/bin" includeEmptyDirs="false" >
+      <fileset dir="${dir.sde.bin}" >
+        <exclude name="**/CVS/*" />
+      </fileset>
+    </copy>
+
+    <!-- Copy SDEJ libraries necessary -->
+    <copy todir="${dir.release}/CuramSDEJ/lib" includeEmptyDirs="false" >
+      <fileset dir="${dir.sde.lib}" casesensitive="false">
+        <exclude name="**/CVS/*" />
+      </fileset>
+    </copy>
+
+    <!-- Copy SDEJ scripts necessary for the Data Manager -->
+    <copy todir="${dir.release}/CuramSDEJ/scripts" includeEmptyDirs="false" >
+      <fileset dir="${dir.sde.scripts}" >
+        <exclude name="**/CVS/*" />
+      </fileset>
+    </copy>
+
+    <copy todir="${dir.release}/CuramSDEJ/drivers" includeEmptyDirs="false" >
+      <fileset dir="${dir.sde.drivers}" >
+        <exclude name="**/CVS/*" />
+      	<exclude name="h2*jar" />
+      </fileset>
+    </copy>
+
+    <copy todir="${dir.release}/CuramSDEJ/util" includeEmptyDirs="false" >
+      <fileset dir="${dir.sde}/util" >
+        <exclude name="**/CVS/*" />
+      </fileset>
+    </copy>
+
+   <!-- Copy built Application and WebServices EAR file -->
+    <copy todir="${dir.release}/ear" >
+      <fileset dir="${dir.ear}" >
+        <include name="**/*.ear" />
+      </fileset>
+    </copy>
+
+   <!-- Copy SDEJ XML Server file -->
+     <copy todir="${dir.release}/CuramSDEJ/xmlserver" >
+        <fileset dir="${dir.sde.xmlserver}" >
+          <exclude name="**/CVS/*" />
+        </fileset>
+     </copy>
+
+   <!-- Copy SDEJ batch and build files -->
+     <copy todir="${dir.release}" >
+       <fileset dir="${base.dir}" >
+          <include name="build.bat" />
+          <include name="build.sh" />
+          <include name="build.xml" />
+       </fileset>
+     </copy>
+	 
+   <!-- Generate a SetEnvironment.bat and SetEnvironment.sh file
+        into the release folder. -->
+	 <antcall target="generate.setenvironment.files"/>
+
+  </target>
+ 
+  <!--  ***********************************************************  -->
+  <!--  ***  Generates the SetEnvironment.bat and SetEnvironment.sh  -->
+  <!--  ***  files into the release folder.                          -->
+  <!--  ***********************************************************  -->
+  <target name="generate.setenvironment.files">
+  
+    <antcall target="dispmsg" inheritall="false">
+      <param name="prm.msg" value="Generating SetEnvironment Files"/>
+    </antcall>
+	
+    <!-- The SetEnvironment.bat file is generated first with the -->
+    <!-- following environment variables.                        -->
+    <echo file="${dir.release}/SetEnvironment.bat" append="false">
+rem set the base curam dir to be the directory that this file lives in
+set CURAM_DIR=%~dp0
+
+rem JDE Environment Variables
+set SERVER_MODEL_NAME=Curam
+set SERVER_DIR=%CURAM_DIR%
+set CURAMSDEJ=%CURAM_DIR%CuramSDEJ
+
+set CLIENT_PROJECT_NAME=Curam
+
+if "%LOCALE_LIST%" == "" (
+set LOCALE_LIST=en
+)ELSE (
+set LOCALE_LIST=${sysenv.LOCALE_LIST}
+)
+
+if "%SERVER_LOCALE_LIST%" == "" (
+set SERVER_LOCALE_LIST=en_US,en_GB,en
+)ELSE (
+set SERVER_LOCALE_LIST=${sysenv.SERVER_LOCALE_LIST}
+)
+
+set SERVER_COMPONENT_ORDER=${sysenv.SERVER_COMPONENT_ORDER}
+set CLIENT_COMPONENT_ORDER=${sysenv.CLIENT_COMPONENT_ORDER}
+
+if exist %CURAM_DIR%CustomEnvironment.bat (
+  call %CURAM_DIR%CustomEnvironment.bat
+)
+	</echo>
+	
+    <!-- The SetEnvironment.sh file is then generated first with the -->
+    <!-- following environment variables.                            -->
+	<echo file="${dir.release}/SetEnvironment.sh" append="false">#!/bin/sh
+export CURAM_DIR="$PWD"
+export SERVER_DIR=$CURAM_DIR
+export SERVER_MODEL_NAME=Curam
+export CURAMSDEJ=$CURAM_DIR/CuramSDEJ
+export CLIENT_PROJECT_NAME=Curam
+
+if [ -z "$SERVER_LOCALE_LIST" ]; then
+export SERVER_LOCALE_LIST=en_US,en_GB,en
+else
+export SERVER_LOCALE_LIST=${sysenv.SERVER_LOCALE_LIST}
+fi
+
+if [ -z "$LOCALE_LIST" ]; then
+  export LOCALE_LIST=en
+else
+  export LOCALE_LIST=${sysenv.LOCALE_LIST}
+fi
+
+export SERVER_COMPONENT_ORDER=${sysenv.SERVER_COMPONENT_ORDER}
+export CLIENT_COMPONENT_ORDER=${sysenv.CLIENT_COMPONENT_ORDER}
+
+if [ -f "$CURAM_DIR/CustomEnvironment.sh" ]; then
+  . $CURAM_DIR/CustomEnvironment.sh
+fi
+	</echo>
+		
+  </target>
+
+</project>
+

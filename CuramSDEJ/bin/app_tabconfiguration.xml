@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+  This is the ant build file for the Properties import and export.
+-->
+<project name="app_propertiesmanager" default="inserttabconfiguration">
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="./app_properties.xml" />
+
+  <!--  **************************  -->
+  <!--  ***  Import Utilities  ***  -->
+  <!--  **************************  -->
+  <import file="./app_utilities.xml" />
+
+  <!--  ******************************  -->
+  <!--  ***  Import Configuration  ***  -->
+  <!--  ******************************  -->
+  <target name="inserttabconfiguration"
+          depends="get.replaced.component.order"
+          description="Inserts tab configuration content into the database.">
+
+    <!-- By default validations are enabled. -->
+    <condition property="enable.tab.validation" value="false">
+      <istrue value="${disable.tab.validation}"/>
+    </condition>
+    <property name="enable.tab.validation" value="true"/>
+    <property name="dir.tab.extract" value="" />
+    <property name="dir.tab.merge" value="" />
+
+
+    <!-- Call app_batchlauncher.xml to launch the Batch Launcher -->
+    <ant
+      antfile="${dir.sde.bin}/app_batchlauncher.xml"
+      target="main"
+      inheritall="false">
+      <property name="batch.program" value="curam.util.internal.tab.intf.ImportConfiguration.importConfig"/>
+      <property name="batch.parameters" value="serverDirectory=${SERVER_DIR},serverComponentOrder=${replaced.component.order},serverLocaleList=${replaced.locale.list},enableValidations=${enable.tab.validation},extractDirectory=${dir.tab.extract},mergeDirectory=${dir.tab.merge}"/>
+
+      <property name="curam.disable.dynamic.properties" value="true"/>
+      <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+      <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+    </ant>
+
+    <condition property="deprecation.validation.set"   value="${curam.deprecation.reporting}" else="true">
+      <isset property="curam.deprecation.reporting" />
+    </condition>
+    <antcall target="deprecation.validation"/>
+
+  </target>
+
+
+
+  <!--  **************************************  -->
+  <!--  ***  REPLACE.COMMAS.IN.STRING      ***  -->
+  <!--  **************************************  -->
+  <target name="get.replaced.component.order">
+
+    <!-- Replace all the commas in SERVER_COMPONENT_ORDER with ; -->
+    <taskdef name="antstring" classname="curam.util.tools.AntStrings"
+      classpath="${jar.coreinf}:${jar.tools}"/>
+    <antstring to="replaced.component.order"
+          oldchar=","
+          newchar=";"
+          from="${SERVER_COMPONENT_ORDER}"
+          type="replace" />
+
+    <antstring to="replaced.locale.list"
+          oldchar=","
+          newchar=";"
+          from="${SERVER_LOCALE_LIST}"
+          type="replace" />
+
+  </target>
+
+  <!--  ********************************  -->
+  <!--  ***  Deprecation Validation  ***  -->
+  <!--  ********************************  -->
+  <target name="deprecation.validation"
+    description="Run deprecation validation for tab configuration files"
+    if="${deprecation.validation.set}">
+
+      <antcall target="dispmsg" inheritAll="false">
+        <param name="prm.msg" value="Start validating tab configuration files for deprecation."/>
+      </antcall>
+
+      <path id="deprecation.validation.classpath">
+        <pathelement path="${client.dir}/build/uim"/>
+        <path refid="jde.jars.classpath"/>
+        <pathelement path="${jar.log4j.2.core}"/>
+        <pathelement path="${jar.log4j.2.api}"/>
+      </path>
+
+      <taskdef name="tabValidator"
+        classname="curam.util.tools.TabConfigurationDeprecationValidator"
+        classpathref="deprecation.validation.classpath"/>
+
+      <tabValidator>
+        <fileset dir="${dir.base.components}">
+          <patternset>
+            <include name="*/tab/**/*.app"/>
+            <include name="*/tab/**/*.sec"/>
+            <include name="*/tab/**/*.ssp"/>
+            <include name="*/tab/**/*.tab"/>
+            <include name="*/tab/**/*.mnu"/>
+            <include name="*/tab/**/*.nav"/>
+            <include name="*/clientapps/**/*.app"/>
+            <include name="*/clientapps/**/*.sec"/>
+            <include name="*/clientapps/**/*.ssp"/>
+            <include name="*/clientapps/**/*.tab"/>
+            <include name="*/clientapps/**/*.mnu"/>
+            <include name="*/clientapps/**/*.nav"/>
+          </patternset>
+        </fileset>
+      </tabValidator>
+
+      <antcall target="dispmsg" inheritAll="false">
+        <param name="prm.msg" value="End validating tab configuration files for deprecation."/>
+      </antcall>
+  </target>
+</project>

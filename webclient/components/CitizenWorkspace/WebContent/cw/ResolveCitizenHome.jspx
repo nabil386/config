@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:curam="http://www.curamsoftware.com/curam" xmlns:cing="http://www.curamsoftware.com/curam/jde/client/curam-ng" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+  <jsp:directive.page isErrorPage="false" pageEncoding="UTF-8" contentType="text/html;charset=UTF-8" isELIgnored="false" language="java" buffer="32kb" errorPage="/cw/ErrorPage.do" />
+  <jsp:output omit-xml-declaration="yes" />
+  <jsp:text><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></jsp:text>
+  <jsp:scriptlet>
+    pageContext.setAttribute("pageLocale", 
+    curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+    pageContext.getSession()).getLocale().toString());
+  </jsp:scriptlet>
+  <curam:userPreferences localeCode="${pageScope.pageLocale}"/>
+  <jsp:scriptlet>
+    <![CDATA[
+    
+      curam.omega3.request.RequestHandler 
+          rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      javax.servlet.http.HttpServletRequest hsRequest;
+      javax.servlet.http.HttpSession httpSession;
+      hsRequest = (javax.servlet.http.HttpServletRequest) request;
+      httpSession = hsRequest.getSession();
+      java.security.Principal userPrincipal = hsRequest.getUserPrincipal();
+      String contextPath = request.getContextPath();    
+
+      String playerID = request.getParameter("id");
+
+      // resolve the citizen home page
+      curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_resolveCitizenHome_TH th = 
+        new curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_resolveCitizenHome_TH(); 
+      th.setFieldValue(th.key$playerID_idx, playerID);       
+      th.callServer();
+
+      String pageName = th.getFieldValue(th.result$nextPage_idx);
+      String playerPath = request.getContextPath();
+
+      pageName = curam.omega3.request.RequestUtils.escapeURL(pageName);
+
+      if (pageName.equals("CitizenReturnToMotivationResult")) {
+        String url = contextPath + "/cw/" + pageName + ".jspx";
+      
+        response.sendRedirect(response.encodeRedirectURL(url)); 
+      } else if(!citizenworkspace.util.StringHelper.isEmpty(pageName)) {        
+        
+	    out.print("<script>window.parent.displayContent({pageID:'" + pageName + "'})" + "</script>");
+        
+      } else {
+      
+        curam.omega3.user.UserPreferences prefs 
+          = curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession());
+
+        curam.util.client.plugin.PlugInUtils.setDisplayPhaseContext(
+          (HttpServletRequest) pageContext.getRequest(), pageContext, prefs.getLocale(), prefs.getTimeZone());       
+      
+        String landingPage = curam.omega3.request.RequestUtils.escapeURL(curam.util.client.tab.ApplicationConfigUtils.getLandingPage());
+        
+        if ("true".equalsIgnoreCase(th.getFieldValue(th.result$isEndSession_idx))) {
+        
+          // BEGIN, CR00459514, MV
+          httpSession.invalidate(); 
+          out.println("<html>");
+          out.println("<head>");
+          out.println("</head>");              
+          out.println("<body>");
+          out.println("<div> <br/></div>");
+          out.print("<script>window.parent.displayContent({pageID:'" + landingPage + "'})</script>");
+          out.println("</body>");
+          out.println("</html>");
+          // END, CR00459514
+        } else {
+        
+          // go home but pass any session id that is available
+          out.print("<script>window.parent.displayContent({pageID:'" + landingPage + "'})</script>");
+        
+        }
+      }
+      
+      ]]>
+  </jsp:scriptlet>
+
+</jsp:root>

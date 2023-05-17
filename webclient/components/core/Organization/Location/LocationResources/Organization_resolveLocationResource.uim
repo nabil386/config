@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2006, 2008 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!--                                                                        -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information"). You                 -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<!--                                                                        -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp  is used to resolve create issue.       -->
+<PAGE
+  PAGE_ID="Organization_resolveLocationResource"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+      curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+          
+ 
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      
+         String locStructureID = request.getParameter("locationStructureID");
+         String locID = request.getParameter("locationID");
+         
+      String url = "";
+      
+    if (locStructureID == null) {
+    // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "locationStructureID");
+       System.out.println(e);
+       throw e;
+       // END, CR00110216
+    }
+      
+         if (locID == null) {
+    // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "locationID");
+       System.out.println(e);
+       throw e;
+       
+       }
+         
+         
+      
+    url = context + "Organization_createLocationResourcePage.do" + "?locationID="
+    + curam.omega3.request.RequestUtils.escapeURL(locID) + "&amp;" + "locationStructureID=" + curam.omega3.request.RequestUtils.escapeURL(locStructureID) + "&amp;o3sfs=true&amp;norefresh=true";
+      // END, CR00110216
+      String resolve = request.getParameter("isResolve");
+      if(resolve != null){
+       url += "&amp;isResolve=true";  
+      }
+                 
+      url += "&amp;" + rh.getSystemParameters();
+      
+      response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+</PAGE>

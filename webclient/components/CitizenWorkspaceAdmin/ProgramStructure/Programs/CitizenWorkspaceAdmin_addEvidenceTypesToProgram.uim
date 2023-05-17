@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+
+<!-- Description                                                             -->
+<!-- ===========                                                             -->
+<!-- This page allows the user to add an evidence type to a benefit program  -->
+<PAGE
+  PAGE_ID="CitizenWorkspaceAdmin_addEvidenceTypesToProgram"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <SERVER_INTERFACE
+    CLASS="Program"
+    NAME="DISPLAY"
+    OPERATION="listEvidenceTypesToAdd"
+  />
+
+  <SERVER_INTERFACE
+    CLASS="Program"
+    NAME="ACTION"
+    OPERATION="addEvidenceTypes"
+    PHASE="ACTION"
+  />
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    />
+
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="programTypeID"/>
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="programTypeID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$programTypeID"
+    />
+  </CONNECT>
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="programTypeID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="programTypeID"
+    />
+  </CONNECT>
+
+  <LIST>
+    <CONTAINER
+      ALIGNMENT="CENTER" WIDTH="6"
+    >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$evidenceType"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="evidenceTabList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    
+    <FIELD
+      LABEL="Field.Title.EvidenceType"
+      WIDTH="95"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$evidenceType"
+        />
+      </CONNECT>
+    </FIELD>
+
+  </LIST>
+
+</PAGE>

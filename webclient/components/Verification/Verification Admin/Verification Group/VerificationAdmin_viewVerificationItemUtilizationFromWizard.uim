@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed Materials - Property of IBM
+    
+    Copyright IBM Corporation 2012. All Rights Reserved.
+    
+    US Government Users Restricted Rights - Use, duplication or disclosure 
+    restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="VerificationAdmin_viewVerificationItemUtilizationFromWizard"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+  WINDOW_OPTIONS="width=700,height=430"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+ <SERVER_INTERFACE
+    CLASS="MaintainVerificationGroup"
+    NAME="DISPLAY_ITEM"
+    OPERATION="readVGItemWizard"
+  />
+ 
+  
+  <PAGE_PARAMETER NAME="wizardID"/>
+  <PAGE_PARAMETER NAME="verificationItemID"/>  
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardID"
+    />
+    <TARGET
+      NAME="DISPLAY_ITEM"
+      PROPERTY="key$wizardID"
+    />
+  </CONNECT>  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="verificationItemID"
+    />
+    <TARGET
+      NAME="DISPLAY_ITEM"
+      PROPERTY="key$verificationItemID"
+    />
+  </CONNECT> 
+   
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+  >
+    <FIELD LABEL="Field.Label.FromDate" WIDTH="60">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ITEM"
+          PROPERTY="result$fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <!-- BEGIN, CR00348467, SSK -->
+    
+    <FIELD LABEL="Field.Label.UsageType" WIDTH="60">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ITEM"
+          PROPERTY="result$usageType"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.AddSecurityID">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ITEM"
+          PROPERTY="result$addSID"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD
+      LABEL="Field.Label.Todate"
+      USE_DEFAULT="false"
+      WIDTH="60"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ITEM"
+          PROPERTY="result$toDate"
+        />
+      </CONNECT>
+    </FIELD>   
+    
+    <FIELD LABEL="Field.Label.SuppliedByClient">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ITEM"
+          PROPERTY="result$clientSupplied"
+        />
+      </CONNECT>
+    </FIELD> 
+    
+    <FIELD LABEL="Field.Label.RemoveSecurityID">
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY_ITEM"
+          PROPERTY="result$removeSID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ITEM"
+          PROPERTY="result$removeSID"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00348467 -->
+</CLUSTER>
+
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.ExpiryDetails"
+  >
+    <FIELD
+      LABEL="Field.Label.ExpiryDays"
+      USE_BLANK="TRUE"
+      USE_DEFAULT="FALSE"
+      WIDTH="32"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ITEM"
+          PROPERTY="result$expiryDays"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ExpiryDateFrom" 
+      WIDTH="85">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ITEM"
+          PROPERTY="result$expiryDateFrom"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.WarningDays"
+      USE_BLANK="TRUE"
+      USE_DEFAULT="FALSE"
+      WIDTH="32"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ITEM"
+          PROPERTY="result$warningDays"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ExpiryDateEvent">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ITEM"
+          PROPERTY="result$expiryDateEvent"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Description"
+  >
+    <FIELD HEIGHT="4">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_ITEM"
+          PROPERTY="result$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

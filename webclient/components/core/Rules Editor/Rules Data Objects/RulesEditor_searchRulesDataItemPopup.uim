@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information"). You                 -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Popup rules data item search page.                                     -->
+<PAGE
+  PAGE_ID="RulesEditor_searchRulesDataItemPopup"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="RulesEditor"
+    NAME="DISPLAY"
+    OPERATION="listRulesDataObjectForRuleSetAndNode"
+  />
+  <SERVER_INTERFACE
+    CLASS="RulesEditor"
+    NAME="ACTION"
+    OPERATION="listDataObjectAttributes"
+    PHASE="ACTION"
+  />
+  <PAGE_PARAMETER NAME="ruleSetID"/>
+  <PAGE_PARAMETER NAME="nodeID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="ruleSetID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="ruleSetID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="nodeID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="nodeID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      DEFAULT="true"
+      IMAGE="SearchButton"
+      LABEL="ActionControl.SearchButton.label"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="THIS"/>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="ResetButton"
+      LABEL="ActionControl.ResetButton.label"
+    >
+      <LINK PAGE_ID="RulesEditor_searchRulesDataItemPopup">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="ruleSetID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="ruleSetID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="nodeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="nodeID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.CancelButton.label"
+      TYPE="DISMISS"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="30"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+
+
+    <FIELD LABEL="Field.Label.RulesDataObject">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="rulesDataObjectID"
+          NAME="DISPLAY"
+          PROPERTY="rulesDataObjectName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="rulesDataObjectID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST TITLE="List.Title.SearchResults">
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="attributeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="attributeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Title.Attribute"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="attributeID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.Description"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="attributeName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.Domain"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="attributeDomainName"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

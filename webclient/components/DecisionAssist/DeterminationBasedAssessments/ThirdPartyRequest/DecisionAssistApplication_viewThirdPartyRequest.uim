@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view third party request details.         -->
+<PAGE
+  PAGE_ID="DecisionAssistApplication_viewThirdPartyRequest"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <SERVER_INTERFACE
+    CLASS="DeterminationDelivery"
+    NAME="ASSESSMENTMENUCONTEXT"
+    OPERATION="viewAssessmentContextDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="ASSESSMENTMENUCONTEXT"
+      PROPERTY="key$dtls$dtls$determinationDeliveryID"
+    />
+  </CONNECT>
+  <PAGE_PARAMETER NAME="thirdPartyRequestID"/>
+  <PAGE_PARAMETER NAME="determinationDeliveryID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <SERVER_INTERFACE
+    CLASS="ThirdPartyRequest"
+    NAME="TPR_DETAILS_VIEW"
+    OPERATION="viewThirdPartyRequest"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="thirdPartyRequestID"
+    />
+    <TARGET
+      NAME="TPR_DETAILS_VIEW"
+      PROPERTY="key$key$key$thirdPartyRequestID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="TPR_DETAILS_VIEW"
+      PROPERTY="key$key$key$determinationDeliveryID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="DeterminationDelivery"
+    NAME="ASSESSMENTCONTEXT"
+    OPERATION="viewAssessmentContextDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="ASSESSMENTCONTEXT"
+      PROPERTY="key$dtls$dtls$determinationDeliveryID"
+    />
+  </CONNECT>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="ThirdPartyRequest"
+    NAME="LOAD_THIRD_PARTY_REQUEST"
+    OPERATION="readThirdPartyRequest"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="thirdPartyRequestID"
+    />
+    <TARGET
+      NAME="LOAD_THIRD_PARTY_REQUEST"
+      PROPERTY="key$key$key$thirdPartyRequestID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationDeliveryID"
+    />
+    <TARGET
+      NAME="LOAD_THIRD_PARTY_REQUEST"
+      PROPERTY="key$key$key$determinationDeliveryID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00214223, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00214223 -->
+    <FIELD LABEL="Field.Label.DateReceived">
+      <CONNECT>
+        <SOURCE
+          NAME="TPR_DETAILS_VIEW"
+          PROPERTY="result$dtls$dtls$dateReceived"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.lastUpdatedBy">
+      <CONNECT>
+        <SOURCE
+          NAME="TPR_DETAILS_VIEW"
+          PROPERTY="result$dtls$dtls$lastUpdatedBy"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00198489, SS -->
+      <!-- BEGIN, CR00184681, AK -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+        WINDOW_OPTIONS="width=625"
+      >
+        <!-- END, CR00184681 -->
+        <!-- END, CR00198489 -->
+        <CONNECT>
+          <SOURCE
+            NAME="TPR_DETAILS_VIEW"
+            PROPERTY="result$dtls$dtls$lastUpdatedBy"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ThirdPartyType">
+      <CONNECT>
+        <SOURCE
+          NAME="TPR_DETAILS_VIEW"
+          PROPERTY="result$dtls$dtls$type"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST TITLE="Cluster.Title.Questions">
+    <FIELD
+      LABEL="Field.Label.Questionnaire"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="TPR_DETAILS_VIEW"
+          PROPERTY="result$questionDtls$dtls$dtls$questionnaireName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Question"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="TPR_DETAILS_VIEW"
+          PROPERTY="result$questionDtls$dtls$dtls$questionText"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ClientAnswer"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="TPR_DETAILS_VIEW"
+          PROPERTY="result$questionDtls$dtls$dtls$clientAnswer"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Answer"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="TPR_DETAILS_VIEW"
+          PROPERTY="result$questionDtls$dtls$dtls$answer"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.AdditionalInformation"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TPR_DETAILS_VIEW"
+          PROPERTY="result$dtls$dtls$additionalInfo"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

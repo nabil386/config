@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2008,2023. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows user to search appeals.                               -->
+<PAGE
+  PAGE_ID="Appeal_search"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00397927, VT -->
+  <SERVER_INTERFACE
+    CLASS="Appeal"
+    NAME="ACTION"
+    OPERATION="searchAppeals"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00397927 -->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD LABEL="Field.Label.CaseReference">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$caseReference"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Appellant">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$appellantID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.AppellantType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$appellantType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.AppealType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$appealType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.CreationDate"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <FIELD LABEL="Field.Label.Respondent">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$respondentID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.RespondentType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$respondentType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.HearingDate"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$hearingDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$status"
+        />
+      </CONNECT>
+    </FIELD>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="Appeal_search"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+  <LIST TITLE="List.Title.SearchResults">
+    <FIELD
+      LABEL="Field.Title.CaseReference"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="appealSearchResultList$appealSearchResultDetails$caseReference"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Appeal_resolveAppealHome">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="appealSearchResultList$appealSearchResultDetails$caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.AppealType"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="appealSearchResultList$appealSearchResultDetails$appealType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.Appellant"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="appealSearchResultList$appealSearchResultDetails$appellantName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00198761, GP -->
+      <LINK PAGE_ID="Person_homePagePDC">
+        <!-- END, CR00198761 -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="appealSearchResultList$appealSearchResultDetails$appellantRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.Respondent"
+      WIDTH="24"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="appealSearchResultList$appealSearchResultDetails$respondentName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00198761, GP -->
+      <LINK PAGE_ID="Person_homePagePDC">
+        <!-- END, CR00198761 -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="appealSearchResultList$appealSearchResultDetails$respondentRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.CreationDate"
+      WIDTH="13"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="appealSearchResultList$appealSearchResultDetails$creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.Status"
+      WIDTH="13"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="appealSearchResultList$appealSearchResultDetails$status"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

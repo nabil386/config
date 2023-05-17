@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+	Copyright 2007 - 2021 Curam Software Ltd.
+	All rights reserved.
+	This software is the confidential and proprietary information of Curam
+	Software, Ltd. (&quot;Confidential Information&quot;).  You shall not disclose such
+	Confidential Information and shall use it only in accordance with the
+	terms of the license agreement you entered into with Curam Software.
+
+--><deployment-config>
+  <!--
+	requireServer = &quot;true&quot; means that a copy of the server application will be deployed
+	with the sample external application, as well as with the main application. This
+	has quite obvious memory implications as it means that two copies of the server EJBs
+	are deployed using twice the memory. This has been traded off against the fact that
+	the application server will optimize calls to these EJBs if they are deployed in the
+	same VM therefore giving better performance as the java objects do not have to be
+	marshalled and un-marshalled as part of the invocation process.
+	If this is to be changed to reduce memory footprint we should be aware that the change
+	will have an effect on the performance of the application and, depending on the hardware,
+	this might be quite noticeable. It should not be changed without due consideration.
+
+	-->
+  <ear name="Curam" requireServer="true">
+    <!--
+	This component order should not contain any external reference components.
+	-->
+    <components>BDMOAS,BDM,custom,PlatformConfig,CommonIntake,Intake,ReferralsLite,PCR,CREOLEProgramRecommendation,SummaryViews,CitizenContextViewer,WorkspaceServices,CitizenWorkspaceAdmin,FundPM,Appeal,SupervisorAppeals,DecisionAssist,DynamicEvidence,CEFWidgets,CMIS,IntelligentEvidenceGathering,IEGAdmin,Datastore,Editors,SupervisorWorkspace,Verification,ServicePlans,sample,CTMInfrastructure,SamplePublicAccess,AdvancedEvidenceSharing,EvidenceBroker,CuramFinancialAdapter,CuramMDAdapter,Advisor,EvidenceSharing,PDC,ValidationManager,SmartNavigator,core</components>
+    <context-root>/Curam</context-root>
+    <custom-web-xml>${SERVER_DIR}/components/PlatformConfig/ear/${dd.type}</custom-web-xml>
+  </ear>
+  <ear name="SamplePublicAccess" requireServer="false">
+    <components>SamplePublicAccessExternal</components>
+    <context-root>/SamplePublicAccess</context-root>
+  </ear>
+  <ear name="CitizenPortal" requireServer="false">
+    <components>CitizenAccount,CitizenWorkspace,IntelligentEvidenceGathering</components>
+    <context-root>/CitizenPortal</context-root>
+    <custom-web-xml>${SERVER_DIR}/components/CitizenWorkspace/ear/${dd.type}</custom-web-xml>
+  </ear>
+</deployment-config>

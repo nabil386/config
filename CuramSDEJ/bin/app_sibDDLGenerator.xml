@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2020. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  The sibDDLGenerator command generates the DDL statements needed to
+  create the DBMS (Database Management System) resources used by the messaging engine.
+
+-->
+<project name="app_sibDDLGenerator" default="createtables" basedir=".">
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="./app_properties.xml" />
+
+  <!--  **************************  -->
+  <!--  ***  Import Utilities  ***  -->
+  <!--  **************************  -->
+  <import file="./app_utilities.xml" />
+
+  <!-- App server specific properties -->
+  <property file="${app.prop.location}"/>
+
+  <!--  **************************  -->
+  <!--  ***  Optional Overrides  ***  -->
+  <!--  **************************  -->
+  <property name="schema.name"  value="${curam.db.username}"/>
+  
+  <!-- Profile default value on z/OS must be default -->
+  <condition property="profile.name" value="default">
+    <os family="z/os"/>
+  </condition>
+  <property name="profile.name" value="AppSrv01"/>
+
+  <property name="table.prefix"         value="EJBTIMER_"/>
+  <property name="timer.tablespace"     value="TIMERTS"/>
+  <property name="storage.group"        value="SYSDEFLT"/>
+
+  <!-- On zOS, use explicit encoding, else system encoding -->
+  <condition property="replace.encoding" value="Cp1047">
+    <os family="z/os"/>
+  </condition>
+  <property name="replace.encoding" value="${file.encoding}"/>
+
+  <!--For Oracle, check if database service name set. -->
+  <condition property="servicename.available">
+     <isset property="curam.db.oracle.servicename"/>      
+  </condition>
+
+  <!--  ***********************************  -->
+  <!--  ***  C R E A T E   T A B L E S  ***  -->
+  <!--  ***********************************  -->
+  <target name="createtables" depends="check.db.type, get.decrypted.db.password,
+                                       oracle.settings, db2.settings, zos.settings,
+                                       get.running.os, windows.settings, unix.settings"
+    description="Creates the tables used by the WebSphere messaging engine.">
+
+    <property name="create.sql" value="${dir.sde.bin}/SIBCreateTables.sql"/>
+
+    <condition property="sibDDLGenerator.extension" value=".bat" >
+      <os family="windows" />
+    </condition>
+    <!-- Unix platforms use sibDDLGenerator.sh -->
+    <property name="sibDDLGenerator.extension" value=".sh"/>
+
+    <exec executable="${WAS_HOME}/profiles/${profile.name}/bin/sibDDLGenerator${sibDDLGenerator.extension}"
+      failonerror="true"
+      output="${create.sql}">
+      <arg line="-system ${system.name}"/>
+      <arg line="-platform ${platform.name}"/>
+      <arg line="-schema ${schema.name}"/>
+      <arg line="-database ${db.name}"/>
+      <arg line="-user ${curam.db.username}"/>
+      <arg line="-statementend ;"/>
+      <arg line="-create"/>
+    </exec>
+
+    <antcall target="dispmsg">
+      <param name="prm.msg" value="Creating Messaging Engine Tables"/>
+    </antcall>
+    <sql
+      driver="${db.driver}"
+      url="${db.url}"
+      userid="${curam.db.username}"
+      password="${decrypted.db.password}"
+      autocommit="true"
+      onerror="continue">
+      <connectionProperty name="sslConnection" value="${curam.db2.ssl}"/>
+      <connectionProperty name="sslTrustStoreLocation" value="${curam.db2.ssl.truststore.location}"/>
+      <connectionProperty name="sslTrustStorePassword" value="${curam.db2.ssl.truststore.password}"/>
+      <classpath>
+        <path refid="database.common.classpath"/>
+      </classpath>
+      <transaction src="${create.sql}"/>
+      <transaction src="${dir.sde.bin}/CreateTablespace.ddl"/>
+      <transaction src="${dir.sde.bin}/CreateSchema.ddl"/>
+     </sql>
+
+      <!--  Delete the temporary files  -->
+     <delete file="${create.sql}"/>
+     <delete file="${dir.sde.bin}/CreateTablespace.ddl"/>
+     <delete file="${dir.sde.bin}/CreateSchema.ddl"/>
+     <delete file="${dir.sde.bin}/DropTablespace.ddl" />
+     <delete file="${dir.sde.bin}/DropSchema.ddl" />    
+
+  </target>
+
+  <!--  ******************************  -->
+  <!--  ***  D R O P  T A B L E S  ***  -->
+  <!--  ******************************  -->
+  <target name="droptables" depends="check.db.type, get.decrypted.db.password,
+                                     oracle.settings, db2.settings, zos.settings,
+                                     get.running.os, windows.settings, unix.settings"
+    description="Drops the tables used by the WebSphere messaging engine.">
+
+    <property name="drop.sql" value="${dir.sde.bin}/SIBDropTables.sql"/>
+
+    <condition property="sibDDLGenerator.extension" value=".bat" >
+      <os family="windows" />
+    </condition>
+    <!-- Unix platforms use sibDDLGenerator.sh -->
+    <property name="sibDDLGenerator.extension" value=".sh"/>
+
+    <exec executable="${WAS_HOME}/profiles/${profile.name}/bin/sibDDLGenerator${sibDDLGenerator.extension}"
+      failonerror="true"
+      output="${drop.sql}">
+      <arg line="-system ${system.name}"/>
+      <arg line="-platform ${platform.name}"/>
+      <arg line="-schema ${schema.name}"/>
+      <arg line="-database ${db.name}"/>
+      <arg line="-user ${curam.db.username}"/>
+      <arg line="-statementend ;"/>
+      <arg line="-drop"/>
+    </exec>
+
+    <replace file="${drop.sql}" encoding="${replace.encoding}" token="DROP DATABASE ${db.name};"/>
+    <replace file="${drop.sql}" encoding="${replace.encoding}" token="DROP STOGROUP SIBSG;"/>
+
+    <antcall target="dispmsg">
+      <param name="prm.msg" value="Dropping Messaging Engine Tables"/>
+    </antcall>
+    
+    <sql
+      driver="${db.driver}"
+      url="${db.url}"
+      userid="${curam.db.username}"
+      password="${decrypted.db.password}"
+      autocommit="true"
+      onerror="continue">
+        <connectionProperty name="sslConnection" value="${curam.db2.ssl}"/>
+        <connectionProperty name="sslTrustStoreLocation" value="${curam.db2.ssl.truststore.location}"/>
+        <connectionProperty name="sslTrustStorePassword" value="${curam.db2.ssl.truststore.password}"/>
+        <classpath>
+          <path refid="database.common.classpath"/>
+        </classpath>
+        <transaction src="${drop.sql}"/>
+        <transaction src="${dir.sde.bin}/DropSchema.ddl"/>
+        <transaction src="${dir.sde.bin}/DropTablespace.ddl"/>
+    </sql>
+
+    <!--  Delete the temporary files  -->
+    <delete file="${drop.sql}"/>
+    <delete file="${dir.sde.bin}/DropTablespace.ddl" />
+    <delete file="${dir.sde.bin}/DropSchema.ddl"/>
+     <delete file="${dir.sde.bin}/CreateTablespace.ddl" />
+     <delete file="${dir.sde.bin}/CreateSchema.ddl" />
+
+  </target>
+
+
+  <!--  **************************************  -->
+  <!--  ***  U T I L I T Y  T A R G E T S  ***  -->
+  <!--  **************************************  -->
+  <target name="oracle.settings" if="usingoracle" depends="ora.use.servicename">
+    <property name="system.name" value="oracle"/>
+    <property name="db.name"     value="${curam.db.name}"/>
+    <property name="db.driver"   value="oracle.jdbc.OracleDriver"/>
+    <property name="db.url"      value="jdbc:oracle:thin:@${curam.db.servername}:${curam.db.serverport}:${curam.db.name}"/>
+    <property name="transaction" value="ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD-HH24.MI.SS';"/>
+
+    <copy file="${WAS_HOME}/Scheduler/createSchemaOracle.ddl"     tofile="${dir.sde.bin}/CreateSchema.ddl" overwrite="true"/>
+    <copy file="${WAS_HOME}/Scheduler/dropSchemaOracle.ddl"       tofile="${dir.sde.bin}/DropSchema.ddl" overwrite="true"/>
+    <touch file="${dir.sde.bin}/CreateTablespace.ddl"/>
+    <touch file="${dir.sde.bin}/DropTablespace.ddl"/>
+
+    <property name="oracle.tablespace" value="USERS"/>
+
+    <replace dir="${dir.sde.bin}">
+      <include name="*.ddl"/>
+      <replacefilter token="@TABLE_PREFIX@"     value="${table.prefix}"/>
+      <replacefilter token="@SCHED_TABLESPACE@" value="${oracle.tablespace}"/>
+    </replace>
+
+  </target>
+
+  <target name="ora.use.servicename" if="servicename.available">
+     <property name="db.name"     value="${curam.db.oracle.servicename}"/>
+     <property name="db.url"      value="jdbc:oracle:thin:/@//${curam.db.servername}:${curam.db.serverport}/${curam.db.oracle.servicename}"/>
+  </target>
+
+  <target name="db2.settings" if="usingdb2">
+    <property name="system.name" value="db2"/>
+    <property name="db.name"     value="${curam.db.name}"/>
+    <property name="db.driver"   value="com.ibm.db2.jcc.DB2Driver"/>
+    <property name="db.url"      value="jdbc:db2://${curam.db.servername}:${curam.db.serverport}/${curam.db.name}"/>
+    <property name="transaction" value=""/>
+
+    <copy file="${WAS_HOME}/Scheduler/createSchemaDB2.ddl"     tofile="${dir.sde.bin}/CreateSchema.ddl" overwrite="true"/>
+    <copy file="${WAS_HOME}/Scheduler/dropSchemaDB2.ddl"       tofile="${dir.sde.bin}/DropSchema.ddl" overwrite="true"/>
+    <touch file="${dir.sde.bin}/CreateTablespace.ddl"/>
+    <touch file="${dir.sde.bin}/DropTablespace.ddl"/>
+
+    <property name="db2.tablespace" value="USERSPACE1"/>
+
+    <replace dir="${dir.sde.bin}">
+      <include name="*.ddl"/>
+      <replacefilter token="@TABLE_PREFIX@"     value="${table.prefix}"/>
+      <replacefilter token="@SCHED_TABLESPACE@" value="${db2.tablespace}"/>
+    </replace>
+
+  </target>
+
+  <target name="zos.settings" if="usingzos">
+    <property name="platform.name" value="zos"/>
+    <property name="system.name" value="db2"/>
+    <property name="db.name"     value="${curam.db.zos.dbname}"/>
+    <property name="db.driver"   value="com.ibm.db2.jcc.DB2Driver"/>
+    <property name="db.url"      value="jdbc:db2://${curam.db.servername}:${curam.db.serverport}/${curam.db.name}"/>
+    <property name="transaction" value="set CURRENT RULES = 'STD'"/>
+
+    <copy file="${WAS_HOME}/Scheduler/createSchemaDB2ZOS.ddl"     tofile="${dir.sde.bin}/CreateSchema.ddl" overwrite="true"/>
+    <copy file="${WAS_HOME}/Scheduler/createTablespaceDB2ZOS.ddl" tofile="${dir.sde.bin}/CreateTablespace.ddl" overwrite="true"/>
+    <copy file="${WAS_HOME}/Scheduler/dropSchemaDB2ZOS.ddl"       tofile="${dir.sde.bin}/DropSchema.ddl" overwrite="true"/>
+    <copy file="${WAS_HOME}/Scheduler/dropTablespaceDB2ZOS.ddl"   tofile="${dir.sde.bin}/DropTablespace.ddl" overwrite="true"/>
+
+    <replace dir="${dir.sde.bin}">
+      <include name="*.ddl"/>
+      <replacefilter token="@TABLE_PREFIX@"     value="${table.prefix}"/>
+      <replacefilter token="@SCHED_TABLESPACE@" value="${timer.tablespace}"/>
+      <replacefilter token="@STG@"              value="${storage.group}"/>
+      <replacefilter token="@DBNAME@"           value="${curam.db.zos.dbname}"/>
+    </replace>
+
+  </target>
+
+  <target name="windows.settings" if="os.windows">
+    <property name="platform.name" value="windows"/>
+  </target>
+
+  <target name="unix.settings" if="os.unix">
+    <property name="platform.name" value="unix"/>
+  </target>
+
+</project>

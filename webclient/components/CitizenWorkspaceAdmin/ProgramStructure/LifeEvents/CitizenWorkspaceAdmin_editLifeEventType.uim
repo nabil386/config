@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright 2010, 2012 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="CitizenWorkspaceAdmin_editLifeEventType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd" WINDOW_OPTIONS="width=975,height=650">
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+        </CONNECT>
+    </PAGE_TITLE>
+
+    <PAGE_PARAMETER NAME="lifeEventTypeID"/>
+
+    <SERVER_INTERFACE PHASE="DISPLAY" CLASS="LifeEventAdmin" NAME="READ_DETAILS" OPERATION="getLifeEventTypeDetails"/>
+    <SERVER_INTERFACE CLASS="LifeEventAdmin" NAME="GET_CHANNEL_DETAILS" OPERATION="getChannelDetails"/>
+    <SERVER_INTERFACE PHASE="DISPLAY" CLASS="LifeEventAdmin" NAME="GET_ALL_SCRIPTS" OPERATION="getAllIEGScripts"/>
+    <SERVER_INTERFACE PHASE="DISPLAY" CLASS="LifeEventAdmin" NAME="GET_ALL_SCHEMAS" OPERATION="getAllSchemas"/>
+    <SERVER_INTERFACE PHASE="DISPLAY" CLASS="LifeEventAdmin" NAME="GET_ALL_RULE_SETS" OPERATION="getAllRuleSets"/>
+    <SERVER_INTERFACE PHASE="DISPLAY" CLASS="LifeEventAdmin" NAME="GET_ALL_CHANNELS" OPERATION="getAllChannels"/>
+    <SERVER_INTERFACE PHASE="DISPLAY" CLASS="LifeEventAdmin" NAME="GET_DATA_HUB_CONTEXTS" OPERATION="getDataHubContexts"/>
+    <SERVER_INTERFACE PHASE="ACTION" CLASS="LifeEventAdmin" NAME="MODIFY_LIFE_EVENT" OPERATION="modifyLifeEventType"/>
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+        <TARGET NAME="READ_DETAILS" PROPERTY="key$id"/>
+    </CONNECT>
+
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+        <TARGET NAME="GET_CHANNEL_DETAILS" PROPERTY="key$lifeEventTypeID"/>
+    </CONNECT>
+
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+        <TARGET NAME="MODIFY_LIFE_EVENT" PROPERTY="details$id"/>
+    </CONNECT>
+
+    <CLUSTER LABEL_WIDTH="50" NUM_COLS="2">
+        <FIELD LABEL="Field.Label.Name">
+            <CONNECT>
+                <SOURCE NAME="READ_DETAILS" PROPERTY="result$name"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="MODIFY_LIFE_EVENT" PROPERTY="details$name"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.QuestionScript" USE_BLANK="true">
+            <CONNECT>
+                <INITIAL NAME="GET_ALL_SCRIPTS" HIDDEN_PROPERTY="scriptID" PROPERTY="name"/>
+            </CONNECT>
+            <CONNECT>
+                <SOURCE NAME="GET_CHANNEL_DETAILS" PROPERTY="questionScript"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="MODIFY_LIFE_EVENT" PROPERTY="channel$questionScript"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.Schema" USE_BLANK="true">
+            <CONNECT>
+                <INITIAL NAME="GET_ALL_SCHEMAS" PROPERTY="name"/>
+            </CONNECT>
+            <CONNECT>
+                <SOURCE NAME="READ_DETAILS" PROPERTY="schema"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="MODIFY_LIFE_EVENT" PROPERTY="schema$name"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.DataRuleset" USE_BLANK="true">
+            <CONNECT>
+                <INITIAL NAME="GET_ALL_RULE_SETS" PROPERTY="name"/>
+            </CONNECT>
+            <CONNECT>
+                <SOURCE NAME="GET_CHANNEL_DETAILS" PROPERTY="dataRulesetName"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="MODIFY_LIFE_EVENT" PROPERTY="channel$dataRulesetName"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.CitizenConsentEnabled">
+            <CONNECT>
+                <SOURCE NAME="GET_CHANNEL_DETAILS" PROPERTY="result$citizenConsentEnabledInd"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="MODIFY_LIFE_EVENT" PROPERTY="channel$citizenConsentEnabledInd"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.Channel">
+            <CONNECT>
+                <INITIAL NAME="GET_ALL_CHANNELS" PROPERTY="channelType"/>
+            </CONNECT>
+            <CONNECT>
+                <SOURCE NAME="GET_CHANNEL_DETAILS" PROPERTY="result$channelType"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="MODIFY_LIFE_EVENT" PROPERTY="details$channel"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.DisplayName">
+            <CONNECT>
+                <SOURCE NAME="GET_CHANNEL_DETAILS" PROPERTY="result$channelName"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="MODIFY_LIFE_EVENT" PROPERTY="channel$channelName"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.AnswerScript" USE_BLANK="true">
+            <CONNECT>
+                <INITIAL NAME="GET_ALL_SCRIPTS" HIDDEN_PROPERTY="scriptID" PROPERTY="name"/>
+            </CONNECT>
+            <CONNECT>
+                <SOURCE NAME="GET_CHANNEL_DETAILS" PROPERTY="answerScript"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="MODIFY_LIFE_EVENT" PROPERTY="channel$answerScript"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.DisplayRuleset" USE_BLANK="true">
+            <CONNECT>
+                <INITIAL NAME="GET_ALL_RULE_SETS" PROPERTY="name"/>
+            </CONNECT>
+            <CONNECT>
+                <SOURCE NAME="GET_CHANNEL_DETAILS" PROPERTY="ruleSet"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="MODIFY_LIFE_EVENT" PROPERTY="channel$ruleSet"/>
+            </CONNECT>
+        </FIELD>        
+        <FIELD LABEL="Field.Label.LaunchDescription">
+            <CONNECT>
+                <SOURCE NAME="GET_CHANNEL_DETAILS" PROPERTY="result$launchDescription"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="MODIFY_LIFE_EVENT" PROPERTY="channel$launchDescription"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.CitizenConsentOneChoice">
+            <CONNECT>
+                <SOURCE NAME="GET_CHANNEL_DETAILS" PROPERTY="result$citizenConsentOneChoiceInd"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="MODIFY_LIFE_EVENT" PROPERTY="channel$citizenConsentOneChoiceInd"/>
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.Common">
+            <CONNECT>
+                <SOURCE NAME="GET_CHANNEL_DETAILS" PROPERTY="result$isPopular"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="MODIFY_LIFE_EVENT" PROPERTY="channel$isPopular"/>
+            </CONNECT>
+        </FIELD>        
+    </CLUSTER>
+
+    <CLUSTER TITLE="Field.Label.AdvancedConfiguration" LABEL_WIDTH="50" NUM_COLS="2">
+        <CONDITION>
+            <IS_TRUE NAME="GET_CHANNEL_DETAILS" PROPERTY="result$dataHubContextInd"/>
+        </CONDITION>
+        <FIELD LABEL="Field.Label.DataHubContext" USE_BLANK="true">
+            <CONNECT>
+                <INITIAL NAME="GET_DATA_HUB_CONTEXTS" PROPERTY="logicalName"/>
+            </CONNECT>
+            <CONNECT>
+                <SOURCE NAME="GET_CHANNEL_DETAILS" PROPERTY="result$dataHubContext"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="MODIFY_LIFE_EVENT" PROPERTY="channel$dataHubContext"/>
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+    <CLUSTER TITLE="Field.Label.SubmissionText" SHOW_LABELS="false">
+        <FIELD HEIGHT="150" LABEL="Dummy.Label.SubmissionText">
+            <CONNECT>
+                <SOURCE NAME="GET_CHANNEL_DETAILS" PROPERTY="result$submissionText"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="MODIFY_LIFE_EVENT" PROPERTY="channel$submissionText"/>
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+    <CLUSTER TITLE="Field.Label.Description" SHOW_LABELS="false">
+        <FIELD HEIGHT="150" LABEL="Dummy.Label.Description">
+            <CONNECT>
+                <SOURCE NAME="GET_CHANNEL_DETAILS" PROPERTY="result$description"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="MODIFY_LIFE_EVENT" PROPERTY="channel$description"/>
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+    <CLUSTER TITLE="Field.Label.AdditionalInfo" SHOW_LABELS="false">
+        <FIELD HEIGHT="150" LABEL="Dummy.Label.AdditionalInfo">
+            <CONNECT>
+                <SOURCE NAME="GET_CHANNEL_DETAILS" PROPERTY="result$additionalInfo"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="MODIFY_LIFE_EVENT" PROPERTY="channel$additionalInfo"/>
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+
+    <!-- Save and Cancel buttons -->
+    <ACTION_SET>
+        <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+        <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel"/>
+    </ACTION_SET>
+
+</PAGE>

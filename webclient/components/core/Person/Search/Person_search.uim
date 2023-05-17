@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012, 2015. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002-2006, 2008, 2010 Curam Software Ltd.                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Person search page -->
+<!-- BEGIN, CR00238748, GD -->
+<?curam-deprecated Since Curam 6.0, replaced by Person_search1.uim?>
+<!-- END, CR00238748 -->
+<PAGE
+  PAGE_ID="Person_search"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00100777, BD -->
+  <SERVER_INTERFACE
+    CLASS="Person"
+    NAME="DISPLAY"
+    OPERATION="readSearchWithNicknamesIndicator"
+  />
+  <!-- END, CR00100777 -->
+  <!-- END, CR00100601, -->
+  <SERVER_INTERFACE
+    CLASS="Person"
+    NAME="ACTION"
+    OPERATION="search"
+    PHASE="ACTION"
+  />
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="personSearchKey$referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00050298, MR -->
+    <!-- BEGIN, HARP 64908, SP -->
+    <CONTAINER LABEL="Container.Label.LastName">
+      <FIELD
+        LABEL="Field.Label.LastName"
+        WIDTH="85"
+      >
+        <!-- END, HARP 64908 -->
+        <!-- END, CR00050298 -->
+
+
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="personSearchKey$surname"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.DoubleMetaphone"
+        WIDTH="15"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="personSearchKey$soundsLikeInd"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Label.DateOfBirth"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="personSearchKey$dateOfBirth"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AddressLineOne">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="personSearchKey$address"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.BirthLastName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="personSearchKey$birthSurname"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+    <!-- BEGIN, CR00100777, BD -->
+    <CONTAINER LABEL="Field.Label.FirstName">
+      <!-- BEGIN, CR00463142, EC -->
+      <FIELD LABEL="Field.Label.FirstName">
+        <!-- END, CR00463142 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="personSearchKey$forename"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.Nickname"
+        WIDTH="15"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$searchWithNicknamesInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="personSearchKey$nicknameInd"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <!-- END, CR00100777 -->
+    <FIELD
+      LABEL="Field.Label.Gender"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="personSearchKey$sex"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.City">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="personSearchKey$city"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MotherBirthName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="personSearchKey$motherSurname"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="LEFT"
+      BOTTOM="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="Person_search"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+
+
+    <DETAILS_ROW>
+
+
+      <INLINE_PAGE PAGE_ID="Person_homeTabDetails">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+
+
+    </DETAILS_ROW>
+
+
+    <FIELD WIDTH="2">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="duplicateInd"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00100692, PDN -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Person_duplicateHomePage"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="originalConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00100692 -->
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.ReferenceNumber"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$referenceNumber"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Person_resolveHomePage">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.FirstName"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$forename"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.LastName"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$surname"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.AddressLineOne"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$address"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.City"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$city"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.DateOfBirth"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$dateOfBirth"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

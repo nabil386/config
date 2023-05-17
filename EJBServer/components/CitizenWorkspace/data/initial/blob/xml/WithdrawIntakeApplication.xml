@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="page-schema.xsd">
+    <identifier name="Withdraw Application" />
+    <server alias="PROGRAMS" method="listIntakeProgramApplications">
+        <param name="key$applicationID" path="/PAGE/applicationID"/>
+    </server>
+    <server alias="REASONS" method="listWithdrawalRequestReasons">
+        <param name="key$intakeProgramApplicationID" path="/PAGE/applicationID"/>
+    </server>
+    <header>
+        <title id="Page.Title"/>
+        <description id="Page.Description"/>
+        <icon id="title_withdraw"/>
+    </header>
+    <content>
+        <forward target="/ans/applicationID"  source="/PAGE/applicationID" name="applicationID"/>
+        <cluster>
+            <title id="Application.Details"/>
+            <layout>
+                <compact-layout>no</compact-layout>
+                <num-cols>1</num-cols>
+                <label-width>50</label-width>
+            </layout>
+            
+            <iterator>
+                <title id="Programs.Label"/>
+                <param name="use-new-lines" value="true"/>
+                
+                <field type="CW_PROGRAM_SELECT" target="/prog[]" source="/PROGRAMS/xmlData/program[]/id">
+                    <title source="/PROGRAMS/xmlData/program[]/title" />
+                    <param name="labelClass" value="radio-label-no-highlight"/>
+                    <param name="enabled" source="/PROGRAMS/xmlData/program[]/enabled"/>
+                    <param name="auto-select" source="/PROGRAMS/xmlData/program[]/selected"/>
+                </field>
+            </iterator>
+            
+            <iterator>
+                <title id="Reason.Label"/>
+                <param name="use-new-lines" value="true"/>
+                
+                <field source="/REASONS/xmlData/requestReason[]/reasonCode" target="/ans/reason" type="CW_APPLICATION_SELECT" width="3">
+                    <title source="/REASONS/xmlData/requestReason[]/reasonDescription" />                
+                </field>
+            </iterator>
+            
+            <field type="PAGE_PLAYER_STRING_50" id="otherReason">
+                <title id="Reason.Other.Label"/>
+            </field>
+        </cluster>    
+        
+        <container>
+            <title id="Signature.Title"/>
+            <description id="Signature.Description"/>
+            
+            <checkbox-container>
+                <checkbox id="termsAndCond" value="true" mandatory="true">
+                    <title id="Signature.Check.Label" />
+                </checkbox>
+            </checkbox-container>
+            
+        </container>
+        <cluster>
+            <layout>
+                <compact-layout>no</compact-layout>
+                <num-cols>3</num-cols>
+                <width>100</width>
+                <label-width>40</label-width>
+            </layout>
+            <field type="PAGE_PLAYER_STRING_50" id="firstName" mandatory="true">
+                <title id="Signature.First.Name.Label"/>
+            </field>
+            
+            <field type="PAGE_PLAYER_STRING_50" id="middleName">
+                <title id="Signature.Middle.Name.Label"/>
+            </field>
+            
+            <field type="PAGE_PLAYER_STRING_50" id="lastName" mandatory="true">
+                <title id="Signature.Last.Name.Label"/>
+            </field>
+        </cluster>
+        
+    </content>
+    <navigation>
+        <nav-button name="no" page="IntakeApplications"/>
+        <nav-button name="yes" type="action"/>
+    </navigation>
+</page>

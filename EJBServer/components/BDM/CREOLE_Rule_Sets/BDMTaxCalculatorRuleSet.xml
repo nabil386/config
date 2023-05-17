@@ -1,0 +1,2112 @@
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	name="BDMTaxCalculatorRuleSet" xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+
+	<Class name="BDMTaxCalculator">
+	  <!-- specified values -->
+		<Attribute name="effectiveDate">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="province">
+			<type>
+				<codetableentry table="ProvinceType"/>
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="age">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="A_annualTaxableIncome">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<!-- TODO: BEGIN -->
+		<Attribute name="clientStatusRegisteredAsIndian">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="anyEmployersDeductedIncomeFromPay">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="anyEmployersDeductedIncomeFromPartOfPay">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="dependentSpouseDeclaredInTaxReturn">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="dependentChildrenCount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<!-- TODO: END -->
+		
+		<!-- If annual income < 0, default to 0 for T1-->
+		<Attribute name="T1_annualBasicFederalTaxDeduction">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<when>
+						<condition>
+							<compare comparison="&gt;">
+								<reference attribute="A_annualTaxableIncome" />
+								<Number value="-1" />
+							</compare>
+						</condition>
+						<value>
+							<reference attribute="T1_annualBasicFederalTaxDeduction">
+								<create ruleclass="CalculateFederalTax">
+									<this/>
+								</create>
+							</reference>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<Number value="0" />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		
+		<!-- If annual income < 0, default to 0 for T2-->
+		<Attribute name="T2_annualProvincialTaxDeduction">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<when>
+						<condition>
+							<compare comparison="&gt;">
+								<reference attribute="A_annualTaxableIncome" />
+								<Number value="-1" />
+							</compare>
+						</condition>
+						<value>
+							<reference attribute="T2_annualProvincialTaxDeduction">
+								<create ruleclass="CalculateProvincialTax">
+									<this/>
+								</create>
+							</reference>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<Number value="0" />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+		<!-- If annual income < 0 or province is not quebec, default to 0 for QY-->
+		<Attribute name="QY_annualIncomeTaxDeduction">
+		  <type>
+		    <javaclass name="Number"/>
+		  </type>
+		  <derivation>
+		    <choose>
+		      <type>
+		        <javaclass name="Number"/>
+		      </type>
+		      <when>
+		        <condition>
+		      <all>
+                <fixedlist>
+                  <listof>
+                    <javaclass name="Boolean"/>
+                  </listof>
+                  <members>
+                    <equals>
+                      <Code table="ProvinceType">
+                        <String value="QC"/>
+                      </Code>
+                      <reference attribute="province"/>
+                    </equals>
+                    <compare comparison="&gt;">
+                      <reference attribute="A_annualTaxableIncome" />
+                      <Number value="-1" />
+                    </compare>
+                  </members>
+                </fixedlist>
+              </all>
+		        </condition>
+		        <value>
+		          <reference attribute="QY_annualIncomeTaxDeduction">
+		            <create ruleclass="QuebecProvincialTaxCalculator">
+		              <this/>
+		            </create>
+		          </reference>
+		        </value>
+		      </when>
+		      <otherwise>
+		        <value>
+		          <Number value="0"/>
+		        </value>
+		      </otherwise>
+		    </choose>
+		  </derivation>
+		</Attribute>
+	</Class>
+	
+	<!-- Federal Tax Calculator Class -->
+	<Class name="CalculateFederalTax">
+		<Initialization>
+			<Attribute name="taxCalculator">
+				<type>
+					<ruleclass name="BDMTaxCalculator" />
+				</type>
+			</Attribute>
+		</Initialization>
+		
+		<Attribute name="R_federalTaxRate">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getFederalTaxRate">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/> 
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="K_federalTaxConstant">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getFederalTaxConstant">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/> 
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="federalTaxRateLowestIncome">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getFederalTaxRateLowestIncome">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/> 
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="TC_totalClaimAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<reference attribute="TC_totalClaimAmount">
+					<create ruleclass="DetermineTotalClaimAmount_Federal">
+						<reference attribute="taxCalculator"/>
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="K1_nonRefundablePersonalTaxCredit">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<arithmetic operation="*">
+					<reference attribute="TC_totalClaimAmount" />
+					<arithmetic operation="/">
+						<reference attribute="federalTaxRateLowestIncome"/>
+						<Number value="100"/>
+					</arithmetic>	
+				</arithmetic>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="K2_federalPensionEITaxCredit">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<!-- if calculated amount is negative then set it to 0.-->
+				<Number value="0" />
+			</derivation>			
+		</Attribute>
+		
+		<Attribute name="K3_federalOtherNonRefundableTaxCredits">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<Number value="0" />
+			</derivation>			
+		</Attribute>
+		
+		<Attribute name="federalCEAValue">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getOTFFederalCEA">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/> 
+					</arguments>
+				</call>
+				<!-- As as example to read the rate using rule objects -->
+				<!--
+				<property name="valueOn">
+					<object>
+						<reference attribute="OTFFederalCEA">
+							<create ruleclass="RateTableRates"/>
+						</reference>
+					</object>
+					<arguments>
+						<reference attribute="effectiveDate">
+							<reference attribute="taxCalculator"/>
+						</reference>
+					</arguments>
+				</property> -->				
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="K4_federalCEAFactor">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<arithmetic operation="*">
+					<min>
+						<fixedlist>
+							<listof>
+								<javaclass name="Number" />
+							</listof>
+							<members>
+								<reference attribute="federalCEAValue" />
+								<reference attribute="A_annualTaxableIncome">
+									<reference attribute="taxCalculator"/>
+								</reference>
+							</members>
+						</fixedlist>
+					</min>
+					<arithmetic operation="/">
+						<reference attribute="federalTaxRateLowestIncome"/>
+						<Number value="100"/>
+					</arithmetic>	
+				</arithmetic>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="T3_annualFederalTaxDeduction">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<max><!-- if calculated amount is negative then set it to 0.-->
+					<fixedlist>
+						<listof>
+							<javaclass name="Number" />
+						</listof>
+						<members>
+							<arithmetic operation="-">
+								<arithmetic operation="-">
+									<arithmetic operation="-">
+										<arithmetic operation="-">
+											<arithmetic operation="-">
+												<arithmetic operation="*">
+													<reference attribute="A_annualTaxableIncome">
+														<reference attribute="taxCalculator" />
+													</reference>
+													<arithmetic operation="/">
+														<reference attribute="R_federalTaxRate"/>
+														<Number value="100"/>
+													</arithmetic>	
+												</arithmetic>
+												<reference attribute="K_federalTaxConstant"/>
+											</arithmetic>
+											<reference attribute="K1_nonRefundablePersonalTaxCredit"/>
+										</arithmetic>
+										<reference attribute="K2_federalPensionEITaxCredit" />				
+									</arithmetic>
+									<reference attribute="K3_federalOtherNonRefundableTaxCredits"/>
+								</arithmetic>
+								<reference attribute="K4_federalCEAFactor"/>
+							</arithmetic>
+							<Number value="0" />
+						</members>
+					</fixedlist>
+				</max>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="LCF_labourSponsoredFundTaxCredit">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<Number value="0" />
+			</derivation>
+		</Attribute>	
+		
+		<Attribute name="T1_annualBasicFederalTaxDeduction">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<when>
+						<condition>
+							<reference attribute="isExceptionPath">
+								<create ruleclass="ExceptionPath_E02">
+									<reference attribute="taxCalculator"/>
+								</create>
+							</reference>
+						</condition>
+						<value>
+							<Number value="0" />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<max><!-- if calculated amount is negative then set it to 0.-->
+								<fixedlist>
+									<listof>
+										<javaclass name="Number" />
+									</listof>
+									<members>
+										<arithmetic operation="-">
+											<reference attribute="T3_annualFederalTaxDeduction"/>
+											<reference attribute="LCF_labourSponsoredFundTaxCredit"/>
+										</arithmetic>
+										<Number value="0" />
+									</members>
+								</fixedlist>
+							</max>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+	</Class>
+
+	<!-- Provincial tax calculator class-->
+	<Class name="CalculateProvincialTax">
+		<Initialization>
+			<Attribute name="taxCalculator">
+				<type>
+					<ruleclass name="BDMTaxCalculator" />
+				</type>
+			</Attribute>
+		</Initialization>
+		
+		<Attribute name="V_provincialTaxRate">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getProvincialTaxRate">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/> 
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="KP_provincialTaxConstant">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getProvincialTaxConstant">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/> 
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="provincialTaxRateLowestIncome">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getProvincialTaxRateLowestIncome">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/> 
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="TCP_totalClaimAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<reference attribute="TCP_totalClaimAmount">
+					<create ruleclass="DetermineTotalClaimAmount_Provincial">
+						<reference attribute="taxCalculator"/>
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>		
+		
+		<Attribute name="K1P_nonRefundablePersonalTaxCredit">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<arithmetic operation="*">
+					<reference attribute="TCP_totalClaimAmount" />
+					<arithmetic operation="/">
+						<reference attribute="provincialTaxRateLowestIncome"/>
+						<Number value="100"/>
+					</arithmetic>	
+				</arithmetic>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="K2P_provincialPensionEITaxCredit">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<!-- if calculated amount is negative then set it to 0.-->
+				<Number value="0" />
+			</derivation>			
+		</Attribute>
+		
+		<Attribute name="K3P_provincialOtherNonRefundableTaxCredits">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<Number value="0" />
+			</derivation>			
+		</Attribute>
+		
+		<Attribute name="provincialCEAValue">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getOTFProvincialCEA">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/> 
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="K4P_provincialCEAFactor">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number"/>
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<reference attribute="province">
+										<reference attribute="taxCalculator"/>
+								</reference>
+								<Code table="ProvinceType">
+									<String value="YT"/>
+								</Code>
+							</equals>
+						</condition>
+						<value>
+							<arithmetic operation="*">
+								<min>
+									<fixedlist>
+										<listof>
+											<javaclass name="Number" />
+										</listof>
+										<members>
+											<reference attribute="provincialCEAValue" />
+											<reference attribute="A_annualTaxableIncome">
+												<reference attribute="taxCalculator"/>
+											</reference>
+										</members>
+									</fixedlist>
+								</min>
+								<arithmetic operation="/">
+									<reference attribute="provincialTaxRateLowestIncome"/>
+									<Number value="100"/>
+								</arithmetic>	
+							</arithmetic>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<Number value="0" />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		
+		<!-- T4 = max(0, (V × A) – KP – K1P – K2P – K3P – K4P) -->
+		<Attribute name="T4_annualProvincialBasicTax">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<max><!-- if calculated amount is negative then set it to 0.-->
+					<fixedlist>
+						<listof>
+							<javaclass name="Number" />
+						</listof>
+						<members>
+							<arithmetic operation="-">
+								<arithmetic operation="-">
+									<arithmetic operation="-">
+										<arithmetic operation="-">
+											<arithmetic operation="-">
+												<arithmetic operation="*">
+													<reference attribute="A_annualTaxableIncome">
+														<reference attribute="taxCalculator" />
+													</reference>
+													<arithmetic operation="/">
+														<reference attribute="V_provincialTaxRate"/>
+														<Number value="100"/>
+													</arithmetic>	
+												</arithmetic>
+												<reference attribute="KP_provincialTaxConstant"/>
+											</arithmetic>
+											<reference attribute="K1P_nonRefundablePersonalTaxCredit"/>
+										</arithmetic>
+										<reference attribute="K2P_provincialPensionEITaxCredit" />				
+									</arithmetic>
+									<reference attribute="K3P_provincialOtherNonRefundableTaxCredits"/>
+								</arithmetic>
+								<reference attribute="K4P_provincialCEAFactor"/>
+							</arithmetic>
+							<Number value="0" />
+						</members>
+					</fixedlist>
+				</max>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="V1_ProvincialSurtax">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number"/>
+					</type>
+					<when>
+						<condition>
+							<any>
+								<fixedlist>
+									<listof>
+										<javaclass name="Boolean" />
+									</listof>
+									<members>
+										<equals>
+											<reference attribute="province">
+													<reference attribute="taxCalculator"/>
+											</reference>
+											<Code table="ProvinceType">
+												<String value="ON"/>
+											</Code>
+										</equals>
+										<equals>
+											<reference attribute="province">
+													<reference attribute="taxCalculator"/>
+											</reference>
+											<Code table="ProvinceType">
+												<String value="PE"/>
+											</Code>
+										</equals>
+									</members>
+								</fixedlist>
+							</any>
+						</condition>
+						<value>
+							<sum>
+								<dynamiclist>
+									<list>
+										<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getV1ProvincialSurTaxRatesInRange">
+											<type>
+												<javaclass name="List">
+													<ruleclass name="ProvincialSurtaxInRange" />
+												</javaclass>
+											</type>
+											<arguments>
+												<reference attribute="taxCalculator"/>
+												<reference attribute="T4_annualProvincialBasicTax"/>
+											</arguments>
+										</call>
+									</list>
+									<listitemexpression>
+										<arithmetic operation="*">
+											<arithmetic operation="-">
+												<reference attribute="T4_annualProvincialBasicTax" />
+												<max>
+												  <fixedlist>
+												    <listof>
+												      <javaclass name="Number"/>
+												    </listof>												 
+  												  <members>
+  												    <arithmetic operation="-">
+  												      <reference attribute="lowerBound">
+                                  <current/>
+                                </reference>
+                                <Number value ="0.01"/>
+  												    </arithmetic>
+  												    <Number value="0"/>
+  												  </members>
+												  </fixedlist>
+												</max>										
+											</arithmetic>
+											<arithmetic operation="/">
+												<reference attribute="surtaxRate">
+													<current/>
+												</reference>
+												<Number value="100"/>
+											</arithmetic>	
+										</arithmetic>
+									</listitemexpression>
+								</dynamiclist>
+							</sum>
+              <!--<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getV1ProvincialSurTaxRateInRange">fallback option.
+                <type>
+                  <javaclass name="Number" />
+                </type>
+                <arguments>
+                  <reference attribute="taxCalculator"/>
+                  <reference attribute="T4_annualProvincialBasicTax"/>
+                </arguments>
+              </call> -->
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<Number value="0" />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="provincialHealthPremium_V2Min">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getV2ProvincialHealthPremiumV2Min">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>	
+		
+		<Attribute name="provincialHealthPremium_V2Base">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getV2ProvincialHealthPremiumV2Base">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>	
+		
+		<Attribute name="provincialHealthPremium_V2Rate">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getV2ProvincialHealthPremiumV2Rate">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>	
+		
+		<Attribute name="provincialHealthPremium_V2LowerBound">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getV2ProvincialHealthPremiumLowerBound">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>	
+		
+		<Attribute name="V2_ProvincialHealthPremium">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number"/>
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<reference attribute="province">
+										<reference attribute="taxCalculator"/>
+								</reference>
+								<Code table="ProvinceType">
+									<String value="ON"/>
+								</Code>
+							</equals>
+						</condition>
+						<value>
+							<min>
+								<fixedlist>
+									<listof>
+										<javaclass name="Number" />
+									</listof>
+									<members>
+										<reference attribute="provincialHealthPremium_V2Min" />
+										<arithmetic operation="+">
+											<reference attribute="provincialHealthPremium_V2Base" />
+											<arithmetic operation="*">
+												<arithmetic operation="-">
+													<reference attribute="A_annualTaxableIncome">
+														<reference attribute="taxCalculator" />
+													</reference>
+													<reference attribute="provincialHealthPremium_V2LowerBound" />
+												</arithmetic>
+												<arithmetic operation="/">
+													<reference attribute="provincialHealthPremium_V2Rate"/>
+													<Number value="100"/>
+												</arithmetic>	
+											</arithmetic>
+										</arithmetic>
+									</members>
+								</fixedlist>
+							</min>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<Number value="0" />
+						</value>
+					</otherwise>
+				</choose>			
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="S_provincialTaxReductionBasicAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<max><!-- if calculated amount is negative then set it to 0.-->
+					<fixedlist>
+						<listof>
+							<javaclass name="Number" />
+						</listof>
+						<members>
+							<choose>
+								<type>
+									<javaclass name="Number" />
+								</type>
+								<when>
+									<condition>
+										<equals>
+											<reference attribute="province">
+													<reference attribute="taxCalculator"/>
+											</reference>
+											<Code table="ProvinceType">
+												<String value="ON"/>
+											</Code>
+										</equals>
+									</condition>
+									<value>
+										<reference attribute="S_provincialTaxReductionBasicAmount">
+											<create ruleclass="ProvincialSFactor_Ontario">
+												<reference attribute="taxCalculator"/>
+												<this/>
+											</create>
+										</reference>
+									</value>
+								</when>
+								<when>
+									<condition>
+										<equals>
+											<reference attribute="province">
+													<reference attribute="taxCalculator"/>
+											</reference>
+											<Code table="ProvinceType">
+												<String value="BC"/>
+											</Code>
+										</equals>
+									</condition>
+									<value>
+										<reference attribute="S_provincialTaxReductionBasicAmount">
+											<create ruleclass="ProvincialSFactor_BC">
+												<reference attribute="taxCalculator"/>
+												<this/>
+											</create>
+										</reference>
+									</value>
+								</when>
+								<otherwise>
+									<value>
+										<Number value="0" />
+									</value>
+								</otherwise>
+							</choose>
+							<Number value="0" />
+						</members>
+					</fixedlist>
+				</max>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="LCP_labourSponsoredFundTaxCredit">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<Number value="0" />
+			</derivation>
+		</Attribute>
+		
+		<!-- T2 = T4 + V1 + V2 - S - LCP -->
+		<Attribute name="T2_annualProvincialTaxDeduction">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<max><!-- if calculated amount is negative then set it to 0.-->
+					<fixedlist>
+						<listof>
+							<javaclass name="Number" />
+						</listof>
+						<members>
+							<choose>
+								<type>
+									<javaclass name="Number" />
+								</type>
+								<when>
+									<condition>
+										<reference attribute="isExceptionPath">
+											<create ruleclass="ExceptionPath_E02">
+												<reference attribute="taxCalculator"/>
+											</create>
+										</reference>
+									</condition>
+									<value>
+										<Number value="0" />
+									</value>
+								</when>
+								<when>
+									<condition>
+										<equals>
+											<reference attribute="province">
+													<reference attribute="taxCalculator"/>
+											</reference>
+											<Code table="ProvinceType">
+												<String value="QC"/>
+											</Code>
+										</equals>
+									</condition>
+									<value>
+										<Number value="0" />
+									</value>
+								</when>
+								<otherwise>
+									<value>
+										<arithmetic operation="-">
+											<arithmetic operation="-">
+												<arithmetic operation="+">
+													<arithmetic operation="+">
+														<reference attribute="T4_annualProvincialBasicTax"/>
+														<reference attribute="V1_ProvincialSurtax"/>
+													</arithmetic>
+													<reference attribute="V2_ProvincialHealthPremium"/>
+												</arithmetic>
+												<reference attribute="S_provincialTaxReductionBasicAmount" />
+											</arithmetic>
+											<reference attribute="LCP_labourSponsoredFundTaxCredit" />
+										</arithmetic>
+									</value>
+								</otherwise>
+							</choose>
+							<Number value="0" />
+						</members>
+					</fixedlist>
+				</max>
+			</derivation>
+		</Attribute>
+	</Class>
+	
+	<Class name="ProvincialSurtaxInRange">
+		<Attribute name="lowerBound">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="upperBound">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="surtaxRate">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+	</Class>
+	
+	<Class name="ExceptionPath_E02">
+		<Initialization>
+			<Attribute name="taxCalculator">
+				<type>
+					<ruleclass name="BDMTaxCalculator" />
+				</type>
+			</Attribute>
+		</Initialization>
+		
+		<Attribute name="isExceptionPath">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<all>
+					<fixedlist>
+						<listof>
+							<javaclass name="Boolean" />
+						</listof>
+						<members>
+							<reference attribute="clientStatusRegisteredAsIndian">
+								<reference attribute="taxCalculator" />
+							</reference>
+							<not>
+								<any>
+									<fixedlist>
+										<listof>
+											<javaclass name="Boolean" />
+										</listof>
+										<members>
+											<reference attribute="anyEmployersDeductedIncomeFromPay">
+												<reference attribute="taxCalculator" />
+											</reference>
+											<reference attribute="anyEmployersDeductedIncomeFromPartOfPay">
+												<reference attribute="taxCalculator" />
+											</reference>							
+										</members>
+									</fixedlist>
+								</any>
+							</not>
+						</members>
+					</fixedlist>
+				</all>
+			</derivation>
+		</Attribute>
+	</Class>
+	
+	<Class name="DetermineTotalClaimAmount_Federal">
+		<Initialization>
+			<Attribute name="taxCalculator">
+				<type>
+					<ruleclass name="BDMTaxCalculator" />
+				</type>
+			</Attribute>
+		</Initialization>
+		
+		<Attribute name="basicPersonalAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getTD1FederalBasicPersonal">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/> 
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="ageAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<when>
+						<condition>
+							<compare comparison="&gt;">
+								<reference attribute="age">
+									<reference attribute="taxCalculator"/>
+								</reference>
+								<Number value="64" />
+							</compare>
+						</condition>
+						<value>
+							<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getTD1FederalAgeAmount">
+								<type>
+									<javaclass name="Number" />
+								</type>
+								<arguments>
+									<reference attribute="taxCalculator"/> 
+								</arguments>
+							</call>
+						</value>
+					</when>	
+					<otherwise>
+						<value>
+							<Number value="0"/>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="spouseInLawAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<when>
+						<condition>
+							<reference attribute="dependentSpouseDeclaredInTaxReturn">
+									<reference attribute="taxCalculator"/>
+							</reference>
+						</condition>
+						<value>
+							<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getTD1FederalSpouseInLawAmount">
+								<type>
+									<javaclass name="Number" />
+								</type>
+								<arguments>
+									<reference attribute="taxCalculator"/> 
+								</arguments>
+							</call>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<Number value="0"/>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="TC_totalClaimAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<sum>
+					<fixedlist>
+						<listof>
+							<javaclass name="Number" />
+						</listof>
+						<members>
+							<reference attribute="basicPersonalAmount" />
+							<reference attribute="ageAmount" />
+							<reference attribute="spouseInLawAmount" />
+						</members>
+					</fixedlist>
+				</sum> 
+			</derivation>
+		</Attribute>
+	</Class>
+	
+	<Class name="DetermineTotalClaimAmount_Provincial">
+		<Initialization>
+			<Attribute name="taxCalculator">
+				<type>
+					<ruleclass name="BDMTaxCalculator" />
+				</type>
+			</Attribute>
+		</Initialization>
+		
+		<Attribute name="basicPersonalAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getTD1ProvincialBasicPersonal">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/> 
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="ageAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<when>
+						<condition>
+							<compare comparison="&gt;">
+								<reference attribute="age">
+									<reference attribute="taxCalculator"/>
+								</reference>
+								<Number value="64" />
+							</compare>
+						</condition>
+						<value>
+							<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getTD1ProvincialAgeAmount">
+								<type>
+									<javaclass name="Number" />
+								</type>
+								<arguments>
+									<reference attribute="taxCalculator"/> 
+								</arguments>
+							</call>
+						</value>
+					</when>	
+					<otherwise>
+						<value>
+							<Number value="0"/>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="spouseInLawAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<when>
+						<condition>
+							<reference attribute="dependentSpouseDeclaredInTaxReturn">
+									<reference attribute="taxCalculator"/>
+							</reference>
+						</condition>
+						<value>
+							<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getTD1ProvincialSpouseInLawAmount">
+								<type>
+									<javaclass name="Number" />
+								</type>
+								<arguments>
+									<reference attribute="taxCalculator"/> 
+								</arguments>
+							</call>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<Number value="0"/>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="childAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<when>
+						<condition>
+							<all>
+								<fixedlist>
+									<listof>
+										<javaclass name="Boolean"/>
+									</listof>
+									<members>
+										<equals>
+											<reference attribute="province">
+													<reference attribute="taxCalculator"/>
+											</reference>
+											<Code table="ProvinceType">
+												<String value="SK"/>
+											</Code>																	
+										</equals>
+										<compare comparison="&gt;">
+											<reference attribute="dependentChildrenCount">
+												<reference attribute="taxCalculator"/>
+											</reference>
+											<Number value="0"/>
+										</compare>
+									</members>															
+								</fixedlist>
+							</all>
+						</condition>
+						<value>
+							<arithmetic operation="*">
+								<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getTD1ProvincialChildAmount">
+									<type>
+										<javaclass name="Number" />
+									</type>
+									<arguments>
+										<reference attribute="taxCalculator"/> 
+									</arguments>
+								</call>
+								<reference attribute="dependentChildrenCount">
+									<reference attribute="taxCalculator"/>
+								</reference>
+							</arithmetic>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<Number value="0"/>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="TCP_totalClaimAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<reference attribute="province">
+										<reference attribute="taxCalculator"/>
+								</reference>
+								<Code table="ProvinceType">
+									<String value="NS"/>
+								</Code>
+							</equals>
+						</condition>
+						<value>
+							<reference attribute="TCP_totalClaimAmount">
+								<create ruleclass="DetermineTotalClaimAmount_Provincial_NovaScotia">
+									<reference attribute="taxCalculator"/>
+								</create>
+							</reference>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<sum>
+								<fixedlist>
+									<listof>
+										<javaclass name="Number" />
+									</listof>
+									<members>
+										<reference attribute="basicPersonalAmount" />
+										<reference attribute="ageAmount" />
+										<reference attribute="spouseInLawAmount" />
+										<reference attribute="childAmount" />
+									</members>
+								</fixedlist>
+							</sum> 
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+	</Class>
+	
+	<Class name="DetermineTotalClaimAmount_Provincial_NovaScotia">
+		<Initialization>
+			<Attribute name="taxCalculator">
+				<type>
+					<ruleclass name="BDMTaxCalculator" />
+				</type>
+			</Attribute>
+		</Initialization>
+		
+		<Attribute name="basicPersonalAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getTD1ProvincialBasicPersonal">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/> 
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="basicPersonalAmountBelowThreshold">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getTD1ProvincialBasicPersonalBelowThreshold">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/> 
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="ageAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<when>
+						<condition>
+							<compare comparison="&gt;">
+								<reference attribute="age">
+									<reference attribute="taxCalculator"/>
+								</reference>
+								<Number value="64" />
+							</compare>
+						</condition>
+						<value>
+							<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getTD1ProvincialAgeAmount">
+								<type>
+									<javaclass name="Number" />
+								</type>
+								<arguments>
+									<reference attribute="taxCalculator"/> 
+								</arguments>
+							</call>
+						</value>
+					</when>	
+					<otherwise>
+						<value>
+							<Number value="0"/>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="ageAmountBelowThreshold">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<when>
+						<condition>
+							<compare comparison="&gt;">
+								<reference attribute="age">
+									<reference attribute="taxCalculator"/>
+								</reference>
+								<Number value="64" />
+							</compare>
+						</condition>
+						<value>
+							<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getTD1ProvincialAgeAmountBelowThreshold">
+								<type>
+									<javaclass name="Number" />
+								</type>
+								<arguments>
+									<reference attribute="taxCalculator"/> 
+								</arguments>
+							</call>
+						</value>
+					</when>	
+					<otherwise>
+						<value>
+							<Number value="0"/>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="spouseInLawAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<when>
+						<condition>
+							<reference attribute="dependentSpouseDeclaredInTaxReturn">
+									<reference attribute="taxCalculator"/>
+							</reference>
+						</condition>
+						<value>
+							<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getTD1ProvincialSpouseInLawAmount">
+								<type>
+									<javaclass name="Number" />
+								</type>
+								<arguments>
+									<reference attribute="taxCalculator"/> 
+								</arguments>
+							</call>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<Number value="0"/>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="spouseInLawAmountBelowThreshold">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<when>
+						<condition>
+							<reference attribute="dependentSpouseDeclaredInTaxReturn">
+									<reference attribute="taxCalculator"/>
+							</reference>
+						</condition>
+						<value>
+							<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getTD1ProvincialSpouseInLawAmountBelowThreshold">
+								<type>
+									<javaclass name="Number" />
+								</type>
+								<arguments>
+									<reference attribute="taxCalculator"/> 
+								</arguments>
+							</call>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<Number value="0"/>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="TCP_totalClaimAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<sum>
+					<fixedlist>
+						<listof>
+							<javaclass name="Number" />
+						</listof>
+						<members>
+							<reference attribute="basicPersonalAmount" />
+							<reference attribute="basicPersonalAmountBelowThreshold" />
+							<reference attribute="ageAmount" />
+							<reference attribute="ageAmountBelowThreshold" />
+							<reference attribute="spouseInLawAmount" />
+							<reference attribute="spouseInLawAmountBelowThreshold" />
+						</members>
+					</fixedlist>
+				</sum>
+			</derivation>
+		</Attribute>
+	</Class>
+	
+	<Class name="ProvincialSFactor_Ontario">
+		<Initialization>
+			<Attribute name="taxCalculator">
+				<type>
+					<ruleclass name="BDMTaxCalculator" />
+				</type>
+			</Attribute>
+			<Attribute name="calculateProvincialTaxObj">
+				<type>
+					<ruleclass name="CalculateProvincialTax" />
+				</type>
+			</Attribute>
+		</Initialization>
+		
+		<Attribute name="SFactorAmount">
+			<type>
+				<javaclass name="Number"/>
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getOTFProvincialS">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="PTRBAmount1">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<sum>
+					<fixedlist>
+						<listof>
+							<javaclass name="Number" />
+						</listof>
+						<members>
+							<reference attribute="T4_annualProvincialBasicTax">
+								<reference attribute="calculateProvincialTaxObj" />
+							</reference>
+							<reference attribute="V1_ProvincialSurtax">
+								<reference attribute="calculateProvincialTaxObj" />
+							</reference>
+						</members>
+					</fixedlist>
+				</sum>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="Y_dependentsFactor">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<Number value="0" />
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="PTRBAmount2">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<arithmetic operation="-">
+					<arithmetic operation="*">
+						<arithmetic operation="+">
+							<reference attribute="Y_dependentsFactor" />
+							<reference attribute="SFactorAmount" />						
+						</arithmetic>
+						<Number value="2" />
+					</arithmetic>
+					<reference attribute="PTRBAmount1" />
+				</arithmetic>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="S_provincialTaxReductionBasicAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<min>
+					<fixedlist>
+						<listof>
+							<javaclass name="Number" />
+						</listof>
+						<members>
+							<reference attribute="PTRBAmount1" />
+							<reference attribute="PTRBAmount2" />
+						</members>
+					</fixedlist>
+				</min>
+			</derivation>
+		</Attribute>
+	</Class>
+	
+	<Class name="ProvincialSFactor_BC">
+		<Initialization>
+			<Attribute name="taxCalculator">
+				<type>
+					<ruleclass name="BDMTaxCalculator" />
+				</type>
+			</Attribute>
+			<Attribute name="calculateProvincialTaxObj">
+				<type>
+					<ruleclass name="CalculateProvincialTax" />
+				</type>
+			</Attribute>
+		</Initialization>
+		
+		<Attribute name="SFactorAmount">
+			<type>
+				<javaclass name="Number"/>
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getOTFProvincialS">
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<arguments>
+						<reference attribute="taxCalculator"/>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="taxableIncomeRange1">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<Number value="21418" />
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="taxableIncomeRange2">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<Number value="34929" />
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="multiplyNumberRange2">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<Number value="0.0356" />
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="S_provincialTaxReductionBasicAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<when>
+						<condition>
+							<any>
+								<fixedlist>
+									<listof>
+										<javaclass name="Boolean" />
+									</listof>
+									<members>
+										<compare comparison="&lt;">
+											<reference attribute="A_annualTaxableIncome">
+												<reference attribute="taxCalculator" />
+											</reference>
+											<reference attribute="taxableIncomeRange1" />
+										</compare>
+										<equals>
+											<reference attribute="A_annualTaxableIncome">
+												<reference attribute="taxCalculator" />
+											</reference>
+											<reference attribute="taxableIncomeRange1" />
+										</equals>
+									</members>
+								</fixedlist>
+							</any>
+						</condition>
+						<value>
+							<min>
+								<fixedlist>
+									<listof>
+										<javaclass name="Number" />
+									</listof>
+									<members>
+										<reference attribute="T4_annualProvincialBasicTax">
+											<reference attribute="calculateProvincialTaxObj" />
+										</reference>
+										<reference attribute="SFactorAmount" />
+									</members>
+								</fixedlist>
+							</min>
+						</value>
+					</when>
+					<when>
+						<condition>
+							<all>
+								<fixedlist>
+									<listof>
+										<javaclass name="Boolean" />
+									</listof>
+									<members>
+										<compare comparison="&lt;">
+											<reference attribute="taxableIncomeRange1" />
+											<reference attribute="A_annualTaxableIncome">
+												<reference attribute="taxCalculator" />
+											</reference>
+										</compare>
+										<any>
+											<fixedlist>
+												<listof>
+													<javaclass name="Boolean" />
+												</listof>
+												<members>
+													<compare comparison="&lt;">
+														<reference attribute="A_annualTaxableIncome">
+															<reference attribute="taxCalculator" />
+														</reference>
+														<reference attribute="taxableIncomeRange2" />
+													</compare>
+													<equals>
+														<reference attribute="A_annualTaxableIncome">
+															<reference attribute="taxCalculator" />
+														</reference>
+														<reference attribute="taxableIncomeRange2" />
+													</equals>
+												</members>
+											</fixedlist>
+										</any>
+									</members>
+								</fixedlist>
+							</all>
+						</condition>
+						<value>
+							<min>
+								<fixedlist>
+									<listof>
+										<javaclass name="Number" />
+									</listof>
+									<members>
+										<reference attribute="T4_annualProvincialBasicTax">
+											<reference attribute="calculateProvincialTaxObj" />
+										</reference>
+										<arithmetic operation="-">
+											<reference attribute="SFactorAmount" />
+											<arithmetic operation="*">
+												<arithmetic operation="-">
+													<reference attribute="A_annualTaxableIncome">
+														<reference attribute="taxCalculator" />
+													</reference>
+													<reference attribute="taxableIncomeRange1" />
+												</arithmetic>
+												<reference attribute="multiplyNumberRange2" />
+											</arithmetic>								
+										</arithmetic>
+									</members>
+								</fixedlist>
+							</min>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<Number value="0" />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+	</Class>
+	<!-- Unable to transform various tax rate table's data into rule objects for these reasons:
+		1. Tax rates by income rates are configured using sub rows which a normal rate rule objects cannot read. If we have to keep it in a single row and column 
+		then we have to create separate rate table types for each area, there will be lower and upper bound rate rows should be created for each year by area, build various fixedlist timelines with interval values.
+		2. Based on input province we need to derive area code and use area code as column name for <rate> tag. But the <rate> tag does seem to support only hard coded "column" attribute and cannot be referenced for another attribute.
+		3. From TD1 ratetable we need to fetch single cell that consists of all three min,max and cell value which seems not supported by default rate rule objects.
+		4. For Provincial Surtax V1 calculation we need to get all rows that has income ranges less than or within annual income and cannot be done easily with rule objects.
+		5. For Provincial Surtax V2 we need to get income range lower bound value.
+		In future we could consider building a single rate table ruleset that satisfies all the above scenarios through direct reads on rate tables.
+		For now unless unless the structures a rate table has to be changed there is no code delivery needed, and rates can be configured/loaded directly.   
+	 -->
+	<Class name="RateTableRates">
+		<Attribute name="OTFFederalCEA">
+			<type>
+	  			<javaclass name="curam.creole.value.Timeline">
+	  				<javaclass name="Number" />
+	  			</javaclass>
+	  		</type>
+	  		<derivation>
+	  			<rate table="BDMRTT5" row="BDMRRT10" column="BDMRCT25" />
+	  		</derivation>
+		</Attribute>
+	</Class>
+	
+	
+	
+	<Class name="QuebecProvincialTaxCalculator">
+	  <Initialization>
+      <Attribute name="taxCalculator">
+        <type>
+          <ruleclass name="BDMTaxCalculator" />
+        </type>
+      </Attribute>
+    </Initialization>
+
+    <Attribute name="QT_taxRate">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <arithmetic operation="/">
+          <call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getProvincialTaxRate">
+            <type>
+              <javaclass name="Number"/>
+            </type>
+            <arguments>
+              <reference attribute="taxCalculator"/>
+            </arguments>
+          </call> 
+          <Number value="100"/> 
+        </arithmetic>            
+      </derivation>
+    </Attribute>
+    
+    <Attribute name="QK_taxConstant">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getProvincialTaxConstant">
+          <type>
+            <javaclass name="Number"/>
+          </type>
+          <arguments>
+            <reference attribute="taxCalculator"/>
+          </arguments>
+        </call>        
+      </derivation>
+    </Attribute>
+    
+    <Attribute name="quebecTaxRateLowestIncome">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <arithmetic operation="/">
+          <call class="curam.ca.gc.bdm.sl.financial.impl.TaxCalculatorRates" method="getProvincialTaxRateLowestIncome">
+            <type>
+              <javaclass name="Number"/>
+            </type>
+            <arguments>
+              <reference attribute="taxCalculator"/>
+            </arguments>
+          </call> 
+          <Number value="100"/> 
+        </arithmetic>   
+      </derivation>
+    </Attribute>
+         
+    <Attribute name="QE_totalClaimAmount">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>    
+        <reference attribute="TCP_totalClaimAmount">
+          <create ruleclass="DetermineTotalClaimAmount_Provincial">
+            <reference attribute="taxCalculator"/>
+          </create>
+        </reference>       
+      </derivation>
+    </Attribute> 
+    
+    <Attribute name="nonRefundablePersonalTaxCredit">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <arithmetic operation="*">
+          <reference attribute="QE_totalClaimAmount"/>
+          <reference attribute="quebecTaxRateLowestIncome"/>       
+        </arithmetic>
+      </derivation>
+    </Attribute>
+    
+    
+    <!-- (QT * QI) - QK - Non-Refundable Personal Tax Credit -->
+    <Attribute name="QY_annualIncomeTax">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <arithmetic operation="-">
+          <arithmetic operation="-">        
+            <arithmetic operation="*">
+              <reference attribute="QT_taxRate"/>
+              <reference attribute="A_annualTaxableIncome">
+                <reference attribute="taxCalculator"/>
+              </reference>     
+            </arithmetic>           
+            <reference attribute="QK_taxConstant"/>                 
+          </arithmetic>       
+          <reference attribute="nonRefundablePersonalTaxCredit"/>
+        </arithmetic>
+      </derivation>
+    </Attribute>
+    
+    <!-- If QY is greater than 0 and they are not registered as Status Indian, then QY, else 0 -->
+	<Attribute name="QY_annualIncomeTaxDeduction">
+		<type>
+	    	<javaclass name="Number"/>
+	    </type>
+	    <derivation>
+			<choose>
+		        <type>
+		        	<javaclass name="Number"/>
+		        </type>
+				<when>
+					<condition>
+						<reference attribute="isExceptionPath">
+							<create ruleclass="ExceptionPath_E02">
+								<reference attribute="taxCalculator"/>
+							</create>
+						</reference>
+					</condition>
+					<value>
+						<Number value="0" />
+					</value>
+				</when>
+	         	<when>            
+	           		<condition>
+						<compare comparison="&gt;">
+							<reference attribute="QY_annualIncomeTax"/>
+							<Number value="-1"/>              
+						</compare>
+	           		</condition>
+	           		<value>
+	             		<reference attribute="QY_annualIncomeTax"/>
+	           		</value>
+	         	</when>
+	         	<otherwise>
+	           		<value>
+	             		<Number value="0"/>
+	           		</value>
+	         		</otherwise>
+	       		</choose>
+			</derivation>
+		</Attribute>  
+	</Class>
+</RuleSet>

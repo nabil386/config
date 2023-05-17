@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMOASMaritalRelationshipRuleSet" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class extends="DynamicEvidence"
+		extendsRuleSet="DynamicEvidenceRuleSet"
+		name="BDMOASMaritalRelationship">
+		<Attribute name="caseParticipantRoleID">
+			<Annotations />
+			<type>
+				<javaclass name="java.lang.Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="relatedCaseParticipantRoleID">
+			<Annotations />
+			<type>
+				<javaclass name="java.lang.Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="relationshipStatus">
+			<Annotations />
+			<type>
+				<codetableentry table="BDMOASMaritalRelation" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="relationshipChangeType">
+			<Annotations />
+			<type>
+				<codetableentry table="BDMOASMaritalChangeType" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="startDate">
+			<Annotations />
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="endDate">
+			<Annotations />
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="related_caseParticipantRoleID">
+			<Annotations />
+			<type>
+				<ruleclass name="CaseParticipantRole"
+					ruleset="CaseEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<reference attribute="caseParticipantRoleRecord">
+					<create ruleclass="CaseParticipantRoleCalculator"
+						ruleset="DynamicEvidenceRuleSet">
+						<reference attribute="caseParticipantRoleID" />
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="related_relatedCaseParticipantRoleID">
+			<Annotations />
+			<type>
+				<ruleclass name="CaseParticipantRole"
+					ruleset="CaseEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<reference attribute="caseParticipantRoleRecord">
+					<create ruleclass="CaseParticipantRoleCalculator"
+						ruleset="DynamicEvidenceRuleSet">
+						<reference attribute="relatedCaseParticipantRoleID" />
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute
+			name="related_BDMOASLivingApartforReasonsBeyondControl">
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass
+						name="BDMOASLivingApartforReasonsBeyondControl"
+						ruleset="BDMOASLivingApartforReasonsBeyondControlRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<call
+					class="curam.dynamicevidence.cer.impl.DynamicEvidenceStatics"
+					method="getChildList">
+					<type>
+						<javaclass name="java.util.List">
+							<ruleclass
+								name="BDMOASLivingApartforReasonsBeyondControl"
+								ruleset="BDMOASLivingApartforReasonsBeyondControlRuleSet" />
+						</javaclass>
+					</type>
+					<arguments>
+						<this />
+						<String value="BDMOASLivingApartforReasonsBeyondControl" />
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

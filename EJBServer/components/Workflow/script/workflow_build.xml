@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<!-- 
+  Copyright 2011-2012 Curam Software Ltd.
+  All rights reserved.
+  
+  This software is the confidential and proprietary information of Curam
+  Software, Ltd. ("Confidential Information").  You shall not disclose such
+  Confidential Information and shall use it only in accordance with the
+  terms of the license agreement you entered into with Curam Software.
+-->
+
+<!-- This file contains the application build script extensions for Workflow. -->
+<project name="workflowbuild">
+
+  <property name="dir.workflow.script" location="${sysenv.SERVER_DIR}/components/Workflow/script"/>
+  
+  <import file="${dir.workflow.script}/app_workflow.xml" />
+  
+  <target name="importProcessDefinitions" description="Imports the workflow process definitions into the database">
+    <ant
+      antfile="${dir.workflow.script}/app_workflow.xml"
+      target="importProcessDefinitions"
+      inheritall="false">
+      <property name="sysenv.CURAMSDEJ" value="${sysenv.CURAMSDEJ}"/>
+      <property name="sysenv.SERVER_DIR" value="${sysenv.SERVER_DIR}"/>
+      <property name="dir.bld.svr.workflow" value="${sysenv.SERVER_DIR}/build/svr/workflow"/>
+    </ant>
+  </target>
+  
+  <!--  *******************************  -->
+  <!--  ***  W E B S E R V I C E S  ***  -->
+  <!--  *******************************  -->
+  
+  <target name="generateWebservices" description="Generates the Workflow web services">
+    <ant
+      antfile="${dir.workflow.script}/app_workflow.xml"
+      target="workflow.webservices"
+      inheritall="false">
+      <property name="sysenv.CURAMSDEJ" value="${sysenv.CURAMSDEJ}"/>
+      <property name="sysenv.SERVER_DIR" value="${sysenv.SERVER_DIR}"/>
+      <property name="dir.bld.svr.workflow" value="${sysenv.SERVER_DIR}/build/svr/workflow"/>
+      <property name="wsdd.file" value="${dir.bld.svr.web}/${project.package}/server-config.wsdd"/>
+    </ant>
+   </target>
+    
+  <!--  ***************************  -->
+  <!--  ***  Validate workflow  ***  -->
+  <!--  ***************************  -->
+  <target name="validateworkflow"
+    description="Validate a workflow definition (use -Dworkflow.file=)">
+    <ant
+      antfile="${dir.workflow.script}/app_workflowvalidator.xml"
+      target="validateworkflow"
+      inheritall="false">
+      <property name="sysenv.CURAMSDEJ" value="${sysenv.CURAMSDEJ}"/>
+    </ant>
+  </target>
+
+  <!--  ************************************  -->
+  <!--  ***  Validate all the workflows  ***  -->
+  <!--  ************************************  -->
+  <target name="validateallworkflows"
+    description="Validate all the workflow definitions in Curam Application.">
+    <ant
+      antfile="${dir.workflow.script}/app_workflowvalidator.xml"
+      target="validateallworkflows"
+      inheritall="false">
+      <property name="sysenv.CURAMSDEJ" value="${sysenv.CURAMSDEJ}"/>
+      <property name="dir.workflow.script" value="${dir.workflow.script}"/>
+    </ant>
+  </target>
+
+  <!--  ***********************************************************  -->
+  <!--  ***  Validate the workflows in the specified directory  ***  -->
+  <!--  ***********************************************************  -->
+  <target name="validateworkflows"
+    description="Validate the workflow definitions in the specified directory (use -Dworkflow.dir=)">
+    <ant
+      antfile="${dir.workflow.script}/app_workflowvalidator.xml"
+      target="validateworkflows"
+      inheritall="false">
+      <property name="sysenv.CURAMSDEJ" value="${sysenv.CURAMSDEJ}"/>
+      <property name="dir.workflow.script" value="${dir.workflow.script}"/>
+    </ant>
+  </target>
+
+  <!--  *********************************************  -->
+  <!--  ***   List workflow process definitions   ***  -->
+  <!--  *********************************************  -->
+  <target name="listworkflows"
+          description="List all process definitions available in the database">
+    <ant
+      antfile="${dir.workflow.script}/app_workflowimport.xml"
+      target="listworkflows"
+      inheritall="false">
+      <property name="sysenv.CURAMSDEJ" value="${sysenv.CURAMSDEJ}"/>
+    </ant>
+  </target>
+
+  <!--  ***************************  -->
+  <!--  ***  Import workflow  ***  -->
+  <!--  ***************************  -->
+  <target name="importworkflow"
+    description="Import a workflow process definition (use -Dworkflow.file=  -Doverwrite=)">
+    <ant
+      antfile="${dir.workflow.script}/app_workflowimport.xml"
+      target="importworkflow"
+      inheritall="false">
+      <property name="sysenv.CURAMSDEJ" value="${sysenv.CURAMSDEJ}"/>
+    </ant>
+  </target>
+
+  <!--  ***********************************************************  -->
+  <!--  ***  Import the workflows in the specified directory  ***  -->
+  <!--  ***********************************************************  -->
+  <target name="importworkflows"
+    description="Import the workflow definitions in the specified directory (use -Dworkflow.dir=  -Doverwrite=)">
+    <ant
+      antfile="${dir.workflow.script}/app_workflowimport.xml"
+      target="importworkflows"
+      inheritall="false">
+      <property name="sysenv.CURAMSDEJ" value="${sysenv.CURAMSDEJ}"/>
+    </ant>
+  </target>
+  
+  
+  <target name="release.workflow">
+       
+    <copy todir="${dir.release}/components" includeEmptyDirs="false">
+      <fileset dir="${dir.base.components}" >
+        <include name="Workflow/codetable/**"/>
+        <include name="Workflow/data/**"/>
+        <include name="Workflow/doc/**"/>
+        <include name="Workflow/lib/**" />
+        <include name="Workflow/message/**" />
+        <include name="Workflow/script/**" />
+        <include name="Workflow/xsd/**" />
+        <include name="*/workflow/**" />        
+      </fileset>
+    </copy>
+    
+  </target>
+</project>

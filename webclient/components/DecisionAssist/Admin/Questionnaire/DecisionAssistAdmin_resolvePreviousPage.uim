@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002,2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This jsp redirects the user to a Previous page from which he has come to view questionnaire page.-->
+<PAGE
+  PAGE_ID="DecisionAssistAdmin_resolvePreviousPage"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String pageID = request.getParameter("pageID");
+      String questionnaireVersionID="";
+      String determinationPackageVersionID="";
+      String typicalPictureVersionID="";
+      String determinationConfigID="";
+      String determinationName="";
+      String url = "";
+  
+      if (pageID == null) {
+        // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "questionnaireVersionID");
+       System.out.println(e);
+       throw e;
+       // END, CR00126196
+      }
+      
+      
+      /*curam.interfaces.QuestionnairePkg.Questionnaire_readLatestVersionDescription_TH
+       th = new curam.interfaces.QuestionnairePkg.Questionnaire_readLatestVersionDescription_TH();
+        
+      th.setFieldValue(th.key$dtls$questionnaireVersionID_idx,questionnaireID);
+
+      th.callServer();
+     
+      questionnaireVersionID=th.getFieldValue(th.result$latestVersionDtls$questionnaireVersionID_idx);
+      */
+      if(pageID.equals("DP")){
+      	determinationPackageVersionID = request.getParameter("determinationPackageVersionID");
+      	determinationName = request.getParameter("determinationName");
+      	determinationConfigID = request.getParameter("determinationConfigID");
+      	url = context + "DecisionAssistAdmin_viewDeterminationPackagePage.do?";
+      	url += "determinationPackageVersionID=" + curam.omega3.request.RequestUtils.escapeURL(determinationPackageVersionID) + 
+      	"&amp;determinationName=" + curam.omega3.request.RequestUtils.escapeURL(determinationName) + "&amp;determinationConfigID=" + curam.omega3.request.RequestUtils.escapeURL(determinationConfigID);
+      }
+      else if(pageID.equals("QUESDP")){
+      	determinationPackageVersionID = request.getParameter("determinationPackageVersionID");
+      	url = context + "DecisionAssistAdmin_listQuestionnairesForDeterminationPackagePage.do?";
+      	url += "determinationPackageVersionID=" + curam.omega3.request.RequestUtils.escapeURL(determinationPackageVersionID);
+      }
+      else if(pageID.equals("TP")){
+      	typicalPictureVersionID = request.getParameter("typicalPictureVersionID");
+      	url = context + "DecisionAssistAdmin_viewTypicalPicturePage.do?";
+      	url += "typicalPictureVersionID=" + curam.omega3.request.RequestUtils.escapeURL(typicalPictureVersionID);
+      }      
+      else{
+      	url = context + "DecisionAssistAdmin_listQuestionnairePage.do?";      
+      }
+      url += "&amp;" + rh.getSystemParameters();  
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+    
+  </JSP_SCRIPTLET>
+</PAGE>

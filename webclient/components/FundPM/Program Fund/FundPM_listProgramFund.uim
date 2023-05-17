@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2022. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2010 Curam Software Ltd.                      	    -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 															-->
+<!-- =========== 															-->
+<!-- This page allows the user to list all the funds.    					-->
+<PAGE PAGE_ID="FundPM_listProgramFund" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="MaintainProgramFund" NAME="DISPLAY" OPERATION="readAllProgramFunds" PHASE="DISPLAY"/>
+
+
+  <!-- BEGIN, CR00227014, PS -->
+  <LIST>
+    <!-- END, CR00227014 -->
+    <!-- BEGIN, CR00207190, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00207190 -->
+      <ACTION_CONTROL LABEL="ActionControl.Edit.Label">
+        <!-- BEGIN, CR00198414, AS -->
+        <!-- BEGIN, CR00227014, PS -->
+        <LINK OPEN_MODAL="true" PAGE_ID="FundPM_modifyProgramFund" WINDOW_OPTIONS="width=625">
+          <!-- END, CR00227014 -->
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="dtls$programFundID"/>
+            <TARGET NAME="PAGE" PROPERTY="fundIDParam"/>
+          </CONNECT>
+        </LINK>
+        <!-- END, CR00198414 -->
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00207190, PS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete" TYPE="ACTION">
+        <LINK OPEN_MODAL="true" PAGE_ID="FundPM_deleteProgramFund" WINDOW_OPTIONS="width=500">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="dtls$versionNo"/>
+            <TARGET NAME="PAGE" PROPERTY="versionNoParam"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="dtls$programFundID"/>
+            <TARGET NAME="PAGE" PROPERTY="fundIDParam"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD LABEL="Field.Name.Label">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="name"/>
+      </CONNECT>
+      <LINK PAGE_ID="FundPM_viewFundHome">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="dtls$programFundID"/>
+          <TARGET NAME="PAGE" PROPERTY="fundIDParam"/>
+        </CONNECT>
+        <!-- BEGIN, CR00227014, PS -->
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="dtls$programFundID"/>
+          <TARGET NAME="PAGE" PROPERTY="programFundID"/>
+        </CONNECT>
+        <!-- END, CR00227014 -->
+      </LINK>
+    </FIELD>
+    <!-- END, CR00207190 -->
+    <FIELD LABEL="Field.Type.Label">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="type"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.StartDate.Label">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="startDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.EndDate.Label">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="endDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.RecordStatus.Label">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="dtls$recordStatus"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <ACTION_SET BOTTOM="false" TOP="true">
+    <ACTION_CONTROL LABEL="ActionControl.New.Label">
+      <!-- BEGIN, CR00227014, PS -->
+      <LINK OPEN_MODAL="true" PAGE_ID="FundPM_createProgramFund" WINDOW_OPTIONS="width=600"/>
+      <!-- END, CR00227014 -->
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

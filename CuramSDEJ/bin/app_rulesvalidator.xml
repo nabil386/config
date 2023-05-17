@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2014. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+  This is the Ant build file for the Rule Set validation.
+  It contains business semantic validation and schema validation
+  on the rule sets in question.  -->
+
+<project name="RuleSetValidator" default="validateruleset">
+
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="./app_properties.xml" />
+
+  <!--  **************************  -->
+  <!--  ***  Import Utilities  ***  -->
+  <!--  **************************  -->
+  <import file="./app_utilities.xml" />
+
+  <taskdef name="antapply" classname="curam.util.tools.AntApply"
+    classpathref="j.cp" />
+
+  <!--  ***************************************************  -->
+  <!--  ***   Check rule set file name property         ***  -->
+  <!--  ***************************************************  -->
+  <target name="check.ruleset.filename.available" unless="ruleset.file">
+    <fail message="The property 'ruleset.file' must be set. Please use -Druleset.file"/>
+  </target>
+
+  <!--  ****************************************  -->
+  <!--  ***   Check rule set file available  ***  -->
+  <!--  ****************************************  -->
+  <target name="check.ruleset.file.available"
+    depends="check.ruleset.filename.available">
+
+    <!-- check if the specified rule set file exists -->
+    <available property="ruleset.file.exists"
+      file="${ruleset.file}" type="file"/>
+
+    <fail unless="ruleset.file.exists"
+       message="The rule set file ${ruleset.file} specified does not exist."/>
+  </target>
+
+  <!--  ***************************************************  -->
+  <!--  ***   Check rule sets directory property        ***  -->
+  <!--  ***************************************************  -->
+  <target name="check.rulesets.dir.property.available" unless="rulesets.dir">
+    <fail message="The property 'rulesets.dir' must be set. Please use -Drulesets.dir"/>
+  </target>
+
+  <!--  **********************************************  -->
+  <!--  ***   Check rule sets directory available  ***  -->
+  <!--  **********************************************  -->
+  <target name="check.rulesets.dir.available"
+    depends="check.rulesets.dir.property.available">
+
+    <!-- check if the specified directory of the rule sets exists -->
+    <available property="rulesets.dir.exists"
+      file="${rulesets.dir}" type="dir"/>
+
+    <fail unless="rulesets.dir.exists"
+      message="The rule set directory ${rulesets.dir} specified does not exist."/>
+  </target>
+
+  <!--  ***************************************************  -->
+  <!--  ***   Check rule set xml schema file available  ***  -->
+  <!--  ***************************************************  -->
+  <target name="checkandset.ruleset.schemafile">
+    <condition property="schema.file" value="${dir.sde.lib}/ruleset.xsd">
+      <not>
+        <isset property="schema.file" />
+      </not>
+    </condition>
+
+    <!-- check if the specified rule set schema file exists -->
+    <available property="ruleset.schemafile.exists"
+      file="${schema.file}" type="file"/>
+
+    <fail unless="ruleset.schemafile.exists"
+      message="The rule set schema file ${schema.file} does not exist."/>
+  </target>
+
+  <!--  ***************************************  -->
+  <!--  ***  Validate Rule Set Information  ***  -->
+  <!--  ***************************************  -->
+  <target name="validateruleset"
+    depends="check.ruleset.file.available, checkandset.ruleset.schemafile"
+    description="validate a rule set based on the schema and semantic rules.">
+
+    <antcall target="dispmsg" inheritAll="false">
+      <param name="prm.msg" value="Start validating the rule set"/>
+    </antcall>
+
+    <java
+      classname="curam.util.rules.editor.model.tree.RuleSetValidator"
+      classpathref="j.cp"
+      fork="${java.fork}"
+      failonerror="true"
+      maxmemory="${java.maxmemory}"
+      taskname="rulesetvalidator">
+
+      <jvmarg line="${java.jvmargs}" />
+      <jvmarg value="-Xms${java.maxmemory}" />
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}" />
+      <sysproperty key="curam.disable.dynamic.properties"   value="true"/>
+      <sysproperty key="curam.project.name" value="curam"/>
+      <arg line="-ruleset.file ${ruleset.file}" />
+      <arg line="-schema.file ${schema.file}"/>
+    </java>
+
+    <antcall target="dispmsg" inheritAll="false">
+      <param name="prm.msg" value="End validating the rule set."/>
+    </antcall>
+  </target>
+
+  <!--  ************************************************  -->
+  <!--  ***  Validate All the Rule Sets Information  ***  -->
+  <!--  ************************************************  -->
+  <target name="validateallrulesets"
+    description="validate all the rule sets based on the schema and semantic rules.">
+
+    <antcall target="dispmsg" inheritAll="false">
+      <param name="prm.msg" value="Start validating the rule sets."/>
+    </antcall>
+
+    <antcall target="validaterulesetsbyschemaandsemantics">
+      <param name="rulesets.base.dir" value="${dir.base.components}" />
+      <param name="rulesets.pattern"  value="*/rulesets/*.xml" />
+    </antcall>
+
+    <antcall target="dispmsg" inheritAll="false">
+      <param name="prm.msg" value="End validating the rule sets."/>
+    </antcall>
+
+  </target>
+
+  <!--  *******************************************************************  -->
+  <!--  ***  Validate Rule Sets Information in the specified directory  ***  -->
+  <!--  *******************************************************************  -->
+  <target name="validaterulesets"
+    depends="check.rulesets.dir.available"
+    description="validate rule sets in the specified directory based on the schema and semantic rules.">
+
+    <antcall target="dispmsg" inheritAll="false">
+      <param name="prm.msg" value="Start validating the rule sets in the directory ${rulesets.dir}."/>
+    </antcall>
+
+    <antcall target="validaterulesetsbyschemaandsemantics">
+      <param name="rulesets.base.dir" value="${rulesets.dir}" />
+      <param name="rulesets.pattern"  value="*.xml" />
+    </antcall>
+
+    <antcall target="dispmsg" inheritAll="false">
+      <param name="prm.msg" value="End validating the rule sets."/>
+    </antcall>
+  </target>
+
+  <!--  ****************************************************************  -->
+  <!--  ***  Validate Rule Sets Information By Schema and Semantics  ***  -->
+  <!--  ****************************************************************  -->
+  <target name="validaterulesetsbyschemaandsemantics"
+    depends="checkandset.ruleset.schemafile"
+    description="validate all the rule sets based on the schema and semantic rules.">
+
+    <antapply type="both"
+      executable="${JAVA_HOME}/bin/java"
+      failonerror="false"
+      resultproperty="final.result">
+
+      <!-- Java Arguments -->
+      <arg value="-Xmx${java.maxmemory}" />
+      <arg value="-classpath" />
+      <arg pathref="j.cp" />
+      <arg line="-Xbootclasspath/p:${jars.allxml}" />
+
+      <!-- Application System Properties -->
+      <arg line="-Dcuram.disable.dynamic.properties=true"/>
+      <arg line="-Dcuram.project.name=curam"/>
+
+      <!-- The Validation Java Class -->
+      <arg line="curam.util.rules.editor.model.tree.RuleSetValidator" />
+
+      <!-- The rule set file Argument -->
+      <arg line="-ruleset.file" /><srcfile />
+      <arg line="-schema.file"/>
+      <arg line="${schema.file}"/>
+
+      <!-- The rule set files to be validated -->
+      <fileset dir="${rulesets.base.dir}">
+        <patternset>
+          <include name="${rulesets.pattern}"/>
+        </patternset>
+      </fileset>
+    </antapply>
+
+    <fail message="Validation failed.">
+     <condition>
+       <equals arg1="${final.result}" arg2="1" />
+     </condition>
+   </fail>
+  </target>
+
+</project>

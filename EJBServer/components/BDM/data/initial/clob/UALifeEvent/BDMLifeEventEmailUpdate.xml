@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ieg-script xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ieg-schema.xsd"
+	finish-page="cw/FinishLifeEventScript.jspx"
+	quit-page="cw/QuitLifeEventScript.jspx"		
+	show-sections="true"
+	show-progress-bar="true"
+	validate-save-and-exit="false"
+	config-properties="bdm-app-config"
+	>
+		
+	<identifier id="BDMLifeEventEmailUpdate" scriptversionnumber="V1" type="LifeEvent" />
+	<section>
+		<title id="SelectChangeType.SectionTitle"><![CDATA[Select the type of change]]></title>
+		<question-page 
+			id="SelectChangeType"
+			entity="Person"
+			progress="0" 
+			show-back-button="false"
+			show-exit-button="true"
+			show-next-button="true" 
+			show-save-exit-button="false"
+			>
+			<description id="MandatoryFieldsDescription">
+				<![CDATA[<p>All fields are mandatory unless specified as optional.</br></br></p>]]>
+			</description>
+			
+			<validation expression="UpdateCommunicationDetailsEntity(Person.emailAddressChangeType)">
+				     <message id="SelectChangeType.Validation"><![CDATA[Please select an email address to update or remove]]></message>
+			</validation>
+			<validation expression="ValidateConditionalMandatoryLifeEvent(Person.emailAddressChangeType, Person.selectedEmailAddressID)">
+				     <message id="SelectChangeType.Validation"><![CDATA[Please select an email address to update or remove]]></message>
+			</validation>
+			<validation expression="CheckIsUnableToReceivingAlert(&quot;VALIDATION&quot;,Person.emailAddressChangeType)" >
+						<message id="SelectChangeType.display.information"><![CDATA[If you proceed you will no longer be receiving alerts by text or by email. Click 'Next' to continue.]]></message>
+			</validation>
+			<cluster>
+				<question id="emailAddressChangeType" mandatory="true">
+					<label id="SelectChangeType.SelectChangeType"> <![CDATA[What type change would you like to make?]]></label>
+							<layout>
+								<type>radio</type>
+							</layout>
+				</question>
+			</cluster>	
+			<condition expression="isNotNull(Person.emailAddressChangeType) and not(Person.emailAddressChangeType==&quot;BDMEACT01&quot;)">
+				<cluster>
+					<list-question entity="CommunicationDetails" 
+						id="emailAddressSelected"
+						single-select="true" 
+						mandatory="false"
+						criteria="emailAdr!=&quot;&quot;">			
+						<label id="SelectChangeType.EmailAddresses"><![CDATA[Please select the email address to update or remove:]]></label>
+	              		<item-label><label-element attribute-id="emailAddressDesc"/></item-label>
+	            	</list-question>
+	            </cluster>
+            </condition>
+		</question-page>
+		<!-- Callout to reset value  -->
+		 <callout expression="CheckIsUnableToReceivingAlert(&quot;RESET_VALUE&quot;,Person.emailAddressChangeType)" id="SelectChangeType.resetValue"/>
+    </section>	
+
+	<!-- Email Information -->
+	<section>
+		<title id="EmailInformation.Title"><![CDATA[Email address details]]></title>
+		<condition expression="not(Person.emailAddressChangeType==&quot;BDMEACT03&quot;) and Person.selectedEmailAddressID!=&quot;&quot;">
+				<question-page id="EmailInformation"
+					entity="Person"
+					progress="30" 
+					show-back-button="true"
+					show-exit-button="true"
+					show-next-button="true" 
+					show-save-exit-button="false"
+					>				
+					<description id="MandatoryFieldsDescription">
+						<![CDATA[All fields are mandatory unless specified as optional.]]>
+					</description> 
+						<validation expression="ValidatePhoneNumberAndType(CommunicationDetails.emailAdr,CommunicationDetails.emailType)">
+							<message id="CommunicationDetails.EmailType.Validation"><![CDATA[An email Type (Business/Personal) must be selected when an email is entered]]></message>
+				    	</validation>
+				    	<validation expression="validateEmailAddress(CommunicationDetails.emailAdr,CommunicationDetails.emailType)">
+							<message id="CommunicationDetails.Email1Address.Validation"><![CDATA[The email address is not valid]]></message>
+				    	</validation>
+				    	<!-- Begin - Life Event Change validations --> 
+						<validation expression="ValidateDatastoreEmailValueChanged(CommunicationDetails.emailType, CommunicationDetails.emailAdr, CommunicationDetails.isPreferredCommunication, CommunicationDetails.alertPrefEmail,CommunicationDetails.alertFrequency)">
+							<message id="CommunicationDetails.emailValueChange.Validation"><![CDATA[Nothing has changed. Please make a change to proceed.]]></message>
+						</validation>
+						<!-- End - Life Event Change validations --> 
+						<validation expression="ValidateAlertFrequency(CommunicationDetails.alertPrefEmail,CommunicationDetails.alertFrequency)">
+							<message id="CommunicationDetails.emailAlertFrequency.Validation"><![CDATA[Please specify how many alerts you would prefer to receive.]]></message>
+						</validation>
+					<cluster entity="CommunicationDetails"   criteria="curamDataStoreUniqueID!=&quot;&quot;">
+							<title id="CommunicationDetails.EmailTitle">
+								<![CDATA[<h3>Email address</h3>]]>
+							</title>
+							<display-text id="CommunicationDetails.EmailLabel"><![CDATA[Personal information or claim specific information will not be communicated by email.]]></display-text>
+							<question id="emailType" mandatory="true"><label id="CommunicationDetails.EmailQuestion"><![CDATA[Type of email address]]></label>
+								<layout><type>radio</type></layout>
+							</question>
+							<question id="emailAdr" mandatory="true"><label id="CommunicationDetails.EmailQuestionLabel"><![CDATA[Email address]]></label></question>
+							<question id="isPreferredCommunication" mandatory="true">
+								<label id="CommunicationDetails.isPreferredCommunication"><![CDATA[Would you like this to be the preferred email address that we use to contact you?]]></label>
+								<hint-text id="CommunicationDetails.isPreferredCommunicationHint"><![CDATA[Only one email address can be selected as the preferred.]]></hint-text>
+								<layout><type>radio</type></layout>
+							</question>
+							<question id="alertPrefEmail" mandatory="true">
+								<label id="CommunicationDetails.alertPrefEmail"><![CDATA[Would you like alerts to be sent to this email address?]]></label>
+								<hint-text id="CommunicationDetails.alertPrefEmailHint"><![CDATA[Please note that alerts can only be sent to one email address.]]></hint-text>
+								<layout><type>radio</type></layout>
+							</question>
+					</cluster>
+					<condition expression="CommunicationDetails.alertPrefEmail==&quot;YN1&quot;">
+							<cluster entity="CommunicationDetails" criteria="curamDataStoreUniqueID!=&quot;&quot;">
+									<question id="alertFrequency" mandatory="true">
+									<label id="AlertPref.Occurance">
+										<![CDATA[<b>How many alerts would you prefer to receive?</b>]]>
+									</label>
+									<hint-text id="AlertPref.Occurance.Desc">
+										<![CDATA[You will receive an alert when there is new information in your client account]]>
+									</hint-text>
+									<layout>
+										<type>radio</type>
+									</layout>
+								</question>
+							</cluster>
+					</condition>
+				</question-page>
+		</condition>
+	</section>
+	<!-- End Email Information -->
+	
+	<!-- Summary -->
+	<section>
+		<title id="Summary.Title"><![CDATA[Summary of changes]]></title>
+		<summary-page id="SummaryPage"  
+			entity="Person"
+			show-back-button="true"
+			show-exit-button="true"
+			show-next-button="true" 
+			show-save-exit-button="false"
+			>
+			<next-button-label id="Summary.NextButton.Label">Submit</next-button-label>
+			<cluster entity="Person" >
+				<question id="emailAddressChangeType" ><label id="CommunicationDetails.SectionOne.TypeOfChange"><![CDATA[Type of change]]></label></question>
+				<informational-message expression="CheckIsUnableToReceivingAlert(&quot;INFORMATION&quot;,Person.emailAddressChangeType)">
+						<message id="CommunicationDetails.removePhoneNumber.information"><![CDATA[If you proceed you will no longer be receiving alerts by text or by email. Click 'Next' to continue.]]></message>
+				</informational-message>
+			</cluster>
+			<condition expression="Person.emailAddressChangeType==&quot;BDMEACT03&quot; and Person.selectedEmailAddressID!=&quot;&quot;">
+				<cluster entity="CommunicationDetails"   criteria="curamDataStoreUniqueID!=&quot;&quot;">
+					<question id="emailAddressDesc" ><label id="CommunicationDetails.EmailQuestionLabel"><![CDATA[Email address]]></label></question>
+				</cluster>
+			</condition>
+			<condition expression="not(Person.emailAddressChangeType==&quot;BDMEACT03&quot;) and Person.selectedEmailAddressID!=&quot;&quot;">
+				<cluster entity="CommunicationDetails" criteria="curamDataStoreUniqueID!=&quot;&quot;"  >
+					<title id="Summary.ClusterTitle"><![CDATA[\uFEFF]]></title>
+		        	<edit-link start-page="EmailInformation" />	
+					<layout><type>flow</type><num-cols>2</num-cols></layout>
+					<question id="emailType"><label id="CommunicationDetails.EmailQuestion"><![CDATA[Type of email address]]></label></question>
+					<question id="emailAdr"><label id="CommunicationDetails.EmailQuestionLabel"><![CDATA[Email address]]></label></question>
+				</cluster>
+				<cluster entity="CommunicationDetails" criteria="curamDataStoreUniqueID!=&quot;&quot;" >
+					<question id="isPreferredCommunication"><label id="CommunicationDetails.isPreferredCommunication"><![CDATA[Would you like this to be the preferred email address that we use to contact you?]]></label></question>
+					<question id="alertPrefEmail"><label id="CommunicationDetails.alertPrefEmail"><![CDATA[Would you like alerts to be sent to this email address?]]></label></question>
+				</cluster>
+
+				<!-- <condition expression="CommunicationDetails.alertPrefEmail==&quot;YN1&quot; and curamDataStoreUniqueID!=&quot;&quot;"> -->
+					<cluster entity="CommunicationDetails" criteria="curamDataStoreUniqueID!=&quot;&quot;">
+						<question id="alertFrequency"><label id="CommunicationDetails.alertFrequency"><![CDATA[How many alerts would you prefer to receive?]]></label></question>
+					</cluster>
+				<!-- </condition>  -->
+			</condition>
+			</summary-page>
+	</section>
+	<!-- End Summary -->
+	
+</ieg-script>

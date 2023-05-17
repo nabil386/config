@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2021. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Update the meeting minutes and decisions -->
+<PAGE PAGE_ID="CalendarMeetingDetails_editAgenda" WINDOW_OPTIONS="width=500,height=500" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="MeetingMinutesManagement" NAME="DISPLAY" OPERATION="readMeetingDetailsForCase"/>
+
+
+  <SERVER_INTERFACE CLASS="MeetingMinutesManagement" NAME="ACTION" OPERATION="updateMeetingDetailsForCase" PHASE="ACTION"/>
+
+
+  <PAGE_PARAMETER NAME="meetingID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="meetingID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="meetingKey$meetingID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="caseKey$caseID"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="meetingID"/>
+    <TARGET NAME="ACTION" PROPERTY="dtls$meetingID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="meetingDtls$activityID"/>
+    <TARGET NAME="ACTION" PROPERTY="dtls$activityID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="versionNo"/>
+    <TARGET NAME="ACTION" PROPERTY="versionNo"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="organizer"/>
+    <TARGET NAME="ACTION" PROPERTY="organizer"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="subject"/>
+    <TARGET NAME="ACTION" PROPERTY="dtls$subject"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="result$meetingDtls$sensitivityCode"/>
+    <TARGET NAME="ACTION" PROPERTY="sensitivityCode"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="startTime"/>
+    <TARGET NAME="ACTION" PROPERTY="dtls$startTime"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="endTime"/>
+    <TARGET NAME="ACTION" PROPERTY="dtls$endTime"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="byMeInd"/>
+    <TARGET NAME="ACTION" PROPERTY="organizedByOptions$byMeInd"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="result$organizedByOptions$otherUserDtls$userName"/>
+    <TARGET NAME="ACTION" PROPERTY="organizedByOptions$otherUserDtls$userName"/>
+  </CONNECT>
+
+  <!-- BEGIN, RTC268286, DR -->
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="location"/>
+    <TARGET NAME="ACTION" PROPERTY="dtls$location"/>
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE NAME="DISPLAY" PROPERTY="meetingType"/>
+    <TARGET NAME="ACTION" PROPERTY="dtls$meetingType"/>
+  </CONNECT>
+  <!-- END, RTC268286 -->
+
+  <CLUSTER SHOW_LABELS="false">
+    <!-- BEGIN, CR00463142, EC -->
+    <FIELD HEIGHT="240" LABEL="Cluster.Title.Agenda" INITIAL_FOCUS="true">
+      <!-- END, CR00463142 -->
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="meetingAgenda"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="richTextMeetingAgenda"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET ALIGNMENT="RIGHT" TOP="false">
+    <ACTION_CONTROL DEFAULT="true" LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+</PAGE>

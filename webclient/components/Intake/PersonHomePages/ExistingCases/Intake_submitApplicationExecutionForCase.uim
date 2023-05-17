@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 							    -->
+<!-- =========== 							    -->
+<!-- This page is called when the submit button of IEG script is     -->
+<!-- selected in the middle of the execution. It redirects the user to      -->
+<!-- corresponding page from where the application started.                                                      -->
+<PAGE
+  PAGE_ID="Intake_submitApplicationExecutionForCase"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+
+        // This page is called when the script exectuion completes. At that point
+        // we have no idea whether the script had run in a model window or not.
+        // Based on this preference the results page have to be loaded.
+
+        curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+        String context = request.getContextPath() + "/";
+        context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+        String executionID = request.getParameter("executionID");
+
+        if (executionID == null) {
+          core.ScriptletMissingParamException e = new
+          core.ScriptletMissingParamException(-20002, "executionID");
+          throw e;
+        }
+
+
+        curam.interfaces.ApplicationPkg.Application_getConcernRoleIDByIEGExecutionID_TH
+        th1 = new curam.interfaces.ApplicationPkg.Application_getConcernRoleIDByIEGExecutionID_TH();
+        th1.setFieldValue(th1.iegExecutionID$executionID_idx, executionID);
+        th1.callServer();
+
+        String concernRoleID = th1.getFieldValue(th1.result$concernRoleID_idx);
+
+        String url = "";
+        url = context + "RightsAndResponsibilitiesForCaseSubmitPage.do?concernRoleID="+ curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+        url+="&amp;executionID="+ curam.omega3.request.RequestUtils.escapeURL(executionID);
+
+        url += "&amp;" + rh.getSystemParameters();
+        response.sendRedirect(response.encodeRedirectURL(url));
+
+
+    </JSP_SCRIPTLET>
+</PAGE>

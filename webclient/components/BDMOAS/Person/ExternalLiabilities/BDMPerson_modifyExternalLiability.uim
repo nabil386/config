@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TASK 53598 - Manage Penalty -->
+<PAGE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PAGE_ID="BDMPerson_modifyExternalLiability" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+    
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.Static.Title" />
+        </CONNECT>
+    </PAGE_TITLE>
+    
+    <PAGE_PARAMETER NAME="externalLiabilityID" />
+    
+    <SERVER_INTERFACE CLASS="BDMOASExternalLiability" NAME="DISPLAY" OPERATION="readLbyDetailsForEdit" />
+    <SERVER_INTERFACE CLASS="BDMExternalLiability" NAME="DISPLAYBENEFITCASES" OPERATION="listBenefitCasesForModify" />
+    <SERVER_INTERFACE CLASS="BDMOASExternalLiability" NAME="DISPLAYOVERPAYMENT" OPERATION="listOverPaymentCasesByExternalLiabilityID" />
+    <SERVER_INTERFACE CLASS="BDMOASExternalLiability" NAME="ACTION" OPERATION="modifyLiabilityDetails" PHASE="ACTION" />
+
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="externalLiabilityID" />
+        <TARGET NAME="DISPLAY" PROPERTY="externalLiabilityID" />
+    </CONNECT>
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="externalLiabilityID" />
+        <TARGET NAME="DISPLAYBENEFITCASES" PROPERTY="externalLiabilityID" />
+    </CONNECT>
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="externalLiabilityID" />
+        <TARGET NAME="ACTION" PROPERTY="externalLiabilityID" />
+    </CONNECT>
+    <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="versionNo" />
+        <TARGET NAME="ACTION" PROPERTY="versionNo" />
+    </CONNECT>
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="externalLiabilityID" />
+        <TARGET NAME="DISPLAYOVERPAYMENT" PROPERTY="externalLiabilityID" />
+    </CONNECT>
+    
+    <ACTION_SET BOTTOM="false">
+        <ACTION_CONTROL ALIGNMENT="LEFT" LABEL="ActionControl.Label.Cancel" TYPE="ACTION" />
+        <ACTION_CONTROL LABEL="ActionControl.Label.Modify" TYPE="SUBMIT" />
+    </ACTION_SET>
+    
+    <CLUSTER TITLE="Cluster.Modify.Title">
+        <FIELD LABEL="Field.Label.SequenceNumber">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="sysGenRefNumber" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.LiabilityType">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="liabilityTypeCode" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.OutstandingBalance">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="outstandingAmount" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.ChangeReason" USE_BLANK="true">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="changeReason" />
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="changeReason" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.NewBalance">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="liabilityAmount" />
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="liabilityAmount" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.RecoveryRate.Fixed">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="deductionAmount" />
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="deductionAmount" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.RecoveryRate.Variable">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="deductionRate" />
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="deductionRate" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.StartDate">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="startDate" />
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="startDate" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.Comments" HEIGHT="4">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="comments" />
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="comments" />
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+
+    <CLUSTER TITLE="Cluster.ProductDeliveryCases.Title">
+        <FIELD CONTROL="CHECKBOXED_LIST" LABEL="Field.Label.ProductDeliveryCases" HEIGHT="4">
+            <CONNECT>
+                <INITIAL HIDDEN_PROPERTY="caseID" NAME="DISPLAYBENEFITCASES" PROPERTY="caseDisplay" />
+            </CONNECT>
+            <CONNECT>
+                <SOURCE NAME="DISPLAYBENEFITCASES" PROPERTY="selBenefitIDs" />
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="selBenefitIDs" />
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+    
+    <LIST TITLE="List.Title.Penalty" DESCRIPTION="List.Description.Penalty">
+        <CONDITION>
+         	<IS_TRUE NAME="DISPLAYOVERPAYMENT" PROPERTY="displayPenaltiesInd"/>
+        </CONDITION>
+        <CONTAINER WIDTH="5">
+            <WIDGET TYPE="SINGLESELECT">
+                <WIDGET_PARAMETER NAME="SELECT_INITIAL">
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAYOVERPAYMENT" PROPERTY="selectedOverPaymentCaseID" />
+                    </CONNECT>
+                </WIDGET_PARAMETER>
+                <WIDGET_PARAMETER NAME="SELECT_SOURCE">
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAYOVERPAYMENT" PROPERTY="overPaymentCaseID" />
+                    </CONNECT>
+                </WIDGET_PARAMETER>
+                <WIDGET_PARAMETER NAME="SELECT_TARGET">
+                    <CONNECT>
+                        <TARGET NAME="ACTION" PROPERTY="overPaymentCaseID" />
+                    </CONNECT>
+                </WIDGET_PARAMETER>
+            </WIDGET>
+        </CONTAINER>
+        <FIELD LABEL="Field.Label.OverPaymentType" WIDTH="30">
+            <CONNECT>
+                <SOURCE NAME="DISPLAYOVERPAYMENT" PROPERTY="overPaymentType" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.CaseReference" WIDTH="15">
+            <CONNECT>
+                <SOURCE NAME="DISPLAYOVERPAYMENT" PROPERTY="caseReference" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.StartDate" WIDTH="10">
+            <CONNECT>
+                <SOURCE NAME="DISPLAYOVERPAYMENT" PROPERTY="startDate" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.BenefitType" WIDTH="10">
+            <CONNECT>
+                <SOURCE NAME="DISPLAYOVERPAYMENT" PROPERTY="benefitType" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.OriginalAmount" WIDTH="15">
+            <CONNECT>
+                <SOURCE NAME="DISPLAYOVERPAYMENT" PROPERTY="originalAmount" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.OutstandingAmount" WIDTH="15">
+            <CONNECT>
+                <SOURCE NAME="DISPLAYOVERPAYMENT" PROPERTY="outstandingAmount" />
+            </CONNECT>
+        </FIELD>
+    </LIST>
+    
+</PAGE>

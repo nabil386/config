@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2005, 2008,2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page lists service plan client participation for particular day   -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_caseClientParticipationDailyList"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY"
+    OPERATION="caseClienParticipationDailyList"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="serviceDate"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceDate"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="date"
+    />
+  </CONNECT>
+
+
+  <CLUSTER LABEL_WIDTH="20">
+    <FIELD LABEL="Field.Label.Date">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="date"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST>
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      SEPARATOR="Container.Separator"
+      WIDTH="13"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.View">
+        <LINK PAGE_ID="ServicePlanDelivery_viewClientParticipation_from_ServicePlanClientParticipationListForDay">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="detailsAsStrings$dailyAttendanceID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="dailyAttendanceID"
+            />
+          </CONNECT>
+        </LINK>
+
+
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+
+
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ServicePlanDelivery_modifyClientParticipation"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="detailsAsStrings$dailyAttendanceID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="dailyAttendanceID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.PlanItem"
+      WIDTH="25"
+    >
+      <LINK PAGE_ID="ServicePlanDelivery_resolveViewPlanItemPage">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="detailsAsStrings$plannedItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="plannedItemID"
+          />
+        </CONNECT>
+      </LINK>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="detailsAsStrings$name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ParticipationType"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="detailsAsStrings$attendance"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Time"
+      WIDTH="13"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="detailsAsStrings$totalTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="detailsAsStrings$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    />
+  </ACTION_SET>
+
+
+</PAGE>

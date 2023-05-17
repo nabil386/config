@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003, 2008 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information"). You                 -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp  is used to open the rules element details page based on the  -->
+<!-- type of rules element (e.g. group, rule, objective etc).               -->
+<PAGE
+  PAGE_ID="RulesEditor_resolveViewWARuleElementDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+;
+      curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String ruleSetID = request.getParameter("ruleSetID");
+      String nodeID = request.getParameter("nodeID");
+      String nodeType = request.getParameter("nodeType");
+      String versionNo = request.getParameter("versionNo");
+      String url = "";
+    
+      if (ruleSetID == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "ruleSetID");
+       System.out.println(e);
+       throw e;
+       // END, CR00110216
+      }
+      if (nodeID == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "nodeID");
+       System.out.println(e);
+       throw e;
+       // END, CR00110216
+      }
+      if (nodeType == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "nodeType");
+       System.out.println(e);
+       throw e;
+       // END, CR00110216
+      }
+      if (versionNo == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "versionNo");
+       System.out.println(e);
+       throw e;
+      
+      }
+     
+      if (nodeType.equals("OG")) {
+        url = context + "RulesEditor_viewWAObjectiveGroupPage.do" + "?ruleSetID="
+          + curam.omega3.request.RequestUtils.escapeURL(ruleSetID) + "&amp;" + "nodeID=" + curam.omega3.request.RequestUtils.escapeURL(nodeID) + "&amp;" + "o3sfs=true";
+      } else if (nodeType.equals("OLG")) {
+        url = context + "RulesEditor_viewWAObjectiveListGroupPage.do" + "?ruleSetID="
+          + curam.omega3.request.RequestUtils.escapeURL(ruleSetID) + "&amp;" + "nodeID=" + curam.omega3.request.RequestUtils.escapeURL(nodeID) + "&amp;" + "o3sfs=true";
+      } else if (nodeType.equals("O")) {
+        url = context + "RulesEditor_viewWAObjectivePage.do" + "?ruleSetID="
+          + curam.omega3.request.RequestUtils.escapeURL(ruleSetID) + "&amp;" + "nodeID=" + curam.omega3.request.RequestUtils.escapeURL(nodeID) + "&amp;" + "o3sfs=true";
+      } else if (nodeType.equals("RG")) {
+        url = context + "RulesEditor_viewWARuleGroupPage.do" + "?ruleSetID="
+          + curam.omega3.request.RequestUtils.escapeURL(ruleSetID) + "&amp;" + "nodeID=" + curam.omega3.request.RequestUtils.escapeURL(nodeID) + "&amp;" + "o3sfs=true";
+      } else if (nodeType.equals("RLG")) {
+        url = context + "RulesEditor_viewWARuleListGroupPage.do" + "?ruleSetID="
+          + curam.omega3.request.RequestUtils.escapeURL(ruleSetID) + "&amp;" + "nodeID=" + curam.omega3.request.RequestUtils.escapeURL(nodeID) + "&amp;" + "o3sfs=true";
+      } else if (nodeType.equals("R")) {
+        url = context + "RulesEditor_viewWARulePage.do" + "?ruleSetID="
+          + curam.omega3.request.RequestUtils.escapeURL(ruleSetID) + "&amp;" + "nodeID=" + curam.omega3.request.RequestUtils.escapeURL(nodeID) + "&amp;" + "o3sfs=true";
+      } else if (nodeType.equals("GR")) {
+        url = context + "RulesEditor_viewWorkAllocationRuleSetPage.do" + "?ruleSetID="
+          + curam.omega3.request.RequestUtils.escapeURL(ruleSetID) + "&amp;" + "nodeID=" + curam.omega3.request.RequestUtils.escapeURL(nodeID) + "&amp;" + "o3sfs=true";
+      } else if (nodeType.equals("OTF")) {
+        url = context + "RulesEditor_viewWAObjectiveTagPage.do" + "?ruleSetID="
+          + curam.omega3.request.RequestUtils.escapeURL(ruleSetID) + "&amp;" + "nodeID=" + curam.omega3.request.RequestUtils.escapeURL(nodeID);
+      } else if (nodeType.equals("DAI")) {
+        url = context + "RulesEditor_viewWADataItemAssignmentPage.do" + "?ruleSetID="
+          + curam.omega3.request.RequestUtils.escapeURL(ruleSetID) + "&amp;" + "nodeID=" + curam.omega3.request.RequestUtils.escapeURL(nodeID);
+      }
+        // END, CR00110216        
+      url += "&amp;" + rh.getSystemParameters();
+      
+      response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+</PAGE>

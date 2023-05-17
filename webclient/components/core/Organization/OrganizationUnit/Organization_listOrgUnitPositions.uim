@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2004, 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This process allows the user to view a list of positions               -->
+<!-- for an organization unit.                                              -->
+<PAGE
+  PAGE_ID="Organization_listOrgUnitPositions"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAY"
+    OPERATION="listPositionForOrgUnit"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="organisationUnitID"/>
+  <PAGE_PARAMETER NAME="organisationStructureID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="organisationUnitID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="orgStructAndOrgUnitKey$organisationUnitID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="organisationStructureID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="orgStructAndOrgUnitKey$organisationStructureID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_modifyPositionFromOrgUnitPosList"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="positionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="positionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.AssignUser">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_addUserForPosition"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="positionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="positionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="positionName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="positionName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.CreateUser">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_createAndAssignUserForPosition"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="positionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="positionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.AssignLocation">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_AssignLocationToPosition"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="positionName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="positionName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="positionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="positionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="LocationStructure"
+        LABEL="ActionControl.Label.Delete"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_cancelPositionByWorkflow"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="positionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="positionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="positionName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="positionName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationStructureID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="organisationUnitID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+    <FIELD
+      LABEL="Field.Title.Position"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="positionName"
+        />
+      </CONNECT>
+
+
+      <LINK PAGE_ID="Organization_listUsersForPosition">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="organisationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationStructureID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="organisationUnitID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationUnitID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="positionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="positionID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Job"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="jobName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Vacant"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="vacantInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.LeadPosition"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="leadPositionInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.RecordStatus"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <MENU MODE="NAVIGATION">
+    <ACTION_CONTROL LABEL="Field.Label.Browse">
+      <LINK PAGE_ID="Organization_resolveOrganisationUnitTree">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="organisationStructureID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationStructureID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="organisationUnitID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationUnitID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+</PAGE>

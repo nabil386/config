@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 64796 DEV: Implement First Entry Into Canada Details -->
+<EvidenceTypeVersion modifiable="true"
+	correctionOnly="true" relatedParticipant="caseParticipantRole"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/DynamicEvidenceSchema.xsd">
+	<Model>
+		<Attributes>
+			<Attribute>
+				<RelatedCPAttribute name="caseParticipantRole" mandatory="true" cpRoleType="MEM" participantType="Person">
+					<CPSearchType code="PRI" />
+					<CPSearchType code="MEM" />
+				</RelatedCPAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="arrivalDate" mandatory="true">
+					<DomainType dataType="Date">
+						<DateOptions currentDate="LessThanOrEqualTo" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="immigrationDoc" mandatory="false">
+					<DomainType dataType="Codetable">
+						<CodetableOptions codetableName="BDMOASImmigrationDoc" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="otherImmigrationDocDetails" mandatory="false">
+					<DomainType dataType="String">
+						<StringOptions maxSize="144" trimLeadingSpaces="true" trimTrailingSpaces="true" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="arrivalCity" mandatory="false">
+					<DomainType dataType="String">
+						<StringOptions maxSize="65" trimLeadingSpaces="true" trimTrailingSpaces="true" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="arrivalProvince" mandatory="false">
+					<DomainType dataType="Codetable">
+						<CodetableOptions codetableName="ProvinceType" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<CommentsAttribute name="comments" />
+			</Attribute>
+		</Attributes>
+		<Relationships />
+	</Model>
+	<Validations>
+		<PatternValidations>
+			<Validator>
+				<DuplicateValidator>
+					<DuplicateAttributes conjunction="OR">
+						<DuplicateAttribute name="caseParticipantRole" />
+					</DuplicateAttributes>
+				</DuplicateValidator>
+			</Validator>
+          <Validator>
+            <DependentAttributeValidator dependency="MustEnter" source="immigrationDoc" sourceLiteral="Other" target="otherImmigrationDocDetails" useSourceLiteral="true" unidirectional="true">
+              <ValidationMessageInformation>
+                <ValidationMessageMapping>
+                  <ValidationMessage>
+                    <ValidationMessageResource id="ERR_MUST_ENTER_OTHER_IMMIGRATION_DOC_DETAILS"/>
+                  </ValidationMessage>
+                </ValidationMessageMapping>
+              </ValidationMessageInformation>
+            </DependentAttributeValidator>
+          </Validator>
+          <Validator>
+            <DependentAttributeValidator dependency="MustEnter" source="otherImmigrationDocDetails" target="immigrationDoc" targetLiteral="Other" useTargetLiteral="true" unidirectional="true">
+              <ValidationMessageInformation>
+                <ValidationMessageMapping>
+                  <ValidationMessage>
+                    <ValidationMessageResource id="ERR_IMMIGRATION_DOC_MUST_BE_OTHER"/>
+                  </ValidationMessage>
+                </ValidationMessageMapping>
+              </ValidationMessageInformation>
+            </DependentAttributeValidator>
+          </Validator>
+		</PatternValidations>
+		<CustomRulesValidation ruleSetName="BDMOASFirstEntryIntoCanadaDetailsValidationRuleSet" />
+	</Validations>
+	<SummaryInformation>
+		<SummaryRuleset ruleSetName="BDMOASFirstEntryIntoCanadaDetailsSummaryRuleSet" />
+	</SummaryInformation>
+	<UserInterface>
+		<Cluster>
+			<RelCPCluster defaultToBlank="true" enableMultiMemberUpdates="false" fullCreateParticipant="false" isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" modifyOption="no" showParticipantTypeFilter="true" useSingleName="false">
+				<StandardField source="caseParticipantRole" />
+				<ClusterName id="Related.Participant.Cluster.Title" />
+				<LabelName id="Related.Participant.Name.Label" />
+				<RelCpPfx id="Related.Participant.Description" />
+				<FirstName id="Related.Participant.First.Name.Label" />
+				<SecondName id="Related.Participant.Second.Name.Label" />
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" labelWidth="40" numberOfColumns="2">
+				<Title id="ArrivalDetails.Cluster.Title" />
+				<StandardClusterField>
+					<StandardField source="arrivalDate" modifiable="true" useDefault="false" useBlank="true">
+						<Label id="ArrivalDate.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+                <StandardClusterField>
+                    <SkipField />
+                </StandardClusterField>
+				<StandardClusterField>
+					<StandardField source="immigrationDoc" modifiable="true" useDefault="false" useBlank="true">
+						<Label id="ImmigrationDoc.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField source="otherImmigrationDocDetails" modifiable="true" useDefault="false" useBlank="true">
+						<Label id="OtherImmigrationDocDetails.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField source="arrivalCity" modifiable="true" useDefault="false" useBlank="true">
+						<Label id="ArrivalCity.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField source="arrivalProvince" modifiable="true" useDefault="false" useBlank="true">
+						<Label id="ArrivalProvince.Field.Label" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<CommentsCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true">
+				<Title id="Comments.Cluster.Title" />
+				<StandardField source="comments" />
+			</CommentsCluster>
+		</Cluster>
+	</UserInterface>
+</EvidenceTypeVersion>

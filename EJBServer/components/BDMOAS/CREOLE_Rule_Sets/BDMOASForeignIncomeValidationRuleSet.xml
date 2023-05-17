@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMOASForeignIncomeValidationRuleSet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+
+	<Class extends="DefaultEvidenceValidationResult" extendsRuleSet="EvidenceValidationRuleSet" name="ValidationResult">
+
+		<Attribute name="description">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="Description" resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASForeignIncomeValidationRuleSet" />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="BDMOASForeignIncome" ruleset="BDMOASForeignIncomeRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="standardValidations">
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass name="Validation" ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="Validation" ruleset="EvidenceValidationRuleSet" />
+					</listof>
+					<members>
+						<reference attribute="yearWholeNumberValidator" />
+						<reference attribute="incomeYearOnOrAfterBirthYearValidator" />
+						<reference attribute="incomeYearOnOrBeforeDeathYearValidator" />
+						<reference attribute="otherDescriptionLengthValidator" />
+					</members>
+				</fixedlist>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="yearWholeNumberValidator">
+			<type>
+				<ruleclass name="Validation" ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation" ruleset="EvidenceValidationRuleSet">
+					<reference attribute="yearWholeNumberFailure" />
+					<reference attribute="yearWholeNumberFailureMessage" />
+				</create>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="caseID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<reference attribute="caseID">
+					<reference attribute="evidence" />
+				</reference>
+			</derivation>
+		</Attribute>
+
+
+		<Attribute name="yearWholeNumberFailure">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="java.lang.Boolean" />
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<property name="length">
+									<object>
+										<reference attribute="year">
+											<reference attribute="evidence" />
+										</reference>
+									</object>
+								</property>
+								<Number value="0" />
+							</equals>
+						</condition>
+						<value>
+							<false />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<not>
+								<call class="curam.ca.gc.bdm.creole.impl.Statics" method="isValidYear">
+									<type>
+										<javaclass name="Boolean" />
+									</type>
+									<arguments>
+										<reference attribute="year">
+											<reference attribute="evidence" />
+										</reference>
+									</arguments>
+								</call>
+							</not>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="yearWholeNumberFailureMessage">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="ERR_YEAR_MUST_BE_IN_RANGE" resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASForeignIncomeValidationRuleSet">
+					<call class="curam.ca.gc.bdm.creole.impl.Statics" method="getPreviousYear">
+						<type>
+							<javaclass name="String" />
+						</type>
+						<arguments />
+					</call>
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="incomeYearOnOrAfterBirthYearValidator">
+			<type>
+				<ruleclass name="Validation" ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation" ruleset="EvidenceValidationRuleSet">
+					<reference attribute="incomeYearOnOrAfterBirthYearValidatorFailure" />
+					<reference attribute="incomeYearOnOrAfterBirthYearValidatorMessage" />
+				</create>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="incomeYearOnOrAfterBirthYearValidatorFailure">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="java.lang.Boolean" />
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<property name="length">
+									<object>
+										<reference attribute="year">
+											<reference attribute="evidence" />
+										</reference>
+									</object>
+								</property>
+								<Number value="0" />
+							</equals>
+						</condition>
+						<value>
+							<false />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<compare comparison="&lt;">
+								<reference attribute="year">
+									<reference attribute="evidence" />
+								</reference>
+								<reference attribute="birthYear" />
+							</compare>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="incomeYearOnOrAfterBirthYearValidatorMessage">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="ERR_YEAR_BEFORE_BIRTH_YEAR" resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASForeignIncomeValidationRuleSet">
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="incomeYearOnOrBeforeDeathYearValidator">
+			<type>
+				<ruleclass name="Validation" ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation" ruleset="EvidenceValidationRuleSet">
+					<reference attribute="incomeYearOnOrBeforeDeathYearValidatorFailure" />
+					<reference attribute="incomeYearOnOrBeforeDeathYearValidatorMessage" />
+				</create>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="incomeYearOnOrBeforeDeathYearValidatorFailure">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="java.lang.Boolean" />
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<property name="length">
+									<object>
+										<reference attribute="year">
+											<reference attribute="evidence" />
+										</reference>
+									</object>
+								</property>
+								<Number value="0" />
+							</equals>
+						</condition>
+						<value>
+							<false />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<all>
+								<fixedlist>
+									<listof>
+										<javaclass name="java.lang.Boolean" />
+									</listof>
+									<members>
+										<reference attribute="dateOfDeathExists" />
+										<compare comparison="&gt;">
+											<reference attribute="year">
+												<reference attribute="evidence" />
+											</reference>
+											<reference attribute="deathYear" />
+										</compare>
+									</members>
+								</fixedlist>
+							</all>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="incomeYearOnOrBeforeDeathYearValidatorMessage">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="ERR_YEAR_AFTER_DEATH_YEAR" resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASForeignIncomeValidationRuleSet">
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="participantDataCaseHeader">
+			<type>
+				<ruleclass name="CaseHeader" ruleset="CaseEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<singleitem onMultiple="returnFirst" onEmpty="error">
+					<filter>
+						<list>
+							<readall ruleclass="CaseHeader" ruleset="CaseEntitiesRuleSet">
+								<match retrievedattribute="concernRoleID">
+									<reference attribute="participantRoleID">
+										<reference attribute="related_caseParticipantRoleID">
+											<reference attribute="evidence" />
+										</reference>
+									</reference>
+								</match>
+							</readall>
+						</list>
+						<listitemexpression>
+							<equals>
+								<reference attribute="caseTypeCode">
+									<current />
+								</reference>
+								<Code table="CaseTypeCode">
+									<String value="CT2001" />
+								</Code>
+							</equals>
+						</listitemexpression>
+					</filter>
+				</singleitem>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="birthAndDeathEvidence">
+			<type>
+				<ruleclass name="PDCBirthAndDeath" ruleset="PDCBirthAndDeathDataRuleSet" />
+			</type>
+			<derivation>
+				<singleitem onMultiple="returnFirst" onEmpty="error">
+					<readall ruleclass="PDCBirthAndDeath" ruleset="PDCBirthAndDeathDataRuleSet">
+						<match retrievedattribute="caseID">
+							<reference attribute="caseID">
+								<reference attribute="participantDataCaseHeader" />
+							</reference>
+						</match>
+					</readall>
+				</singleitem>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="dateOfDeathExists">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="java.lang.Boolean" />
+					</type>
+					<when>
+						<condition>
+							<not>
+								<equals>
+									<null />
+									<reference attribute="dateOfDeath">
+										<reference attribute="birthAndDeathEvidence" />
+									</reference>
+								</equals>
+							</not>
+						</condition>
+						<value>
+							<true />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<false />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="birthYear">
+			<type>
+				<javaclass name="String"></javaclass>
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.Statics" method="getYearFromDate">
+					<type>
+						<javaclass name="String" />
+					</type>
+					<arguments>
+						<reference attribute="dateOfBirth">
+							<reference attribute="birthAndDeathEvidence" />
+						</reference>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="deathYear">
+			<type>
+				<javaclass name="String"></javaclass>
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.Statics" method="getYearFromDate">
+					<type>
+						<javaclass name="String" />
+					</type>
+					<arguments>
+						<reference attribute="dateOfDeath">
+							<reference attribute="birthAndDeathEvidence" />
+						</reference>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="otherDescriptionLengthValidator">
+			<type>
+				<ruleclass name="Validation" ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation" ruleset="EvidenceValidationRuleSet">
+					<reference attribute="otherDescriptionLengthValidatorFailure" />
+					<reference attribute="otherDescriptionLengthValidatorMessage" />
+				</create>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="otherDescriptionLengthValidatorFailure">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="java.lang.Boolean" />
+					</type>
+					<when>
+						<condition>
+							<all>
+								<fixedlist>
+									<listof>
+										<javaclass name="java.lang.Boolean" />
+									</listof>
+									<members>
+										<not>
+											<equals>
+												<null />
+												<reference attribute="otherDescription">
+													<reference attribute="evidence" />
+												</reference>
+											</equals>
+										</not>
+										<not>
+											<call class="curam.ca.gc.bdmoas.creole.impl.Statics" method="isValidLengthDescription">
+												<type>
+													<javaclass name="Boolean" />
+												</type>
+												<arguments>
+													<reference attribute="otherDescription">
+														<reference attribute="evidence" />
+													</reference>
+												</arguments>
+											</call>
+										</not>
+									</members>
+								</fixedlist>
+							</all>
+						</condition>
+						<value>
+							<true />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<false />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="otherDescriptionLengthValidatorMessage">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="ERR_OTHER_DESCRITION_TEXT_LENGTH_INVALID" resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASForeignIncomeValidationRuleSet">
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+
+
+	</Class>
+</RuleSet>

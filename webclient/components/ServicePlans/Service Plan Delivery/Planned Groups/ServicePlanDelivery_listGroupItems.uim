@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2005, 2007, 2009-2010 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Page to view the details of a planned group                            -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_listGroupItems"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.GroupItems"
+      STYLE="in-page-current-link"
+    >
+      <LINK PAGE_ID="ServicePlanDelivery_listGroupItems">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="plannedGroupID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="plannedGroupID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Milestones"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="ServicePlanDelivery_listGroupMilestones">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="plannedGroupID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="plannedGroupID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Comments"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="ServicePlanDelivery_viewPlannedGroup">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="plannedGroupID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="plannedGroupID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <!-- BEGIN, CR00228733, MR -->
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY"
+    OPERATION="viewPlannedGroupAndSubGoalDetails"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00228733 -->
+
+
+  <PAGE_PARAMETER NAME="description"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="plannedGroupID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="plannedGroupID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$plannedGroupID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY_MENU"
+    OPERATION="getICServicePlanMenuData"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY_MENU"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <!-- Cluster of Group Items Received  -->
+  <CLUSTER
+    SHOW_LABELS="false"
+   
+  >
+    <LIST>
+
+
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+        <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ServicePlanDelivery_resolvePlanContentModify"
+          >
+            <!-- BEGIN, CR00228733, MR -->
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="planContentID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="planContentID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="planContentDetails$list$planContentType"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="planContentType"
+              />
+            </CONNECT>
+            <!-- END, CR00228733 -->
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <!-- BEGIN, CR00228733, MR -->
+        <SEPARATOR/>
+
+
+        <ACTION_CONTROL
+          IMAGE="AddSubGoal"
+          LABEL="ActionControl.Label.AddSubGoal"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="subGoalDetailsList$list$planContentTypeInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ServicePlanDelivery_selectPlannedSubGoalType"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="plannedSubGoalID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="parentGroupID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="description"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="description"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL
+          IMAGE="AddPlanGroup"
+          LABEL="ActionControl.Label.AddPlanGroup"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="subGoalDetailsList$list$planContentTypeInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ServicePlanDelivery_addPlannedGroup"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="plannedSubGoalID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="parentGroupID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="description"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="description"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL
+          IMAGE="AddPlanItem"
+          LABEL="ActionControl.Label.AddPlanItem"
+        >
+          <CONDITION>
+            <IS_FALSE
+              NAME="DISPLAY"
+              PROPERTY="subGoalDetailsList$list$planContentTypeInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ServicePlanDelivery_selectPlanItem"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="plannedSubGoalID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="plannedSubGoalID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="description"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="description"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <SEPARATOR/>
+
+
+        <ACTION_CONTROL
+          IMAGE="NewMilestone"
+          LABEL="ActionControl.Label.NewMilestoneForGroup"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="subGoalDetailsList$list$planContentTypeInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ServicePlanDelivery_addMilestone"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="plannedSubGoalID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="plannedGroupID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="description"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="description"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL
+          IMAGE="NewMilestone"
+          LABEL="ActionControl.Label.NewMilestone"
+        >
+          <CONDITION>
+            <IS_FALSE
+              NAME="DISPLAY"
+              PROPERTY="subGoalDetailsList$list$planContentTypeInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ServicePlanDelivery_addMilestone"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="plannedSubGoalID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="plannedSubGoalID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="description"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="description"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <SEPARATOR/>
+
+
+        <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ServicePlanDelivery_resolvePlanContentDelete"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="planContentID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="planContentID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="planContentDetails$list$planContentType"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="planContentType"
+              />
+            </CONNECT>
+            <!-- END, CR00228733 -->
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+
+
+      <FIELD WIDTH="5">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="subGoalDetailsList$list$planContentTypeInd"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Title.Name"
+        WIDTH="35"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="subGoalDetailsList$list$name"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Title.StartDate"
+        WIDTH="15"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="subGoalDetailsList$list$startDate"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Title.EndDate"
+        WIDTH="15"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="subGoalDetailsList$list$endDate"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00235147, SS -->
+      <FIELD
+        LABEL="Field.Title.Outcome"
+        WIDTH="15"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="subGoalDetailsList$list$outcome"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Title.Status"
+        WIDTH="15"
+        >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="subGoalDetailsList$list$status"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- END, CR00235147 -->
+      <!-- BEGIN, CR00228733, MR -->
+      <DETAILS_ROW>
+        <INLINE_PAGE PAGE_ID="ServicePlanDelivery_resolvePlanContentView">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="plannedSubGoalID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="planContentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="subGoalDetailsList$list$planContentType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="planContentType"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </INLINE_PAGE>
+      </DETAILS_ROW>
+      <!-- END, CR00228733 -->
+    </LIST>
+  </CLUSTER>
+</PAGE>

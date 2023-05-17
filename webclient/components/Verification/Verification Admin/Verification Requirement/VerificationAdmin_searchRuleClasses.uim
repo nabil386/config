@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page lists all the active rule sets in the system                 -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="VerificationAdmin_searchRuleClasses"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="CREOLERuleSetAdmin"
+    NAME="DISPCATEGORY"
+    OPERATION="listCategory"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="VerificationAdministration"
+    NAME="ACTION"
+    OPERATION="searchCreoleRuleClassesByRulesetCategory"
+    PHASE="ACTION"
+  />
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.Descriptor.Category"
+    LABEL_WIDTH="15"
+    NUM_COLS="1"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.Category"
+      USE_BLANK="true"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="creoleRuleSetCategoryID"
+          NAME="DISPCATEGORY"
+          PROPERTY="category"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="creoleRuleSetCategoryID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST
+    
+    TITLE="List.Title.SearchResults"
+  >
+    <CONTAINER WIDTH="15"  LABEL="Field.Title.Action">
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="creoleRuleClassDisplayName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="ruleSetWithRuleClassName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+       <FIELD
+    LABEL="Field.Title.RuleClassName">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="displayRuleSetWithRuleClassName"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <ACTION_SET
+      ALIGNMENT="RIGHT"
+      TOP="false"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.Cancel" IMAGE="CancelButton" TYPE="DISMISS"/>
+    </ACTION_SET>
+
+</PAGE>

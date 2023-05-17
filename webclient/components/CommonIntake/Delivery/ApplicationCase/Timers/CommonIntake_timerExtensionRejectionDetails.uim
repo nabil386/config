@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Timer Extension rejection Details                                       -->
+<PAGE
+  PAGE_ID="CommonIntake_timerExtensionRejectionDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="milestoneWaiverRequestID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="milestoneWaiverRequestID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$milestoneWaiverRequestID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationCaseTimer"
+    NAME="DISPLAY"
+    OPERATION="showRejectionDetails"
+  />
+
+
+  <CLUSTER>
+
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="result$isEnableCluster"
+      />
+    </CONDITION>
+
+  <CLUSTER
+       NUM_COLS="1" TITLE="Field.Label.RejectionComments" SHOW_LABELS="false"
+    >
+      <FIELD WIDTH="95">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$rejectionComments"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+</PAGE>

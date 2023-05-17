@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- List all of the time constraints on an appeal process.                 -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="AppealProcessAdmin_listAppealProcessTimeConstraints"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="appealProcessID"/>
+  <PAGE_PARAMETER NAME="caseType"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="appealProcessID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$appealProcessID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseType"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseType"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="AppealProcessAdmin"
+    NAME="DISPLAY"
+    OPERATION="listTimeConstraintsForAppealProcess"
+  />
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Label.Page1"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="AppealProcessAdmin_listAppealProcessTimeConstraints"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="appealProcessID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="appealProcessID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseType"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Label.Page2"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="AppealProcessAdmin_listAppealProcessStages"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="appealProcessID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="appealProcessID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseType"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="AppealProcessAdmin_modifyTimeConstraint"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="appealStageTimeConstraintID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="appealStageTimeConstraintID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseType"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <SEPARATOR/>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <!-- BEGIN , CR00295312 , DK -->
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="isMandatory"
+          />
+        </CONDITION>
+        <!-- END , CR00295312 , DK -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="AppealProcessAdmin_cancelTimeConstraint"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="appealStageTimeConstraintID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="appealStageTimeConstraintID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseType"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="appealProcessID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="appealProcessID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="constraintTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Days"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="numberOfDays"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.From"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.RelatedStage"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="relatedAppealStage"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

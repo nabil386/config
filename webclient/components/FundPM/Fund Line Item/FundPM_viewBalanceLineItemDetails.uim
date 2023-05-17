@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2008, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows user to view the balance line item details.     	    -->
+<PAGE
+  PAGE_ID="FundPM_viewBalanceLineItemDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../WebContent/WEB-INF/CDEJ/schema/uim.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY1"
+        PROPERTY="fundName"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText2"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY1"
+        PROPERTY="yearName"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainBudgetAdjustment"
+    NAME="DISPLAY"
+    OPERATION="viewBudgetAdjustment"
+  />
+
+
+  <PAGE_PARAMETER NAME="budgetAdjustmentID"/>
+  <PAGE_PARAMETER NAME="fundName"/>
+  <PAGE_PARAMETER NAME="fiscalYearName"/>
+  <PAGE_PARAMETER NAME="fiscalYearFundID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainFundFiscalYear"
+    NAME="DISPLAY1"
+    OPERATION="readFundHomeForFiscalYear"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="fiscalYearFundID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$fundFiscalYearID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="budgetAdjustmentID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$budgetAdjustmentID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Label.Details"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="allocationReferenceNoInd"
+      />
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.AllocationReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="allocationRefNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Amount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$amount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CreatedBy">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="userFirstName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_userHome"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="userFirstName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <FIELD LABEL="Field.Label.CreditDebitType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creditDebitType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Label.Details"
+  >
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="allocationReferenceNoInd"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Amount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$amount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CreatedBy">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="userFirstName"
+        />
+      </CONNECT>
+
+
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_userHome"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="userFirstName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <FIELD LABEL="Field.Label.CreditDebitType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creditDebitType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00426143, GK -->
+    <FIELD LABEL="Field.Label.Comments">
+      <!-- END, CR00426143 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    />
+  </ACTION_SET>
+
+
+</PAGE>

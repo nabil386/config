@@ -1,0 +1,2 @@
+//>>built
+define("dojo/nls/ieg-oneui-layer_ja",{"idx/widget/nls/HoverHelpTooltip":{"learnMoreLabel":"より詳しく調べる","_localized":{}},"idx/widget/nls/Dialog":{"closeButtonLabel":"閉じる","_localized":{}},"dijit/form/nls/ComboBox":{"previousMessage":"以前の選択項目","_localized":{},"nextMessage":"追加の選択項目"},"dijit/form/nls/validate":{"invalidMessage":"入力した値は無効です。","rangeMessage":"この値は範囲外です。","_localized":{},"missingMessage":"この値は必須です。"}});

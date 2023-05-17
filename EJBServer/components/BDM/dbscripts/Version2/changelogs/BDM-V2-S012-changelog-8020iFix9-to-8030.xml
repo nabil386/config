@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="UTF-8"?>	
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+		http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    
+ <!-- NOTE: Always add new changesets for every pull request. 
+      DO NOT modify existing changesets or SQLs.
+      Group related SQLs in a changeset.  
+      ID's must be unique and follow the format - ComponentName+Release+Sprint+UniqueID
+      Author must be specified - firstname initial.lastname-->
+ 
+    <changeSet  id="BDM_V2_S012_115539_01"  author="ramanujam.madhula">
+        <sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+
+CREATE TABLE autorecovery (
+    autorecoveryid        NUMBER(19, 0) NOT NULL,
+    foregroundpagedata    CLOB,
+    foregroundpage        VARCHAR2(1000 BYTE),
+    username              VARCHAR2(64 BYTE) NOT NULL,
+    lastupdateddatetime   DATE NOT NULL,
+    backgroundtd          CLOB,
+    sequenceno            NUMBER(*, 0) NOT NULL,
+    versionno             NUMBER(*, 0) NOT NULL,
+    lastwritten           DATE,
+    CONSTRAINT autorecovery PRIMARY KEY ( autorecoveryid )
+);
+
+CREATE INDEX ind__1277896655 ON
+    autorecovery (
+        username
+    );
+
+ALTER TABLE note ADD latestnotecreationdatetime DATE;
+
+ALTER TABLE contactlog ADD subject VARCHAR2(120 BYTE);
+
+INSERT INTO FunctionIdentifier (fidName, projectPackage, codePackage, description, fidEnabled) values ('Case.checkContactLogLuceneSearchEnabled', 'curam', 'core.facade', 'curam.core.facade.Case.checkContactLogLuceneSearchEnabled', 'Y');
+
+INSERT INTO FunctionIdentifier (fidName, projectPackage, codePackage, description, fidEnabled) values ('Case.checkContactLogSubjectEnabled', 'curam', 'core.facade', 'curam.core.facade.Case.checkContactLogSubjectEnabled', 'Y');
+
+INSERT INTO FunctionIdentifier (fidName, projectPackage, codePackage, description, fidEnabled) values ('Case.readNoteLockedStatus', 'curam', 'core.facade', 'curam.core.facade.Case.readNoteLockedStatus', 'Y');
+
+INSERT INTO FunctionIdentifier (fidName, projectPackage, codePackage, description, fidEnabled) values ('ContactLog.readContactLogNarrativeLucene', 'curam', 'core.facade', 'curam.core.facade.ContactLog.readContactLogNarrativeLucene', 'Y');
+
+INSERT INTO FunctionIdentifier (fidName, projectPackage, codePackage, description, fidEnabled) values ('Participant.readNoteLockedStatus', 'curam', 'core.facade', 'curam.core.facade.Participant.readNoteLockedStatus', 'Y');
+
+INSERT INTO FunctionIdentifier (fidName, projectPackage, codePackage, description, fidEnabled) values ('QuickNotes.readNoteLockedStatus', 'curam', 'intake.facade', 'curam.intake.facade.QuickNotes.readNoteLockedStatus', 'Y');
+
+INSERT INTO FunctionIdentifier (fidName, projectPackage, codePackage, description, fidEnabled) values ('QuickNotes.readQuickNotesHistory', 'curam', 'intake.facade', 'curam.intake.facade.QuickNotes.readQuickNotesHistory', 'Y');
+
+INSERT INTO FunctionIdentifier (fidName, projectPackage, codePackage, description, fidEnabled) values ('SPGDeliveryNote.readNoteLockedStatus', 'curam', 'serviceplans.facade', 'curam.serviceplans.facade.SPGDeliveryNote.readNoteLockedStatus', 'Y');
+
+INSERT INTO FunctionIdentifier (fidName, projectPackage, codePackage, description, fidEnabled) values ('AutoRecoveryManager.readAutoRecovery', 'curam.util', 'internal.autorecovery', 'curam.util.internal.autorecovery.AutoRecoveryManager.readAutoRecovery', 'Y');
+
+INSERT INTO FunctionIdentifier (fidName, projectPackage, codePackage, description, fidEnabled) values ('AutoRecoveryManager.removeAutoRecovery', 'curam.util', 'internal.autorecovery', 'curam.util.internal.autorecovery.AutoRecoveryManager.removeAutoRecovery', 'Y');
+
+INSERT INTO FunctionIdentifier (fidName, projectPackage, codePackage, description, fidEnabled) values ('AutoRecoveryManager.saveAutoRecovery', 'curam.util', 'internal.autorecovery', 'curam.util.internal.autorecovery.AutoRecoveryManager.saveAutoRecovery', 'Y');
+
+INSERT INTO SECURITYIDENTIFIER (SIDNAME, SIDTYPE, DESCRIPTION, VERSIONNO, LASTWRITTEN) VALUES('Case.checkContactLogLuceneSearchEnabled', 'FUNCTION', NULL, 0, NULL);
+INSERT INTO SECURITYIDENTIFIER (SIDNAME, SIDTYPE, DESCRIPTION, VERSIONNO, LASTWRITTEN) VALUES('Case.checkContactLogSubjectEnabled', 'FUNCTION', NULL, 0, NULL);
+INSERT INTO SECURITYIDENTIFIER (SIDNAME, SIDTYPE, DESCRIPTION, VERSIONNO, LASTWRITTEN) VALUES('Case.readNoteLockedStatus', 'FUNCTION', NULL, 0, NULL);
+INSERT INTO SECURITYIDENTIFIER (SIDNAME, SIDTYPE, DESCRIPTION, VERSIONNO, LASTWRITTEN) VALUES('ContactLog.readContactLogNarrativeLucene', 'FUNCTION', NULL, 0, NULL);
+INSERT INTO SECURITYIDENTIFIER (SIDNAME, SIDTYPE, DESCRIPTION, VERSIONNO, LASTWRITTEN) VALUES('Participant.readNoteLockedStatus', 'FUNCTION', NULL, 0, NULL);
+INSERT INTO SECURITYIDENTIFIER (SIDNAME, SIDTYPE, DESCRIPTION, VERSIONNO, LASTWRITTEN) VALUES('QuickNotes.readNoteLockedStatus', 'FUNCTION', NULL, 0, NULL);
+INSERT INTO SECURITYIDENTIFIER (SIDNAME, SIDTYPE, DESCRIPTION, VERSIONNO, LASTWRITTEN) VALUES('QuickNotes.readQuickNotesHistory', 'FUNCTION', NULL, 0, NULL);
+INSERT INTO SECURITYIDENTIFIER (SIDNAME, SIDTYPE, DESCRIPTION, VERSIONNO, LASTWRITTEN) VALUES('AutoRecoveryManager.readAutoRecovery', 'FUNCTION', NULL, 0, NULL);
+INSERT INTO SECURITYIDENTIFIER (SIDNAME, SIDTYPE, DESCRIPTION, VERSIONNO, LASTWRITTEN) VALUES('AutoRecoveryManager.removeAutoRecovery', 'FUNCTION', NULL, 0, NULL);
+INSERT INTO SECURITYIDENTIFIER (SIDNAME, SIDTYPE, DESCRIPTION, VERSIONNO, LASTWRITTEN) VALUES('AutoRecoveryManager.saveAutoRecovery', 'FUNCTION', NULL, 0, NULL);
+INSERT INTO SECURITYIDENTIFIER (SIDNAME, SIDTYPE, DESCRIPTION, VERSIONNO, LASTWRITTEN) VALUES('SPGDeliveryNote.readNoteLockedStatus', 'FUNCTION', NULL, 0, NULL);
+
+
+
+INSERT INTO SECURITYFIDSID (SIDNAME, FIDNAME, LASTWRITTEN) VALUES('Case.checkContactLogLuceneSearchEnabled','Case.checkContactLogLuceneSearchEnabled', NULL);
+INSERT INTO SECURITYFIDSID (SIDNAME, FIDNAME, LASTWRITTEN) VALUES('Case.checkContactLogSubjectEnabled', 'Case.checkContactLogSubjectEnabled', NULL);
+INSERT INTO SECURITYFIDSID (SIDNAME, FIDNAME, LASTWRITTEN) VALUES('Case.readNoteLockedStatus', 'Case.readNoteLockedStatus', NULL);
+INSERT INTO SECURITYFIDSID (SIDNAME, FIDNAME, LASTWRITTEN) VALUES('ContactLog.readContactLogNarrativeLucene', 'ContactLog.readContactLogNarrativeLucene', NULL);
+INSERT INTO SECURITYFIDSID (SIDNAME, FIDNAME, LASTWRITTEN) VALUES('Participant.readNoteLockedStatus','Participant.readNoteLockedStatus', NULL);
+INSERT INTO SECURITYFIDSID (SIDNAME, FIDNAME, LASTWRITTEN) VALUES('QuickNotes.readNoteLockedStatus','QuickNotes.readNoteLockedStatus', NULL);
+INSERT INTO SECURITYFIDSID (SIDNAME, FIDNAME, LASTWRITTEN) VALUES('QuickNotes.readQuickNotesHistory','QuickNotes.readQuickNotesHistory', NULL);
+INSERT INTO SECURITYFIDSID (SIDNAME, FIDNAME, LASTWRITTEN) VALUES('AutoRecoveryManager.readAutoRecovery','AutoRecoveryManager.readAutoRecovery', NULL);
+INSERT INTO SECURITYFIDSID (SIDNAME, FIDNAME, LASTWRITTEN) VALUES('AutoRecoveryManager.removeAutoRecovery','AutoRecoveryManager.removeAutoRecovery', NULL);
+INSERT INTO SECURITYFIDSID (SIDNAME, FIDNAME, LASTWRITTEN) VALUES('AutoRecoveryManager.saveAutoRecovery','AutoRecoveryManager.saveAutoRecovery', NULL);
+INSERT INTO SECURITYFIDSID (SIDNAME, FIDNAME, LASTWRITTEN) VALUES('SPGDeliveryNote.readNoteLockedStatus','SPGDeliveryNote.readNoteLockedStatus', NULL);
+
+
+-- DMX entry not found for these facades and hence no insert statements were found
+--update securitygroupsid set GROUPNAME='BASESECURITYGROUP' where SIDNAME = 'AutoRecoveryManager.readAutoRecovery' and GROUPNAME='SUPERGROUP';
+--update securitygroupsid set GROUPNAME='BASESECURITYGROUP' where SIDNAME = 'AutoRecoveryManager.saveAutoRecovery' and GROUPNAME='SUPERGROUP';
+--update securitygroupsid set GROUPNAME='BASESECURITYGROUP' where SIDNAME = 'AutoRecoveryManager.removeAutoRecovery' and GROUPNAME='SUPERGROUP';
+
+INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('EnvPropertyCategory', 'INF_ACMENU', 'Infrastructure - Action menu parameters', '', '', '1', 0, 'en', SYSDATE, 1);
+INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('EnvPropertyCategory', 'INF_ACMENU', 'Infrastructure - Action menu parameters', '', '', '1', 0, 'fr', SYSDATE, 1);
+
+INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('EnvPropertyCategory', 'SESS_MGT', 'Infrastructure - Session Management settings', '', '', '1', 0, 'en', SYSDATE, 1);
+INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('EnvPropertyCategory', 'SESS_MGT', 'Infrastructure - Session Management settings', '', '', '1', 0, 'fr', SYSDATE, 1);
+
+INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SystemServiceName', 'SSN21005', 'Content Management Interoperability Service over Browser Binding', '', '', '1', 0, 'fr', SYSDATE, 1);
+
+INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('TemplateIDCode', 'TC2100', 'Contact Log Preview With Subject', '', '', '1', 0, 'en', SYSDATE, 1);
+INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('TemplateIDCode', 'TC2100', 'PrÃ©visualisation du Journal des contacts avec intitulÃ©', '', '', '1', 0, 'fr', SYSDATE, 1);
+
+
+--INSERT INTO LOCALIZABLETEXT (GROUPCODE, LOCALIZABLETEXTID, RICHTEXTIND, SHORTTEXTIND, VERSIONNO) VALUES (null, 35026, '1', null, 1);
+--INSERT INTO LOCALIZABLETEXT (GROUPCODE, LOCALIZABLETEXTID, RICHTEXTIND, SHORTTEXTIND, VERSIONNO) VALUES (null, 35027, '1', null, 1);
+
+--INSERT INTO SYSTEMMESSAGE (SYSTEMMESSAGEID, EFFECTIVEDATETIME, EXPIRYDATETIME, CREATIONDATE, CREATEDBY, TITLETEXTID, MESSAGETEXTID, STATUS, PRIORITYIND, VISIBILITY, VERSIONNO) VALUES (35026, '2022-06-21-09.00.00', '2050-10-05-09.00.00', '2022-06-21-00.00.00', 'admin', 35026, 35027, 'SMS10002', '1', null, 1);
+
+
+
+--TextTranslation changes
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60216;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60217;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60222;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60223;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60230;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60231;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60265;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60266;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60281;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60303;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60304;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60411;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60412;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60489;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60490;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60568;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60569;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60570;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60571;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60572;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60573;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60574;
+DELETE FROM TEXTTRANSLATION WHERE textTranslationID = 60575;
+
+
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 10000 , TEXT = 'J''ai besoin d''aide !' WHERE textTranslationID = 60218;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 10001 , TEXT = 'Vérification d''éligibilité' WHERE textTranslationID = 60219;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 27001 , TEXT = 'Autorisation d''admission' WHERE textTranslationID = 60232;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 27002 , TEXT = 'Contient des règles à utiliser lors du processus d''autorisation d''admission au niveau de la demande et du programme.' WHERE textTranslationID = 60233;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 27100 , TEXT = 'Demande d''admission de création de dossier de demande directe' WHERE textTranslationID = 60234;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 27101 , TEXT = 'Cette demande d''admission interne est utilisée dans la création directe de dossiers de demande.' WHERE textTranslationID = 60235;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 11000 , TEXT = 'Configuration du propagateur d''entités de dossier' WHERE textTranslationID = 60267;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 11001 , TEXT = 'Configuration de la propagation d''entités de participant' WHERE textTranslationID = 60268;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 11002 , TEXT = 'Attributs calculés d''informations collectées dynamiques' WHERE textTranslationID = 60269;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 11003 , TEXT = 'Contient des règles de calcul des attributs calculés d''informations collectées dynamiques' WHERE textTranslationID = 60270;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 11004 , TEXT = 'Informations récapitulatives d''informations collectées dynamiques' WHERE textTranslationID = 60271;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 11005 , TEXT = 'Contient des règles de calcul des informations récapitulatives d''informations collectées dynamiques' WHERE textTranslationID = 60272;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 11006 , TEXT = 'Validation d''informations collectées dynamiques' WHERE textTranslationID = 60273;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 11007 , TEXT = 'Contient des règles de validation personnalisée d''informations collectées dynamiques' WHERE textTranslationID = 60274;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 11008 , TEXT = 'Ensemble de règles d''informations collectées dynamiques' WHERE textTranslationID = 60275;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 11009 , TEXT = 'Ensemble de règles de récapitulatifs d''informations collectées' WHERE textTranslationID = 60276;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 19000 , TEXT = 'Processus d''admission - Entité standard' WHERE textTranslationID = 60305;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 19001 , TEXT = 'Analyse des besoins' WHERE textTranslationID = 60306;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 19002 , TEXT = 'Contact initial' WHERE textTranslationID = 60307;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 19003 , TEXT = 'Application Todo' WHERE textTranslationID = 60308;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 19004 , TEXT = 'Classes de règles de données courantes pour les demandes d''admission' WHERE textTranslationID = 60309;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29006 , TEXT = 'PDCNameDataRuleSet - Configuration du propagateur d''ensembles de succession actif' WHERE textTranslationID = 60413;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29004 , TEXT = 'PDCBirthAndDeathDataRuleSet - Configuration du propagateur d''ensembles de succession actif' WHERE textTranslationID = 60414;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29003 , TEXT = 'PDCIdentificationDataRuleSet - Configuration du propagateur d''ensembles de succession actif' WHERE textTranslationID = 60415;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29001 , TEXT = 'PDCGenderDataRuleSet - Configuration du propagateur d''ensembles de succession actif' WHERE textTranslationID = 60416;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29005 , TEXT = 'PDCEmailAddressDataRuleSet - Configuration du propagateur d''ensembles de succession actif' WHERE textTranslationID = 60417;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29000 , TEXT = 'PDCContactPreferencesDataRuleSet - Configuration du propagateur d''ensembles de succession actif' WHERE textTranslationID = 60418;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29007 , TEXT = 'PDCBankAccountDataRuleSet - Configuration du propagateur d''ensembles de succession actif' WHERE textTranslationID = 60419;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29054 , TEXT = 'PDCRelationshipsDataRuleSet - Configuration du propagateur d''ensembles de succession actif' WHERE textTranslationID = 60420;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29002 , TEXT = 'PDCAddressDataRuleSet - Configuration du propagateur d''ensembles de succession actif' WHERE textTranslationID = 60421;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29008 , TEXT = 'PDCPhoneNumberDataRuleSet - Configuration du propagateur d''ensembles de succession actif' WHERE textTranslationID = 60422;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29009 , TEXT = 'Propagation des entités du client doublon du contrôleur de domaine principal.' WHERE textTranslationID = 60423;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29010 , TEXT = 'Propagation des preuves de participant.' WHERE textTranslationID = 60424;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29011 , TEXT = 'PDCPhoneNumberValidationProgagatorConfiguration' WHERE textTranslationID = 60425;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29012 , TEXT = 'PDCBankAccountValidationProgagatorConfiguration' WHERE textTranslationID = 60426;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29013 , TEXT = 'Propagation de la ligne de preuve de participant.' WHERE textTranslationID = 60427;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29014 , TEXT = 'Ensemble de règles sur le numéro de téléphone du participant.' WHERE textTranslationID = 60428;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29015 , TEXT = 'Ensemble de règles de données sur le numéro de téléphone du participant.' WHERE textTranslationID = 60429;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29016 , TEXT = 'Ensemble de règles sur l''adresse du participant.' WHERE textTranslationID = 60430;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29017 , TEXT = 'Ensemble de règles de données sur l''adresse du participant.' WHERE textTranslationID = 60431;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29018 , TEXT = 'Ensemble de règles sur la naissance et le décès du participant.' WHERE textTranslationID = 60432;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29019 , TEXT = 'Ensemble de règles de données sur la naissance et le décès du participant.' WHERE textTranslationID = 60433;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29020 , TEXT = 'Ensemble de règles sur les préférences de contact du participant.' WHERE textTranslationID = 60434;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29021 , TEXT = 'Ensemble de règles de données sur les préférences de contact du participant.' WHERE textTranslationID = 60435;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29022 , TEXT = 'Ensemble de règles sur le sexe du participant.' WHERE textTranslationID = 60436;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29023 , TEXT = 'Ensemble de règles de données sur le sexe du participant.' WHERE textTranslationID = 60437;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29024 , TEXT = 'Ensemble de règles sur les relations du participant.' WHERE textTranslationID = 60438;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29025 , TEXT = 'Ensemble de règles de données sur les relations du participant.' WHERE textTranslationID = 60439;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29026 , TEXT = 'Ensemble de règles sur l''identification du participant.' WHERE textTranslationID = 60440;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29027 , TEXT = 'Ensemble de règles de données sur l''identification du participant.' WHERE textTranslationID = 60441;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29028 , TEXT = 'Ensemble de règles sur le compte bancaire du participant.' WHERE textTranslationID = 60442;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29029 , TEXT = 'Ensemble de règles de données sur le compte bancaire du participant.' WHERE textTranslationID = 60443;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29030 , TEXT = 'Ensemble de règles sur l''adresse électronique du participant.' WHERE textTranslationID = 60444;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29031 , TEXT = 'Ensemble de règles de données sur l''adresse électronique du participant.' WHERE textTranslationID = 60445;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29032 , TEXT = 'Ensemble de règles sur le nom du participant.' WHERE textTranslationID = 60446;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29033 , TEXT = 'Ensemble de règles de données sur le nom du participant.' WHERE textTranslationID = 60447;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29034 , TEXT = 'Ensemble de règles de validation sur le compte bancaire du participant.' WHERE textTranslationID = 60448;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29035 , TEXT = 'Ensemble de règles de validation sur l''adresse électronique du participant.' WHERE textTranslationID = 60449;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29036 , TEXT = 'Ensemble de règles de validation sur l''identification du participant.' WHERE textTranslationID = 60450;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29037 , TEXT = 'Ensemble de règles de validation sur le nom du participant.' WHERE textTranslationID = 60451;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29038 , TEXT = 'Ensemble de règles de validation sur le sexe du participant.' WHERE textTranslationID = 60452;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29039 , TEXT = 'Ensemble de règles de validation sur les préférences de contact du participant.' WHERE textTranslationID = 60453;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29040 , TEXT = 'Ensemble de règles de validation sur la naissance et le décès du participant.' WHERE textTranslationID = 60454;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29041 , TEXT = 'Ensemble de règles de validation sur le numéro de téléphone du participant.' WHERE textTranslationID = 60455;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29042 , TEXT = 'Ensemble de règles de validation sur l''adresse du participant.' WHERE textTranslationID = 60456;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29043 , TEXT = 'Ensemble de règles de validation sur les clients en double du participant.' WHERE textTranslationID = 60457;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29044 , TEXT = 'Ensemble de règles récapitulatives sur le nom du participant.' WHERE textTranslationID = 60458;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29045 , TEXT = 'Ensemble de règles récapitulatives sur la naissance et le décès du participant.' WHERE textTranslationID = 60459;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29046 , TEXT = 'Ensemble de règles récapitulatives sur le numéro de téléphone du participant.' WHERE textTranslationID = 60460;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29047 , TEXT = 'Ensemble de règles récapitulatives sur les préférences de contact du participant.' WHERE textTranslationID = 60461;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29048 , TEXT = 'Ensemble de règles récapitulatives sur l''adresse du participant.' WHERE textTranslationID = 60462;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29049 , TEXT = 'Ensemble de règles sur la preuve de participant.' WHERE textTranslationID = 60463;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29050 , TEXT = 'Ensemble de règles récapitulatives sur les relations du participant.' WHERE textTranslationID = 60464;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 29051 , TEXT = 'Ensemble de règles de validation sur les relations du participant.' WHERE textTranslationID = 60465;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2701 , TEXT = 'Eligibilité et droits : détermination' WHERE textTranslationID = 60576;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2702 , TEXT = 'Contient des règles pour déterminer l''éligibilité et les droits d''une distribution de produits.' WHERE textTranslationID = 60577;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2703 , TEXT = 'Eligibilité et droits : affichage' WHERE textTranslationID = 60578;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2704 , TEXT = 'Contient des règles pour renseigner une catégorie de règles d''affichage.' WHERE textTranslationID = 60579;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2705 , TEXT = 'Eligibilité et droits : critères de décision clés' WHERE textTranslationID = 60580;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2706 , TEXT = 'Contient des règles pour renseigner la vue graphique d''une détermination.' WHERE textTranslationID = 60581;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2707 , TEXT = 'Informations collectées dynamiques : traitement' WHERE textTranslationID = 60582;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2708 , TEXT = 'Contient des classes de règles générées pour les types d''informations collectées dynamiques. Ces classes de règles permettent d''écrire des règles CREOLE pour effectuer une validation d''informations collectées et calculer des informations récapitulatives, ainsi que des attributs calculés.' WHERE textTranslationID = 60583;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2709 , TEXT = 'Informations collectées dynamiques : données' WHERE textTranslationID = 60584;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2710 , TEXT = 'Contient des ensembles de règles de données générés pour les types d''informations collectées dynamiques. Ces ensembles de règles de données sont utilisés dans les règles d''éligibilité et de droits pour représenter des enregistrements d''informations collectées dynamiques et des ensembles de succession.' WHERE textTranslationID = 60585;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2711 , TEXT = 'Informations collectées dynamiques : infrastructure' WHERE textTranslationID = 60586;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2712 , TEXT = 'Contient des ensembles de règles d''interface pour le traitement des informations collectées dynamiques telles que la validation, les informations récapitulatives et les attributs calculés.' WHERE textTranslationID = 60587;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2001 , TEXT = 'Propagation des informations de configuration du produit pour les produits CER' WHERE textTranslationID = 60588;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2002 , TEXT = 'Propagation des entités associées au dossier' WHERE textTranslationID = 60589;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2003 , TEXT = 'Propagation des entités associées au participant' WHERE textTranslationID = 60590;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2004 , TEXT = 'Propagation des objets règle de taux' WHERE textTranslationID = 60591;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2005 , TEXT = 'Ensemble de règles pour les entités du dossier' WHERE textTranslationID = 60592;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2006 , TEXT = 'Ensemble des règles d''éligibilité et d''autorisation pour le produit' WHERE textTranslationID = 60593;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2007 , TEXT = 'Ensemble de règles pour les entités participantes' WHERE textTranslationID = 60594;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2008 , TEXT = 'Ensemble des règles d''éligibilité et d''autorisation pour le produit par défaut' WHERE textTranslationID = 60595;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2009 , TEXT = 'Ensemble de règles de détails de décision pour le produit de base abstrait' WHERE textTranslationID = 60596;
+UPDATE TEXTTRANSLATION SET LOCALIZABLETEXTID = 2010 , TEXT = 'Ensemble de règles de détails de décision pour le produit par défaut' WHERE textTranslationID = 60597;
+
+
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 10002, null, 'Postuler à des prestations', 60220, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 10003, null, 'Configuration du propagateur d''entités de campagne citoyenne', 60221, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 3301, null, 'Pour vous connecter, vous devez saisir votre date de naissance au format mm/jj/aaaa, votre numéro de sécurité sociale et votre code confidentiel. Le code confidentiel vous est fourni par votre agence Health and Human Services Agency (HHSA). Si vous n''avez pas reçu de code confidentiel, veuillez appeler le 800 555 746.', 60224, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 10004, null, 'Contient des règles pour la campagne de vulgarisation', 60225, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 27105, null, 'Ensemble de règles de contrôle de l''éligibilité du dossier de demande', 60236, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 27106, null, 'Contient des règles à utiliser lors du contrôle de l''éligibilité dans le dossier de demande.', 60237, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 11010, null, 'Ensemble de règles de validation des informations collectées', 60277, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 11011, null, 'Ensemble de règles des attributs calculés pour les informations collectées', 60278, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 4097, null, 'Configuration du propagateur d''entité pour l''ensemble de règles "Sélectionner les fonds du produit"', 60283, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 19351, null, 'Référence de la demande', 60310, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 19352, null, 'Numéro de référence de demande', 60311, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 29052, null, 'Ensemble de règles de validation d''IBAN du participant.', 60466, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 29053, null, 'Ensemble de règles de récapitulatif d''IBAN du participant.', 60467, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 2731, null, 'Vérification', 60491, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 2732, null, 'Contient des artefacts de règle centraux et abstraits représentant des vérifications de condition', 60492, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 2011, null, 'Ensemble de règles de détails de décision pour le produit', 60598, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 2012, null, 'Ensemble de règles de critères de décision clés pour le produit par défaut - Déprécié', 60599, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 2013, null, 'Ensemble de règles de critères de décision clés pour le produit', 60600, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 2014, null, 'Ensemble de règles des cibles d''allocation abstraite', 60601, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 2015, null, 'Ensemble de règles des cibles d''allocation par défaut', 60602, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 3012, null, 'Allocation de flux de travaux', 60603, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 3013, null, 'Contient un ensemble de règles de flux de travaux pour la stratégie d''allocation CER', 60604, null);
+INSERT INTO TEXTTRANSLATION (LOCALECODE, LOCALIZABLETEXTID, SHORTTEXT, TEXT, TEXTTRANSLATIONID, UPPERSHORTTEXT) VALUES ('fr', 2020, null, 'Ensemble de règles de données clés pour le produit - Déprécié', 60605, null);
+
+
+--APPRESOURCE Deletion and Updates
+DELETE FROM APPRESOURCE WHERE resourceID = 60106;
+DELETE FROM APPRESOURCE WHERE resourceID = 60107;
+DELETE FROM APPRESOURCE WHERE resourceID = 60220;
+DELETE FROM APPRESOURCE WHERE resourceID = 60221;
+DELETE FROM APPRESOURCE WHERE resourceID = 60224;
+DELETE FROM APPRESOURCE WHERE resourceID = 60225;
+DELETE FROM APPRESOURCE WHERE resourceID = 60261;
+DELETE FROM APPRESOURCE WHERE resourceID = 60262;
+DELETE FROM APPRESOURCE WHERE resourceID = 60277;
+DELETE FROM APPRESOURCE WHERE resourceID = 60278;
+DELETE FROM APPRESOURCE WHERE resourceID = 60283;
+DELETE FROM APPRESOURCE WHERE resourceID = 60327;
+DELETE FROM APPRESOURCE WHERE resourceID = 60328;
+DELETE FROM APPRESOURCE WHERE resourceID = 60466;
+DELETE FROM APPRESOURCE WHERE resourceID = 60485;
+DELETE FROM APPRESOURCE WHERE resourceID = 60486;
+DELETE FROM APPRESOURCE WHERE resourceID = 60502;
+DELETE FROM APPRESOURCE WHERE resourceID = 60503;
+DELETE FROM APPRESOURCE WHERE resourceID = 60504;
+DELETE FROM APPRESOURCE WHERE resourceID = 60505;
+DELETE FROM APPRESOURCE WHERE resourceID = 60511;
+DELETE FROM APPRESOURCE WHERE resourceID = 60512;
+DELETE FROM APPRESOURCE WHERE resourceID = 60513;
+DELETE FROM APPRESOURCE WHERE resourceID = 60514;
+
+
+UPDATE APPRESOURCE SET CATEGORY = 'RS_CSS' , NAME = 'cp-config-properties' WHERE resourceID = 60108;
+UPDATE APPRESOURCE SET NAME = 'cw-fragment-css-properties' WHERE resourceID = 60109;
+UPDATE APPRESOURCE SET NAME = 'css-oneui-properties-resource' WHERE resourceID = 60110;
+UPDATE APPRESOURCE SET NAME = 'css-oneui-properties-resource-high-contrast' WHERE resourceID = 60111;
+UPDATE APPRESOURCE SET CONTENTTYPE = 'text/css' , NAME = 'cw-fragment-css-properties-rtl' WHERE resourceID = 60112;
+UPDATE APPRESOURCE SET CONTENTTYPE = 'text/css' , NAME = 'css-oneui-properties-resource-rtl' WHERE resourceID = 60113;
+UPDATE APPRESOURCE SET NAME = 'CreateAccount' WHERE resourceID = 60114;
+UPDATE APPRESOURCE SET NAME = 'IntakeOptionalLogin' WHERE resourceID = 60115;
+UPDATE APPRESOURCE SET NAME = 'Home' WHERE resourceID = 60116;
+UPDATE APPRESOURCE SET NAME = 'SelectApplication' WHERE resourceID = 60117;
+UPDATE APPRESOURCE SET NAME = 'ScreeningResultsFiltered' WHERE resourceID = 60118;
+UPDATE APPRESOURCE SET NAME = 'SelectProgram' WHERE resourceID = 60119;
+UPDATE APPRESOURCE SET NAME = 'PrintApplicationForms' WHERE resourceID = 60120;
+UPDATE APPRESOURCE SET NAME = 'NoScreeningTypes' WHERE resourceID = 60121;
+UPDATE APPRESOURCE SET NAME = 'ScreeningOptionalLogin' WHERE resourceID = 60122;
+UPDATE APPRESOURCE SET NAME = 'Logon' WHERE resourceID = 60123;
+UPDATE APPRESOURCE SET NAME = 'SaveSubmitOrExit' WHERE resourceID = 60124;
+UPDATE APPRESOURCE SET NAME = 'SaveOrExit' WHERE resourceID = 60125;
+UPDATE APPRESOURCE SET NAME = 'IntakeMandatoryLogin' WHERE resourceID = 60126;
+UPDATE APPRESOURCE SET NAME = 'SubmitAppCreateAccountLoginOrContinue' WHERE resourceID = 60127;
+UPDATE APPRESOURCE SET NAME = 'SubmitAppCreateAccountOrLogin' WHERE resourceID = 60128;
+UPDATE APPRESOURCE SET NAME = 'SaveAppCreateAccountOrLogin' WHERE resourceID = 60129;
+UPDATE APPRESOURCE SET NAME = 'SavedScreenings' WHERE resourceID = 60130;
+UPDATE APPRESOURCE SET NAME = 'NoApplicationTypes' WHERE resourceID = 60131;
+UPDATE APPRESOURCE SET NAME = 'NoPrograms' WHERE resourceID = 60132;
+UPDATE APPRESOURCE SET NAME = 'PendingDispositionAllApps' WHERE resourceID = 60133;
+UPDATE APPRESOURCE SET NAME = 'PendingDispositionApps' WHERE resourceID = 60134;
+UPDATE APPRESOURCE SET NAME = 'ResetPassword' WHERE resourceID = 60135;
+UPDATE APPRESOURCE SET NAME = 'RetainOrSaveApplication' WHERE resourceID = 60136;
+UPDATE APPRESOURCE SET NAME = 'RetainOrSubmitApplication' WHERE resourceID = 60137;
+UPDATE APPRESOURCE SET NAME = 'SaveConfirmation' WHERE resourceID = 60138;
+UPDATE APPRESOURCE SET NAME = 'PostSubmit' WHERE resourceID = 60139;
+UPDATE APPRESOURCE SET NAME = 'ScreeningNextSteps' WHERE resourceID = 60140;
+UPDATE APPRESOURCE SET NAME = 'ScreeningSelectApplication' WHERE resourceID = 60141;
+UPDATE APPRESOURCE SET NAME = 'ExistingApplications' WHERE resourceID = 60142;
+UPDATE APPRESOURCE SET NAME = 'ScreeningResults' WHERE resourceID = 60143;
+UPDATE APPRESOURCE SET NAME = 'IntakeApplications' WHERE resourceID = 60144;
+UPDATE APPRESOURCE SET NAME = 'CPPagePlayer' WHERE resourceID = 60145;
+UPDATE APPRESOURCE SET NAME = 'SelectScreeningPrograms' WHERE resourceID = 60146;
+UPDATE APPRESOURCE SET NAME = 'ScreeningApplyOnline' WHERE resourceID = 60147;
+UPDATE APPRESOURCE SET NAME = 'AskSaveScreening' WHERE resourceID = 60148;
+UPDATE APPRESOURCE SET NAME = 'ConfirmExit' WHERE resourceID = 60149;
+UPDATE APPRESOURCE SET NAME = 'SubmitOrExit' WHERE resourceID = 60150;
+UPDATE APPRESOURCE SET NAME = 'SaveScreeningCreateAccountOrLogin' WHERE resourceID = 60151;
+UPDATE APPRESOURCE SET NAME = 'SaveScreeningConfirmation' WHERE resourceID = 60152;
+UPDATE APPRESOURCE SET NAME = 'DeleteInProgressApplication' WHERE resourceID = 60153;
+UPDATE APPRESOURCE SET NAME = 'WithdrawIntakeApplication' WHERE resourceID = 60154;
+UPDATE APPRESOURCE SET NAME = 'PrintAndExit' WHERE resourceID = 60155;
+UPDATE APPRESOURCE SET NAME = 'SavePrintOrExit' WHERE resourceID = 60156;
+UPDATE APPRESOURCE SET NAME = 'SaveSubmitPrintOrExit' WHERE resourceID = 60157;
+UPDATE APPRESOURCE SET NAME = 'SubmitPrintOrExit' WHERE resourceID = 60158;
+UPDATE APPRESOURCE SET NAME = 'SearchPDFOfficeByZip' WHERE resourceID = 60159;
+UPDATE APPRESOURCE SET NAME = 'SearchPDFOfficeByCounty' WHERE resourceID = 60160;
+UPDATE APPRESOURCE SET NAME = 'SearchProgramOfficeByCounty' WHERE resourceID = 60161;
+UPDATE APPRESOURCE SET NAME = 'SearchProgramOfficeByZip' WHERE resourceID = 60162;
+UPDATE APPRESOURCE SET NAME = 'PrintAndExitOnComplete' WHERE resourceID = 60163;
+UPDATE APPRESOURCE SET NAME = 'SelectLifeEvent' WHERE resourceID = 60164;
+UPDATE APPRESOURCE SET NAME = 'AuthenticationFailed' WHERE resourceID = 60165;
+UPDATE APPRESOURCE SET NAME = 'LoginFactors' WHERE resourceID = 60166;
+UPDATE APPRESOURCE SET NAME = 'ListServiceOfferings' WHERE resourceID = 60167;
+UPDATE APPRESOURCE SET NAME = 'ViewServiceOfferings' WHERE resourceID = 60168;
+UPDATE APPRESOURCE SET NAME = 'AgencyOrCommunityHelp' WHERE resourceID = 60169;
+UPDATE APPRESOURCE SET NAME = 'TriageListPrograms' WHERE resourceID = 60170;
+UPDATE APPRESOURCE SET NAME = 'SubmitLifeEvent' WHERE resourceID = 60171;
+UPDATE APPRESOURCE SET NAME = 'ProviderServiceModal' WHERE resourceID = 60172;
+UPDATE APPRESOURCE SET NAME = 'ListServices' WHERE resourceID = 60173;
+UPDATE APPRESOURCE SET NAME = 'ServiceProviders' WHERE resourceID = 60174;
+UPDATE APPRESOURCE SET NAME = 'ReferMe' WHERE resourceID = 60175;
+UPDATE APPRESOURCE SET NAME = 'ReferralSentConfirmation' WHERE resourceID = 60176;
+UPDATE APPRESOURCE SET NAME = 'GetDirections' WHERE resourceID = 60177;
+UPDATE APPRESOURCE SET NAME = 'ServiceProvidersText' WHERE resourceID = 60178;
+UPDATE APPRESOURCE SET NAME = 'ViewLifeEvent' WHERE resourceID = 60179;
+UPDATE APPRESOURCE SET NAME = 'CitizenAccountContactInformation' WHERE resourceID = 60180;
+UPDATE APPRESOURCE SET NAME = 'CitizenAccountHome' WHERE resourceID = 60181;
+UPDATE APPRESOURCE SET NAME = 'CitizenMessageMyPayments' WHERE resourceID = 60182;
+UPDATE APPRESOURCE SET NAME = 'CitizenMessageApplicationAcknowledgment' WHERE resourceID = 60183;
+UPDATE APPRESOURCE SET NAME = 'CitizenMessageNoMessages' WHERE resourceID = 60184;
+UPDATE APPRESOURCE SET NAME = 'SystemMessageMessages' WHERE resourceID = 60185;
+UPDATE APPRESOURCE SET NAME = 'CitizenMessageMeetingMessages' WHERE resourceID = 60186;
+UPDATE APPRESOURCE SET NAME = 'CitizenMessageVerificationMessages' WHERE resourceID = 60187;
+UPDATE APPRESOURCE SET NAME = 'CitizenAccountActionPanel' WHERE resourceID = 60188;
+UPDATE APPRESOURCE SET NAME = 'CitizenMessageServiceDelivery' WHERE resourceID = 60189;
+UPDATE APPRESOURCE SET NAME = 'CitizenMessageReferral' WHERE resourceID = 60190;
+UPDATE APPRESOURCE SET NAME = 'NoTriage' WHERE resourceID = 60191;
+UPDATE APPRESOURCE SET NAME = 'ReturnToScriptOrExit' WHERE resourceID = 60192;
+UPDATE APPRESOURCE SET NAME = 'SubmitAppLoginOrContinue' WHERE resourceID = 60193;
+UPDATE APPRESOURCE SET NAME = 'ScreeningOptionalLoginNoCreate' WHERE resourceID = 60194;
+UPDATE APPRESOURCE SET NAME = 'IntakeOptionalLoginNoCreate' WHERE resourceID = 60195;
+UPDATE APPRESOURCE SET NAME = 'CWEventAdaptor' WHERE resourceID = 60196;
+UPDATE APPRESOURCE SET NAME = 'MotivationMandatoryLogin' WHERE resourceID = 60197;
+UPDATE APPRESOURCE SET NAME = 'LoginPanel' WHERE resourceID = 60198;
+UPDATE APPRESOURCE SET NAME = 'MotivationResultsProgramDetailsURLMapping' WHERE resourceID = 60199;
+UPDATE APPRESOURCE SET NAME = 'MotivationResultsProgramStatusLinkMapping' WHERE resourceID = 60200;
+UPDATE APPRESOURCE SET NAME = 'MotivationResults' WHERE resourceID = 60201;
+UPDATE APPRESOURCE SET NAME = 'MotivationResultsPersonStatusIconMapping' WHERE resourceID = 60202;
+UPDATE APPRESOURCE SET NAME = 'ForgottenPassword' WHERE resourceID = 60203;
+UPDATE APPRESOURCE SET NAME = 'PasswordResetConfirmation' WHERE resourceID = 60204;
+UPDATE APPRESOURCE SET NAME = 'LandingPage' WHERE resourceID = 60205;
+UPDATE APPRESOURCE SET NAME = 'SaveOrExitMotivation' WHERE resourceID = 60206;
+UPDATE APPRESOURCE SET NAME = 'FromMotivationPostSubmit' WHERE resourceID = 60207;
+UPDATE APPRESOURCE SET NAME = 'ResetPasswordExistingPassword' WHERE resourceID = 60208;
+UPDATE APPRESOURCE SET NAME = 'MotivationOptionalLogin' WHERE resourceID = 60209;
+UPDATE APPRESOURCE SET NAME = 'MotivationMandatoryNoCreateLogin' WHERE resourceID = 60210;
+UPDATE APPRESOURCE SET NAME = 'MotivationOptionalNoCreateLogin' WHERE resourceID = 60211;
+UPDATE APPRESOURCE SET NAME = 'ContrastModeSelector' WHERE resourceID = 60212;
+UPDATE APPRESOURCE SET NAME = 'ExistingSavedApplication' WHERE resourceID = 60213;
+UPDATE APPRESOURCE SET NAME = 'ExistingSavedScreening' WHERE resourceID = 60214;
+UPDATE APPRESOURCE SET NAME = 'RetainOrSaveScreening' WHERE resourceID = 60215;
+UPDATE APPRESOURCE SET NAME = 'curam.commonintake.rules.ApplicationAuthorisationInterfaceRuleSet' WHERE resourceID = 60226;
+UPDATE APPRESOURCE SET NAME = 'curam.commonintake.rules.ClientSelectionInterfaceRuleSet' WHERE resourceID = 60227;
+UPDATE APPRESOURCE SET NAME = 'ApplicationCaseAppeal.properties' WHERE resourceID = 60228;
+UPDATE APPRESOURCE SET NAME = 'curam.commonintake.rules.ApplicationCaseCheckEligibilityRulesInterface' WHERE resourceID = 60229;
+UPDATE APPRESOURCE SET CONTENTTYPE = 'text/plain' , NAME = 'DynEvdStaticProperties.properties' WHERE resourceID = 60263;
+UPDATE APPRESOURCE SET CATEGORY = null , NAME = 'curam.dynamicevidence.cer.rules.InfrastructureRules' WHERE resourceID = 60264;
+UPDATE APPRESOURCE SET NAME = 'CER_Editor_Properties' WHERE resourceID = 60279;
+UPDATE APPRESOURCE SET CONTENTTYPE = 'text/plain;charset=UTF-8' , NAME = 'DecisionMatrix_Editor_Properties' WHERE resourceID = 60280;
+UPDATE APPRESOURCE SET NAME = 'EvidenceSharingAdminWizard.properties' WHERE resourceID = 60282;
+UPDATE APPRESOURCE SET NAME = 'triage-app-config' WHERE resourceID = 60284;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , NAME = 'Triage_V1_Screening' WHERE resourceID = 60285;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , NAME = 'Triage_V1_Screening_AboutClient' WHERE resourceID = 60286;
+UPDATE APPRESOURCE SET NAME = 'curam.triage.rules.TriageRuleSetProperties' WHERE resourceID = 60287;
+UPDATE APPRESOURCE SET NAME = 'AdviceContext.InitialContactRules' WHERE resourceID = 60288;
+UPDATE APPRESOURCE SET NAME = 'ListCommunityServices' WHERE resourceID = 60289;
+UPDATE APPRESOURCE SET CATEGORY = null , NAME = 'curam.cgiss.rules.LifeEventRuleSetProperties' WHERE resourceID = 60290;
+UPDATE APPRESOURCE SET CATEGORY = null , NAME = 'AlertListRenderer' WHERE resourceID = 60291;
+UPDATE APPRESOURCE SET NAME = 'AddClient.properties' WHERE resourceID = 60292;
+UPDATE APPRESOURCE SET NAME = 'MatchClient.properties' WHERE resourceID = 60293;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , NAME = 'IntakeAddProspectPersonWizard.properties' WHERE resourceID = 60294;
+UPDATE APPRESOURCE SET NAME = 'IntakeRegisterPersonWizard.properties' WHERE resourceID = 60295;
+UPDATE APPRESOURCE SET NAME = 'AdviceContext.ApplicationTODORules' WHERE resourceID = 60296;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , NAME = 'IntakeRegisterProspectAsPersonWizard.properties' WHERE resourceID = 60297;
+UPDATE APPRESOURCE SET NAME = 'GoogleMapsViewServicesByTypeRenderer' WHERE resourceID = 60298;
+UPDATE APPRESOURCE SET NAME = 'QuickNotesRenderer' WHERE resourceID = 60299;
+UPDATE APPRESOURCE SET NAME = 'DefaultIntakeProcess.GlobalConfiguration' WHERE resourceID = 60300;
+UPDATE APPRESOURCE SET NAME = 'AdviceContext.InitialContactRules' WHERE resourceID = 60301;
+UPDATE APPRESOURCE SET NAME = 'AdviceContext.ApplicationTODORules' WHERE resourceID = 60302;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'inline' , CONTENTTYPE = 'text/plain' , INTERNAL = '0' , NAME = 'ieg-config-properties' WHERE resourceID = 60329;
+UPDATE APPRESOURCE SET NAME = 'DynEvd_EvidenceType_PDCPhoneNumber.properties' WHERE resourceID = 60330;
+UPDATE APPRESOURCE SET NAME = 'DynEvd_EvidenceType_PDCAddress.properties' WHERE resourceID = 60331;
+UPDATE APPRESOURCE SET NAME = 'DynEvd_EvidenceType_PDCBirthAndDeath.properties' WHERE resourceID = 60332;
+UPDATE APPRESOURCE SET NAME = 'DynEvd_EvidenceType_PDCContactPreferences.properties' WHERE resourceID = 60333;
+UPDATE APPRESOURCE SET NAME = 'DynEvd_EvidenceType_PDCGender.properties' WHERE resourceID = 60334;
+UPDATE APPRESOURCE SET NAME = 'DynEvd_EvidenceType_PDCRelationships.properties' WHERE resourceID = 60335;
+UPDATE APPRESOURCE SET NAME = 'DynEvd_EvidenceType_PDCIdentification.properties' WHERE resourceID = 60336;
+UPDATE APPRESOURCE SET NAME = 'DynEvd_EvidenceType_PDCBankAccount.properties' WHERE resourceID = 60337;
+UPDATE APPRESOURCE SET CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynEvd_EvidenceType_PDCEmailAddress.properties' WHERE resourceID = 60338;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , NAME = 'DynEvd_EvidenceType_PDCName.properties' WHERE resourceID = 60339;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCBankAccount_19000101.properties' WHERE resourceID = 60340;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000025719000101.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynamicEvidenceObjectPDC000025719000101.properties' WHERE resourceID = 60341;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000025719000101Nav.properties' , NAME = 'DynamicEvidenceObjectPDC000025719000101Nav.properties' WHERE resourceID = 60342;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCEmailAddress_19000101.properties' WHERE resourceID = 60343;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026019000101.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynamicEvidenceObjectPDC000026019000101.properties' WHERE resourceID = 60344;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026019000101Nav.properties' , NAME = 'DynamicEvidenceObjectPDC000026019000101Nav.properties' WHERE resourceID = 60345;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCIdentification_19000101.properties' WHERE resourceID = 60346;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000025919000101.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynamicEvidenceObjectPDC000025919000101.properties' WHERE resourceID = 60347;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000025919000101Nav.properties' , NAME = 'DynamicEvidenceObjectPDC000025919000101Nav.properties' WHERE resourceID = 60348;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCName_19000101.properties' WHERE resourceID = 60349;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000025819000101.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynamicEvidenceObjectPDC000025819000101.properties' WHERE resourceID = 60350;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000025819000101Nav.properties' , NAME = 'DynamicEvidenceObjectPDC000025819000101Nav.properties' WHERE resourceID = 60351;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCRelationships_19000101.properties' WHERE resourceID = 60352;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026519000101.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynamicEvidenceObjectPDC000026519000101.properties' WHERE resourceID = 60353;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026519000101Nav.properties' , NAME = 'DynamicEvidenceObjectPDC000026519000101Nav.properties' WHERE resourceID = 60354;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCGender_19000101.properties' WHERE resourceID = 60355;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026219000101.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynamicEvidenceObjectPDC000026219000101.properties' WHERE resourceID = 60356;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026219000101Nav.properties' , NAME = 'DynamicEvidenceObjectPDC000026219000101Nav.properties' WHERE resourceID = 60357;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCContactPreferences_19000101.properties' WHERE resourceID = 60358;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026319000101.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynamicEvidenceObjectPDC000026319000101.properties' WHERE resourceID = 60359;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026319000101Nav.properties' , NAME = 'DynamicEvidenceObjectPDC000026319000101Nav.properties' WHERE resourceID = 60360;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCBirthAndDeath_19000101.properties' WHERE resourceID = 60361;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026419000101.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynamicEvidenceObjectPDC000026419000101.properties' WHERE resourceID = 60362;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026419000101Nav.properties' , NAME = 'DynamicEvidenceObjectPDC000026419000101Nav.properties' WHERE resourceID = 60363;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCPhoneNumber_19000101.properties' WHERE resourceID = 60364;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000025619000101.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynamicEvidenceObjectPDC000025619000101.properties' WHERE resourceID = 60365;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000025619000101Nav.properties' , NAME = 'DynamicEvidenceObjectPDC000025619000101Nav.properties' WHERE resourceID = 60366;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCAddress_19000101.properties' WHERE resourceID = 60367;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026119000101.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , INTERNAL = '1' , NAME = 'DynamicEvidenceObjectPDC000026119000101.properties' WHERE resourceID = 60368;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026119000101Nav.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , INTERNAL = '1' , NAME = 'DynamicEvidenceObjectPDC000026119000101Nav.properties' WHERE resourceID = 60369;
+UPDATE APPRESOURCE SET NAME = 'curam.pdc.rules.PDCDuplicateClientCERRules' WHERE resourceID = 60370;
+UPDATE APPRESOURCE SET CONTENTTYPE = 'text/plain' , INTERNAL = '0' , NAME = 'curam.pdc.rules.PDCAlternateIDValidationRuleSet' WHERE resourceID = 60371;
+UPDATE APPRESOURCE SET CONTENTTYPE = 'text/plain' , INTERNAL = '0' , NAME = 'curam.pdc.rules.PDCAddressValidationRuleSet' WHERE resourceID = 60372;
+UPDATE APPRESOURCE SET NAME = 'curam.pdc.rules.DynEvd_PDCName_Summary' WHERE resourceID = 60373;
+UPDATE APPRESOURCE SET NAME = 'curam.bdm.pdc.rules.DynEvd_PDCBirthAndDeath_Summary' WHERE resourceID = 60374;
+UPDATE APPRESOURCE SET NAME = 'curam.bdm.pdc.rules.DynEvd_PDCPhoneNumber_Summary' WHERE resourceID = 60375;
+UPDATE APPRESOURCE SET NAME = 'curam.pdc.rules.DynEvd_PDCContactPreferences_Summary' WHERE resourceID = 60376;
+UPDATE APPRESOURCE SET NAME = 'curam.pdc.rules.DynEvd_PDCAddress_Summary' WHERE resourceID = 60377;
+UPDATE APPRESOURCE SET NAME = 'curam.pdc.rules.PDCNameValidationRuleSet' WHERE resourceID = 60378;
+UPDATE APPRESOURCE SET NAME = 'curam.pdc.rules.PDCBirthAndDeathValidationRuleSet' WHERE resourceID = 60379;
+UPDATE APPRESOURCE SET NAME = 'curam.pdc.rules.PDCGenderValidationRuleSet' WHERE resourceID = 60380;
+UPDATE APPRESOURCE SET NAME = 'curam.pdc.rules.PDCContactPreferencesValidationRuleSet' WHERE resourceID = 60381;
+UPDATE APPRESOURCE SET NAME = 'curam.pdc.rules.PDCPhoneNumberValidationRuleSet' WHERE resourceID = 60382;
+UPDATE APPRESOURCE SET NAME = 'curam.pdc.rules.PDCEmailAddressValidationRuleSet' WHERE resourceID = 60383;
+UPDATE APPRESOURCE SET NAME = 'curam.pdc.rules.PDCBankAccountValidationRuleSet' WHERE resourceID = 60384;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'inline' , CONTENTTYPE = 'text/plain;charset=UTF-8' , NAME = 'curam.pdc.rules.DynEvd_PDCRelationships_Summary' WHERE resourceID = 60385;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline' , CONTENTTYPE = 'text/plain;charset=UTF-8' , NAME = 'curam.pdc.rules.PDCRelationshipsValidationRuleSet' WHERE resourceID = 60386;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCAddress_19000102.properties' WHERE resourceID = 60387;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026119000102.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynamicEvidenceObjectPDC000026119000102.properties' WHERE resourceID = 60388;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026119000102Nav.properties' , NAME = 'DynamicEvidenceObjectPDC000026119000102Nav.properties' WHERE resourceID = 60389;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCIdentification_19000102.properties' WHERE resourceID = 60390;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000025919000102.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynamicEvidenceObjectPDC000025919000102.properties' WHERE resourceID = 60391;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000025919000102Nav.properties' , NAME = 'DynamicEvidenceObjectPDC000025919000102Nav.properties' WHERE resourceID = 60392;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCBankAccount_19000102.properties' WHERE resourceID = 60393;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000025719000102.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynamicEvidenceObjectPDC000025719000102.properties' WHERE resourceID = 60394;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000025719000102Nav.properties' , NAME = 'DynamicEvidenceObjectPDC000025719000102Nav.properties' WHERE resourceID = 60395;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCPhoneNumber_19000102.properties' WHERE resourceID = 60396;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000025619000102.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynamicEvidenceObjectPDC000025619000102.properties' WHERE resourceID = 60397;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000025619000102Nav.properties' , NAME = 'DynamicEvidenceObjectPDC000025619000102Nav.properties' WHERE resourceID = 60398;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCEmailAddress_19000102.properties' WHERE resourceID = 60399;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026019000102.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynamicEvidenceObjectPDC000026019000102.properties' WHERE resourceID = 60400;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026019000102Nav.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynamicEvidenceObjectPDC000026019000102Nav.properties' WHERE resourceID = 60401;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'inline' , CONTENTTYPE = 'text/plain;charset=UTF-8' , NAME = 'curam.pdc.rules.PDCBankAccountIBANValidationRuleSet' WHERE resourceID = 60402;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline' , CONTENTTYPE = 'text/plain;charset=UTF-8' , NAME = 'curam.pdc.rules.DynEvd_PDCBankAccountIBAN_Summary' WHERE resourceID = 60403;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCRelationships_19000102.properties' WHERE resourceID = 60404;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026519000102.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynamicEvidenceObjectPDC000026519000102.properties' WHERE resourceID = 60405;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000026519000102Nav.properties' , NAME = 'DynamicEvidenceObjectPDC000026519000102Nav.properties' WHERE resourceID = 60406;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCPhoneNumber_19000103.properties' WHERE resourceID = 60407;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_XML' , CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000025619000103.properties' , CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'DynamicEvidenceObjectPDC000025619000103.properties' WHERE resourceID = 60408;
+UPDATE APPRESOURCE SET CONTENTDISPOSITION = 'DynamicEvidenceObjectPDC000025619000103Nav.properties' , NAME = 'DynamicEvidenceObjectPDC000025619000103Nav.properties' WHERE resourceID = 60409;
+UPDATE APPRESOURCE SET CATEGORY = 'RS_PROP' , CONTENTDISPOSITION = 'inline;' , CONTENTTYPE = 'text/plain;charset=UTF-8"' , NAME = 'DynEvd_PDCAddress_19000103.properties' WHERE resourceID = 60410;
+UPDATE APPRESOURCE SET NAME = 'VerificationGroupWizard.properties' WHERE resourceID = 60487;
+UPDATE APPRESOURCE SET NAME = 'curam.verification.rules.VerificationRuleSet' WHERE resourceID = 60488;
+UPDATE APPRESOURCE SET NAME = 'CaseAuditSampleICWizard.properties' WHERE resourceID = 60515;
+UPDATE APPRESOURCE SET NAME = 'CaseAuditSamplePDWizard.properties' WHERE resourceID = 60516;
+UPDATE APPRESOURCE SET NAME = 'CaseAuditSampleLPDWizard.properties' WHERE resourceID = 60517;
+UPDATE APPRESOURCE SET NAME = 'CaseAuditSampleInvestigationCaseWizard.properties' WHERE resourceID = 60518;
+UPDATE APPRESOURCE SET NAME = 'CreateICProductDeliveryWizard.properties' WHERE resourceID = 60519;
+UPDATE APPRESOURCE SET NAME = 'CaseAuditFixedQueryWizard.properties' WHERE resourceID = 60520;
+UPDATE APPRESOURCE SET NAME = 'CreateCaseContactLogWizard.properties' WHERE resourceID = 60521;
+UPDATE APPRESOURCE SET NAME = 'CaseAuditExternalServiceWizard.properties' WHERE resourceID = 60522;
+UPDATE APPRESOURCE SET NAME = 'BenefitProduct.properties' WHERE resourceID = 60523;
+UPDATE APPRESOURCE SET NAME = 'LiabilityProduct.properties' WHERE resourceID = 60524;
+UPDATE APPRESOURCE SET NAME = 'DefaultICProduct.properties' WHERE resourceID = 60525;
+UPDATE APPRESOURCE SET NAME = 'CaptureManualPaymentWizard.properties' WHERE resourceID = 60526;
+UPDATE APPRESOURCE SET NAME = 'AppliedFixedDeductionWizard.properties' WHERE resourceID = 60527;
+UPDATE APPRESOURCE SET NAME = 'AppliedVariableDeductionWizard.properties' WHERE resourceID = 60528;
+UPDATE APPRESOURCE SET NAME = 'ModifyCaseContactLogWizard.properties' WHERE resourceID = 60529;
+UPDATE APPRESOURCE SET NAME = 'CreateIncidentContactLogWizard.properties' WHERE resourceID = 60530;
+UPDATE APPRESOURCE SET NAME = 'ModifyIncidentContactLogWizard.properties' WHERE resourceID = 60531;
+UPDATE APPRESOURCE SET NAME = 'RegisterProspectAsPersonWizard.properties' WHERE resourceID = 60532;
+UPDATE APPRESOURCE SET CONTENTTYPE = 'text/plain' , NAME = 'CreateIssueDeliveryWizard.properties' WHERE resourceID = 60533;
+UPDATE APPRESOURCE SET CONTENTTYPE = 'text/plain' , NAME = 'CreateIssueDeliveryForPDWizard.properties' WHERE resourceID = 60534;
+UPDATE APPRESOURCE SET CONTENTTYPE = 'text/plain' , NAME = 'RegisterProspectAsEmployerWizard.properties' WHERE resourceID = 60535;
+UPDATE APPRESOURCE SET CONTENTTYPE = 'text/plain' , NAME = 'CreateWeeklyClientParticipationWizard.properties' WHERE resourceID = 60536;
+UPDATE APPRESOURCE SET CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'CREOLEDisplayRules_basicCaseDisplay.properties' WHERE resourceID = 60537;
+UPDATE APPRESOURCE SET NAME = 'CREOLEDisplayRules_basicCaseDisplay_objectiveTagSubscreen.properties' WHERE resourceID = 60538;
+UPDATE APPRESOURCE SET CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'CREOLEDisplayRules_basicCaseDisplayDropdownPane.properties' WHERE resourceID = 60539;
+UPDATE APPRESOURCE SET CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'CREOLEDisplayRules_basicCaseDisplay1.properties' WHERE resourceID = 60540;
+UPDATE APPRESOURCE SET NAME = 'PersonalizedPageWizard.properties' WHERE resourceID = 60541;
+UPDATE APPRESOURCE SET CONTENTTYPE = 'text/plain;charset=utf-8' , NAME = 'CREOLEDecisionComparison_notAvailable.properties' WHERE resourceID = 60542;
+UPDATE APPRESOURCE SET NAME = 'PersonalizedPageEditWizard.properties' WHERE resourceID = 60543;
+UPDATE APPRESOURCE SET NAME = 'AddProspectEmployerWizard.properties' WHERE resourceID = 60544;
+UPDATE APPRESOURCE SET NAME = 'AddProspectPersonWizard.properties' WHERE resourceID = 60545;
+UPDATE APPRESOURCE SET NAME = 'RegisterEducationalInstituteWizard.properties' WHERE resourceID = 60546;
+UPDATE APPRESOURCE SET NAME = 'RegisterEmployerWizard.properties' WHERE resourceID = 60547;
+UPDATE APPRESOURCE SET NAME = 'RegisterExternalPartyWizard.properties' WHERE resourceID = 60548;
+UPDATE APPRESOURCE SET NAME = 'RegisterProductProviderWizard.properties' WHERE resourceID = 60549;
+UPDATE APPRESOURCE SET NAME = 'RegisterServiceSupplierWizard.properties' WHERE resourceID = 60550;
+UPDATE APPRESOURCE SET NAME = 'RegisterUtilityWizard.properties' WHERE resourceID = 60551;
+UPDATE APPRESOURCE SET NAME = 'RegisterPersonWizard.properties' WHERE resourceID = 60552;
+UPDATE APPRESOURCE SET NAME = 'RegisterInformationProviderWizard.properties' WHERE resourceID = 60553;
+UPDATE APPRESOURCE SET NAME = 'curam.core.rules.RateChangeExplanation' WHERE resourceID = 60554;
+UPDATE APPRESOURCE SET NAME = 'curam.core.rules.ProductEligibilityEntitlementRuleSet' WHERE resourceID = 60555;
+UPDATE APPRESOURCE SET NAME = 'curam.core.rules.ProductDecisionDetailsRuleSet' WHERE resourceID = 60556;
+UPDATE APPRESOURCE SET NAME = 'curam.core.rules.ParticipantCERRules' WHERE resourceID = 60557;
+UPDATE APPRESOURCE SET NAME = 'curam.core.rules.CaseCERRules' WHERE resourceID = 60558;
+UPDATE APPRESOURCE SET NAME = 'RULESET-DefaultAllocationTargetsRuleSet1' WHERE resourceID = 60559;
+UPDATE APPRESOURCE SET NAME = 'RULESET-AbstractAllocationTargetsRuleSet1' WHERE resourceID = 60560;
+UPDATE APPRESOURCE SET NAME = 'curam.core.rules.DefaultAllocationTargetsRuleSet' WHERE resourceID = 60561;
+UPDATE APPRESOURCE SET NAME = 'curam.core.rules.AbstractAllocationTargetsRuleSet' WHERE resourceID = 60562;
+UPDATE APPRESOURCE SET NAME = 'AddProspectPersonForPDCWizard.properties' WHERE resourceID = 60563;
+UPDATE APPRESOURCE SET NAME = 'RegisterProspectAsPersonForPDCWizard.properties' WHERE resourceID = 60564;
+UPDATE APPRESOURCE SET NAME = 'RegisterPersonForPDCWizard.properties' WHERE resourceID = 60565;
+UPDATE APPRESOURCE SET NAME = 'RULESET-AbstractBasicProductDecisionDetailsRuleSet1' WHERE resourceID = 60566;
+UPDATE APPRESOURCE SET NAME = 'RULESET-ProductWizardDefaultEligibilityEntitlementRuleSet1' WHERE resourceID = 60567;
+	
+--APPRESOURCE Insert Queries
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, null, 'CreateCaseContactLogWizardSubject.properties', 2054, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, null, 'ModifyCaseContactLogWizardSubject.properties', 2055, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, null, 'CreateIncidentContactLogWizardSubject.properties', 2056, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, null, 'ModifyIncidentContactLogWizardSubject.properties', 2057, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'OnlineAppealRequestMessage', 60216, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'ExitIntakeOptions', 60217, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'UniversalAccessTemplate_V1_Intake', 60222, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'CDMEEditorStrings.properties', 60223, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'AdviceContext.CIInitialContactRules', 60230, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'curam.commonintake.rules.CIInitialContactRuleSet', 60231, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/xml', null, '0', SYSDATE, 'fr', 'DynEvd_EvidenceEditor.properties', 60265, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'DuimPopupConfig.properties', 60266, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain;charset=UTF-8', null, '0', SYSDATE, 'fr', 'IEG_Editor_Properties', 60281, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES (null, null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'TODORenderer', 60303, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES (null, null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'IntakeProgramAppeal.properties', 60304, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_XML', null, 'DynamicEvidenceObjectPDC000026119000103.properties', 'text/plain;charset=utf-8', null, '1', SYSDATE, 'fr', 'DynamicEvidenceObjectPDC000026119000103.properties', 60411, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_XML', null, 'DynamicEvidenceObjectPDC000026119000103Nav.properties', 'text/plain;charset=utf-8', null, '1', SYSDATE, 'fr', 'DynamicEvidenceObjectPDC000026119000103Nav.properties', 60412, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'AddReferral.properties', 60468, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'AddVerificationItemWizard.properties', 60489, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'AddVerificationItemWizardForPDC.properties', 60490, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'MappingDefaultValues', 60506, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'EventAdaptor', 60507, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'WSAppealsHelper', 60508, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'intake-application-pdf-props', 60509, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'ReissueUnappliedDeductionWizard.properties', 60568, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'ReissueAppliedDeductionWizard.properties', 60569, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'TimelineCalendar.properties', 60570, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'MeetingMinutesWizard.properties', 60571, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'CreateCaseContactLogWizardSubject.properties', 60572, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'ModifyCaseContactLogWizardSubject.properties', 60573, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'CreateIncidentContactLogWizardSubject.properties', 60574, 1);
+INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline', 'text/plain', null, '0', SYSDATE, 'fr', 'ModifyIncidentContactLogWizardSubject.properties', 60575, 1);
+
+		</sql>
+	
+    </changeSet>
+	</databaseChangeLog>

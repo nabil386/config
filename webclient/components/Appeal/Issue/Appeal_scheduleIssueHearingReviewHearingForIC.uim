@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software Ltd. ("Confidential Information"). You shall not        -->
+<!-- disclose such Confidential Information and shall use it only in        -->
+<!-- accordance with the terms of the license agreement you entered into    -->
+<!-- with Curam Software.                                                   -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to schedule hearing for integrated cases.    -->
+<PAGE
+  PAGE_ID="Appeal_scheduleIssueHearingReviewHearingForIC"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Hearing"
+    NAME="ACTION"
+    OPERATION="displayUserSchedule"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="pageDescription"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="scheduleConfigMode"/>
+  <!-- BEGIN, CR00096393, RKi -->
+  <PAGE_PARAMETER NAME="isIssue"/>
+  <!-- END, CR00096393 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="scheduleConfigMode"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="scheduleConfigMode"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    SHOW_LABELS="true"
+    TITLE="Cluster.Title.Details"
+  >
+
+
+    <FIELD LABEL="Field.Label.Date">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$date"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Job">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$jobID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+
+
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.ViewSchedule"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+
+
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK
+          PAGE_ID="Appeal_scheduleIssueHearingReviewHearingForIC"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="scheduleConfigMode"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="scheduleConfigMode"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="CancelButton"
+        LABEL="ActionControl.Label.Cancel"
+      >
+        <LINK
+          PAGE_ID="Appeal_hearingReviewIssueHomeForIC"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+    TITLE="Field.Label.Schedules"
+  >
+
+
+    <FIELD LABEL="Field.Label.Schedules">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="userSchedule"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

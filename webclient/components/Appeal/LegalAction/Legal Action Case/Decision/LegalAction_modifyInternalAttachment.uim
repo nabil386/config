@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2004-2005, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<PAGE
+  PAGE_ID="LegalAction_modifyInternalAttachment"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="LegalActionDecisionAttachment"
+    NAME="DISPLAY"
+    OPERATION="readMSWordTemplateAndDocument"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="LegalActionDecisionAttachment"
+    NAME="ACTION"
+    OPERATION="modifyMSWord"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="attachmentLinkID"/>
+  <PAGE_PARAMETER NAME="description"/>
+  <PAGE_PARAMETER NAME="searchPage"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="attachmentLinkID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="attachmentLinkID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="attachmentLinkID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="attachmentLinkID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Attachment"
+  >
+
+
+    <FIELD LABEL="Field.Label.Template">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="documentTemplateID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Type">
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.Type"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Date">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="attachmentDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER SHOW_LABELS="false">
+
+
+    <WIDGET TYPE="FILE_EDIT">
+      <WIDGET_PARAMETER NAME="DETAILS">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="templateData"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+
+
+      <WIDGET_PARAMETER NAME="DOCUMENT">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="document"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="document"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+
+
+      <WIDGET_PARAMETER NAME="SEARCH_PAGE">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="searchPage"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+
+
+    </WIDGET>
+  </CLUSTER>
+
+
+</PAGE>

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2009, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page is used to modify a benefit product. -->
+<VIEW
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+<PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+<SERVER_INTERFACE
+    CLASS="ProductWizard"
+    NAME="DISPLAY"
+    OPERATION="readProductProvision"
+ />
+
+  <SERVER_INTERFACE
+    CLASS="ProductWizard"
+    NAME="ACTION"
+    OPERATION="storeProductProvision"
+    PHASE="ACTION"
+    ACTION_ID_PROPERTY="wizardDataForProvisonDtls$wizardAction" 
+    />
+    
+    <PAGE_PARAMETER NAME="productID" />
+    <PAGE_PARAMETER NAME="productCategoryID" />
+    <PAGE_PARAMETER NAME="deliveryPatternID" />
+    <PAGE_PARAMETER NAME="productProvisionID" />
+    <PAGE_PARAMETER NAME="provisionLocationID" />
+     
+    <!-- SET THE TARGET ACTION-->
+     <CONNECT>
+        <SOURCE   NAME="PAGE"   PROPERTY="productID" />
+        <TARGET   NAME="ACTION" PROPERTY="wizardDataForProvisonDtls$productID" />
+     </CONNECT>
+  
+  <CONNECT>
+          <SOURCE NAME="PAGE"   PROPERTY="productCategoryID"  />
+          <TARGET NAME="ACTION" PROPERTY="wizardDataForProvisonDtls$productCategoryID"/>
+     </CONNECT>
+     
+     <CONNECT>
+               <SOURCE NAME="PAGE" PROPERTY="deliveryPatternID" />
+               <TARGET NAME="ACTION" PROPERTY="wizardDataForProvisonDtls$deliveryPatternID"/>
+     </CONNECT>
+     
+     <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="productProvisionID" />
+          <TARGET NAME="ACTION" PROPERTY="wizardDataForProvisonDtls$productProvisionID" />
+       </CONNECT>
+  
+     <CONNECT>
+        <SOURCE  NAME="PAGE"  PROPERTY="provisionLocationID" />
+        <TARGET  NAME="ACTION"  PROPERTY="wizardDataForProvisonDtls$provisionLocationID" />
+     </CONNECT>
+  
+  
+  
+  <!-- END OF SETTING TARGET ACTION-->
+      
+  <!-- SET THE TARGET DISPLAY-->
+  
+    <CONNECT>
+         <SOURCE NAME="PAGE"     PROPERTY="productID" />
+          <TARGET NAME="DISPLAY" PROPERTY="key$productID" />
+    </CONNECT>
+    
+    <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="productCategoryID" />
+          <TARGET NAME="DISPLAY" PROPERTY="key$productCategoryID" />
+    </CONNECT>
+    <CONNECT>
+             <SOURCE NAME="PAGE" PROPERTY="deliveryPatternID" />
+             <TARGET NAME="DISPLAY" PROPERTY="key$deliveryPatternID" />
+    </CONNECT>
+    <CONNECT>
+                 <SOURCE NAME="PAGE" PROPERTY="productProvisionID" />
+                 <TARGET NAME="DISPLAY" PROPERTY="key$productProvisionID" />
+    </CONNECT>
+    <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="provisionLocationID" />
+            <TARGET NAME="DISPLAY" PROPERTY="key$provisionLocationID" />
+    </CONNECT>
+  <!-- END OF SETTING TARGET DISPLAY-->
+    
+ 
+    <CLUSTER SHOW_LABELS="false" STYLE="wizard-cluster">
+        <FIELD CONFIG="4">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="wizardDataForProvisonDtls$wizardMenu" />
+            </CONNECT>
+        </FIELD>
+        <!-- Start Product Provision Fields  -->
+	 <CLUSTER
+	      NUM_COLS="2"
+	      TITLE="Cluster.Title.Details"
+	  >
+	  <FIELD LABEL="Field.Label.ProductProvider">
+	     <CONNECT>
+	       <INITIAL NAME="DISPLAY" PROPERTY="productProviderName"/>
+	     </CONNECT>
+
+	    <CONNECT>
+	    <SOURCE NAME="DISPLAY"  PROPERTY="providerConcernRoleID" />
+	    </CONNECT>
+	    <CONNECT>
+	      <TARGET NAME="ACTION"   PROPERTY="providerConcernRoleID" />
+	    </CONNECT>
+	      </FIELD>
+	    <FIELD LABEL="Field.Label.StartDate">
+	      <CONNECT>
+	        <SOURCE
+	          NAME="DISPLAY"
+	          PROPERTY="startDate"
+	        />
+	      </CONNECT>
+	      <CONNECT>
+	        <TARGET
+	          NAME="ACTION"
+	          PROPERTY="startDate"
+	        />
+	      </CONNECT>
+	    </FIELD>
+	    <FIELD LABEL="Field.Label.PaymentMethod">
+	      <CONNECT>
+	        <SOURCE
+	          NAME="DISPLAY"
+	          PROPERTY="methodOfPmtCode"
+	        />
+	      </CONNECT>
+	      <CONNECT>
+	        <TARGET
+	          NAME="ACTION"
+	          PROPERTY="methodOfPmtCode"
+	        />
+	      </CONNECT>
+	    </FIELD>
+	    
+	    <FIELD
+	      LABEL="Field.Label.EstimatedCost"
+	      
+	    >
+	      <CONNECT>
+	        <SOURCE
+	          NAME="DISPLAY"
+	          PROPERTY="estimatedCost"
+	        />
+	      </CONNECT>
+	      <CONNECT>
+	        <TARGET
+	          NAME="ACTION"
+	          PROPERTY="estimatedCost"
+	        />
+	      </CONNECT>
+	    </FIELD>
+	    
+	    <FIELD LABEL="Field.Label.Currency">
+	    	      <CONNECT>
+	    	        <SOURCE
+	    	          NAME="DISPLAY"
+	    	          PROPERTY="currencyType"
+	    	        />
+	    	      </CONNECT>
+	    	      <CONNECT>
+	    	        <TARGET
+	    	          NAME="ACTION"
+	    	          PROPERTY="currencyType"
+	    	        />
+	    	      </CONNECT>
+	    </FIELD>
+	    <FIELD LABEL="Field.Label.EndDate">
+	    	      <CONNECT>
+	    	        <SOURCE
+	    	          NAME="DISPLAY"
+	    	          PROPERTY="endDate"
+	    	        />
+	    	      </CONNECT>
+	    	      <CONNECT>
+	    	        <TARGET
+	    	          NAME="ACTION"
+	    	          PROPERTY="endDate"
+	    	        />
+	    	      </CONNECT>
+	    </FIELD>
+	    <FIELD LABEL="Field.Label.PaymentFrequency">
+	      <CONNECT>
+	        <SOURCE
+	          NAME="DISPLAY"
+	          PROPERTY="paymentFrequency"
+	        />
+	      </CONNECT>
+	      <CONNECT>
+	        <TARGET
+	          NAME="ACTION"
+	          PROPERTY="paymentFrequency"
+	        />
+	      </CONNECT>
+	    </FIELD>
+	    
+	    
+	  </CLUSTER>
+	  <CLUSTER
+	    SHOW_LABELS="false"
+	    TITLE="Cluster.Title.Comments">
+	    <FIELD HEIGHT="3">
+	      <CONNECT>
+	        <SOURCE
+	          NAME="DISPLAY"
+	          PROPERTY="comments"
+	        />
+	      </CONNECT>
+	      <CONNECT>
+	        <TARGET
+	          NAME="ACTION"
+	          PROPERTY="comments"
+	        />
+	      </CONNECT>
+	    </FIELD>
+	  </CLUSTER>
+	  
+	  <!-- End Product Provision. -->
+
+    </CLUSTER>
+  
+
+</VIEW>

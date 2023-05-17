@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012,2013. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<!-- ====================================================================== -->
+<!--                                                                        -->
+<!-- Copyright (c) 2008-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!--                                                                        -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Page used to link from the IEGTester page to the IEGScriptPlayer JSP.  -->
+<!-- A check for validation errors is carried out first and if there are    -->
+<!-- any present, the validation errors page is displayed.                  -->
+<!--                                                                        -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="System_IEGResolver">
+	<JSP_SCRIPTLET>
+    <![CDATA[
+    
+      String scriptID = request.getParameter("scriptID");
+      String scriptType = request.getParameter("scriptType");
+      String scriptVersion = request.getParameter("scriptVersion");
+      String schemaName = request.getParameter("schemaName");
+      String name = request.getParameter("name");
+      
+      String executionIDParam = request.getParameter("executionIDParam");
+      String url = null;
+            
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.
+          RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      
+      if (executionIDParam == null) {
+        // Need to check to see if there are any script validation errors before
+        // running the script.
+
+        String contextWithUserPreferences = context +
+          curam.omega3.user.UserPreferencesFactory
+            .getUserPreferences(pageContext.getSession()).getLocale() + "/";
+          
+        curam.interfaces.IEGScriptAdminPkg.
+          IEGScriptAdmin_checkForScriptErrors_TH iegScriptAdminCheckForErrors
+            = new curam.interfaces.IEGScriptAdminPkg.
+              IEGScriptAdmin_checkForScriptErrors_TH();
+     
+        iegScriptAdminCheckForErrors.setFieldValue(
+          iegScriptAdminCheckForErrors.key$scriptID_idx, scriptID);
+        iegScriptAdminCheckForErrors.setFieldValue(
+          iegScriptAdminCheckForErrors.key$scriptType_idx, scriptType);
+        iegScriptAdminCheckForErrors.setFieldValue(
+          iegScriptAdminCheckForErrors.key$scriptVersion_idx, scriptVersion);
+        iegScriptAdminCheckForErrors.setFieldValue(
+          iegScriptAdminCheckForErrors.key$schemaName_idx, schemaName);        
+        //Call the method.
+        iegScriptAdminCheckForErrors.callServer();
+      
+        String errorsPresentInScript = iegScriptAdminCheckForErrors.getFieldValue(
+          iegScriptAdminCheckForErrors.result$errorsExist_idx);
+        boolean errorsPresent =
+            Boolean.valueOf(errorsPresentInScript).booleanValue();
+          
+        if (errorsPresent) {
+      
+          // If there are errors, redirect to the validation error page.
+          String redirectTo = contextWithUserPreferences + "System_listValidationErrorsForRunPage.do"
+            + "?name=" + curam.omega3.request.RequestUtils.escapeURL(name)
+            + "&scriptID=" + curam.omega3.request.RequestUtils.escapeURL(scriptID)
+            + "&scriptType=" + curam.omega3.request.RequestUtils.escapeURL(scriptType) 
+            + "&scriptVersion=" + curam.omega3.request.RequestUtils.escapeURL(scriptVersion)
+            + "&schemaName=" + curam.omega3.request.RequestUtils.escapeURL(schemaName);
+          url = redirectTo + "&" + rh.getSystemParameters();          
+      
+        } else {
+       
+          // Call the run script method and redirect to the IEG player.
+          curam.interfaces.IEGScriptAdminPkg.
+            IEGScriptAdmin_runScript_TH iegScriptAdminRunScript
+              = new curam.interfaces.IEGScriptAdminPkg.
+                IEGScriptAdmin_runScript_TH();
+     
+          iegScriptAdminRunScript.setFieldValue(
+            iegScriptAdminRunScript.key$dtls$scriptID_idx, scriptID);
+          iegScriptAdminRunScript.setFieldValue(
+            iegScriptAdminRunScript.key$dtls$scriptType_idx, scriptType);
+          iegScriptAdminRunScript.setFieldValue(
+            iegScriptAdminRunScript.key$dtls$scriptVersion_idx, scriptVersion);
+          iegScriptAdminRunScript.setFieldValue(
+            iegScriptAdminRunScript.key$schemaName_idx, schemaName);        
+          //Call the method.
+          iegScriptAdminRunScript.callServer();
+        
+          String executionID = iegScriptAdminRunScript.getFieldValue(
+            iegScriptAdminRunScript.result$executionID_idx);
+          url = context + "ieg/Screening.do?" + "executionID=" 
+                        + curam.omega3.request.RequestUtils.escapeURL(executionID) 
+                        + "&" + rh.getSystemParameters();;        
+        }
+      } else {
+     
+        url = context + "ieg/Screening.do?" + "executionID=" 
+                      + curam.omega3.request.RequestUtils.escapeURL(executionIDParam) 
+                      + "&" + rh.getSystemParameters();
+      
+      }
+      
+      // Redirect to the correct page.
+      response.sendRedirect(response.encodeRedirectURL(url));
+    ]]>
+  </JSP_SCRIPTLET>
+</PAGE>

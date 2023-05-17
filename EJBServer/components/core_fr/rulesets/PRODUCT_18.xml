@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/CuramRulesSchema.xsd">  
+  <Product comment="" id="PRODUCT_18" legislationbase="" producttype="RT1"> 
+    <Label highlightonfailure="true" legislationlink=""> 
+      <RuleName> 
+        <Text locale="fr" value="Informations collectées de sous-paiement de prestation"/> 
+      </RuleName>  
+      <SuccessText> 
+        <Text locale="fr" value="Réussite des informations collectées de sous-paiement de prestation"/> 
+      </SuccessText>  
+      <FailureText> 
+        <Text locale="fr" value="Echec des informations collectées de sous-paiement de prestation"/> 
+      </FailureText> 
+    </Label>  
+    <DataAccess name="Globals"> 
+      <DataItem name="dateOfCalculation"/>  
+      <DataItem name="deliveryFrequency"/>  
+      <DataItem name="personReferenceNumber"/>  
+      <DataItem name="claimReferenceNumber"/>  
+      <DataItem name="assessmentReferenceNumber"/> 
+    </DataAccess>  
+    <DataAccess name="BenefitUnderpaymentCaseEvidence"> 
+      <DataItem name="caseClosedInd"/>  
+      <DataItem name="caseSuspendedInd"/>  
+      <DataItem name="productAvailableInd"/>  
+      <DataItem name="locationAvailableInd"/>  
+      <DataItem name="underpaymentAmount"/>  
+      <DataItem name="certificationFromDate"/>  
+      <DataItem name="certificationToDate"/> 
+    </DataAccess>  
+    <DataAccess name="BenefitUnderpaymentRulesConstants"> 
+      <DataItem name="kOMinAge"/>  
+      <DataItem name="kOMaxAge"/>  
+      <DataItem name="kUnderpaymentAmountLowerBound"/> 
+    </DataAccess>  
+    <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="1" operation="and" summaryitem="true"> 
+      <Label highlightonfailure="true" legislationlink=""> 
+        <RuleName> 
+          <Text locale="fr" value="Règles de base"/> 
+        </RuleName>  
+        <SuccessText> 
+          <Text locale="fr" value="Réussite des règles de base"/> 
+        </SuccessText>  
+        <FailureText> 
+          <Text locale="fr" value="Echec des règles de base"/> 
+        </FailureText> 
+      </Label>  
+      <Rule id="2" rulemode="notquotation" summaryitem="true"> 
+        <Label highlightonfailure="true" legislationlink=""> 
+          <RuleName> 
+            <Text locale="fr" value="Ouverture du dossier"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Le dossier est ouvert"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Le dossier est clos"/> 
+          </FailureText> 
+        </Label>  
+        <Condition dataitemlhs="BenefitUnderpaymentCaseEvidence.caseClosedInd" dataitemrhs="true" id="3" operation="!="/> 
+      </Rule>  
+      <Rule id="4" rulemode="notquotation" summaryitem="true"> 
+        <Label highlightonfailure="true" legislationlink=""> 
+          <RuleName> 
+            <Text locale="fr" value="Dossier suspendu"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Le dossier n'est pas suspendu"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Le dossier est suspendu"/> 
+          </FailureText> 
+        </Label>  
+        <Condition dataitemlhs="BenefitUnderpaymentCaseEvidence.caseSuspendedInd" dataitemrhs="true" id="5" operation="!="/> 
+      </Rule>  
+      <Rule id="6" rulemode="notquotation" summaryitem="true"> 
+        <Label highlightonfailure="true" legislationlink=""> 
+          <RuleName> 
+            <Text locale="fr" value="Produit disponible"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Le produit est disponible"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Le produit n'est pas disponible"/> 
+          </FailureText> 
+        </Label>  
+        <Condition dataitemlhs="BenefitUnderpaymentCaseEvidence.productAvailableInd" dataitemrhs="true" id="7" operation="=="/> 
+      </Rule>  
+      <Rule id="8" rulemode="notquotation" summaryitem="true"> 
+        <Label highlightonfailure="true" legislationlink=""> 
+          <RuleName> 
+            <Text locale="fr" value="Le produit est disponible à partir de l'emplacement sélectionné"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Le produit est disponible à partir de l'emplacement sélectionné"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Le produit n'est pas disponible à partir de l'emplacement sélectionné"/> 
+          </FailureText> 
+        </Label>  
+        <Condition dataitemlhs="BenefitUnderpaymentCaseEvidence.locationAvailableInd" dataitemrhs="true" id="9" operation="=="/> 
+      </Rule>  
+      <!-- BEGIN, CR00281413, DJ -->  
+      <Rule id="19" rulemode="all" summaryitem="true"> 
+        <Label highlightonfailure="true" legislationlink=""> 
+          <RuleName> 
+            <Text locale="fr" value="Le montant du sous-paiement n'est pas égal à zéro"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Le montant du sous-paiement dépasse le minimum requis"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Le montant du sous-paiement ne dépasse pas le minimum requis"/> 
+          </FailureText> 
+        </Label>  
+        <Condition dataitemlhs="BenefitUnderpaymentCaseEvidence.underpaymentAmount" dataitemrhs="BenefitUnderpaymentRulesConstants.kUnderpaymentAmountLowerBound" id="17" operation="&gt;"/> 
+      </Rule>  
+      <!-- END, CR00281413 --> 
+    </RuleGroup>  
+    <ObjectiveGroup comment="" conjunction="highestvalue" id="10" priority="1"> 
+      <Label highlightonfailure="true" legislationlink=""> 
+        <RuleName> 
+          <Text locale="fr" value="Groupe de sous-paiement de prestations"/> 
+        </RuleName>  
+        <SuccessText> 
+          <Text locale="fr" value="Réussite du groupe de sous-paiement de prestation"/> 
+        </SuccessText>  
+        <FailureText> 
+          <Text locale="fr" value="Echec du groupe de sous-paiement de prestation"/> 
+        </FailureText> 
+      </Label>  
+      <Objective comment="" deductionallowable="true" description="" id="11" priority="1" ratefctype="CT1" ratetarget="RC1" ratetype="PC93" recordid="10" targetid="0"> 
+        <Label highlightonfailure="true" legislationlink=""> 
+          <RuleName> 
+            <Text locale="fr" value="Objectif de taux de sous-paiement de prestation"/> 
+          </RuleName>  
+          <SuccessText> 
+            <Text locale="fr" value="Réussite du taux de sous-paiement de prestation"/> 
+          </SuccessText>  
+          <FailureText> 
+            <Text locale="fr" value="Echec du taux de sous-paiement de prestation"/> 
+          </FailureText> 
+        </Label>  
+        <ObjectiveTag comment="" id="12" name="" pattern="200100000" recordid="10" type="RTT3" value="BenefitUnderpaymentCaseEvidence.underpaymentAmount"/>  
+        <ObjectiveTag comment="" id="13" name="" pattern="000100000" recordid="11" type="RTT3" value="BenefitUnderpaymentCaseEvidence.underpaymentAmount"/>  
+        <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="14" operation="and" summaryitem="true"> 
+          <Label highlightonfailure="true" legislationlink=""> 
+            <RuleName> 
+              <Text locale="fr" value="Règles de taux de sous-paiement de prestation"/> 
+            </RuleName>  
+            <SuccessText> 
+              <Text locale="fr" value="Réussite des règles de taux de sous-paiement de prestation"/> 
+            </SuccessText>  
+            <FailureText> 
+              <Text locale="fr" value="Echec des règles de taux de sous-paiement de prestation"/> 
+            </FailureText> 
+          </Label>  
+          <Rule id="15" rulemode="all" summaryitem="true"> 
+            <Label highlightonfailure="true" legislationlink=""> 
+              <RuleName> 
+                <Text locale="fr" value="Le montant du sous-paiement n'est pas égal à zéro"/> 
+              </RuleName>  
+              <SuccessText> 
+                <Text locale="fr" value="Le montant du sous-paiement dépasse le minimum requis"/> 
+              </SuccessText>  
+              <FailureText> 
+                <Text locale="fr" value="Le montant du sous-paiement ne dépasse pas le minimum requis"/> 
+              </FailureText> 
+            </Label>  
+            <Condition dataitemlhs="BenefitUnderpaymentCaseEvidence.underpaymentAmount" dataitemrhs="BenefitUnderpaymentRulesConstants.kUnderpaymentAmountLowerBound" id="16" operation="&gt;"/> 
+          </Rule> 
+        </RuleGroup> 
+      </Objective> 
+    </ObjectiveGroup> 
+  </Product> 
+</RuleSet>

@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page displays the list of all the apply history of a change set    -->
+<!-- to the current system.                 -->
+<PAGE
+  PAGE_ID="CTM_listChangeSetApplyHistory"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainChangeSet"
+    NAME="DISPLAY1"
+    OPERATION="viewReleasedChangeSet"
+  />
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="changeSetID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$changeSetID"
+    />
+  </CONNECT>
+  
+  <SERVER_INTERFACE
+    CLASS="MaintainChangeSet"
+    NAME="DISPLAY"
+    OPERATION="listChangeSetApplyHistory"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="changeSetID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="changeSetkey$changeSetID"
+    />
+  </CONNECT>
+
+  <PAGE_PARAMETER NAME="changeSetID"/>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewChangeSet"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="CTM_viewReleasedChangeSet"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="changeSetID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="changeSetID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.TransportHistory"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="CTM_listChangeSetTransportHistory"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="changeSetID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="changeSetID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ApplyHistory"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="CTM_listChangeSetApplyHistory"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="changeSetID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="changeSetID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    
+    <!-- BEGIN, CR00291489, SS -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.UndoHistory"
+      STYLE="in-page-link"
+      >
+      <LINK
+        PAGE_ID="CTM_listChangeSetUndoHistory"
+        SAVE_LINK="false"
+        >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="changeSetID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="changeSetID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00291489 -->
+  </MENU>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="hasRemoteSystemInd"
+      />
+    </CONDITION>
+    <LIST>
+      <FIELD LABEL="Field.Label.RemoteSystemName">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="remoteSystemName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.AppliedDate">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="appliedDate"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.AppliedBy">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="appliedByFullName"
+          />
+        </CONNECT>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_viewUserDetails"
+          WINDOW_OPTIONS="width=900,height=300"
+          >
+          <CONDITION>
+            <IS_TRUE NAME="DISPLAY" PROPERTY="result$dtlsList$isAppliedByUserExists"/>
+          </CONDITION>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="appliedBy"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="hasRemoteSystemInd"
+      />
+    </CONDITION>
+    <LIST>
+      <FIELD LABEL="Field.Label.AppliedDate">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="appliedDate"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.AppliedBy">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="appliedByFullName"
+          />
+        </CONNECT>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_viewUserDetails"
+          WINDOW_OPTIONS="width=900,height=300"
+        >
+          <CONDITION>
+            <IS_TRUE NAME="DISPLAY" PROPERTY="result$dtlsList$isAppliedByUserExists"/>
+          </CONDITION>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="appliedBy"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+</PAGE>

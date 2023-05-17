@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:simpleType name="PrioritySimpleType">
+		<xs:annotation>
+			<xs:documentation>
+        Priority of the objective. A higher number represents higher priority. The priority is used by the Objective Groups and Objective List Groups to identify which successfull objectives should be returned when the mode for the group specifies that the objective with highest priority should be returned.
+      </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:integer"/>
+	</xs:simpleType>
+	<xs:simpleType name="OperationSimpleType">
+		<xs:annotation>
+			<xs:documentation>
+        The operation specifies the boolean operation to be used when combining the results of rules in the group.
+      </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="or">
+				<xs:annotation>
+					<xs:documentation>
+            Or operation will be applied to combine the results of rules in the group.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="and">
+				<xs:annotation>
+					<xs:documentation>
+            And operation will be applied to combine the results of rules in the group.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ExecutionModeSimpleType">
+		<xs:annotation>
+			<xs:documentation>
+        Allows the use of boolean operation shortcuting between the rules and rule groups in the rule.
+      </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="executeall">
+				<xs:annotation>
+					<xs:documentation>
+            All rules in this group will be executed even if the result of the rule group becomes known.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="stoponresult">
+				<xs:annotation>
+					<xs:documentation>
+            The execution of this group will stop as soon as the result becomes known. For example, when the conjunction in the group is set to &quot;or&quot; the execution of this rule group would be stoped as soon as the first successful rule is executed.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ConditionType">
+		<xs:attribute name="id" type="xs:int" use="required"/>
+		<xs:attribute name="dataitemlhs" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>
+          Name of the data item on the left hand side of the expression. Usually it will be in the form of RDOName.dataItemName
+        </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="dataitemrhs" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+          Name of the data item on the right hand side of the expression. Usually it will be in the form of RDOName.dataItemName
+        </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="operation" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>
+          Operation to be used in the expression. It will usually be set to comparison operator such as =, !=, &gt;=. &lt;=, &lt;, &gt;.
+        </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="function" type="xs:string"/>
+		<xs:attribute name="conjunction" default="and">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="and"/>
+					<xs:enumeration value="or"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="openingbrackets" type="xs:int"/>
+		<xs:attribute name="closingbrackets" type="xs:int"/>
+	</xs:complexType>
+	<xs:complexType name="DataItemAssignmentType">
+		<xs:attribute name="id" type="xs:int" use="required"/>
+		<xs:attribute name="dataitem" type="xs:string" use="required"/>
+		<xs:attribute name="value" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="DataItemType">
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="FailureTextType">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="Text" type="TextType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LabelType">
+		<xs:sequence>
+			<xs:element name="RuleName" type="RuleNameType"/>
+			<xs:element name="SuccessText" type="SuccessTextType" minOccurs="0"/>
+			<xs:element name="FailureText" type="FailureTextType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="highlightonfailure" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation>
+          This attribute affects visual appearance of the rule. It indicates if the failed rule should be highlighted in the decision view.
+        </xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="true"/>
+					<xs:enumeration value="false"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="legislationlink" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="ObjectiveType">
+		<xs:sequence>
+			<xs:element name="Label" type="LabelType"/>
+			<xs:element name="ObjectiveTag" type="ObjectiveTagType" maxOccurs="unbounded"/>
+			<xs:choice minOccurs="0">
+				<xs:element name="RuleGroup" type="RuleGroupType"/>
+				<xs:element name="RuleListGroup" type="RuleListGroupType"/>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:int" use="required"/>
+		<xs:attribute name="recordid" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+          Record ID is used to identify the objectives within the application. This value can be retrieved by calling the RulesObjectiveResult.getObjectiveID() method. It can also be used to retrieve information about the objective by calling the Interrule.getDynamicObjective() method.
+        </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="comment" type="xs:string" use="optional" default=""/>
+		<xs:attribute name="description" type="xs:string" use="required"/>
+		<xs:attribute name="priority" type="PrioritySimpleType" use="optional" default="1"/>
+		<xs:attribute name="targetid" type="xs:string" default="0">
+			<xs:annotation>
+				<xs:documentation>
+          Target ID is either a number or data item that evaluates to an integer value. The value of the data item will be returned as part of the objective when executing the rules. It can be used to identify a person or case to which the objective applies.
+        </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ratetype" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+          Rate type is a code table identifying the type of rate. It does not have any meaning in the Rules Engine and is returned to the application verbatim as a part of evaluated objective.
+        </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ratetarget" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+          Rate target is a code table identifying the type of rate target. It does not have any meaning in the Rules Engine and is returned to the application verbatim as a part of evaluated objective.
+        </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="deductionallowable" use="required">
+			<xs:annotation>
+				<xs:documentation>
+          The attribute indicates if the deduction is allowable for this objective. It does not have any meaning in the Rules Engine and is returned to the application verbatim as a part of evaluated objective.
+        </xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="true"/>
+					<xs:enumeration value="false"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="ratefctype" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+          Specifies the rate financial component type for the objective. It does not have any meaning in the Rules Engine and is returned to the application verbatim as a part of evaluated objective.
+        </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ruleid" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="ObjectiveGroupType">
+		<xs:sequence>
+			<xs:element name="Label" type="LabelType"/>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="Objective" type="ObjectiveType"/>
+				<xs:element name="ObjectiveGroup" type="ObjectiveGroupType"/>
+				<xs:element name="ObjectiveListGroup" type="ObjectiveListGroupType"/>
+				<xs:element name="RuleGroup" type="RuleGroupType"/>
+				<xs:element name="RuleListGroup" type="RuleListGroupType"/>
+				<xs:element name="SubRuleSetLink" type="SubRuleSetLinkType"/>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:int" use="required"/>
+		<xs:attribute name="comment" type="xs:string" use="optional" default=""/>
+		<xs:attribute name="priority" type="PrioritySimpleType" use="optional" default="1"/>
+		<xs:attribute name="conjunction" use="optional" default="all">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="all"/>
+					<xs:enumeration value="first"/>
+					<xs:enumeration value="highestvalue"/>
+					<xs:enumeration value="highestpriority"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="ruleid" type="xs:string"/>
+	</xs:complexType>
+	<xs:group name="TopLevelItemsGroup">
+		<xs:annotation>
+			<xs:documentation>Each rule set can contain one rule group (or rule list
+group), one sub rule set link and one objective group (or objective list group)
+in the top level at most. These items can be provided in order and the ordering
+of the elements affects the result of rule set execution. XML schema does not
+provide an easy support for these requirements so this is left to the developer
+to make sure that they have valid elements.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Label" type="LabelType"/>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element name="DataAccess" type="DataAccessType"/>
+			</xs:sequence>
+			<xs:choice maxOccurs="3">
+				<xs:choice>
+					<xs:element name="RuleGroup" type="RuleGroupType"/>
+					<xs:element name="RuleListGroup" type="RuleListGroupType"/>
+				</xs:choice>
+				<xs:choice>
+					<xs:element name="ObjectiveGroup" type="ObjectiveGroupType"/>
+					<xs:element name="ObjectiveListGroup" type="ObjectiveListGroupType"/>
+				</xs:choice>
+				<xs:element name="SubRuleSetLink" type="SubRuleSetLinkType"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:group>
+	<xs:complexType name="RuleType">
+		<xs:sequence>
+			<xs:element name="Label" type="LabelType"/>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element name="Condition" type="ConditionType"/>
+			</xs:sequence>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:int" use="required"/>
+		<xs:attribute name="summaryitem" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation>
+          This attribute indicates if a rule should be visible in the summary view for the ruleset.
+        </xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="true"/>
+					<xs:enumeration value="false"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="rulemode" default="all">
+			<xs:annotation>
+				<xs:documentation>
+          Indicates the modes in which the rule should be executed. Execution mode is specified when the Rules Engine is invoked.
+        </xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="notquotation">
+						<xs:annotation>
+							<xs:documentation>
+                Indicates that the rule should not be executed in quotation or simulation mode.
+              </xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="notreassessment">
+						<xs:annotation>
+							<xs:documentation>
+                Indicates that the rule should not be executed in reassessment mode.
+              </xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="neither">
+						<xs:annotation>
+							<xs:documentation>
+                Indicates that the rule should not be executed in quotation, simulation or reassessment modes.
+              </xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="all">
+						<xs:annotation>
+							<xs:documentation>
+                Indicates that the rule should be executed in all rules execution modes..
+              </xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="ruleid" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="RuleGroupType">
+		<xs:sequence>
+			<xs:element name="Label" type="LabelType"/>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="RuleGroup" type="RuleGroupType"/>
+				<xs:element name="RuleListGroup" type="RuleListGroupType"/>
+				<xs:element name="Rule" type="RuleType"/>
+				<xs:element name="DataItemAssignment" type="DataItemAssignmentType"/>
+				<xs:element name="SubRuleSetLink" type="SubRuleSetLinkType"/>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:int" use="required"/>
+		<xs:attribute name="summaryitem" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation>
+          This attribute indicates if a rule group should be visible in the summary view for the ruleset.
+        </xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="true"/>
+					<xs:enumeration value="false"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="operation" type="OperationSimpleType" use="optional" default="and"/>
+		<xs:attribute name="executionmode" type="ExecutionModeSimpleType" use="optional" default="executeall"/>
+		<xs:attribute name="assessmentquerymode" use="optional" default="queryallitems">
+			<xs:annotation>
+				<xs:documentation>
+          If a rule set is executed in assessment mode and some of the data items do not have values set the Rules Engine will query a user to provide the missing data. This attribute specifies if single data item should be queried for a value or
+          a set of all the data items should be asked together.
+        </xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="querysingleitem">
+						<xs:annotation>
+							<xs:documentation>
+                This value indicates that the Rules Engine will query a user to enter value of a single data item if running in assessment mode and the value of the data item is missing.
+              </xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="queryallitems">
+						<xs:annotation>
+							<xs:documentation>
+                This value indicates that the Rules Engine will query a user to enter value of a all the data items if running in assessment mode and the values of the data items are missing.
+              </xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="ruleid" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="RuleListGroupType">
+		<xs:sequence>
+			<xs:element name="Label" type="LabelType"/>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="RuleGroup" type="RuleGroupType"/>
+				<xs:element name="RuleListGroup" type="RuleListGroupType"/>
+				<xs:element name="Rule" type="RuleType"/>
+				<xs:element name="DataItemAssignment" type="DataItemAssignmentType"/>
+				<xs:element name="SubRuleSetLink" type="SubRuleSetLinkType"/>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:int" use="required"/>
+		<xs:attribute name="listgroup" type="xs:string" use="required"/>
+		<xs:attribute name="summaryitem" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation>
+          This attribute indicates if a rule list group should be visible in the summary view for the ruleset.
+        </xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="true"/>
+					<xs:enumeration value="false"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="operation" type="OperationSimpleType" use="optional" default="and"/>
+		<xs:attribute name="executionmode" type="ExecutionModeSimpleType" use="optional" default="executeall"/>
+		<xs:attribute name="assessmentquerymode" use="optional" default="queryallitems">
+			<xs:annotation>
+				<xs:documentation>
+          If a rule set is executed in assessment mode and some of the data items do not have values set the Rules Engine will query a user to provide the missing data. This attribute specifies if single data item should be queried for a value or
+          a set of all the data items should be asked together.
+        </xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="querysingleitem">
+						<xs:annotation>
+							<xs:documentation>
+                This value indicates that the Rules Engine will query a user to enter value of a single data item if running in assessment mode and the value of the data item is missing.
+              </xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="queryallitems">
+						<xs:annotation>
+							<xs:documentation>
+                This value indicates that the Rules Engine will query a user to enter value of a all the data items if running in assessment mode and the values of the data items are missing.
+              </xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="loopexecutionmode" use="optional" default="succeedall">
+			<xs:annotation>
+				<xs:documentation>
+          Loop execution mode specifies the behaviour for the list group execution.
+        </xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="succeedall">
+						<xs:annotation>
+							<xs:documentation>
+                Indicates that this list group will succeed only if all the iterations are successfull. All iterations of an assocaited list RDO will be evaluated.
+              </xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="succeedone">
+						<xs:annotation>
+							<xs:documentation>
+                Indicates that this list group will succeed if at lease one iteration in the list is successfull. All iterations of an assocaited list RDO will be evaluated.
+              </xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="succeedonestop">
+						<xs:annotation>
+							<xs:documentation>
+                Indicates that this list group will succeed if at lease one iteration in the list is successfull. The execution of the list will stop after the first successfull iteration.
+              </xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="succeedallstop">
+						<xs:annotation>
+							<xs:documentation>
+                Indicates that this list group will succeed only if all the iterations in the list are successfull. The execution of the list will stop after the first unsuccessfull iteration.
+              </xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="ruleid" type="xs:string"/>
+		<xs:attribute name="sublist" type="xs:boolean" default="false"/>
+	</xs:complexType>
+	<xs:complexType name="RuleNameType">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="Text" type="TextType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TextType">
+		<xs:attribute name="locale" type="xs:string" use="required"/>
+		<xs:attribute name="value" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="SuccessTextType">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="Text" type="TextType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SubRuleSetLinkType">
+		<xs:attribute name="id" type="xs:int" use="required"/>
+		<xs:attribute name="subrulesetid" type="xs:string" use="required"/>
+		<xs:attribute name="name" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="ObjectiveTagType">
+		<xs:attribute name="id" type="xs:int" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+          Name of the objective tag.
+        </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="type" type="xs:string" use="optional" default="RTT3">
+			<xs:annotation>
+				<xs:documentation>
+          Objective tag type. Usually it will be set to one of the following values: RTT1 (Product delivery recomendation), RTT2 (Assessment recomendation), RTT3 (Money), RTT4 (Double).
+        </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="value" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+          Expression (formula) that is used to evaluate the value for this objective tag if the tag type is set to RTT3, RTT4 or the tag type starts with EVAL. In other cases this attribute will be returned verbatim.
+        </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="pattern" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>
+          Frequency pattern to be applied to the objective tag. Only required if the objective tag type is set to RTT3 or RTT4.
+        </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="comment" type="xs:string" use="optional" default=""/>
+		<xs:attribute name="recordid" type="xs:long" use="required">
+			<xs:annotation>
+				<xs:documentation>
+          Record ID is used to identify the objective tag within the application. This value can be retrieved by calling the method TagResult.getTagID(). It can also be used to retrieve information about the objective tag by calling the Interrule.getDynamicTag() method.
+        </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ObjectiveListGroupType">
+		<xs:sequence>
+			<xs:element name="Label" type="LabelType"/>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="Objective" type="ObjectiveType"/>
+				<xs:element name="ObjectiveGroup" type="ObjectiveGroupType"/>
+				<xs:element name="ObjectiveListGroup" type="ObjectiveListGroupType"/>
+				<xs:element name="RuleGroup" type="RuleGroupType"/>
+				<xs:element name="RuleListGroup" type="RuleListGroupType"/>
+				<xs:element name="SubRuleSetLink" type="SubRuleSetLinkType"/>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:int" use="required"/>
+		<xs:attribute name="listgroup" type="xs:string" use="required"/>
+		<xs:attribute name="comment" type="xs:string" use="optional" default=""/>
+		<xs:attribute name="priority" type="PrioritySimpleType" use="optional" default="1"/>
+		<xs:attribute name="conjunction" use="optional" default="all">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="all"/>
+					<xs:enumeration value="first"/>
+					<xs:enumeration value="highestvalue"/>
+					<xs:enumeration value="highestpriority"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="ruleid" type="xs:string"/>
+		<xs:attribute name="sublist" type="xs:boolean" default="false"/>
+	</xs:complexType>
+	<xs:complexType name="DataAccessType">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="DataItem" type="DataItemType"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="RuleSetType">
+		<xs:choice>
+			<xs:element name="Product">
+				<xs:complexType>
+					<xs:group ref="TopLevelItemsGroup"/>
+					<xs:attribute name="id" type="xs:ID" use="required"/>
+					<xs:attribute name="comment" type="xs:string" use="optional" default=""/>
+					<xs:attribute name="producttype" type="xs:string" use="required"/>
+					<xs:attribute name="legislationbase" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Assessment">
+				<xs:complexType>
+					<xs:group ref="TopLevelItemsGroup"/>
+					<xs:attribute name="id" type="xs:ID" use="required"/>
+					<xs:attribute name="comment" type="xs:string" use="optional" default=""/>
+					<xs:attribute name="legislationbase" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SubRuleSet">
+				<xs:complexType>
+					<xs:group ref="TopLevelItemsGroup"/>
+					<xs:attribute name="id" type="xs:ID" use="required"/>
+					<xs:attribute name="comment" type="xs:string" use="optional" default=""/>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:element name="RuleSet" type="RuleSetType">
+		<xs:unique name="nodeID">
+			<xs:selector xpath=".//*"/>
+			<xs:field xpath="@id"/>
+		</xs:unique>
+	</xs:element>
+</xs:schema>

@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+  Copyright 2010, 2012 Curam Software Ltd.
+  All rights reserved.
+
+  This software is the confidential and proprietary information of Curam
+  Software, Ltd. ("Confidential Information").  You shall not
+  disclose such Confidential Information and shall use it only in accordance
+  with the terms of the license agreement you entered into with Curam Software.
+-->
+<!-- BEGIN, CR00228764, PB -->
+<workflow-process category="PC1" id="161" language-version="1.0" process-version="1" released="true"> 
+  <!-- END, CR00228764 -->  
+  <name>WAITLISTREVIEWREMINDERTASK</name>  
+  <!--BEGIN, CR00361282, CL -->  
+  <process-display-name> 
+    <localized-text> 
+      <locale language="fr">Tâche de rappel de révision de liste d'attente</locale>  
+      <locale language="en">Wait List Review Reminder Task</locale>
+    </localized-text> 
+  </process-display-name>  
+  <!--END, CR00361282 -->  
+  <!-- BEGIN, CR00306684, AKr -->  
+  <description> 
+    <localized-text> 
+      <locale language="fr">Avertit un utilisateur qu'une entrée de la liste d'attente requiert une révision. Une notification
+        est générée pour les entrées de la liste d'attente comprenant une date de révision antérieure ou qui coïncide
+        avec la date de traitement du lot.</locale>  
+      <locale language="en">Notifies a user that a wait list entry requires review. A notification 
+        is generated for any wait list entries with a review date on or before 
+        the batch processing date.</locale>
+    </localized-text> 
+  </description>  
+  <!-- END, CR00306684 -->  
+  <enactment-mappings> 
+    <mapping> 
+      <source-attribute name="waitListEntryID" struct-name="curam.core.struct.WaitListEntryKey"/>  
+      <target-attribute name="waitListEntryID" wdo-name="WaitListEntryKey"/> 
+    </mapping> 
+  </enactment-mappings>  
+  <wdos> 
+    <wdo> 
+      <wdo-name>WaitListEntryKey</wdo-name>  
+      <display-name> 
+        <localized-text> 
+          <locale language="fr">WaitListEntryKey</locale>  
+          <locale language="en">WaitListEntryKey</locale>
+        </localized-text> 
+      </display-name>  
+      <attributes> 
+        <attribute> 
+          <attribute-name>waitListEntryID</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Identificateur d'entrée de liste d'attente</locale>  
+              <locale language="en">Wait List Entry Identifier</locale>
+            </localized-text> 
+          </display-name>  
+          <type>INT64</type>  
+          <required-at-enactment>true</required-at-enactment> 
+        </attribute> 
+      </attributes> 
+    </wdo>  
+    <wdo> 
+      <wdo-name>WaitListTaskCreateDetails</wdo-name>  
+      <display-name> 
+        <localized-text> 
+          <locale language="fr">WaitListTaskCreateDetails</locale>  
+          <locale language="en">WaitListTaskCreateDetails</locale>
+        </localized-text> 
+      </display-name>  
+      <attributes> 
+        <attribute> 
+          <attribute-name>subject</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Objet de la liste d'attente</locale>  
+              <locale language="en">Wait list subject</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>false</required-at-enactment> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>assignedTo</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Nom d'utilisateur</locale>  
+              <locale language="en">User name</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>false</required-at-enactment> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>assigneeType</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Type de participant</locale>  
+              <locale language="en">Assignee type</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>false</required-at-enactment> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>waitListEntryID</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Identificateur d'entrée de liste d'attente</locale>  
+              <locale language="en">Wait List Entry Identifier</locale>
+            </localized-text> 
+          </display-name>  
+          <type>INT64</type>  
+          <required-at-enactment>false</required-at-enactment> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>caseID</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Identifiant du dossier</locale>  
+              <locale language="en">Case Identifier</locale>
+            </localized-text> 
+          </display-name>  
+          <type>INT64</type>  
+          <required-at-enactment>false</required-at-enactment> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>participantRoleID</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Identificateur du rôle Participant</locale>  
+              <locale language="en">Participant Role Identifier</locale>
+            </localized-text> 
+          </display-name>  
+          <type>INT64</type>  
+          <required-at-enactment>false</required-at-enactment> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>participantType</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Type de participant</locale>  
+              <locale language="en">Participant Type</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>false</required-at-enactment> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>reserveToMeInd</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Indicateur M'est réservé</locale>  
+              <locale language="en">Reserved To Me Indicator</locale>
+            </localized-text> 
+          </display-name>  
+          <type>BOOLEAN</type>  
+          <required-at-enactment>false</required-at-enactment> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>comments</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Commentaires</locale>  
+              <locale language="en">Comments</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>false</required-at-enactment> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>priority</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Priorité</locale>  
+              <locale language="en">Priority</locale>
+            </localized-text> 
+          </display-name>  
+          <type>STRING</type>  
+          <required-at-enactment>false</required-at-enactment> 
+        </attribute>  
+        <attribute> 
+          <attribute-name>deadlineDateTime</attribute-name>  
+          <display-name> 
+            <localized-text> 
+              <locale language="fr">Horodatage d'échéance</locale>  
+              <locale language="en">Deadline Date Time</locale>
+            </localized-text> 
+          </display-name>  
+          <type>DATETIME</type>  
+          <required-at-enactment>false</required-at-enactment> 
+        </attribute> 
+      </attributes> 
+    </wdo> 
+  </wdos>  
+  <activities> 
+    <start-process-activity id="1"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité de processus de démarrage</locale>  
+          <locale language="en">StartProcessActivity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de début.</locale>  
+          <locale language="en">The start process activity.</locale>
+        </localized-text> 
+      </description>  
+      <split type="none"> 
+        <transition-id idref="1"/> 
+      </split> 
+    </start-process-activity>  
+    <end-process-activity id="4"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Activité de processus de fin</locale>  
+          <locale language="en">EndProcessActivity</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Activité du processus de fin</locale>  
+          <locale language="en">The end process activity</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/> 
+    </end-process-activity>  
+    <automatic-activity id="2"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">getWaitListReviewDetailsToCreateTask</locale>  
+          <locale language="en">getWaitListReviewDetailsToCreateTask</locale>
+        </localized-text> 
+      </name>  
+      <description> 
+        <localized-text> 
+          <locale language="fr">Extrait les détails de la liste d'attente pour créer la tâche de révision</locale>  
+          <locale language="en">Retrieves the wait list details to create the review task</locale>
+        </localized-text> 
+      </description>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="1"/> 
+      </split>  
+      <bpo-mapping interface-name="curam.core.sl.intf.WaitListReview" method-name="getWaitListReviewDetailsToCreateTask"> 
+        <formal-parameters> 
+          <formal-parameter index="0"> 
+            <struct type="curam.core.struct.WaitListEntryKey"> 
+              <field name="waitListEntryID"> 
+                <base-type type="INT64"> 
+                  <wdo-attribute name="waitListEntryID" wdo-name="WaitListEntryKey"/> 
+                </base-type> 
+              </field> 
+            </struct> 
+          </formal-parameter> 
+        </formal-parameters>  
+        <return> 
+          <struct> 
+            <field name="waitListEntryID"> 
+              <base-type> 
+                <wdo-attribute name="waitListEntryID" wdo-name="WaitListTaskCreateDetails"/> 
+              </base-type> 
+            </field>  
+            <field name="assignedTo"> 
+              <base-type> 
+                <wdo-attribute name="assignedTo" wdo-name="WaitListTaskCreateDetails"/> 
+              </base-type> 
+            </field>  
+            <field name="assigneeType"> 
+              <base-type> 
+                <wdo-attribute name="assigneeType" wdo-name="WaitListTaskCreateDetails"/> 
+              </base-type> 
+            </field>  
+            <field name="subject"> 
+              <base-type> 
+                <wdo-attribute name="subject" wdo-name="WaitListTaskCreateDetails"/> 
+              </base-type> 
+            </field>  
+            <field name="priority"> 
+              <base-type> 
+                <wdo-attribute name="priority" wdo-name="WaitListTaskCreateDetails"/> 
+              </base-type> 
+            </field>  
+            <field name="participantRoleID"> 
+              <base-type> 
+                <wdo-attribute name="participantRoleID" wdo-name="WaitListTaskCreateDetails"/> 
+              </base-type> 
+            </field>  
+            <field name="caseID"> 
+              <base-type> 
+                <wdo-attribute name="caseID" wdo-name="WaitListTaskCreateDetails"/> 
+              </base-type> 
+            </field>  
+            <field name="participantType"> 
+              <base-type> 
+                <wdo-attribute name="participantType" wdo-name="WaitListTaskCreateDetails"/> 
+              </base-type> 
+            </field>  
+            <field name="reserveToMeInd"> 
+              <base-type> 
+                <wdo-attribute name="reserveToMeInd" wdo-name="WaitListTaskCreateDetails"/> 
+              </base-type> 
+            </field>  
+            <field name="comments"> 
+              <base-type> 
+                <wdo-attribute name="comments" wdo-name="WaitListTaskCreateDetails"/> 
+              </base-type> 
+            </field>  
+            <field name="deadlineDateTime"> 
+              <base-type> 
+                <wdo-attribute name="deadlineDateTime" wdo-name="WaitListTaskCreateDetails"/> 
+              </base-type> 
+            </field> 
+          </struct> 
+        </return> 
+      </bpo-mapping> 
+    </automatic-activity>  
+    <manual-activity category="AC1" id="3"> 
+      <name> 
+        <localized-text> 
+          <locale language="fr">Entrée de la liste d'attente de révision :</locale>  
+          <locale language="en">Review Wait List Entry:</locale>
+        </localized-text> 
+      </name>  
+      <join type="none"/>  
+      <split type="none"> 
+        <transition-id idref="2"/> 
+      </split>  
+      <task> 
+        <message> 
+          <message-text> 
+            <localized-text> 
+              <locale language="fr">Entrée de la liste d'attente de révision : %1n</locale>  
+              <locale language="en">Review Wait List Entry: %1n</locale>
+            </localized-text> 
+          </message-text>  
+          <message-parameters> 
+            <wdo-attribute name="waitListEntryID" wdo-name="WaitListTaskCreateDetails"/> 
+          </message-parameters> 
+        </message>  
+        <actions> 
+          <action page-id="WaitList_review" principal-action="true"> 
+            <message> 
+              <message-text> 
+                <localized-text> 
+                  <locale language="fr">Indiquez que l'entrée de la liste d'attente doit être allouée/retirée ou que la révision doit être différée à une date future.</locale>  
+                  <locale language="en">Proceed to indicate that the wait list entry should be allocate/removed or the review should be deferred to a future date.</locale>
+                </localized-text> 
+              </message-text> 
+            </message>  
+            <link-parameter name="waitListEntryID"> 
+              <wdo-attribute name="waitListEntryID" wdo-name="WaitListTaskCreateDetails"/> 
+            </link-parameter> 
+          </action>  
+          <action page-id="ICSample_home" principal-action="false"> 
+            <message> 
+              <message-text> 
+                <localized-text> 
+                  <locale language="fr">Accueil du dossier</locale>  
+                  <locale language="en">Case Home</locale>
+                </localized-text> 
+              </message-text> 
+            </message>  
+            <link-parameter name="caseID"> 
+              <wdo-attribute name="caseID" wdo-name="WaitListTaskCreateDetails"/> 
+            </link-parameter> 
+          </action> 
+        </actions>  
+        <task-priority> 
+          <mapped-priority> 
+            <wdo-attribute name="priority" wdo-name="WaitListTaskCreateDetails"/> 
+          </mapped-priority> 
+        </task-priority>  
+        <initial-comment> 
+          <wdo-attribute name="subject" wdo-name="WaitListTaskCreateDetails"/> 
+        </initial-comment> 
+      </task>  
+      <allocation-strategy identifier="curam.core.sl.intf.WorkflowAllocationFunction.manualAllocationStrategy" type="function"> 
+        <function-mappings> 
+          <formal-parameters> 
+            <formal-parameter index="0"> 
+              <struct type="curam.core.sl.struct.TaskCreateDetails"> 
+                <field name="assignedTo"> 
+                  <base-type type="STRING"> 
+                    <wdo-attribute name="assignedTo" wdo-name="WaitListTaskCreateDetails"/> 
+                  </base-type> 
+                </field>  
+                <field name="assigneeType"> 
+                  <base-type type="STRING"> 
+                    <wdo-attribute name="assigneeType" wdo-name="WaitListTaskCreateDetails"/> 
+                  </base-type> 
+                </field>  
+                <field name="subject"> 
+                  <base-type type="STRING"> 
+                    <wdo-attribute name="subject" wdo-name="WaitListTaskCreateDetails"/> 
+                  </base-type> 
+                </field>  
+                <field name="priority"> 
+                  <base-type type="STRING"> 
+                    <wdo-attribute name="priority" wdo-name="WaitListTaskCreateDetails"/> 
+                  </base-type> 
+                </field>  
+                <field name="deadlineDateTime"> 
+                  <base-type type="DATETIME"> 
+                    <wdo-attribute name="deadlineDateTime" wdo-name="WaitListTaskCreateDetails"/> 
+                  </base-type> 
+                </field>  
+                <field name="participantRoleID"> 
+                  <base-type type="INT64"> 
+                    <wdo-attribute name="participantRoleID" wdo-name="WaitListTaskCreateDetails"/> 
+                  </base-type> 
+                </field>  
+                <field name="participantType"> 
+                  <base-type type="STRING"> 
+                    <wdo-attribute name="participantType" wdo-name="WaitListTaskCreateDetails"/> 
+                  </base-type> 
+                </field>  
+                <field name="caseID"> 
+                  <base-type type="INT64"> 
+                    <wdo-attribute name="caseID" wdo-name="WaitListTaskCreateDetails"/> 
+                  </base-type> 
+                </field>  
+                <field name="reserveToMeInd"> 
+                  <base-type type="BOOLEAN"> 
+                    <wdo-attribute name="reserveToMeInd" wdo-name="WaitListTaskCreateDetails"/> 
+                  </base-type> 
+                </field>  
+                <field name="comments"> 
+                  <base-type type="STRING"> 
+                    <wdo-attribute name="comments" wdo-name="WaitListTaskCreateDetails"/> 
+                  </base-type> 
+                </field> 
+              </struct> 
+            </formal-parameter> 
+          </formal-parameters> 
+        </function-mappings> 
+      </allocation-strategy>  
+      <event-wait wait-on-all-events="false"> 
+        <events> 
+          <event event-class="WAITLIST" event-type="WAITLISTENTRYALLOCATED" identifier="1"> 
+            <event-match-attribute name="waitListEntryID" wdo-name="WaitListTaskCreateDetails"/> 
+          </event>  
+          <event event-class="WAITLIST" event-type="WAITLISTENTRYREMOVED" identifier="2"> 
+            <event-match-attribute name="waitListEntryID" wdo-name="WaitListTaskCreateDetails"/> 
+          </event>  
+          <event event-class="WAITLIST" event-type="WAITLISTENTRYREVIEWDEFERRED" identifier="3"> 
+            <event-match-attribute name="waitListEntryID" wdo-name="WaitListTaskCreateDetails"/> 
+          </event> 
+        </events> 
+      </event-wait>  
+      <biz-object-associations> 
+        <biz-object-association biz-object-type="BOT1"> 
+          <wdo-attribute name="caseID" wdo-name="WaitListTaskCreateDetails"/> 
+        </biz-object-association>  
+        <biz-object-association biz-object-type="BOT2"> 
+          <wdo-attribute name="participantRoleID" wdo-name="WaitListTaskCreateDetails"/> 
+        </biz-object-association> 
+      </biz-object-associations> 
+    </manual-activity> 
+  </activities>  
+  <transitions> 
+    <transition from-activity-idref="1" id="1" to-activity-idref="2"/>  
+    <transition from-activity-idref="2" id="2" to-activity-idref="3"/>  
+    <transition from-activity-idref="3" id="3" to-activity-idref="4"/> 
+  </transitions> 
+</workflow-process>

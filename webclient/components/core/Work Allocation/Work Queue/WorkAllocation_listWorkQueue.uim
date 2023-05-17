@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   IBM Confidential
+
+  OCO Source Materials
+
+  PID 5725-H26
+
+  Copyright IBM Corporation 2003,2017
+
+  The source code for this program is not published or otherwise divested
+  of its trade secrets, irrespective of what has been deposited with the US Copyright Office
+-->
+<!-- Copyright  2003, 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information"). You                 -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Lists all the work queues in the system.                               -->
+<PAGE
+  PAGE_ID="WorkAllocation_listWorkQueue"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+<PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <SERVER_INTERFACE
+    CLASS="WorkAllocation"
+    NAME="DISPLAY"
+    OPERATION="listWorkQueue"
+  />
+  <!-- BEGIN, CR00388862, AC-->
+  <SERVER_INTERFACE
+    CLASS="WorkAllocation"
+    NAME="DISPLAY1"
+    OPERATION="isWorkQueueSearchEnabled"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="WorkAllocation"
+    NAME="ACTION"
+    OPERATION="searchWorkQueueList"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00388862-->
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.NewButton.label"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="WorkAllocation_createWorkQueue"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- BEGIN, CR00388862, AC-->
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY1"
+        PROPERTY="result$workQueueSearchInd"
+      />
+    </CONDITION>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="WorkAllocation_listWorkQueue"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.AdministratorFirstName"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="administratorFirstName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <FIELD
+      LABEL="Field.Title.AdministratorLastName"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="administratorLastName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    TITLE="Cluster.Filter.SearchResults"
+  >
+
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY1"
+        PROPERTY="result$workQueueSearchInd"
+      />
+    </CONDITION>
+    <LIST>
+
+
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+        <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="WorkAllocation_modifyWorkQueueFromList"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="ACTION"
+                PROPERTY="dtls$dtls$workQueueID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="workQueueID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL
+          IMAGE="NewButton"
+          LABEL="ActionControl.NewSubscription.label"
+        >
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="WorkAllocation_createWorkQueueSubscription"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="ACTION"
+                PROPERTY="dtls$dtls$workQueueID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="workQueueID"
+              />
+            </CONNECT>
+            <!-- BEGIN, CR00161962, KY -->
+            <CONNECT>
+              <SOURCE
+                NAME="ACTION"
+                PROPERTY="dtls$dtls$name"
+              />
+              <!-- END, CR00161962 -->
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="pageDescription"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL
+          IMAGE="DeleteButton"
+          LABEL="ActionControl.DeleteButton.label"
+        >
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="WorkAllocation_cancelWorkQueue"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="ACTION"
+                PROPERTY="dtls$dtls$workQueueID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="workQueueID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="ACTION"
+                PROPERTY="dtls$dtls$name"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="pageDescription"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+
+
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY1"
+          PROPERTY="result$workQueueSearchInd"
+        />
+      </CONDITION>
+      <!-- END, CR00385998-->
+      <FIELD
+        LABEL="Field.Title.Name"
+        WIDTH="40"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$dtls$name"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Title.Administrator"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="administratorFullName"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="Organization_userHome">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="administratorUserName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Title.UserSubscription"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$dtls$allowUserSubscriptionInd"
+          />
+        </CONNECT>
+      </FIELD>
+      <DETAILS_ROW>
+        <INLINE_PAGE PAGE_ID="WorkAllocation_viewWorkQueue">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$dtls$workQueueID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="workQueueID"
+            />
+          </CONNECT>
+        </INLINE_PAGE>
+      </DETAILS_ROW>
+    </LIST>
+  </CLUSTER>
+
+
+  <LIST>
+    <CONDITION>
+
+
+      <IS_FALSE
+        NAME="DISPLAY1"
+        PROPERTY="result$workQueueSearchInd"
+      />
+    </CONDITION>
+    <!-- END, CR00385998-->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="WorkAllocation_modifyWorkQueueFromList"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="workQueueID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="workQueueID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="NewButton"
+        LABEL="ActionControl.NewSubscription.label"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="WorkAllocation_createWorkQueueSubscription"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="workQueueID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="workQueueID"
+            />
+          </CONNECT>
+          <!-- BEGIN, CR00161962, KY -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="name"
+            />
+            <!-- END, CR00161962 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="DeleteButton"
+        LABEL="ActionControl.DeleteButton.label"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="WorkAllocation_cancelWorkQueue"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="workQueueID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="workQueueID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.Administrator"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="administratorFullName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Organization_userHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="administratorUserName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.UserSubscription"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="allowUserSubscriptionInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="WorkAllocation_viewWorkQueue">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="workQueueID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="workQueueID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  PID 5725-H26
+
+  Copyright IBM Corporation 2002, 2013. All rights reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002-2003 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- List all of the locations for an organization                          -->
+<PAGE
+  PAGE_ID="Organization_listLocationPopup"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAY"
+    OPERATION="listLocation"
+  />
+
+
+  <!-- BEGIN, CR00388421, MV -->
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAY1"
+    OPERATION="isLocationSearchenabled"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="ACTION"
+    OPERATION="searchLocationsByLocationNameOrType"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00388421 -->
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="DISMISS"
+    />
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00388421, MV -->
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Filter.SearchCriteria"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY1"
+        PROPERTY="isLocationSearchenabled"
+      />
+    </CONDITION>
+
+
+    <FIELD
+      LABEL="Field.Label.Name"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$locationName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.LocationType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$locationType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="Organization_listLocationPopup"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    TITLE="Cluster.Filter.SearchResults"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY1"
+        PROPERTY="isLocationSearchenabled"
+      />
+    </CONDITION>
+    <LIST >
+      <CONTAINER
+        LABEL="Container.Label.Action"
+        WIDTH="10"
+      >
+        <ACTION_CONTROL
+          LABEL="ActionControl.Label.Select"
+          TYPE="DISMISS"
+        >
+          <LINK>
+            <CONNECT>
+              <SOURCE
+                NAME="ACTION"
+                PROPERTY="locationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="value"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="ACTION"
+                PROPERTY="dtls$locationName"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="description"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </CONTAINER>
+
+
+      <FIELD
+        LABEL="Field.Label.Name"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$locationName"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.Type"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$locationType"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.Status"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="locationStatus"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+  <!-- END, CR00388421 -->
+
+
+  <LIST >
+    <!-- BEGIN,CR00388421, MV -->
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY1"
+        PROPERTY="isLocationSearchenabled"
+      />
+    </CONDITION>
+    <!-- END,CR00388421 -->
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="locationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN,CR00388421, MV -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtls$locationName"
+            />
+            <!-- END, CR00388421 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="30"
+    >
+      <!-- BEGIN,CR00388421, MV -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$locationName"
+        />
+      </CONNECT>
+      <!-- END, CR00388421 -->
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="30"
+    >
+      <!-- BEGIN,CR00388421, MV -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$locationType"
+        />
+      </CONNECT>
+      <!-- END, CR00388421 -->
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="locationStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

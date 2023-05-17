@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="CitizenWorkspaceAdmin_addLifeEventTypeToCategory" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <!-- This page presents a list of categories that the selected life event type can be added to. -->
+  
+  <PAGE_PARAMETER NAME="lifeEventTypeID"/>
+  
+  <SERVER_INTERFACE PHASE="ACTION" CLASS="LifeEventAdmin" NAME="MODIFY_DETAILS" OPERATION="setCategories"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+    <TARGET NAME="MODIFY_DETAILS" PROPERTY="lifeEventCategorySelection$id"/>
+  </CONNECT>
+  
+  <!-- This interface returns a list of all categories so the user can select from them. -->
+  <SERVER_INTERFACE PHASE="DISPLAY" CLASS="LifeEventAdmin" NAME="GET_ALL_CATEGORIES" OPERATION="getAllCategories"/>
+  <SERVER_INTERFACE PHASE="DISPLAY" CLASS="LifeEventAdmin" NAME="GET_INITIAL_SELECTION" OPERATION="getInitialCategorySelection"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+    <TARGET NAME="GET_INITIAL_SELECTION" PROPERTY="key$id"/>
+  </CONNECT>
+  
+  <LIST TITLE="List.Title.SelectCategory">
+    <CONTAINER WIDTH="8">
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE NAME="GET_ALL_CATEGORIES" PROPERTY="id"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET NAME="MODIFY_DETAILS" PROPERTY="lifeEventCategorySelection$selectedCategories"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+          <CONNECT>
+            <SOURCE NAME="GET_INITIAL_SELECTION" PROPERTY="selectedCategories"/>
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    
+    <FIELD LABEL="Field.Label.Name" WIDTH="30">
+      <CONNECT>
+        <SOURCE NAME="GET_ALL_CATEGORIES" PROPERTY="name"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Description" WIDTH="70">
+      <CONNECT>
+        <SOURCE NAME="GET_ALL_CATEGORIES" PROPERTY="description"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  
+  <!-- Save and Cancel buttons -->
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+  
+</PAGE>

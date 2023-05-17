@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+
+<!-- ====================================================================== -->
+<!-- Copyright 2010,2013 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="CitizenWorkspace_withdrawIntakeApplication" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <SERVER_INTERFACE CLASS="CitizenWorkspace" NAME="GET_DETAILS" OPERATION="listWithdrawalRequestReasonsAsList" PHASE="DISPLAY"/>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="intakeProgramApplicationID"/>
+    <TARGET NAME="GET_DETAILS" PROPERTY="key$intakeProgramApplicationID"/>
+  </CONNECT>
+
+  <SERVER_INTERFACE CLASS="CitizenWorkspace" NAME="ACTION" OPERATION="withdrawIntakeProgramApplication" PHASE="ACTION"/>
+
+  <PAGE_PARAMETER NAME="intakeProgramApplicationID"/>
+  <PAGE_PARAMETER NAME="programName"/>
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="intakeProgramApplicationID"/>
+    <TARGET NAME="ACTION" PROPERTY="intakeProgramApplicationID"/>
+  </CONNECT>
+
+  <ACTION_SET ALIGNMENT="RIGHT" TOP="false">
+    <ACTION_CONTROL LABEL="ActionControl.Label.Yes" TYPE="SUBMIT"/>
+    <ACTION_CONTROL LABEL="ActionControl.Label.No"/>
+  </ACTION_SET>
+  <CLUSTER STYLE="reasonCluster" LABEL_WIDTH="35%">
+    <FIELD LABEL="Field.Title.WithdrawReason" USE_BLANK="true" USE_DEFAULT="false">
+      <CONNECT>
+        <INITIAL NAME="GET_DETAILS" PROPERTY="details$reasonDescription" HIDDEN_PROPERTY="details$reasonCode"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="withdrawalRequestReason"/>
+      </CONNECT>
+    </FIELD>
+	  <FIELD>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="otherQReqReason"/>
+      </CONNECT>
+      <LABEL>
+        <CONNECT>
+          <SOURCE NAME="TEXT" PROPERTY="Field.Title.OtherReason" />
+        </CONNECT>
+      </LABEL>
+    </FIELD>
+  </CLUSTER>
+
+  <CLUSTER TITLE="Cluster.Title.PersonalDetails" DESCRIPTION="Cluster.Title.PersonalDetails.Description" STYLE="cluster-inner-tds-no-padding">
+    <CLUSTER>
+      <CLUSTER LAYOUT_ORDER="FIELD" LABEL_WIDTH="97%">
+        <FIELD LABEL="Field.Title.ElectronicSignInd" ALIGNMENT="LEFT">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="electronicSigInd" />
+          </CONNECT>
+        </FIELD>
+      </CLUSTER>
+      <CLUSTER NUM_COLS="3" STYLE="cluster-no-border-all">
+        <FIELD LABEL="Field.Title.FirstName">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="firstName" />
+          </CONNECT>
+       </FIELD>
+         <FIELD LABEL="Field.Title.MiddleName">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="middleName" />
+          </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Title.LastName">
+          <CONNECT>
+            <TARGET NAME="ACTION" PROPERTY="surname" />
+          </CONNECT>
+        </FIELD>
+      </CLUSTER>
+    </CLUSTER >
+  </CLUSTER>
+</PAGE>

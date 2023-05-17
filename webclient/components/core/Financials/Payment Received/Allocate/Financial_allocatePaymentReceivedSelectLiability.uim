@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2005, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to allocate a payment received against a     -->
+<!-- liability. This page allows the user to select the liabilty.           -->
+<!-- BEGIN, CR00238748, GD -->
+<?curam-deprecated Since Curam 6.0, replaced by Financial_allocatePaymentReceivedSelectLiability1.uim?>
+<!-- END, CR00238748 -->
+<PAGE PAGE_ID="Financial_allocatePaymentReceivedSelectLiability" WINDOW_OPTIONS="width=1200" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="Financial" NAME="DISPLAY" OPERATION="readDebitsForAllocation"/>
+
+
+  <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+
+
+    <ACTION_CONTROL IMAGE="CloseButton" LABEL="ActionControl.Label.Close"/>
+
+
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="lineItemID"/>
+  <PAGE_PARAMETER NAME="finInstructionID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="concernRoleID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="concernRoleID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="lineItemID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="instructionLineItemID"/>
+  </CONNECT>
+
+
+  <CLUSTER LABEL_WIDTH="45" NUM_COLS="2" TITLE="Cluster.Title.Details">
+
+
+    <FIELD LABEL="Field.Label.Amount">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="amount"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EffectiveDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="creditAllocationSummary$effectiveDate"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.UnallocatedAmount">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="unallocatedAmount"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ReceiptMethod">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="receiptMethod"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.OutstandingLiabilities">
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Financial_resolveInstructionView1">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="debitFinInstructionID"/>
+          <TARGET NAME="PAGE" PROPERTY="instructionID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="debitCategory"/>
+          <TARGET NAME="PAGE" PROPERTY="instructionType"/>
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <CONTAINER LABEL="Container.Label.Action" WIDTH="8">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Select">
+        <LINK OPEN_MODAL="true" PAGE_ID="Financial_allocatePaymentReceived" SAVE_LINK="false">
+          <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="concernRoleID"/>
+            <TARGET NAME="PAGE" PROPERTY="concernRoleID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="lineItemID"/>
+            <TARGET NAME="PAGE" PROPERTY="creditLineItemID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="debitILIid"/>
+            <TARGET NAME="PAGE" PROPERTY="debitLineItemID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="finInstructionID"/>
+            <TARGET NAME="PAGE" PROPERTY="finInstructionID"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Title.CaseReference" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="debitCaseReference"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.LiabilityInstrument" WIDTH="16">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="liabilityInstrumentID"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.Type" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="debitCategory"/>
+      </CONNECT>
+
+
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.EffectiveDate" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="dtls$effectiveDate"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD ALIGNMENT="RIGHT" LABEL="Field.Title.Total" WIDTH="13">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="debitTotalAmount"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD ALIGNMENT="RIGHT" LABEL="Field.Title.Outstanding" WIDTH="13">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="debitOutstandingAmount"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

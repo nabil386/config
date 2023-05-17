@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007 ,2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- List all of the activities for a Process Instance                      -->
+<PAGE
+  PAGE_ID="WorkflowAdministration_listProcessInstanceActivities"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewProcessInstance"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="WorkflowAdministration_viewProcessInstance"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Activities"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="WorkflowAdministration_listProcessInstanceActivities"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.visualiseProcessInstance"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="WorkflowAdministration_visualiseProcessInstance"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="processName"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.StaticText2"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="processInstanceID"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- BEGIN, CR00071552, GBA -->
+  <!-- END, CR00071552 -->
+  <SERVER_INTERFACE
+    CLASS="WorkflowAdministration"
+    NAME="DISPLAY"
+    OPERATION="listProcessInstanceActivities"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="processName"/>
+  <PAGE_PARAMETER NAME="processInstanceID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="processInstanceID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$processInstanceID"
+    />
+  </CONNECT>
+  <LIST>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL
+        LABEL="Field.Label.Override"
+        TYPE="ACTION"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="WorkflowAdministration_listProcessInstanceActivityEvents"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="processInstanceID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="processInstanceID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$processInstanceActivityDetails$activityName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="processName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$processInstanceActivityDetails$activityInstanceID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="activityInstanceID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.ActivityName"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$processInstanceActivityDetails$activityName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ActivityType"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$processInstanceActivityDetails$activityType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.StartDateTime"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$processInstanceActivityDetails$startDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EndDateTime"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$processInstanceActivityDetails$endDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$processInstanceActivityDetails$status"
+        />
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="WorkflowAdministration_viewProcessInstanceActivityWithNoOverride">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$processInstanceActivityDetails$activityInstanceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="activityInstanceID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processInstanceID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="processName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="processName"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+  </LIST>
+</PAGE>

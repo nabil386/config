@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012-2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009, 2010 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This jsp redirects the user to an auditor home page                    -->
+<PAGE
+  PAGE_ID="CaseAudit_resolveAuditorHome"
+  WINDOW_OPTIONS="width=560"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+        
+        curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+        
+        String context = request.getContextPath() + "/";
+        context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+        String auditorID = request.getParameter("auditorID");
+        String auditorHomePageName="";
+        String url = "";
+        
+        if (auditorID == null) {
+          core.ScriptletMissingParamException e = new
+          core.ScriptletMissingParamException(-20002, "auditorID");
+          throw e;        
+        }
+        
+        curam.interfaces.AuditorPkg.Auditor_resolveAuditorHomePage_TH
+        th = new curam.interfaces.AuditorPkg.Auditor_resolveAuditorHomePage_TH();
+        
+        th.setFieldValue(th.key$auditorID_idx,auditorID);
+        
+        th.callServer();
+        
+        auditorHomePageName=th.getFieldValue(th.result$pageName_idx);
+        
+        url = context + auditorHomePageName;        
+        url += "&amp;" + rh.getSystemParameters();
+        response.sendRedirect(response.encodeRedirectURL(url));
+        
+    </JSP_SCRIPTLET>
+</PAGE>

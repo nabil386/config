@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  PID 5725-H26
+
+  Copyright IBM Corporation 2012, 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows a user to search for an Employer -->
+<PAGE
+  PAGE_ID="ProspectEmployer_duplicateCheckWizard"
+  WINDOW_OPTIONS="width=850,height=700"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00282028, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <!-- BEGIN, CR00406231, SS -->
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionString"
+    CLASS="Employer"
+    NAME="ACTION"
+    OPERATION="searchAndAssociateToEmployer"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$prospectEmployerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- END, CR00406231 -->
+  <!-- END, CR00282028 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="ProspectEmployer"
+    NAME="DISPLAY"
+    OPERATION="readHomePageDetails"
+  />
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="maintainConcernRoleKey$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="ParticipantRegistration"
+    NAME="DISPLAYWIZARD"
+    OPERATION="getRegisterProspectAsEmployerWizard"
+  />
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+  <INCLUDE FILE_NAME="ProspectEmployer_duplicateCheckSearchCriteriaViewWizard.vim"/>
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      BOTTOM="false"
+    >
+      <ACTION_CONTROL
+        ACTION_ID="Search"
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK
+          PAGE_ID="THIS"
+          SAVE_LINK="false"
+        />
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        ACTION_ID="DoNothing"
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+        TYPE="SUBMIT"
+      >
+        <LINK
+          PAGE_ID="ProspectEmployer_duplicateCheckWizard"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST
+    PAGINATED="false"
+    
+    TITLE="List.Title.SearchResults"
+  >
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE
+        URI_SOURCE_NAME="ACTION"
+        URI_SOURCE_PROPERTY="employerTabDetailsURL"
+      />
+    </DETAILS_ROW>
+
+
+    <!-- BEGIN, CR00406231, SS -->
+    <CONTAINER WIDTH="5">
+      <WIDGET TYPE="SINGLESELECT">
+        <WIDGET_PARAMETER NAME="SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="key$userSelectedEmployerConcernRoleID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <!-- END, CR00406231 -->
+    <FIELD
+      LABEL="Field.Title.TradingName"
+      WIDTH="35"
+    >
+      <!-- BEGIN, CR00406790, SS -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$dtlsList$tradingName"
+        />
+      </CONNECT>
+      <!-- END, CR00406790 -->
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.RegisteredName"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="xmlRegisteredNameData"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.BusinessAddress"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="formattedBusinessAddress"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <ACTION_SET>
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+    <!-- BEGIN, CR00406231, SS -->
+    <ACTION_CONTROL
+      ACTION_ID="Save"
+      ALIGNMENT="RIGHT"
+      LABEL="ActionControl.Label.SaveAndExit"
+      TYPE="SUBMIT"
+    >
+
+
+      <LINK
+        DISMISS_MODAL="true"
+        OPEN_MODAL="false"
+        PAGE_ID="Employer_home"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="key$userSelectedEmployerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00406231 -->
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Next">
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProspectEmployer_registerAsEmployerWizard"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

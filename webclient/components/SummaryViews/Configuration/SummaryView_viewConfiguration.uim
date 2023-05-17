@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<PAGE
+  PAGE_ID="SummaryView_viewConfiguration"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYCONTEXT"
+        PROPERTY="description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="SummaryViewConfiguration"
+    NAME="DISPLAYCONTEXT"
+    OPERATION="getProductContextDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="productID"
+    />
+    <TARGET
+      NAME="DISPLAYCONTEXT"
+      PROPERTY="productID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="SummaryViewConfiguration"
+    NAME="DISPLAY"
+    OPERATION="viewConfigurationDetails"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="summaryViewDefinitionID"/>
+  <PAGE_PARAMETER NAME="productID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="summaryViewDefinitionID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$summaryViewDefinitionID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="AddGroupButton"
+      LABEL="ActionControl.Label.AddGroup"
+    >
+      <LINK PAGE_ID="SummaryView_addGroup">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="summaryViewDefinitionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="summaryViewDefinitionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="EditButton"
+      LABEL="ActionControl.Label.Edit"
+    >
+      <LINK PAGE_ID="SummaryView_modifyConfiguration">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="summaryViewDefinitionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="summaryViewDefinitionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="DeleteButton"
+      LABEL="ActionControl.Label.Delete"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="SummaryView_cancelConfiguration"
+        WINDOW_OPTIONS="width=500"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="summaryViewDefinitionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="summaryViewDefinitionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$definitionDtls$summaryType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="summaryType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$definitionDtls$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    >
+      <LINK PAGE_ID="SummaryView_listConfiguration">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="productID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <CLUSTER
+    LABEL_WIDTH="30"
+    TITLE="Cluster.Title.Details"
+  >
+    <FIELD LABEL="Field.Label.SummaryViewName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$definitionDtls$summaryViewName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RuleSetID">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$definitionDtls$ruleSetID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.SummaryType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$definitionDtls$summaryType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$definitionDtls$status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <FIELD HEIGHT="3">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$definitionDtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="Cluster.Title.Groups">
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      SEPARATOR="Container.Separator"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.View">
+        <LINK PAGE_ID="SummaryView_viewGroup">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$groupList$dtls$summaryViewGroupDefinitionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="summaryViewGroupDefinitionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$definitionDtls$ruleSetID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="ruleSetID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="productID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="productID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.GroupName"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$groupList$dtls$groupName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.GroupType"
+      WIDTH="65"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$groupList$dtls$groupType"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

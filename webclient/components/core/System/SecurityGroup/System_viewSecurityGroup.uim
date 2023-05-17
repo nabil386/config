@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view the security identifiers for a       -->
+<!-- particular group.                                                      -->
+<PAGE
+  PAGE_ID="System_viewSecurityGroup"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="System"
+    NAME="DISPLAY"
+    OPERATION="readSecurityGroup"
+  />
+
+
+  <PAGE_PARAMETER NAME="groupID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="groupID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$groupID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="AddIdentifierButton"
+      LABEL="ActionControl.Label.AddIdentifiers"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="System_addIdentifierToSecurityGroup"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="groupID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="groupID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="groupName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="groupName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="PublishButton"
+      LABEL="ActionControl.Label.Publish"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="System_publishSecurityChanges"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="12"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.GroupDescription"
+  >
+    <FIELD LABEL="Field.Label.GroupDescription">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="groupDescription"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="Title.Label.SIDsInGroup">
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Security_resolveSecurityIDTypeToView">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="listSecurityIdentifiersInGroup$securityIdentifierDetails$securityIdentifierID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="securityIdentifierID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="listSecurityIdentifiersInGroup$securityIdentifierDetails$sidType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="sidType"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Security_resolveSecurityIDTypeToModify"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="listSecurityIdentifiersInGroup$securityIdentifierDetails$securityIdentifierID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="securityIdentifierID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="listSecurityIdentifiersInGroup$securityIdentifierDetails$sidType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="sidType"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="System_cancelSecurityIdentifierFromGroup"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="listSecurityIdentifiersInGroup$securityIdentifierDetails$securityIdentifierID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="securityIdentifierID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="groupID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="groupID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="groupName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="groupName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.SecurityIdentifier"
+      WIDTH="70"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="listSecurityIdentifiersInGroup$securityIdentifierDetails$sidName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="listSecurityIdentifiersInGroup$securityIdentifierDetails$sidType"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view the assessment details which 	    -->
+<!-- supports no change of circumstances and single source.                 -->
+<PAGE
+  PAGE_ID="DecisionAssistApplication_viewAssessmentNoCOCSingleSource"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SHORTCUT_TITLE ICON="assessment.icon">
+    <CONNECT>
+      <SOURCE
+        NAME="COMMON_VIEW"
+        PROPERTY="result$assessmentDtls$assessmentName"
+      />
+    </CONNECT>
+  </SHORTCUT_TITLE>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="DAAssessment"
+    NAME="ASSESSMENTCONTEXT"
+    OPERATION="viewAssessmentContextDescription"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="ASSESSMENTCONTEXT"
+      PROPERTY="key$dtls$dtls$assessmentCaseID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="DAAssessment"
+    NAME="COMMON_VIEW"
+    OPERATION="viewAssessment"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="COMMON_VIEW"
+      PROPERTY="key$dtls$dtls$assessmentCaseID"
+    />
+  </CONNECT>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!--           Questionnaire Section           -->
+  <LIST TITLE="Cluster.Title.Questionnaires">
+    <CONDITION>
+      <IS_TRUE
+        NAME="COMMON_VIEW"
+        PROPERTY="result$statusDtls$statusInd"
+      />
+    </CONDITION>
+    <!-- BEGIN, CR00213213, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00213213 -->
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Answer"
+        TYPE="ACTION"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DecisionAssistApplication_resolveAnswerQuestionnaire"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="COMMON_VIEW"
+              PROPERTY="result$ddID$dtls$dtls$determinationDeliveryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="determinationDeliveryID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="COMMON_VIEW"
+              PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$questionnaireVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionnaireVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00213213, PS -->
+    </ACTION_SET>
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="40"
+    >
+      <!-- END, CR00213213 -->
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$name"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00214223, PS -->
+      <LINK PAGE_ID="DecisionAssistApplication_viewAnswersForQuestionnaire">
+        <CONNECT>
+          <SOURCE
+            NAME="COMMON_VIEW"
+            PROPERTY="result$ddID$dtls$dtls$determinationDeliveryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationDeliveryID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="COMMON_VIEW"
+            PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$questionnaireVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="questionnaireVersionID"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00214223 -->
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$type"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00214223, PS -->
+    <FIELD
+      LABEL="Field.Label.Completion"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$questionnairePresentationCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00214223 -->
+    <FIELD
+      LABEL="Field.Label.Version"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$versionNumber"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <LIST TITLE="Cluster.Title.Questionnaires">
+    <CONDITION>
+      <IS_FALSE
+        NAME="COMMON_VIEW"
+        PROPERTY="result$statusDtls$statusInd"
+      />
+    </CONDITION>
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$name"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00214223, PS -->
+      <LINK PAGE_ID="DecisionAssistApplication_viewAnswersForQuestionnaire">
+        <CONNECT>
+          <SOURCE
+            NAME="COMMON_VIEW"
+            PROPERTY="result$ddID$dtls$dtls$determinationDeliveryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationDeliveryID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="COMMON_VIEW"
+            PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$questionnaireVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="questionnaireVersionID"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00214223 -->
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$type"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00214223, PS -->
+    <FIELD
+      LABEL="Field.Label.Completion"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$questionnairePresentationCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00214223 -->
+    <FIELD
+      LABEL="Field.Label.Version"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$questionnaireDtls$dtls$dtls$dtls$versionNumber"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <!--            Decisions Section           -->
+  <LIST TITLE="Cluster.Title.Decisions">
+    <CONDITION>
+      <IS_FALSE
+        NAME="COMMON_VIEW"
+        PROPERTY="result$assessmentDtls$totalScoreInd"
+      />
+    </CONDITION>
+    <!-- BEGIN, CR00213213, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00213213 -->
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.CompareDecisions"
+        TYPE="ACTION"
+      >
+        <!-- BEGIN, CR00226313, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DecisionAssistApplication_selectDecisionFromViewAssessmentNoCoC"
+        >
+          <!-- END, CR00226313 -->
+          <CONNECT>
+            <SOURCE
+              NAME="COMMON_VIEW"
+              PROPERTY="result$decisionDtls$dtls$dtls$determinationDecisionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="determinationDecisionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="COMMON_VIEW"
+              PROPERTY="result$ddID$dtls$dtls$determinationDeliveryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="determinationDeliveryID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00213213, PS -->
+    </ACTION_SET>
+    <!-- END, CR00213213 -->
+    <FIELD
+      LABEL="Field.Label.Date"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$decisionDtls$dtls$dtls$decisionDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00214223, PS -->
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="30"
+    >
+      <!-- END, CR00214223 -->
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$decisionDtls$dtls$dtls$decisionType"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00214223, PS -->
+    <FIELD
+      LABEL="Field.Label.ResultType"
+      WIDTH="30"
+    >
+      <!-- END, CR00214223 -->
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$decisionDtls$dtls$dtls$resultType"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00214223, PS -->
+    <FIELD
+      LABEL="Field.Label.Outcome"
+      WIDTH="25"
+    >
+      <!-- END, CR00214223 -->
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$decisionDtls$dtls$dtls$outcome"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00213213, PS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="DecisionAssistApplication_viewDecisionDetails">
+        <CONNECT>
+          <SOURCE
+            NAME="COMMON_VIEW"
+            PROPERTY="result$decisionDtls$dtls$dtls$determinationDecisionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationDecisionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="COMMON_VIEW"
+            PROPERTY="result$ddID$dtls$dtls$determinationDeliveryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationDeliveryID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00213213 -->
+  </LIST>
+  <LIST TITLE="Cluster.Title.Decisions">
+    <CONDITION>
+      <IS_TRUE
+        NAME="COMMON_VIEW"
+        PROPERTY="result$assessmentDtls$totalScoreInd"
+      />
+    </CONDITION>
+    <CONTAINER
+      LABEL="Field.Label.Action"
+      SEPARATOR="Container.Separator"
+      WIDTH="20"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.View"
+        TYPE="ACTION"
+      >
+        <LINK PAGE_ID="DecisionAssistApplication_viewDecisionDetails">
+          <CONNECT>
+            <SOURCE
+              NAME="COMMON_VIEW"
+              PROPERTY="result$decisionDtls$dtls$dtls$determinationDecisionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="determinationDecisionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="COMMON_VIEW"
+              PROPERTY="result$ddID$dtls$dtls$determinationDeliveryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="determinationDeliveryID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.CompareDecisions"
+        TYPE="ACTION"
+      >
+        <LINK PAGE_ID="DecisionAssistApplication_selectDecisionFromViewAssessmentNoCoC">
+          <CONNECT>
+            <SOURCE
+              NAME="COMMON_VIEW"
+              PROPERTY="result$decisionDtls$dtls$dtls$determinationDecisionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="determinationDecisionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="COMMON_VIEW"
+              PROPERTY="result$ddID$dtls$dtls$determinationDeliveryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="determinationDeliveryID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Label.Date"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$decisionDtls$dtls$dtls$decisionDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$decisionDtls$dtls$dtls$decisionType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ResultType"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$decisionDtls$dtls$dtls$resultType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Outcome"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$decisionDtls$dtls$dtls$outcome"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.TotalScore"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="COMMON_VIEW"
+          PROPERTY="result$decisionDtls$dtls$dtls$totalScore"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

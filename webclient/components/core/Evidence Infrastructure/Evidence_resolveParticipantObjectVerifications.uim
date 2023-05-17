@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Resolver to find the evidence object view page for the participant     -->
+<!-- evidence                                                               -->
+<PAGE
+  PAGE_ID="Evidence_resolveParticipantObjectVerifications"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+
+      String successionID = request.getParameter("successionID");
+
+      String url = "";
+
+      if (successionID == null) {
+        core.ScriptletMissingParamException e = 
+          new core.ScriptletMissingParamException(-20002, "successionID");
+        System.out.println(e);
+        throw e;
+      }
+
+      //
+      // get the evidence id and type
+      //    
+      curam.interfaces.EvidencePkg.Evidence_getEvidenceAndCaseFromSuccession_TH
+        resolveEvidenceAndCase = new curam.interfaces.EvidencePkg.Evidence_getEvidenceAndCaseFromSuccession_TH();
+
+      resolveEvidenceAndCase.setFieldValue(resolveEvidenceAndCase.key$successionID_idx, successionID);
+
+      resolveEvidenceAndCase.callServer();
+
+      String evID = resolveEvidenceAndCase.getFieldValue(resolveEvidenceAndCase.result$evidenceKey$evidenceID_idx);
+      String evType = resolveEvidenceAndCase.getFieldValue(resolveEvidenceAndCase.result$evidenceKey$evType_idx);
+            
+      
+      // Get the page and evidence ID attribute names
+      String pageName = "Evidence_participantDataWarning";
+      String evidenceIDAttributeName = "evidenceID";
+      
+      if (evType.equals("PET1")) {
+
+        pageName = "Employer_evidenceListObjVerifications";
+        evidenceIDAttributeName = "concernRoleID";  
+        
+      } else if (evType.equals("PET2")) {
+      
+        pageName = "Person_evidenceListObjVerifications";
+        evidenceIDAttributeName = "concernRoleID";  
+      
+      } else if (evType.equals("PET3")) {
+      
+        pageName = "Person_evidenceListClientObjVerifications";
+        evidenceIDAttributeName = "concernRoleID";  
+      
+      } else if (evType.equals("PET13")) {
+      
+        pageName = "ProspectPerson_evidenceListObjVerifications";
+        evidenceIDAttributeName = "concernRoleID";  
+      
+      } else if (evType.equals("PET14")) {
+      
+        pageName = "ProspectEmployer_evidenceListObjVerifications";
+        evidenceIDAttributeName = "concernRoleID";  
+        
+      } else if (evType.equals("PET4")) {
+
+        pageName = "Person_evidenceListCtznshpObjVerifications";
+        evidenceIDAttributeName = "citizenshipID";         
+
+      } else if (evType.equals("PET5")) {
+
+        pageName = "Participant_evidenceListAddressObjVerifications";
+        evidenceIDAttributeName = "concernRoleAddressID";
+
+      } else if (evType.equals("PET6")) {
+
+        pageName = "Person_evidenceListAltNameObjVerifications";
+        evidenceIDAttributeName = "alternateNameID";         
+
+      } else if (evType.equals("PET7")) {
+
+        pageName = "Person_evidenceListEmploymentObjVerifications";
+        evidenceIDAttributeName = "employmentID";         
+
+      } else if (evType.equals("PET8")) {
+
+        pageName = "Person_evidenceListEmpWorkHrObjVerifications";
+        evidenceIDAttributeName = "employmentWorkingHourID";
+
+      } else if (evType.equals("PET9")) {
+
+        pageName = "Person_evidenceListEducationObjVerifications";
+        evidenceIDAttributeName = "educationID";         
+
+      } else if (evType.equals("PET10")) {
+
+        pageName = "Participant_evidenceListBankAccountObjVerifications";
+        evidenceIDAttributeName = "concernRoleBankAccountID";
+
+      } else if (evType.equals("PET11")) {
+
+        pageName = "Person_evidenceListRelationshipObjVerifications";
+        evidenceIDAttributeName = "concernRoleRelationshipID";
+
+      } else if (evType.equals("PET12")) {
+
+        pageName = "Person_evidenceListFrgnRsdncyObjVerifications";
+        evidenceIDAttributeName = "foreignResidencyID";
+
+      } else if (evType.equals("PET15")) {
+
+        pageName = "Participant_evidenceListAltIDObjVerifications";
+        evidenceIDAttributeName = "concernRoleAlternateID";
+
+      } else {
+      
+        pageName = "Evidence_overrideResolveWarning";
+        
+      }    
+      
+      
+      url = context + pageName + "Page.do?successionID=" + curam.omega3.request.RequestUtils.escapeURL(successionID) + "&amp;" + 
+            curam.omega3.request.RequestUtils.escapeURL(evidenceIDAttributeName) + "=" + curam.omega3.request.RequestUtils.escapeURL(evID) + "&amp;evidenceType=" + 
+            curam.omega3.request.RequestUtils.escapeURL(evType);    
+   
+      url += "&amp;" + rh.getSystemParameters();  
+      response.sendRedirect(response.encodeRedirectURL(url));       
+    
+  </JSP_SCRIPTLET>
+</PAGE>

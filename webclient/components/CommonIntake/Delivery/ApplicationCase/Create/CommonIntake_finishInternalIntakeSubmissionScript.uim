@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE PAGE_ID="CommonIntake_finishInternalIntakeSubmissionScript" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd" WINDOW_OPTIONS="width=900,height=600">
+  <JSP_SCRIPTLET>
+    <![CDATA[
+        
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+      String context = request.getContextPath() + "/";
+                    
+      String executionID = curam.omega3.request.RequestUtils.escapeURL(request.getParameter("executionID"));
+      if (executionID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "executionID");
+       throw e;
+      }
+      String applicationFormID = curam.omega3.request.RequestUtils.escapeURL(request.getParameter("applicationFormID"));
+      if (applicationFormID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "applicationFormID");
+       throw e;
+      }
+      String versionNo = curam.omega3.request.RequestUtils.escapeURL(request.getParameter("versionNo"));
+      if (versionNo == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "versionNo");
+       throw e;
+      }
+             
+      curam.interfaces.ApplicationFormPkg.ApplicationForm_submitApplicationForm_TH
+        th = new curam.interfaces.ApplicationFormPkg.ApplicationForm_submitApplicationForm_TH();
+      th.setFieldValue(th.key$applicationFormID_idx, applicationFormID);
+      th.setFieldValue(th.key$versionNo_idx, versionNo);
+      th.callServer();
+
+      response.sendRedirect(response.encodeURL(request.getContextPath() + "/ieg/CloseAndRedirect.jspx"));     
+                  
+    ]]>
+  </JSP_SCRIPTLET>
+</PAGE>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
+"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<?xml-stylesheet type="text/css" href="../../themes/classic/css/curam_svg.css"?>
+<svg id="rootSVG" zoomAndPan="disable" version="1.1" xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink" onload="makeTree(evt)">
+  <defs>
+    <g id="plus">
+      <rect width="8" fill="white" height="8" stroke="black" stroke-width="1" 
+                                   class="crisp" />
+      <line x1="2" y1="4" x2="6.5" y2="4" stroke="black" class="crisp"/>
+      <line x1="4" y1="2" x2="4" y2="6.5" stroke="black" class="crisp"/>
+    </g>
+    <g id="minus">
+      <rect width="8" fill="white" height="8" stroke="black" stroke-width="1" 
+                                                             class="crisp" />
+      <line x1="2" y1="4" x2="6.5" y2="4" stroke="black" class="crisp"/>
+    </g>
+    <g id="el">
+      <line x1="0" y1="4" x2="0" y2="-7" stroke="gray" class="crisp" />
+      <line x1="0" y1="4" x2="11" y2="4" stroke="gray" class="crisp" />
+    </g>
+    <g id="dash">
+      <line x1="4" y1="4" x2="11" y2="4" stroke="gray" class="crisp" />
+    </g>
+    <g id="bar">
+      <line x1="4" y1="5" x2="4" y2="9" stroke="gray" class="crisp" />
+    </g>
+    <g id="help-icon">
+      <image xlink:href="../../themes/classic/images/rules/legislation-link.gif" x="0" y="0" width="8" height="16"/>
+    </g>
+    <g id="popup">
+      <rect id="popup-rect" opacity="0" x="0" y="0" width="150" fill="rgb(277,277,208)" height="20" stroke="black" stroke-width="1" class="crisp">
+        <animate id="popup-rect-anim" attributeName="opacity" attributeType="CSS" from="0" to="0.99" begin="indefinite" fill="freeze" dur="1s"/>
+      </rect>
+      <text opacity="0" x="6" y="15">
+        <animate id="popup-text-anim" attributeName="opacity" attributeType="CSS" from="0" to="0.8" begin="indefinite" fill="freeze" dur="1s"/>
+        <tspan id="popup-text">Popup Text</tspan>
+      </text>
+    </g>
+  </defs>
+  <script type="text/javascript">
+  <![CDATA[
+      function makeTree(e) {
+        var emptyTree = null;
+        window.parent.setDocumentRoot(window);
+        var root = window.parent.setTree(window.innerWidth, e.target.ownerDocument);
+		var svgRootEl = root.svgDocument.getElementById("rootSVG");
+        svgRootEl.onload = null;
+        if (root.children.length > 0) {
+          for (var i = 0; i < root.children.length; i++) {
+            root.children[i].drawNode(true);
+          }
+          root.adjustWindowHeight();
+        } else {
+          emptyTree = e.target.ownerDocument.createElementNS(SVG_NS, "text");
+          emptyTree.setAttribute('x', 0);
+          emptyTree.setAttribute('y', 15);
+          emptyTree.appendChild(e.target.ownerDocument.createTextNode(window.parent.EMPTY_TREE));
+          e.target.ownerDocument.documentElement.appendChild(emptyTree);
+        }
+      }
+  ]]></script>
+</svg>

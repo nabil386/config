@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This Page allows users to modify association of participants with      -->
+<!-- legal action.                                                          -->
+<PAGE PAGE_ID="AdminLegalStatus_modifyLegalStatus">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Statement"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="AdminLegalStatus"
+    NAME="DISPLAY"
+    OPERATION="viewAdminLegalStatus"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="AdminLegalStatus"
+    NAME="ACTION"
+    OPERATION="modifyAdminLegalStatus"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="legalStatusID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="legalStatusID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="legalStatusKey$legalStatusID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="legalStatusID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$legalStatusDetails$legalStatusID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="FALSE"
+  >
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="Control.Label.Save"
+      TYPE="SUBMIT"
+    >
+            </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="Control.Label.Cancel"
+      TYPE="ACTION"
+    >
+            </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- BEGIN, CR00248028, SS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00248028 -->
+    <FIELD
+      LABEL="Field.Label.LegalStatus"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$legalStatusDetails$legalStatusName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$legalStatusDetails$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$legalStatusDetails$endDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$legalStatusDetails$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

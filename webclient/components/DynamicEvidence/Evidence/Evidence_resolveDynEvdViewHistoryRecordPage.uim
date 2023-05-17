@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012-2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2005-2006, 2008 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Resolver to find the evidence view page for the customer evidence      -->
+<PAGE
+  PAGE_ID="Evidence_resolveDynEvdViewHistoryRecordPage"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String caseID = request.getParameter("caseID");
+      String evID = request.getParameter("evidenceID");
+      String evType = request.getParameter("evidenceType");
+      String evidenceDescriptorID = request.getParameter("evidenceDescriptorID");
+      String contextDescription = request.getParameter("contextDescription");
+
+      curam.interfaces.DynamicEvidenceMaintenancePkg.DynamicEvidenceMaintenance_getPageName_TH
+      dem = new curam.interfaces.DynamicEvidenceMaintenancePkg.DynamicEvidenceMaintenance_getPageName_TH();
+      dem.setFieldValue(dem.key$evidenceId_idx, evID);
+      dem.setFieldValue(dem.key$type_idx, evType);
+      dem.callServer();           
+      
+      //get the evidence type version effective Date part name of the Dynamic Evidence UIM page.
+      String effectiveDate = dem.getFieldValue(dem.result$datePart_idx);
+      
+      
+      String parEvID = request.getParameter("parEvID");
+      String parEvType = request.getParameter("parEvType");
+      String grandParEvID = request.getParameter("grandParEvID");
+      String grandParEvidenceDescID = request.getParameter("grandParEvidenceDescID");
+      String grandParEvType = request.getParameter("grandParEvType");
+      
+      String pageName="";
+      String url = "";
+  
+      if (caseID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "caseID");
+       System.out.println(e);
+       throw e;
+      }
+      if (evID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "evidenceID");
+       System.out.println(e);
+       throw e;
+      }
+      if (evType == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "evidenceType");
+       System.out.println(e);
+       throw e;
+      }            
+     
+       
+      pageName="DynEvd_viewHistoryRecord_" + evType + "_" + effectiveDate + "_false_Evidence";
+       
+      
+      if(contextDescription == null){
+      
+         curam.interfaces.EvidencePkg.Evidence_getContextDescription_TH 
+           thContextDescription = new curam.interfaces.EvidencePkg.Evidence_getContextDescription_TH();
+         thContextDescription.setFieldValue(thContextDescription.key$caseID_idx, caseID);
+         
+         thContextDescription.callServer();
+         contextDescription = thContextDescription.getFieldValue(thContextDescription.result$contextDescription_idx);
+         
+      }
+      
+      // Get the evidence ID attribute name
+      String evidenceIDAttributeName = "evidenceID";
+      
+     url = context + curam.omega3.request.RequestUtils.escapeURL(pageName) + "Page.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) + "&amp;" + 
+            curam.omega3.request.RequestUtils.escapeURL(evidenceIDAttributeName) + "=" + curam.omega3.request.RequestUtils.escapeURL(evID) + "&amp;evidenceType=" + 
+            curam.omega3.request.RequestUtils.escapeURL(evType) + "&amp;contextDescription=" + curam.omega3.request.RequestUtils.escapeURL(contextDescription); 
+            
+      url += "&amp;" + rh.getSystemParameters();  
+    
+      response.sendRedirect(response.encodeRedirectURL(url));      
+      
+    
+  </JSP_SCRIPTLET>
+</PAGE>

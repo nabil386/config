@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+
+<!-- Description -->
+<!-- =========== -->
+<!-- This file list the in progress application form created by logged in user. -->
+<PAGE
+  PAGE_ID="CommonIntake_listInProgressApplicationFormByOwner"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+	<SERVER_INTERFACE 
+	CLASS="ApplicationForm" 
+	NAME="DISPLAY" 
+	OPERATION="listMyInprogressApplicationsForm" 
+	PHASE="DISPLAY" />
+	
+	<LIST> 
+	
+	<ACTION_SET TYPE="LIST_ROW_MENU">
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.Resume">
+        <CONDITION>
+          <IS_TRUE NAME="DISPLAY" PROPERTY="resumeInd" />
+        </CONDITION>
+        <LINK PAGE_ID="CommonIntake_resumeApplicationForm" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="applicationFormID" />
+            <TARGET NAME="PAGE" PROPERTY="applicationFormID" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.Submit">
+        <CONDITION>
+          <IS_TRUE NAME="DISPLAY" PROPERTY="submitInd" />
+        </CONDITION>
+        <LINK URI_SOURCE_NAME="DISPLAY" URI_SOURCE_PROPERTY="submitURI" OPEN_MODAL="true"/>
+      </ACTION_CONTROL>
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <CONDITION>
+          <IS_TRUE NAME="DISPLAY" PROPERTY="deleteInd" />
+        </CONDITION>
+        <LINK PAGE_ID="CommonIntake_deleteApplicationForm" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="applicationFormID" />
+            <TARGET NAME="PAGE" PROPERTY="applicationFormID" />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="versionNo" />
+            <TARGET NAME="PAGE" PROPERTY="versionNo" />
+          </CONNECT>
+        </LINK>
+      
+      </ACTION_CONTROL>
+    
+    </ACTION_SET>
+    
+    <FIELD LABEL="Field.Label.CaseReference" WIDTH="16">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="applicationReference"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Type" WIDTH="24">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="intakeApplicationType"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Client" WIDTH="17">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="clientName"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EnteredBy" WIDTH="17">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="enteredByName"/>
+      </CONNECT>
+      <LINK OPEN_MODAL="true" PAGE_ID="Organization_viewUserDetails">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="enteredByUsername" />
+          <TARGET NAME="PAGE" PROPERTY="userName" />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DateReceived" WIDTH="11">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="fromDateTime"/>
+      </CONNECT>
+    </FIELD>
+     <FIELD LABEL="Field.Label.Status" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="status"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+	
+</PAGE>

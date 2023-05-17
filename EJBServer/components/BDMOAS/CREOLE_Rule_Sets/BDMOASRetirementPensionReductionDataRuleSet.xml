@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Feature 72659: Manage Retirement/Pension Reduction Evidence -->
+<RuleSet name="BDMOASRetirementPensionReductionDataRuleSet">
+	<Class extends="ActiveSuccessionSet" extendsRuleSet="PropagatorRuleSet"
+		name="BDMOASRetirementPensionReduction">
+		<Attribute name="eventType">
+			<Annotations />
+			<type>
+				<codetableentry table="BDMOASOptionableEvent" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="eventDate">
+			<Annotations />
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="description">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage
+					key="DynamicEvidenceSuccessionSet.description"
+					resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules">
+					<reference attribute="successionID" />
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="participant">
+			<Annotations />
+			<type>
+				<javaclass name="java.lang.Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="related_participant">
+			<Annotations />
+			<type>
+				<ruleclass name="CaseParticipantRole"
+					ruleset="CaseEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<reference attribute="caseParticipantRoleRecord">
+					<create ruleclass="CaseParticipantRoleCalculator"
+						ruleset="DynamicEvidenceRuleSet">
+						<reference attribute="participant" />
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

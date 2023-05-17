@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- ===========                                                             -->
+<!-- This page displays the list of remote systems for a life event          -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="CitizenWorkspaceAdmin_listRemoteSystemForLifeEvent"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+  <PAGE_PARAMETER NAME="lifeEventTypeID"/>
+  <PAGE_PARAMETER NAME="channel"/>
+  
+<MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL LABEL="ActionControl.Label.IntakeDetails" STYLE="in-page-link">
+      <LINK PAGE_ID="CitizenWorkspaceAdmin_viewLifeEventType" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+          <TARGET NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+        </CONNECT>
+        <CONNECT>
+  	  <SOURCE NAME="PAGE" PROPERTY="channel"/>
+  	  <TARGET NAME="PAGE" PROPERTY="channel"/>
+        </CONNECT>
+       </LINK>
+     </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.TargetSystem" STYLE="in-page-current-link">
+      <LINK PAGE_ID="CitizenWorkspaceAdmin_listRemoteSystemForLifeEvent" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+          <TARGET NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="channel"/>
+          <TARGET NAME="PAGE" PROPERTY="channel"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Mappings" STYLE="in-page-link">
+      <LINK PAGE_ID="CitizenWorkspaceAdmin_listLifeEventMapping" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+          <TARGET NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="channel"/>
+          <TARGET NAME="PAGE" PROPERTY="channel"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cases" STYLE="in-page-link">
+      <LINK PAGE_ID="CitizenWorkspaceAdmin_listLifeEventCases" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+          <TARGET NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="channel"/>
+          <TARGET NAME="PAGE" PROPERTY="channel"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  
+  <SERVER_INTERFACE
+    CLASS="LifeEventAdmin"
+    NAME="DISPLAY"
+    OPERATION="getRemoteSystemsForLifeEvent"
+    PHASE="DISPLAY"
+  />
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="channel"/>
+    <TARGET NAME="DISPLAY" PROPERTY="channelType"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="lifeEventTypeID"/>
+  </CONNECT>_
+  
+ <LIST>
+ <ACTION_SET TYPE="LIST_ROW_MENU">
+    <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="CitizenWorkspaceAdmin_cancelLifeEventRemSystemLink"
+      >
+      <CONNECT>
+       <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="remoteSystemID"
+      />
+      <TARGET
+       NAME="PAGE"
+       PROPERTY="remoteSystemID"
+      />
+     </CONNECT>
+    <CONNECT>
+      <SOURCE NAME="PAGE" PROPERTY="lifeEventTypeID"/>
+      <TARGET NAME="PAGE" PROPERTY="lifeEventTypeID" />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE NAME="PAGE" PROPERTY="channel"/>
+      <TARGET NAME="PAGE" PROPERTY="channel" />
+    </CONNECT>   
+    </LINK>
+    </ACTION_CONTROL>
+ </ACTION_SET>
+
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="systemName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.DisplayName"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="displayName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Description"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

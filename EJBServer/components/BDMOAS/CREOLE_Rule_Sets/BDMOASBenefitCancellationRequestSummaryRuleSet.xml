@@ -1,0 +1,148 @@
+<RuleSet name="BDMOASBenefitCancellationRequestSummaryRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../build/svr/creole.gen/schema/RuleSet.xsd">
+	<Class extends="DefaultEvidenceSummary"
+		extendsRuleSet="EvidenceSummaryRuleSet" name="SummaryInformation">
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="BDMOASBenefitCancellationRequest"
+					ruleset="BDMOASBenefitCancellationRequestRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="summary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Message" />
+					</type>
+					<when>
+						<condition>
+							<reference attribute="isGranted" />
+						</condition>
+						<value>
+							<reference attribute="grantedSummary" />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<reference attribute="statusSummary" />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="grantedSummary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Message" />
+					</type>
+					<when>
+						<condition>
+							<reference attribute="isDueDateOverriden" />
+						</condition>
+						<value>
+							<ResourceMessage
+								key="OverridenPaymentSummaryMessage"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASBenefitCancellationRequestSummaryRuleSet">
+								<reference attribute="cancellationStatus">
+									<reference attribute="evidence" />
+								</reference>
+								<reference attribute="repaymentDueDateOverride">
+									<reference attribute="evidence" />
+								</reference>
+								<reference attribute="calculatedRepaymentDueDate" />
+							</ResourceMessage>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<ResourceMessage key="CalculatedSummaryMessage"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASBenefitCancellationRequestSummaryRuleSet">
+								<reference attribute="cancellationStatus">
+									<reference attribute="evidence" />
+								</reference>
+								<reference attribute="calculatedRepaymentDueDate" />
+							</ResourceMessage>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="statusSummary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="StatusSummaryMessage"
+					resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASBenefitCancellationRequestSummaryRuleSet">
+					<reference attribute="cancellationStatus">
+						<reference attribute="evidence" />
+					</reference>
+					<reference attribute="benefitType">
+						<reference attribute="applicationDetails">
+							<reference attribute="evidence" />
+						</reference>
+					</reference>
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="isGranted">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<equals>
+					<Code table="BDMOASCancellationStatus">
+						<String value="CST2" />
+					</Code>
+					<reference attribute="cancellationStatus">
+						<reference attribute="evidence" />
+					</reference>
+				</equals>
+			</derivation>
+		</Attribute>
+		<Attribute name="isDueDateOverriden">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<not>
+					<equals>
+						<reference attribute="repaymentDueDateOverride">
+							<reference attribute="evidence" />
+						</reference>
+						<null />
+					</equals>
+				</not>
+			</derivation>
+		</Attribute>
+		<Attribute name="calculatedRepaymentDueDate">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdmoas.creole.impl.Statics"
+					method="getCancellationRepaymentDate">
+					<type>
+						<javaclass name="curam.util.type.Date" />
+					</type>
+					<arguments>
+						<reference attribute="grantDate">
+							<reference attribute="evidence" />
+						</reference>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

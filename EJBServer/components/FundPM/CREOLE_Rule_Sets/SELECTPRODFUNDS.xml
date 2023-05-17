@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet
+  name="SELECTPRODFUNDS"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../build/svr/creole.gen/schema/RuleSet.xsd"
+>
+  <Class
+    name="FundLink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+  >
+    <Attribute name="fundLinkID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <!-- Description for this Rule Class. -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <XmlMessage>Fund Link</XmlMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="programFundID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="relatedID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="relatedType">
+      <type>
+        <codetableentry table="FundRelationType"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="priority">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="startDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="endDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="recordStatus">
+      <type>
+        <codetableentry table="RecordStatus"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="comments">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class
+    name="FundAssociation"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+  >
+    <!-- Description for this Rule Class. -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <XmlMessage>Fund Association</XmlMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="relatedID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="effectiveDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="recordStatus">
+      <type>
+        <codetableentry table="RecordStatus"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="filteredFundLinkRecords">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="FundLink"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <readall ruleclass="FundLink">
+              <match retrievedattribute="relatedID">
+                <reference attribute="relatedID"/>
+              </match>
+            </readall>
+          </list>
+          <listitemexpression>
+            <all>
+              <fixedlist>
+                <listof>
+                  <javaclass name="Boolean"/>
+                </listof>
+                <members>
+                  <compare comparison="&lt;=">
+                    <reference attribute="startDate">
+                      <current/>
+                    </reference>
+                    <reference attribute="effectiveDate"/>
+                  </compare>
+                  <any>
+                    <fixedlist>
+                      <listof>
+                        <javaclass name="Boolean"/>
+                      </listof>
+                      <members>
+                        <equals>
+                          <reference attribute="endDate">
+                            <current/>
+                          </reference>
+                          <null/>
+                        </equals>
+                        <compare comparison="&gt;=">
+                          <reference attribute="endDate">
+                            <current/>
+                          </reference>
+                          <reference attribute="effectiveDate"/>
+                        </compare>
+                      </members>
+                    </fixedlist>
+                  </any>
+                  <equals>
+                    <reference attribute="recordStatus">
+                      <current/>
+                    </reference>
+                    <reference attribute="recordStatus"/>
+                  </equals>
+                </members>
+              </fixedlist>
+            </all>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+    <!-- Return type -->
+    <Attribute name="programFundIDList">
+      <type>
+        <javaclass name="List">
+          <javaclass name="Number"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <reference attribute="filteredFundLinkRecords"/>
+          </list>
+          <listitemexpression>
+            <reference attribute="programFundID">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+  </Class>
+</RuleSet>

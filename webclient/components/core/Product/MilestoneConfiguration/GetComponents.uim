@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information").  You shall not      -->
+<!-- disclose such Confidential Information and shall use it only in        -->
+<!-- accordance with the terms of the license agreement you entered into    -->
+<!-- with Curam Software.                                                   -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp fetches information regarding Components from the Products    -->
+<!-- page depending on the code passed to it                                -->
+<PAGE
+  PAGE_ID="GetComponents"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+               
+                curam.interfaces.ProductPkg.Product_getComponentList_TH product_TH = null;
+                
+                
+                String componentBaseType = null;
+
+                
+                componentBaseType = request.getParameter("componentBaseType");
+                
+                              
+                StringBuffer sb = new StringBuffer();
+                
+                product_TH =  new curam.interfaces.ProductPkg.Product_getComponentList_TH();
+                
+                
+                
+                
+                                
+                product_TH.setFieldValue("key$dtls$code","AN1");
+                               
+                product_TH.callServer();
+                
+                
+                
+                String componentNames[] = product_TH.getListField("result$dtls$dtlsList$name");
+                String componentValues[] = product_TH.getListField("result$dtls$dtlsList$id");
+                
+                
+                 for (int i = 0; i &lt; componentNames.length; i++) {
+                        String name = product_TH.getListFieldValue("result$dtls$dtlsList$name", i);
+                        String value = product_TH.getListFieldValue("result$dtls$dtlsList$id", i);
+                        sb.append("&lt;Component&gt;");
+                        sb.append("&lt;Name&gt;" + name + "&lt;/Name&gt;");
+                        sb.append("&lt;Value&gt;" + value + "&lt;/Value&gt;");
+                        sb.append("&lt;/Component&gt;");
+                      
+                }
+              
+                         
+                                               
+                response.setContentType("text/xml");
+                
+                                               
+                response.setHeader("Cache-Control", "no-cache");
+                
+                out.println("&lt;Components&gt;" + sb.toString() + "&lt;/Components&gt;");
+                out.flush();
+                                               
+                            
+          
+         </JSP_SCRIPTLET>
+</PAGE>

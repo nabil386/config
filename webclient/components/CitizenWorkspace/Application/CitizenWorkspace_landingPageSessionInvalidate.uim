@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2015. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+
+<PAGE PAGE_ID="CitizenWorkspace_landingPageSessionInvalidate">
+   <JSP_SCRIPTLET>
+    <![CDATA[
+    
+      curam.omega3.request.RequestHandler 
+          rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      javax.servlet.http.HttpServletRequest hsRequest;
+      javax.servlet.http.HttpSession httpSession;
+      hsRequest = (javax.servlet.http.HttpServletRequest) request;
+      httpSession = hsRequest.getSession();
+      java.security.Principal userPrincipal = hsRequest.getUserPrincipal();
+      String contextPath = request.getContextPath();    
+
+      String playerID = request.getParameter("id");
+      curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_resolveCitizenHome_TH th = 
+        new curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_resolveCitizenHome_TH(); 
+      th.setFieldValue(th.key$playerID_idx, playerID);       
+
+      curam.util.client.plugin.PlugInUtils.setDisplayPhaseContext(
+        (HttpServletRequest) pageContext.getRequest(), pageContext, prefs.getLocale(), prefs.getTimeZone());       
+   
+   // BEGIN, 152478, PC    
+       curam.interfaces.CWSecurityHelperPkg.CWSecurityHelper_getUserType_TH th2 = new curam.interfaces.CWSecurityHelperPkg.CWSecurityHelper_getUserType_TH();
+
+      th2.callServer();
+      String userType = th2.getFieldValue(curam.interfaces.CWSecurityHelperPkg.CWSecurityHelper_getUserType_TH.result$userType_idx);
+       
+       String navID="";
+       if(userType.equalsIgnoreCase("LINKED")){
+        navID = curam.omega3.util.CDEJResources.getProperty("citizenworkspace.cw.Resolve", "nav.linkedUser");
+       }else if(userType.equalsIgnoreCase("NORMAL")){
+        navID=curam.omega3.util.CDEJResources.getProperty("citizenworkspace.cw.Resolve", "nav.standardUser");
+       }
+   
+    curam.util.client.tab.NavigationConfig navConfig;
+
+    curam.util.client.tab.ClientTabConfigAccess configAccess =
+      curam.util.client.tab.ClientTabConfigAccessFactory.getInstance();
+      String firstPage="";
+    if(!navID.equals("")){
+    navConfig = configAccess.getNavigationConfig(navID);
+     firstPage =navConfig.getNodes().getNavigationPageList().get(0).getPageId();
+   }
+   
+       String landingPage ="";
+      if(curam.util.client.tab.ApplicationConfigUtils.getLandingPage()!=null){
+       landingPage = curam.omega3.request.RequestUtils.escapeURL(curam.util.client.tab.ApplicationConfigUtils.getLandingPage());
+       }else{
+        landingPage = firstPage;
+       }
+       // END, 152478  
+      
+      curam.interfaces.CWSecurityHelperPkg.CWSecurityHelper_userHasCWAccount_TH th1 = 
+        new curam.interfaces.CWSecurityHelperPkg.CWSecurityHelper_userHasCWAccount_TH();
+      th1.callServer();
+          
+      String userHasCWAccount = th1.getFieldValue(th1.result$userHasCWAccountInd_idx);
+            
+      curam.util.configuration.CuramConfiguration curamConfig = curam.util.configuration.CuramConfigurationUtil.getConfiguration();
+      
+      boolean propertyValueHome = curamConfig.getBoolean("curam.citizenworkspace.invalidate.http.session.anon.user.home");      
+      boolean propertyValueExit = curamConfig.getBoolean("curam.citizenworkspace.endsession.generated.user.exit");
+      String publicUsername = citizenworkspace.pageplayer.PagePlayerProperties.getPublicUsername();
+      
+      boolean isPublicCitizen = false;
+      
+      if (userPrincipal != null && userPrincipal.getName().equals(publicUsername)) {
+        isPublicCitizen = true;
+      }
+      
+      if (!isPublicCitizen && (propertyValueHome || propertyValueExit) && userHasCWAccount.equals("false")) {
+      
+          httpSession.invalidate(); 
+          out.print("<script>window.parent.displayContent({pageID:'" + landingPage + "'})</script>");          
+         
+      } else {
+      
+        // go home but pass any session id that is available
+        out.print("<script>window.parent.displayContent({pageID:'" + landingPage + "'})</script>");
+        }
+        
+      ]]>
+  </JSP_SCRIPTLET>
+</PAGE>

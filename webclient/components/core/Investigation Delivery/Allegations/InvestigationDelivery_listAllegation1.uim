@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page is used to display a list of allegations for an              -->
+<!-- investigation case                                                     -->
+<PAGE
+  PAGE_ID="InvestigationDelivery_listAllegation1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <SERVER_INTERFACE
+    CLASS="InvestigationDelivery"
+    NAME="DISPLAY"
+    OPERATION="listAllegation1"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="investigationCaseID$caseID"
+    />
+  </CONNECT>
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="InvestigationDelivery_createAllegation"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="InvestigationDelivery_modifyAllegationFromList"
+        >
+ 
+        
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$allegationDetailsList$allegationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="allegationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      
+      <SEPARATOR/>
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddFinding">
+      
+       <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="addFindingInd"
+        />
+      </CONDITION>       
+      
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="InvestigationDelivery_createFinding"
+          >
+                   
+            <CONNECT>
+              <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$allegationDetailsList$allegationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="allegationID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        
+        <ACTION_CONTROL LABEL="ActionControl.Label.ModifyFinding">
+        
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="editFindingInd"
+        />
+      </CONDITION>         
+        
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="InvestigationDelivery_resolveModifyFinding"
+          >         
+          
+            <CONNECT>
+              <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$allegationDetailsList$allegationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="allegationID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="findingID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="findingID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        
+        <ACTION_CONTROL LABEL="ActionControl.Label.OverrideFinding">
+        
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="overrideFindingInd"
+        />
+      </CONDITION>          
+        
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="InvestigationDelivery_resolveOverrideFinding"
+          >
+                  
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$allegationDetailsList$allegationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="allegationID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$allegationDetailsList$findingID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="findingID"
+              />
+            </CONNECT>            
+          </LINK>
+        </ACTION_CONTROL>
+        
+        <ACTION_CONTROL
+          LABEL="ActionControl.Label.FindingHistory"
+          APPEND_ELLIPSIS="false"
+        >
+        
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="viewHistoryInd"
+            />
+          </CONDITION>        
+        
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="InvestigationDelivery_listFindingHistory"
+          >
+            <CONNECT>
+              <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$allegationDetailsList$allegationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="allegationID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="caseID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        
+       <SEPARATOR/>
+       
+       <ACTION_CONTROL LABEL="ActionControl.Label.AddParticipant">
+         <LINK
+           OPEN_MODAL="true"
+           PAGE_ID="InvestigationDelivery_createAllegationRole"
+         >
+           <CONNECT>
+             <SOURCE
+             NAME="DISPLAY"
+             PROPERTY="result$allegationDetailsList$allegationID"
+             />
+             <TARGET
+               NAME="PAGE"
+               PROPERTY="allegationID"
+             />
+           </CONNECT>
+           <CONNECT>
+             <SOURCE
+               NAME="PAGE"
+               PROPERTY="caseID"
+             />
+             <TARGET
+               NAME="PAGE"
+               PROPERTY="caseID"
+             />
+           </CONNECT>
+         </LINK>
+       </ACTION_CONTROL>
+       
+       <ACTION_CONTROL
+         IMAGE="AddAttachmentButton"
+         LABEL="ActionControl.Label.AddAttachment"
+       >
+         <LINK
+           OPEN_MODAL="true"
+           PAGE_ID="InvestigationDelivery_createAllegationAttachment"
+         >
+           <CONNECT>
+             <SOURCE
+               NAME="DISPLAY"
+               PROPERTY="result$allegationDetailsList$allegationID"
+             />
+             <TARGET
+               NAME="PAGE"
+               PROPERTY="linkID"
+             />
+           </CONNECT>
+         </LINK>
+      </ACTION_CONTROL>     
+
+      <SEPARATOR/>        
+                
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="InvestigationDelivery_cancelAllegation"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$allegationDetailsList$allegationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="allegationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$allegationDetailsList$type"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.AllegationDate"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$allegationDetailsList$allegationDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Location"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$allegationDetailsList$location"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$allegationDetailsList$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="InvestigationDelivery_viewAllegation">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$allegationDetailsList$allegationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="allegationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+</PAGE>

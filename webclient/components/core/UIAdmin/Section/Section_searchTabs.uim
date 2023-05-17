@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                                         -->
+<!-- All rights reserved.                                                                                  -->
+<!-- This software is the confidential and proprietary information of Curam         -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose                -->
+<!-- such Confidential Information and shall use it only in accordance with          -->
+<!-- the terms of the license agreement you entered into with Curam                 -->
+<!-- Software.                                                                                               -->
+<!-- Description                                                                                             -->
+<!-- ===========                                                                                    -->
+<!-- ...  -->
+<PAGE
+  PAGE_ID="Section_searchTabs"
+  WINDOW_OPTIONS="height=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="sectionID"/>
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionIDProperty"
+    CLASS="Section"
+    NAME="ACTION"
+    OPERATION="searchAndStoreTabs"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="sectionID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="sectionID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="25"
+    NUM_COLS="1"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD
+      LABEL="Field.Label.TabName"
+      WIDTH="60"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$tabName"
+        />
+      </CONNECT>
+    </FIELD>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        ACTION_ID="Search"
+        DEFAULT="true"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      ACTION_ID="Save"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <LIST
+    
+    TITLE="List.Title.SearchResults"
+  >
+    <CONTAINER
+      ALIGNMENT="LEFT"
+      WIDTH="6"
+    >
+      <WIDGET
+        ALIGNMENT="RIGHT"
+        TYPE="MULTISELECT"
+      >
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$dtls$tabID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="tabbedList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Label.TabID"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$tabID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.TabName"
+      WIDTH="54"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$tabName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012-2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002-2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                                  -->
+<!-- ===========                                                                  -->
+<!-- This jsp redirects the user to a member home page within an integrated case. -->
+<PAGE
+  PAGE_ID="IntegratedCase_resolveMemberHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String caseID = request.getParameter("caseID");
+      String concernRoleID = request.getParameter("concernRoleID");
+      String homePageName="";
+      String url = "";
+
+      if (caseID == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "caseID");
+       throw e;
+       // END, CR00110216
+      }
+      if (concernRoleID == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "concernRoleID");
+       throw e;
+       // END, CR00110216
+      }
+
+      curam.interfaces.IntegratedCasePkg.IntegratedCase_resolveMemberHome_TH 
+         th = new curam.interfaces.IntegratedCasePkg.IntegratedCase_resolveMemberHome_TH();
+    
+      th.setFieldValue(th.key$caseID_idx,caseID);
+
+      th.callServer();
+    
+      homePageName=th.getFieldValue(th.result$memberHomePageName_idx);
+      
+    // BEGIN, CROOO53132, GSP
+    // BEGIN, HARP 71578, MM
+    // BEGIN, CR00110216, SK
+    if ((homePageName==null) ||(homePageName.equals(""))) 
+    { 
+    url = context + "Case_resolveCaseNoHomePage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) + 
+     "&amp;concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);      
+    } 
+    else 
+    { 
+    
+    url = context + curam.omega3.request.RequestUtils.escapeURL(homePageName) + "Page.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID) +"&amp;concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID); 
+    
+    } 
+    // END, CR00110216
+    // END, HARP 71578 
+    // END, CROOO53132
+    url += "&amp;" + rh.getSystemParameters();
+    
+      response.sendRedirect(response.encodeRedirectURL(url));
+       
+  </JSP_SCRIPTLET>
+</PAGE>

@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2010, 2020. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 - 2011 Curam Software Ltd.                              -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Default Integrated Case home page.                                     -->
+<PAGE
+  PAGE_ID="DefaultIC_home"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SHORTCUT_TITLE ICON="integratedcase.icon">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="description"
+      />
+    </CONNECT>
+  </SHORTCUT_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="IntegratedCase"
+    NAME="DISPLAY"
+    OPERATION="readCaseDetails2"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="1"
+    TITLE="Cluster.Title.ClosureDetails"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="isCaseClosedInd"
+      />
+    </CONDITION>
+
+
+    <CLUSTER
+      LABEL_WIDTH="35"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD LABEL="Field.Label.Closed">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="closureDateAndUserFullName"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Reason">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="reasonCode"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+
+
+    <CLUSTER
+      LABEL_WIDTH="25"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD LABEL="Field.Label.Comments">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="closureDtls$comments"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.CaseDetails"
+  >
+    <FIELD LABEL="Field.Label.CaseReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="details$caseReference"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Created">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="registrationDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Priority">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="priorityCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Objective">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="objectiveCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ExpectedEndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expectedEndDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Type">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="integratedCaseType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DateReceived">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="receiptDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Classification">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="classificationCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Outcome">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="outcomeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00416277, VT -->
+    <FIELD LABEL="Field.Label.Comments">
+      <!-- END, CR00416277 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.Cases">
+    <FIELD
+      LABEL="Field.Label.CaseReference"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="productDetails$caseReference"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Case_resolveCaseHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="productDetails$caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ProductType"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="productType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER
+      LABEL="Field.Label.PrimaryClient"
+      WIDTH="25"
+    >
+      <ACTION_CONTROL
+        IMAGE="LaunchCCVButton"
+        LABEL="ActionControl.Label.LaunchCCV"
+      >
+        <SCRIPT
+          ACTION="openContextViewer(this)"
+          EVENT="ONCLICK"
+          SCRIPT_FILE="ContextViewerPopup.js"
+        />
+        <LINK
+          OPEN_NEW="true"
+          URI_REF="Link.ContextCitizenViewer"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$productDetails$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$productDetails$concernRoleName"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="IntegratedCase_resolveParticipantHome">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$productDetails$caseParticipantRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseParticipantRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <ACTION_CONTROL
+        IMAGE="SpecialCautionDefaultIcon"
+        LABEL="ActionControl.Label.SpecialCaution"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="specialCautionIndicator"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="TRUE"
+          PAGE_ID="SpecialCaution_listFromCaseHome"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="productDetails$statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <LIST TITLE="List.Title.RecentTransactions">
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Case_resolveViewTransactionLogRecord">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="relatedID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="relatedID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="transactionDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="transactionDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="transactionDateTime"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="transactionDateTime"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$transactionDtls$dtlsList$userFullName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userFullName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="eventTypeDesc"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="eventType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="pageID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <FIELD
+      LABEL="Field.Label.EventType"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$transactionDtls$dtlsList$eventTypeDesc"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Description"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="transactionDescription"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.TransactionDateTime"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="transactionDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.UserFullname"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$transactionDtls$dtlsList$userFullName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+        WINDOW_OPTIONS="width=900"
+      >
+        <CONNECT>
+          <!-- BEGIN, CR00262180, SG -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="username"
+          />
+          <!-- END, CR00262180 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

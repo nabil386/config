@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This Page allows users to modify association of participants with      -->
+<!-- legal action.                                                          -->
+<PAGE PAGE_ID="LegalStatus_addLSForCaseMember">
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Statement"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="caseParticipantRoleID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="LegalStatus"
+    NAME="ACTION"
+    OPERATION="createLegalStatus"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="LegalStatus"
+    NAME="DISPLAY"
+    OPERATION="listLegalStatusesForCaseMember"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="LegalStatus"
+    NAME="DISPLAYCONTEXT"
+    OPERATION="getContextDescription"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseParticipantRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="caseParticipantRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseParticipantRoleID"
+    />
+    <TARGET
+      NAME="DISPLAYCONTEXT"
+      PROPERTY="caseParticipantRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseParticipantRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$key$caseParticipantRoleID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="FALSE"
+  >
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="Control.Label.Save"
+      TYPE="SUBMIT"
+    >
+            </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="Control.Label.SaveAndNew"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="LegalStatus_addLSForCaseMember">
+                </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="Control.Label.Cancel"
+      TYPE="ACTION"
+    >
+            </ACTION_CONTROL>
+  </ACTION_SET>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.AddLegalStatus"
+  >
+    <FIELD
+      LABEL="Field.Label.LegalStatus"
+      USE_BLANK="true"
+      USE_DEFAULT="true"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$caseTypeList$statusList$legalStatusID"
+          NAME="DISPLAY"
+          PROPERTY="result$caseTypeList$statusList$legalStatusDesc"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="legalStatusID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.LegalAction"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="legalActionID"
+        />
+      </CONNECT>
+      <LINK>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseParticipantRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseParticipantRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

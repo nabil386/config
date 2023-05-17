@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PAGE PAGE_ID="External_viewHelpBannerMenu">
+  <!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+  <!-- Copyright (c) 2011 Curam Software Ltd.                            -->
+  <!-- All rights reserved.                                                    -->
+  <!-- This software is the confidential and proprietary information of Curam  -->
+  <!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+  <!-- such Confidential Information and shall use it only in accordance with  -->
+  <!-- the terms of the license agreement you entered into with Curam          -->
+  <!-- Software.                                                               -->
+  <!-- Description -->
+  <!-- =========== -->
+  <!--   -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="applicationID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="ApplicationView"
+    NAME="readMenu"
+    OPERATION="readHelpBannerMenuDetails"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="ApplicationView"
+    NAME="listMenuItems"
+    OPERATION="listHelpBannerMenuItems"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="readMenu"
+      PROPERTY="Key$applicationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="listMenuItems"
+      PROPERTY="key$applicationID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="Control.Label.Edit.Banner">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="External_modifyHelpBannerMenu"
+        SAVE_LINK="true"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="readMenu"
+            PROPERTY="Key$applicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="readMenu"
+            PROPERTY="type"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="type"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="Control.Label.Delete.Banner">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="External_deleteBannerMenu"
+        SAVE_LINK="true"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="readMenu"
+            PROPERTY="Key$applicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="readMenu"
+            PROPERTY="type"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="type"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="Control.Label.New.MenuItem">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="External_createBannerMenuItem"
+        SAVE_LINK="true"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="readMenu"
+            PROPERTY="Key$applicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="readMenu"
+            PROPERTY="type"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="type"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST TITLE="List.Title.MenuItem">
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="External_viewBannerMenuItem">
+        <CONNECT>
+          <SOURCE
+            NAME="listMenuItems"
+            PROPERTY="key$applicationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="applicationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="listMenuItems"
+            PROPERTY="menuItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="menuItemID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="listMenuItems"
+            PROPERTY="result$dtls$iconID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="iconID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="readMenu"
+            PROPERTY="result$type"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="type"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <FIELD LABEL="Field.Label.MenuItem.Title">
+      <CONNECT>
+        <SOURCE
+          NAME="listMenuItems"
+          PROPERTY="title"
+        />
+      </CONNECT>
+    </FIELD>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="Control.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="External_modifyBannerMenuItem"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="listMenuItems"
+              PROPERTY="key$applicationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="applicationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listMenuItems"
+              PROPERTY="menuItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="menuItemID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listMenuItems"
+              PROPERTY="type"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="type"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="Control.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="External_deleteBannerMenuItem"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="listMenuItems"
+              PROPERTY="key$applicationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="applicationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listMenuItems"
+              PROPERTY="result$dtls$iconName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="iconID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listMenuItems"
+              PROPERTY="menuItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="menuItemID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="Control.Label.Reorder">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="External_reorderBannerMenuItem"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="listMenuItems"
+              PROPERTY="key$applicationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="applicationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listMenuItems"
+              PROPERTY="menuItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="srcMenuItemID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="readMenu"
+              PROPERTY="result$type"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="type"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </LIST>
+</PAGE>

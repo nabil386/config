@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>	
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+		http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    
+ <!-- NOTE: Always add new changesets for every pull request. 
+      DO NOT modify existing changesets or SQLs.
+      Group related SQLs in a changeset.  
+      ID's must be unique and follow the format - ComponentName+Release+Sprint+UniqueID
+      Author must be specified - firstname initial.lastname-->
+ 
+    <changeSet  id="BDM_V2_S012_111106_01"  author="Kranthi.Gatta">
+        <sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+        
+            INSERT INTO dpprocess (
+			    processname,
+			    interfacename,
+			    methodname,
+			    tickettype,
+			    subject,
+			    lastwritten
+			) VALUES (
+			    'UPDATEJOBCORRESPONDENCEDP',
+			    'curam.ca.gc.bdm.sl.communication.intf.BDMCommunicationDP',
+			    'updateJobStatusDP',
+			    NULL,
+			    'Delayed processing to update correspondence records by jobID.',
+			    SYSTIMESTAMP
+			);
+			
+			INSERT INTO codetableitem (
+			    tablename,
+			    code,
+			    description,
+			    annotation,
+			    isenabled,
+			    sortorder,
+			    localeidentifier,
+			    parentcode,
+			    comments,
+			    versionno,
+			    lastwritten
+			) VALUES (
+			    'CommunicationStatus',
+			    'BDMCS8011',
+			    'Submitted Oversize',
+			    NULL,
+			    '1',
+			    0,
+			    'en',
+			    NULL,
+			    NULL,
+			    1,
+			    SYSTIMESTAMP
+			);
+			
+			INSERT INTO codetableitem (
+			    tablename,
+			    code,
+			    description,
+			    annotation,
+			    isenabled,
+			    sortorder,
+			    localeidentifier,
+			    parentcode,
+			    comments,
+			    versionno,
+			    lastwritten
+			) VALUES (
+			    'BDMCCTCommunicationStatus',
+			    'BDMCCTST08',
+			    'FAILED_OVERSIZED',
+			    NULL,
+			    '1',
+			    0,
+			    'en',
+			    NULL,
+			    NULL,
+			    1,
+			    SYSTIMESTAMP
+			);
+            
+	</sql>
+	
+    </changeSet>
+    
+    <!--START TASK, 103241-->
+ <changeSet  id="BDM_V2_S011_103241_04"  author="Gopinath.Perumal">  
+        <sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+        
+            Insert into KEYSERVER (KEYSETCODE,NEXTUNIQUEIDBLOCK,HUMANREADABLE,LASTUPDATED,ANNOTATION,STRATEGY,LASTWRITTEN) 
+            values ('BDMCORRJOB',7813,'1',SYSDATE,'BDM Correspondence Job ID',null,null);
+            
+            delete from bdmcorrespondencestaging;
+            
+            alter table
+               bdmcorrespondencestaging
+            modify
+            (
+               JOBID NUMBER(19,0)
+            );
+            
+            ALTER TABLE bdmcorrespondencestaging 
+            ADD REGIONCODE VARCHAR(2000);
+            
+            INSERT INTO FunctionIdentifier (fidName, projectPackage, codePackage, description, fidEnabled) values ('BDMGenerateCorrespondenceBatchStream.process', 'curam', 'ca.gc.bdm.batch.correspondenceframework.generatecorrespondence', 'curam.ca.gc.bdm.batch.correspondenceframework.generatecorrespondence.BDMGenerateCorrespondenceBatchStream.process', 'Y');
+            
+            INSERT INTO BatchProcDef (ProcessDefName, AppName, ClassName, OpName) values ('BDMGenerateCorrespondenceBatchStream', 'curam', 'BDMGenerateCorrespondenceBatchStream', 'process');
+            Insert into BATCHPROCDESC (PROCESSDEFNAME,PROCESSLONGNAME,DESCRIPTION,BATCHTYPE,VERSIONNO,LASTWRITTEN) values ('BDMGenerateCorrespondenceBatchStream','BDMGenerateCorrespondenceBatchStream','BDMGenerateCorrespondenceBatchStream',null,1,null);
+            
+            INSERT INTO BatchParamDef (ProcessDefName, ParamName, ParamType) values ('BDMGenerateCorrespondenceBatchStream', 'instanceID', 'BATCH_PROCESS_INSTANCE_ID');
+			INSERT INTO BatchParamDef (ProcessDefName, ParamName, ParamType) values ('BDMGenerateCorrespondenceBatchStream', 'processingDate', 'CURAM_DATE');
+			
+			Insert into BATCHPARAMDESC (PARAMNAME,PROCESSDEFNAME,DESCRIPTION,DEFAULTVALUE,VERSIONNO,LASTWRITTEN) values ('instanceID','BDMGenerateCorrespondenceBatchStream','BATCH_PROCESS_INSTANCE_ID',null,1,null);
+			Insert into BATCHPARAMDESC (PARAMNAME,PROCESSDEFNAME,DESCRIPTION,DEFAULTVALUE,VERSIONNO,LASTWRITTEN) values ('processingDate','BDMGenerateCorrespondenceBatchStream','CURAM_DATE',null,1,null);
+
+        </sql>
+      </changeSet>
+ <!--END TASK, 103241-->
+ 
+ 
+ 
+ <changeSet  id="BDM_V2_S012_110162_03"  author="Nadira.Banu">
+        <sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+        
+        
+        CREATE TABLE BDMINBOUNDFILETOFILESTAGING(
+				RECORDID NUMBER(19,0) not null, 
+				CORRELATIONID NUMBER(19,0), 
+				INTERFACETYPE VARCHAR(10), 
+				RECORDDATA CLOB, 
+				STATUSCODE VARCHAR(10), 
+				TRANSACTIONID NUMBER(19,0), 
+				CREATEDBY VARCHAR(64), 
+				CREATEDON DATE, 
+				LASTUPDATEDBY VARCHAR(64), 
+				LASTUPDATEDON DATE, 
+				VERSIONNO INTEGER not null
+				);
+        
+        CREATE TABLE BDMOUTBOUNDFILETOFILESTAGING(
+				RECORDID NUMBER(19,0) not null, 
+				CORRELATIONID NUMBER(19,0), 
+				INTERFACETYPE VARCHAR(10), 
+				RECORDDATA CLOB, 
+				STATUSCODE VARCHAR(10), 
+				TRANSACTIONID NUMBER(19,0), 
+				CREATEDBY VARCHAR(64), 
+				CREATEDON DATE, 
+				LASTUPDATEDBY VARCHAR(64), 
+				LASTUPDATEDON DATE, 
+				VERSIONNO INTEGER not null
+				);
+		
+    	 	
+			DELETE FROM CodeTableItem where TableName='BDMInterfaceNameCode' and CODE='BDMINC8000';
+       		DELETE FROM CodeTableItem where TableName='BDMInterfaceNameCode' and CODE='BDMINC8001';
+       		DELETE FROM CodeTableItem where TableName='BDMInterfaceNameCode' and CODE='BDMINC8002';
+       		DELETE FROM CodeTableHeader where TableName='BDMInterfaceNameCode';
+       		
+       		DELETE FROM CodeTableItem where TableName='BDMInterfaceStatusCode' and CODE='BDMISC8000';
+       		DELETE FROM CodeTableItem where TableName='BDMInterfaceStatusCode' and CODE='BDMISC8001';
+       		DELETE FROM CodeTableItem where TableName='BDMInterfaceStatusCode' and CODE='BDMISC8002';
+       		DELETE FROM CodeTableItem where TableName='BDMInterfaceStatusCode' and CODE='BDMISC8003';
+       		DELETE FROM CodeTableHeader where TableName='BDMInterfaceStatusCode';
+       		
+       		
+       		INSERT INTO CodeTableHeader (TableName, TimeEntered, DefaultCode, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceNameCode', SYSDATE, '', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceNameCode', 'BDMINC8000', 'CRA Death Match', '', '', '1', 0, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceNameCode', 'BDMINC8001', 'CRA GIS Take-up', '', '', '1', 0, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceNameCode', 'BDMINC8002', 'CRA GIS Reassessment', '', '', '1', 0, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceNameCode', 'BDMINC8003', 'Interface with Veterans Affairs Canada', '', '', '1', 0, 'en', SYSDATE, 1);
+       		
+       		INSERT INTO CodeTableHeader (TableName, TimeEntered, DefaultCode, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceStatusCode', SYSDATE, '', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceStatusCode', 'BDMISC8000', 'NEW', '', '', '1', 0, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceStatusCode', 'BDMISC8001', 'PROCESSING', '', '', '1', 0, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceStatusCode', 'BDMISC8002', 'PROCESSED', '', '', '1', 0, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceStatusCode', 'BDMISC8003', 'FAILED', '', '', '1', 0, 'en', SYSDATE, 1);
+			       		
+    
+        
+        
+   		</sql>
+	
+    </changeSet>   
+
+    <!-- BEGIN 116400: DEV: Implement Manage Creditable Periods for OAS under IA - R2-->
+    <changeSet  id="BDM_V2_S012_TASK116400_01"  author="Guru.Vankadara">
+        <sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+        
+            INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline;', 'text/plain;charset=UTF-8', null, '1', null, 'en', 'DynEvd_BDMForeignContributionPeriod_19010102.properties', 906500, 1);
+            INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_XML', null, 'curam.config.tab.DynamicEvidenceObjectBDMDET000319010102', 'text/plain;charset=utf-8', null, '1', null, null, 'curam.config.tab.DynamicEvidenceObjectBDMDET000319010102', 906501, 1);
+            INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_XML', null, 'DynamicEvidenceObjectBDMDET000319010102.properties', 'text/plain;charset=utf-8', null, '1', null, 'en', 'DynamicEvidenceObjectBDMDET000319010102.properties', 906502, 1);
+            INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_XML', null, 'curam.config.nav.DynamicEvidenceObjectBDMDET000319010102Nav', 'text/plain;charset=utf-8', null, '1', null, null, 'curam.config.nav.DynamicEvidenceObjectBDMDET000319010102Nav', 906503, 1);
+            INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_XML', null, 'DynamicEvidenceObjectBDMDET000319010102Nav.properties', 'text/plain;charset=utf-8', null, '1', null, 'en', 'DynamicEvidenceObjectBDMDET000319010102Nav.properties', 906504, 1);
+
+            INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_PROP', null, 'inline;', 'text/plain;charset=UTF-8"', null, '1', null, 'fr', 'DynEvd_BDMForeignContributionPeriod_19010102.properties', 909500, 1);
+            INSERT INTO APPRESOURCE (CATEGORY, CONTENT, CONTENTDISPOSITION, CONTENTTYPE, DESCRIPTION, INTERNAL, LASTWRITTEN, LOCALEIDENTIFIER, NAME, RESOURCEID, VERSIONNO) VALUES ('RS_XML', null, 'DynamicEvidenceObjectBDMDET000319010102Nav.properties', 'text/plain;charset=utf-8', null, '1', null, 'fr', 'DynamicEvidenceObjectBDMDET000319010102Nav.properties', 909501, 1);
+
+            INSERT INTO EVIDENCETYPEVERSIONDEF (CALCATTRIBUTESEDITACTIONID, CUSTOMIND, EFFECTIVEFROM, EVIDENCETYPEDEFID, EVIDENCETYPEVERSIONDEFID, PROPERTIES, RECORDSTATUS, SUMMARYEDITACTIONID, VALIDATIONEDITACTIONID, VERSIONNO, XMLMETADATA) VALUES (null, '0', TO_DATE('1901-01-02','YYYY-MM-DD'), 900002, 900501, 'curam-lob-insert-internal:68', 'DEVRST1', null, null, 1, 'curam-lob-insert-internal:69');
+
+            DELETE FROM CREOLERULESETSNAPSHOT c WHERE creolerulesetid IN (4508, 4509, 4511);
+        </sql>
+    </changeSet>
+    <!-- END 116400: DEV: Implement Manage Creditable Periods for OAS under IA - R2-->
+    
+    <!-- START - TASK 115764 - MP - Manage user skills -->
+    <changeSet id="BDM_V2_S011_115764_01"  author="m.ponnaganti">
+    	<sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+
+        	Insert into SECURITYGROUPSID (GROUPNAME,SIDNAME,LASTWRITTEN) values ('BDMSupervisor','BDMOrganization.createUserSkill',null);
+			Insert into SECURITYGROUPSID (GROUPNAME,SIDNAME,LASTWRITTEN) values ('BDMSupervisor','Organization.viewUserSkill',null);
+			Insert into SECURITYGROUPSID (GROUPNAME,SIDNAME,LASTWRITTEN) values ('IOSupervisorGROUP','BDMOrganization.createUserSkill',null);
+			Insert into SECURITYGROUPSID (GROUPNAME,SIDNAME,LASTWRITTEN) values ('IOSupervisorGROUP','Organization.viewUserSkill',null);
+		       		
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillLevel', 'BDMSKL8005', 'Post Training Monitoring - Secondary', '', '', '1', 6, 'en',SYSTIMESTAMP, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillLevel', 'BDMSKL8005', 'Post Training Monitoring - Secondary_fr', '', '', '1', 6, 'fr',SYSTIMESTAMP, 1);
+			
+			UPDATE CODETABLEITEM SET SORTORDER='1' WHERE TABLENAME='SkillLevel' AND CODE='BDMSKL8000' AND LOCALEIDENTIFIER='en';
+			UPDATE CODETABLEITEM SET DESCRIPTION='No Allocations_fr',SORTORDER='1' WHERE TABLENAME='SkillLevel' AND CODE='BDMSKL8000' AND LOCALEIDENTIFIER='fr';
+			UPDATE CODETABLEITEM SET SORTORDER='2' WHERE TABLENAME='SkillLevel' AND CODE='BDMSKL8002' AND LOCALEIDENTIFIER='en';
+			UPDATE CODETABLEITEM SET SORTORDER='2' WHERE TABLENAME='SkillLevel' AND CODE='BDMSKL8002' AND LOCALEIDENTIFIER='fr';
+			UPDATE CODETABLEITEM SET SORTORDER='3' WHERE TABLENAME='SkillLevel' AND CODE='BDMSKL8003' AND LOCALEIDENTIFIER='en';
+			UPDATE CODETABLEITEM SET SORTORDER='3' WHERE TABLENAME='SkillLevel' AND CODE='BDMSKL8003' AND LOCALEIDENTIFIER='fr';
+			UPDATE CODETABLEITEM SET SORTORDER='4' WHERE TABLENAME='SkillLevel' AND CODE='BDMSKL8004' AND LOCALEIDENTIFIER='en';
+			UPDATE CODETABLEITEM SET DESCRIPTION='Tertiary_fr',SORTORDER='4' WHERE TABLENAME='SkillLevel' AND CODE='BDMSKL8004' AND LOCALEIDENTIFIER='fr';
+			UPDATE CODETABLEITEM SET DESCRIPTION='Post Training Monitoring - Primary',SORTORDER='5' WHERE TABLENAME='SkillLevel' AND CODE='BDMSKL8001' AND LOCALEIDENTIFIER='en';
+			UPDATE CODETABLEITEM SET DESCRIPTION='Post Training Monitoring - Primary_fr',SORTORDER='5' WHERE TABLENAME='SkillLevel' AND CODE='BDMSKL8001' AND LOCALEIDENTIFIER='fr';
+			UPDATE CODETABLEITEM SET DESCRIPTION='Post Training Monitoring - Secondary',SORTORDER='6' WHERE TABLENAME='SkillLevel' AND CODE='BDMSKL8005' AND LOCALEIDENTIFIER='en';
+			UPDATE CODETABLEITEM SET DESCRIPTION='Post Training Monitoring - Secondary_fr',SORTORDER='6' WHERE TABLENAME='SkillLevel' AND CODE='BDMSKL8005' AND LOCALEIDENTIFIER='fr';
+						
+			
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8011', 'OAS-Core', '', '', '1', 11, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8011', 'SV-de base', '', '', '1', 11, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8012', 'OAS-NC-01', '', '', '1', 12, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8012', 'SV-NC-01', '', '', '1', 12, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8013', 'OAS-NC-02', '', '', '1', 13, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8013', 'SV-NC-02', '', '', '1', 13, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8014', 'OAS-NC-03', '', '', '1', 14, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8014', 'SV-NC-03', '', '', '1', 14, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8015', 'OAS-NC-04', '', '', '1', 15, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8015', 'SV-NC-04', '', '', '1', 15, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8016', 'OAS-NC-05', '', '', '1', 16, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8016', 'SV-NC-05', '', '', '1', 16, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8017', 'OAS-Complex-01', '', '', '1', 17, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8017', 'SV-Complexe-01', '', '', '1', 17, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8018', 'OAS-Complex-02', '', '', '1', 18, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8018', 'SV-Complexe-02', '', '', '1', 18, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8019', 'OAS-Complex-03', '', '', '1', 19, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8019', 'SV-Complexe-03', '', '', '1', 19, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8020', 'OAS-Complex-04', '', '', '1', 20, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8020', 'SV-Complexe-04', '', '', '1', 20, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8021', 'OAS-Complex-05', '', '', '1', 21, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8021', 'SV-Complexe-05', '', '', '1', 21, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8022', 'IO-Core', '', '', '1', 22, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8022', 'OI-de base', '', '', '1', 22, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8023', 'IO-NC-01', '', '', '1', 23, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8023', 'OI-NC-01', '', '', '1', 23, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8024', 'IO-NC-02', '', '', '1', 24, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8024', 'OI-NC-02', '', '', '1', 24, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8025', 'IO-NC-03', '', '', '1', 25, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8025', 'OI-NC-03', '', '', '1', 25, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8026', 'IO-NC-04', '', '', '1', 26, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8026', 'OI-NC-04', '', '', '1', 26, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8027', 'IO-Complex-01', '', '', '1', 27, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8027', 'OI-Complexe-01', '', '', '1', 27, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8028', 'IO-Complex-02', '', '', '1', 28, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8028', 'OI-Complexe-02', '', '', '1', 28, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8029', 'IO-Complex-03', '', '', '1', 29, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8029', 'OI-Complexe-03', '', '', '1', 29, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8030', 'IO-Complex-04', '', '', '1', 30, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8030', 'OI-Complexe-04', '', '', '1', 30, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8031', 'IO-Complex-05', '', '', '1', 31, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8031', 'OI-Complexe-05', '', '', '1', 31, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8032', 'IO-Complex-06', '', '', '1', 32, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8032', 'OI-Complexe-06', '', '', '1', 32, 'fr', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8033', 'IO-Complex-07', '', '', '1', 33, 'en', SYSDATE, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('SkillType', 'BDMSKL8033', 'OI-Complexe-07', '', '', '1', 33, 'fr', SYSDATE, 1);
+		</sql>
+    </changeSet>
+    <!-- END - TASK 115764 - MP - Manage user skills -->
+	
+    <!-- START - TASK 53598 - Manage Penalty -->
+    <changeSet id="BDM_V2_S012_53598"  author="pranav.agarwal">
+    	<sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+			UPDATE CODETABLEITEM SET ISENABLED='0', LASTWRITTEN=systimestamp WHERE CODE IN ('BDMELT0002', 'BDMELT0003', 'BDMELT0004');
+			INSERT INTO CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMExtLiabilityType','BDMELT0005','Penalty - OAS',null,'0',5,'en',null,null,1,systimestamp);
+			INSERT INTO CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMExtLiabilityType','BDMELT0005','Penalty - OAS_fr',null,'0',5,'fr',null,null,1,systimestamp);
+			INSERT INTO CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMExtLiabilityType','BDMELT0006','Penalty - OAS Non-Beneficiary',null,'0',6,'en',null,null,1,systimestamp);
+			INSERT INTO CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMExtLiabilityType','BDMELT0006','Penalty - OAS Non-Beneficiary_fr',null,'0',6,'fr',null,null,1,systimestamp);
+		</sql>
+    </changeSet>
+    <!-- END - TASK 53598 - Manage Penalty -->
+    
+    <!-- BEGIN TASK 115233 -->
+    <changeSet id="BDM_V2_S012_115233"  author="katie.donkers">
+    	<sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+		UPDATE CodeTableItem SET ISENABLED = '0' WHERE TABLENAME = 'BDMSourceCountry' AND CODE = 'ZM' AND LOCALEIDENTIFIER = 'en';
+		UPDATE CodeTableItem SET ISENABLED = '0' WHERE TABLENAME = 'BDMSourceCountry' AND CODE = 'ZM' AND LOCALEIDENTIFIER = 'fr';			
+		</sql>
+    </changeSet>   
+    <!-- END TASK 115233 -->
+    
+    <!-- BEGIN TASK 119238 DEV: Implement Conditional Verification RuleSet -->
+    <changeSet id="BDM_V2_S012_119238"  author="guru.vankadara">
+    	<sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+			
+		DELETE FROM EVIDENCEBROKERCONFIG e WHERE EVIDENCEBROKERCONFIGID IN (80012,80013,80014,80019,80020,80021,80030);		
+		</sql>
+    </changeSet>   
+    <!-- END TASK 119238 DEV: Implement Conditional Verification RuleSet-->
+    
+  <!-- START - TASK 53598 - Manage Penalty -->
+    <changeSet id="BDM_V2_S012_53598_V1"  author="gurpreet.kaur">
+    	<sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">   
+         
+         	DELETE FROM DEDUCTIONPRODUCTLINK WHERE DEDUCTIONPRODUCTLINKID IN (918002,918003,918004,918005);
+			DELETE FROM BDMDEDUCTION WHERE deductionID in (918002,918003,918004,918005);
+			DELETE FROM DEDUCTION WHERE deductionID in (918002,918003,918004,918005);
+			
+			DELETE FROM CODETABLEITEM WHERE TABLENAME ='BDMDeductionType' and code in ('BDMDT0003','BDMDT0004','BDMDT0005','BDMDT0006');
+			DELETE FROM CODETABLEITEM WHERE TABLENAME ='DeductionName' and code in ('BDMDN0003','BDMDN0004','BDMDN0005','BDMDN0006');
+			
+		</sql>
+	</changeSet>
+	 <changeSet id="BDM_V2_S012_53598_V2"  author="gurpreet.kaur">
+    	<sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">   
+         
+			UPDATE CODETABLEITEM SET ISENABLED=1 WHERE TABLENAME='BDMDeductionType' AND CODE ='DT04';
+			
+		</sql>
+	</changeSet>
+	
+	<changeSet  id="BDM_V2_S012_111160_01"  author="Kranthi.Gatta">
+        <sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+        Insert into CODETABLEHEADER (TABLENAME,TIMEENTERED,DEFAULTCODE,PARENTCODETABLE,VERSIONNO,LASTWRITTEN) values ('BDMCorrespondenceIdType',systimestamp,null,null,1,systimestamp);
+		Insert into CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMCorrespondenceIdType','JOBID','JOB_ID',null,'0',0,'en',null,null,1,systimestamp);
+		Insert into CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMCorrespondenceIdType','TRACKINGNO','TRACKING_NUMBER',null,'0',0,'en',null,null,1,systimestamp);
+		Insert into CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMCorrespondenceIdType','WORKITEMID','WORKITEM_ID',null,'0',0,'en',null,null,1,systimestamp);
+		
+
+		Insert into CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMCCTCommunicationStatus','BDMCCTST09','BULK_SUCCESS',null,'0',0,'en',null,null,1,systimestamp);
+		Insert into CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMCCTCommunicationStatus','BDMCCTST10','BULK_FAILURE',null,'0',0,'en',null,null,1,systimestamp);
+		
+		Insert into FUNCTIONIDENTIFIER (FIDNAME,FIDENABLED,DESCRIPTION,CODEPACKAGE,PROJECTPACKAGE,LASTWRITTEN) values ('BDMCCTAPI.updateCorrespondenceStatus','Y','curam.ca.gc.bdm.rest.bdmcctapi.BDMCCTAPI.updateCorrespondenceStatus','ca.gc.bdm.rest.bdmcctapi','curam',null);
+		
+		Insert into SECURITYIDENTIFIER (SIDNAME,SIDTYPE,DESCRIPTION,VERSIONNO,LASTWRITTEN) values ('BDMCCTAPI.updateCorrespondenceStatus','FUNCTION',null,0,null);
+		
+		Insert into SECURITYFIDSID (SIDNAME,FIDNAME,LASTWRITTEN) values ('BDMCCTAPI.updateCorrespondenceStatus','BDMCCTAPI.updateCorrespondenceStatus',null);
+		
+		Insert into SECURITYGROUPSID (GROUPNAME,SIDNAME,LASTWRITTEN) values ('BDMCCTSERVICEGROUP','BDMCCTAPI.updateCorrespondenceStatus',null);
+        
+        </sql>
+	</changeSet>
+
+	<!-- START - TASK 53598 - Manage Penalty -->
+    <changeSet id="BDM_V2_S012_53598_1"  author="pranav.agarwal">
+    	<sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">   
+        
+			DELETE FROM CODETABLEITEM WHERE CODE IN ('BDMELS03', 'BDMELT0002', 'BDMELT0003', 'BDMELT0004', 'BDMELT0005', 'BDMELT0006', 'BDMOBCR001', 'BDMOBCR002', 'BDMOBCR003', 'BDMOBCR004', 'BDMOBCR005', 'BDMOBCR1', 'BDMOBCR2');
+			ALTER TABLE BDMEXTERNALLIABILITY DROP COLUMN CREATEREASON;
+			ALTER TABLE BDMEXTERNALLIABILITYHISTORY DROP COLUMN CHANGEREASON;
+			ALTER TABLE BDMEXTERNALLIABILITYHISTORY DROP COLUMN LIABILITYSTATUSCODE;
+
+		</sql>
+	</changeSet>
+
+</databaseChangeLog>

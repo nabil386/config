@@ -1,0 +1,941 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2023. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant file for creating Axis2 web services WAR files and related artifacts.
+
+-->
+<project name="app_webservices_axis2" default="axis2"
+         xmlns:if="ant:if" xmlns:unless="ant:unless">
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="./app_properties.xml" />
+
+  <!--  **************************  -->
+  <!--  ***  Import Utilities  ***  -->
+  <!--  **************************  -->
+  <import file="./app_utilities.xml" />
+  
+  <import file="./app_macros.xml" />
+
+  <taskdef name="antstring" classname="curam.util.tools.AntStrings"
+    classpath="${jar.coreinf}:${jar.tools}"/>
+
+  <path id="axis2.classpath">
+    <pathelement path="${sysenv.PRE_CLASSPATH}"/>
+    <pathelement location="${jar.commonslogging}"/>
+    <pathelement location="${jar.commonscodec}"/>
+    <pathelement location="${jar.log4j.2.core}"/>
+    <pathelement location="${jar.log4j.2.api}"/>
+    <pathelement location="${jar.wsdl4j}"/>
+    <pathelement location="${jar.wss4j}"/>
+    <pathelement location="${jars.allxml}"/>
+    <pathelement location="${jar.bcel}"/>
+
+    <fileset dir="${dir.sde.lib}" includes="${sde.lib.axis2.list}"/>
+
+    <path refid="jde.jars.classpath"/>
+
+    <!-- Necessary to resolve javax.ejb.EJBObject for remote invocation -->
+    <pathelement location="${jar.j2ee}"/>
+    <path refid="liberty.j2ee"/>
+
+    <pathelement location="${jar.mail}"/>
+    <pathelement location="${jar.activation}"/>
+
+    <!-- Necessary for remote interfaces -->
+    <pathelement location="${jar.implementation}"/>
+
+    <!-- Necessary to resolve struct parameters  -->
+    <pathelement location="${jar.appwebservices}"/>
+    <fileset dir="${dir.base.components}" includes="*/lib/**/*_webservices.jar"/>
+
+    <pathelement path="${sysenv.POST_CLASSPATH}"/>
+  </path>
+
+  <property file="${app.prop.location}"/>
+
+  <property name="exclude.soapmonitor"     value="false"/>
+  <property name="soap.monitor.port"     value="5001"/>
+
+  <condition property="isWAS">
+    <equals arg1="${app.server}" arg2="was" casesensitive="No"/>
+  </condition>
+  <condition property="isWLP">
+    <equals arg1="${app.server}" arg2="wlp" casesensitive="No"/>
+  </condition>
+  <condition property="isWLS">
+    <equals arg1="${app.server}" arg2="wls" casesensitive="No"/>
+  </condition>
+
+
+  <!--  *************  -->
+  <!--  ***  MAIN ***  -->
+  <!--  *************  -->
+
+  <target name="axis2"
+    description="Build an Axis2 web services war file"
+    unless="disable.axis2.build">
+
+    <delete includeemptydirs="true" failonerror="false">
+      <fileset dir="${dir.bld.svr.wsc2}" >
+        <exclude name="**/*.class"/>
+        <exclude name="**/*.java"/>
+      </fileset>
+    </delete>
+    <delete dir="${dir.bld.svr.gen.int.ws_axis2}"/>
+    <delete file="${dir.bld.svr.gen.int}/webservices2.war"/>
+
+    <mkdir dir="${dir.bld.svr.wsc2}"/>
+
+    <!-- Generate the Axis2 war file structure:
+
+     + webservices.war
+       |
+       |
+       + META-INF - no Axis specifics here
+       |
+       + WEB-INF
+         |  web.xml - no change
+         |
+         + lib - axis2 jar files
+         |       other common jars ...
+         |
+         + conf - axis2.xml
+         |
+         + modules (.mar files) - (For WebSphere these must be copied to ./lib as jar files.)
+         |
+         + services - See below...
+
+
+       Using the exploded configuration deployment as per: https://svn.apache.org/repos/asf/webservices/axis2/site/1_1_1/app_server.html
+
+       + services -
+         |
+         <ServiceName>
+           |
+           + lib
+           |
+           + META-INF
+             |
+             | services.xml
+             | <ServiceName>.wsdl
+    -->
+
+
+    <mkdir dir="${dir.bld.svr.gen.int.ws_axis2}/schemas"/>
+    <mkdir dir="${dir.bld.svr.gen.int.ws_axis2}/WEB-INF/conf" />
+    <mkdir dir="${dir.bld.svr.gen.int.ws_axis2}/WEB-INF/lib" />
+
+    <mkdir dir="${dir.bld.svr.gen.int.ws_axis2}/WEB-INF/modules" />
+    <mkdir dir="${dir.bld.svr.gen.int.ws_axis2}/WEB-INF/services" />
+
+    <antcall target="axis2.copy" inheritAll="false">
+      <param name="app.server" value="${app.server}"/>
+    </antcall>
+
+    <antcall target="add.axis2.conf" inheritAll="false">
+      <param name="axis2.conf.dir" value="${dir.sde.ear}/webservices2/Axis2/conf"/>
+    </antcall>
+
+    <antcall target="add.axis2.modules" inheritAll="false">
+      <param name="axis2.modules.dir" value="${dir.sde.ear}/webservices2/Axis2/modules"/>
+    </antcall>
+
+    <antcall target="rename.axis2.modules" inheritAll="false" />
+
+    <!-- Process the services -->
+    <mkdir dir="${dir.bld.svr.gen.wsc2}" />
+    <subant target="looped.axis2.service.build"
+      genericantfile="${dir.sde.bin}/app_webservices_axis2.xml"
+      inheritall="false"
+      verbose="true">
+      <dirset dir="${dir.bld.svr.gen.wsc2}" includes="**/*"/>
+    </subant>
+
+    <antcall target="was.main2"/>
+
+    <antcall target="wlp.main2"/>
+
+    <antcall target="wls.main2"/>
+
+    <!-- Include additional content -->
+    <property name="axis2.include.overwrite" value="false"/>
+    <antcall target="axis2.copy.external.location"/>
+    <antcall target="axis2.copy.external.zip"/>
+
+    <antcall target="pack.war2" inheritAll="false"/>
+
+  </target>
+
+
+  <!--  ***********************************************  -->
+  <!--  ***  Copy required files to build location  ***  -->
+  <!--  ***********************************************  -->
+  <target name="axis2.copy">
+
+    <copy file="${jar.coreinf}"                 todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.coreinf.ejb.interfaces}"  todir="${dir.bld.svr.gen.int.ws_axis2}/lib" unless:set="isWLP"/>
+
+    <copy file="${jar.ehcachecore}"           todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.slf4japi}"           todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.slf4jjdk14}"           todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.cglib.nodep}"           todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.commonslang}"  todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.commonstext}"  todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.commonscollections4}"  todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.commonscollections}"  todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.commonsio}"  todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.commons}"           todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+
+    <!-- The structs are required in the built ear to resolve any structs that are passed to/from
+         web services.  Without this jar ClassNotFoundException errors result. -->
+    <copy file="${jar.appwebservices}"    todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy flatten="true" toDir="${dir.bld.svr.gen.int.ws_axis2}/lib">
+      <fileset dir="${dir.base.components}" includes="*/lib/**/*_webservices.jar"/>
+    </copy>
+
+    <copy file="${jar.commonslogging}"    todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.commonscodec}"      todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.log4j.2.core}"      todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.log4j.2.api}"       todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.wsdl4j}"            todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.wss4j}"             todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.xalan}"             todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.xerces}"            todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.xmlsec}"            todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    <copy file="${jar.bcel}"              todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+
+    <copy todir="${dir.bld.svr.gen.int.ws_axis2}/lib" flatten="true">
+      <fileset dir="${dir.sde.lib}" includes="${sde.lib.axis2.list}"/>
+      <fileset dir="${dir.sde.lib}" includes="${sde.lib.axis2.rampart.list}"/>
+    </copy>
+
+
+    <!-- Without this jar file the ?wsdl query in Axis2 URI causes DataRetrievalException
+         / java.lang.VerifyError: org/apache/xml/serializer/Serializer.asContentHandler()Lorg/xml/sax/ContentHandler;
+    -->
+    <copy file="${jar.serializer}"            todir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+
+    <antcall target="client.substitute.soap.monitor.port"/>
+
+    <antcall target="exclude.module.list" inheritAll="false" />
+
+    <copy toDir="${dir.bld.svr.gen.int.ws_axis2}/WEB-INF">
+      <fileset dir="${dir.sde.ear}/webservices2/${app.server}/war"
+        includes="web.xml weblogic.xml web-j2ee-engine.xml ibm-web-bnd.xml *.xmi"/>
+    </copy>
+
+    <copy toDir="${dir.bld.svr.gen.int.ws_axis2}" includeEmptyDirs="false">
+      <fileset dir="${dir.sde.ear}/webservices2/${app.server}/war"
+        includes="**/*"
+        excludes="web.xml weblogic.xml web-j2ee-engine.xml ibm-web-bnd.xml *.xmi"/>
+    </copy>
+
+    <!-- Ensure that dynamic properties are disabled for this war file. -->
+    <antcall target="create.properties.jar">
+       <param name="target.dir" value="${dir.bld.svr.gen.int.ws_axis2}/WEB-INF/lib"/>
+    </antcall>
+  </target>
+
+  <target name="add.axis2.conf">
+    <copy toDir="${dir.bld.svr.gen.int.ws_axis2}/WEB-INF/conf">
+      <fileset dir="${axis2.conf.dir}"
+        includes="*"/>
+    </copy>
+  </target>
+
+  <!-- Substitute with the 'soap.monitor.port' property, if specified. Else default to 5001 -->
+  <target name="client.substitute.soap.monitor.port">
+     <replace file="${dir.sde.ear}/webservices2/${app.server}/war/web.xml"
+        token="$SOAP_MONITOR_PORT$" value="${soap.monitor.port}"/>
+  </target>
+
+  <target name="set.soapmonitor.exclude">
+   <condition property="exclude.list">
+      <equals arg1="${exclude.soapmonitor}" arg2="true"/>
+    </condition>
+  </target>
+
+  <target name="exclude.module.list" if="exclude.list" depends="set.soapmonitor.exclude">
+      <echo file="${dir.sde}/ear/webservices2/Axis2/modules/modules.list" append="false">addressing-1.6.2.mar
+rampart-1.6.2.mar
+rahas-1.6.2.mar</echo>
+  </target>
+
+ <target name="add.axis2.modules">
+  <condition property="exclude.files" value="soapmonitor-1.6.2.mar">
+      <equals arg1="${exclude.soapmonitor}" arg2="true"/>
+  </condition>
+        <copy toDir="${dir.bld.svr.gen.int.ws_axis2}/WEB-INF/modules">
+        <fileset dir="${axis2.modules.dir}"
+          includes="*"
+          excludes="${exclude.files}"/>
+      </copy>
+
+  </target>
+
+  <!-- For WAS/Liberty all the .mar files have to be copied to the lib directory -->
+  <target name="rename.axis2.modules" unless="isWLS">
+    <copy toDir="${dir.bld.svr.gen.int.ws_axis2}/WEB-INF/lib">
+      <fileset dir="${dir.bld.svr.gen.int.ws_axis2}/WEB-INF/modules"
+        includes="*.mar"
+        excludes="soapmonitor-1.6.2.mar"/> <!-- Duplicate, causes an error -->
+      <globmapper from="*.mar" to="*.jar"/>
+    </copy>
+  </target>
+
+  <!--  *****************************  -->
+  <!--  ***  Axis2 service build  ***  -->
+  <!--  *****************************  -->
+  <target name="looped.axis2.service.build">
+    <!-- This target gets called for each generated wsc2/service_name directory
+         and the first time it's just for the wsc2/ directory, which is ignored
+         because no properties file exists there. -->
+
+    <property file="${app.prop.location}"/>
+    <property name="curam.server.host" value="localhost"/>
+
+    <antstring to="service.name" from="${basedir}" type="filenamebase" />
+
+
+    <!-- Load properties in precedence order:             -->
+    <!--   1. components/<component_name>/<service_name>  -->
+    <!--   2. build/svr/gen/wsc2/<service_name>           -->
+    <java
+      classname="curam.util.tools.wsconnector.GetWSInboundFile"
+      classpath="${jar.tools}:${jar.coreinf}:${jar.log4j.2.core}:${jar.log4j.2.api}:${jar.clover}:${jar.javatools}:${jar.j2ee}"
+      fork="${java.fork}"
+      failonerror="${java.failonerror}"
+      maxmemory="${java.maxmemory}"
+      outputproperty="axis2.component.properties"
+      logError="true"
+      taskname="getWSInboundFile"
+    >
+      <jvmarg line="${java.jvmargs}" />
+      <jvmarg value="-Xms${java.maxmemory}" />
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}" />
+      <arg line="-searchforfile ws_inbound.xml" />
+      <arg line="-serverdirectory ${base.dir}" />
+      <arg line="-servercomponentorder ${SERVER_COMPONENT_ORDER}" />
+      <arg line="-serverlocalelist ${SERVER_LOCALE_LIST}" />
+      <arg line="-servicename ${service.name}"/>
+    </java>
+    <property name="axis2.component.properties" value="non-existent-file"/>
+    <xmlproperty file="${axis2.component.properties}" keepRoot="true"/>
+
+    <condition property="classname.set.outside.of.generator">
+      <isset property="curam_ws_inbound.classname"/>
+    </condition>
+
+    <xmlproperty file="${basedir}/ws_inbound.xml" keepRoot="true"/>
+
+    <!-- Set default values -->
+    <property name="curam_ws_inbound.ws_binding_style" value="document"/>
+    <property name="curam_ws_inbound.ws_binding_use" value="literal"/>
+    <property name="curam_ws_inbound.ws_is_xml_document" value="false"/>
+    <property name="curam_ws_inbound.ws_disable" value="false"/>
+    <property name="curam_ws_inbound.ws_client_must_authenticate" value="true"/>
+
+    <condition property="build.for.service.disabled">
+      <equals arg1="${curam_ws_inbound.ws_disable}" arg2="true"/>
+    </condition>
+    <antcall target="check.for.service.disabled"/>
+    <antcall target="check.for.classname.set.outside"/>
+
+    <!-- TODO: Remove setting disable.axis2.wsdl.packaging when the problem with
+         including the WSDL with the service of EAR is resolved (AXIS2-4541).
+     -->
+    <property name="disable.axis2.wsdl.packaging" value="true"/>
+
+    <condition property="disable.wsdl.packaging">
+      <equals arg1="${disable.axis2.wsdl.packaging}" arg2="true"/>
+    </condition>
+
+    <!-- find wsdl in components directory -->
+    <java
+      classname="curam.util.tools.wsconnector.GetWSInboundFile"
+      classpath="${jar.tools}:${jar.coreinf}:${jar.log4j.2.core}:${jar.log4j.2.api}:${jar.clover}:${jar.javatools}:${jar.j2ee}"
+      fork="${java.fork}"
+      failonerror="${java.failonerror}"
+      maxmemory="${java.maxmemory}"
+      outputproperty="axis2.wsdlfile"
+      logError="true"
+      taskname="getWSInboundFile"
+    >
+      <jvmarg line="${java.jvmargs}" />
+      <jvmarg value="-Xms${java.maxmemory}" />
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}" />
+      <arg line="-searchforfile ${service.name}.wsdl" />
+      <arg line="-serverdirectory ${base.dir}" />
+      <arg line="-servercomponentorder ${SERVER_COMPONENT_ORDER}" />
+      <arg line="-serverlocalelist ${SERVER_LOCALE_LIST}" />
+      <arg line="-servicename ${service.name}"/>
+    </java>
+
+    <condition property="wsdl.exists">
+      <and>
+        <available file="${axis2.wsdlfile}"/>
+        <not>
+          <isset property="disable.wsdl.packaging"/>
+        </not>
+      </and>
+    </condition>
+
+    <antcall target="pre.axis2.java2wsdl"/>
+
+    <antcall target="axis2.individual.service.build"/>
+
+  </target>
+
+  <target name="check.for.service.disabled"
+    if="build.for.service.disabled">
+    <echo>NOTE: Build for service ${service.name} is disabled.</echo>
+  </target>
+
+  <target name="check.for.classname.set.outside"
+    if="classname.set.outside.of.generator"
+    unless="build.for.service.disabled">
+    <echo>WARNING: You have set the curam_ws_inbound.classname properties ouside of the generated properties</echo>
+    <echo>         This could cause an inconsistency.</echo>
+  </target>
+
+
+  <!--  ****************************  -->
+  <!--  ***  Process Axis2 WSDL  ***  -->
+  <!--  ****************************  -->
+  <target name="pre.axis2.java2wsdl"  unless="build.for.service.disabled">
+    <antcall target="axis2.java2wsdl"/>
+  </target>
+
+  <target name="axis2.java2wsdl" unless="wsdl.exists">
+
+    <echo>Processing class ${curam_ws_inbound.classname} for service ${service.name} ...</echo>
+
+    <condition property="rpc.encoded.unsupported">
+      <and>
+        <equals arg1="${curam_ws_inbound.ws_binding_style}" arg2="rpc"/>
+        <equals arg1="${curam_ws_inbound.ws_binding_use}" arg2="encoded"/>
+      </and>
+    </condition>
+    <antcall target="check.rpc.encoded"/>
+
+    <condition property="document.encoded.notrecommended">
+      <and>
+        <equals arg1="${curam_ws_inbound.ws_binding_style}" arg2="document"/>
+        <equals arg1="${curam_ws_inbound.ws_binding_use}" arg2="encoded"/>
+      </and>
+    </condition>
+    <antcall target="check.document.encoded"/>
+
+    <condition property="curam.server.port" value="2809">
+       <equals arg1="${app.server}" arg2="was"/>
+    </condition>
+    <condition property="curam.webservices.httpport" value="9082">
+       <equals arg1="${app.server}" arg2="was"/>
+    </condition>
+
+    <condition property="curam.server.port" value="2809">
+       <equals arg1="${app.server}" arg2="wlp"/>
+    </condition>
+    <condition property="curam.webservices.httpport" value="9082">
+       <equals arg1="${app.server}" arg2="wlp"/>
+    </condition>
+
+    <condition property="curam.server.port" value="7001">
+       <equals arg1="${app.server}" arg2="wls"/>
+    </condition>
+    <condition property="curam.webservices.httpport" value="${curam.server.port}">
+       <equals arg1="${app.server}" arg2="wls"/>
+    </condition>
+
+    <echo>Invoking Java2WSDL:</echo>
+    <echo>  class: ${curam_ws_inbound.classname}</echo>
+    <echo>  service: ${service.name}</echo>
+    <echo>  style: ${curam_ws_inbound.ws_binding_style}</echo>
+    <echo>  use: ${curam_ws_inbound.ws_binding_use}</echo>
+    <echo>  endpoint URL: http://${curam.server.host}:${curam.webservices.httpport}/${SERVER_MODEL_NAME}WS2/services/${service.name}</echo>
+
+    <java
+      classname="org.apache.ws.java2wsdl.Java2WSDL"
+      classpathref="axis2.classpath"
+      fork="${java.fork}"
+      failonerror="${java.failonerror}"
+      maxmemory="${java.maxmemory}"
+      taskname="JavaToWSDL"
+    >
+      <jvmarg line="${java.jvmargs}" />
+      <jvmarg value="-Xms${java.maxmemory}" />
+      <jvmarg value="-Dconsole.encoding=${java.console.encoding}" />
+      <jvmarg value="-Dfile.encoding=UTF-8" />
+
+      <arg line="-o ${dir.bld.svr.wsc2}/${service.name}"/>
+      <arg line="-cn ${curam_ws_inbound.classname}"/>
+      <arg line="-l http://${curam.server.host}:${curam.webservices.httpport}/${SERVER_MODEL_NAME}WS2/services/${service.name}"/>
+      <arg line="-of ${service.name}.wsdl"/>
+      <arg line="${axis2.extra.java2wsdl.args}"/>
+      <arg line="-st ${curam_ws_inbound.ws_binding_style}"/>
+      <arg line="-u ${curam_ws_inbound.ws_binding_use}"/>
+      <arg line="-sn ${service.name}"/>
+    </java>
+  </target>
+
+  <target name="check.rpc.encoded" if="rpc.encoded.unsupported">
+      <echo>ERROR: Web services binding style of rpc and use encoded are not supported by Axis2.</echo>
+      <fail message="Use a supported style and use."/>
+  </target>
+
+  <target name="check.document.encoded" if="document.encoded.notrecommended">
+      <echo>WARNING: Web services binding style of document and use encoded are not recommended as there's no standard supporting this.</echo>
+  </target>
+
+
+
+  <!--  ************************************************  -->
+  <!--  ***  Application-server specific processing  ***  -->
+  <!--  ************************************************  -->
+  <target name="was.main2" if="isWAS" unless="build.for.service.disabled">
+
+    <property file="${app.prop.location}"/>
+    <property name="curam.server.host" value="localhost"/>
+    <property name="curam.server.port" value="2809"/>
+    <property name="curam.webservices.httpport" value="9082"/>
+
+    <antcall target="replace2" inheritAll="false">
+      <param name="prp.contextproviderurl" value="iiop://${curam.server.host}:${curam.server.port}"/>
+      <param name="prp.contextfactoryname" value="com.ibm.websphere.naming.WsnInitialContextFactory"/>
+      <param name="prp.jndiusername"       value="${curam.security.credentials.ws.username}"/>
+      <param name="prp.jndipassword"       value="${curam.security.credentials.ws.password}"/>
+    </antcall>
+
+  </target>
+
+  <target name="wlp.main2" if="isWLP" unless="build.for.service.disabled">
+
+    <property file="${app.prop.location}"/>
+    <property name="curam.server.host" value="localhost"/>
+    <property name="curam.server.port" value="2809"/>
+    <property name="curam.webservices.httpport" value="9082"/>
+
+    <antcall target="replace2" inheritAll="false">
+      <param name="prp.contextproviderurl" value="iiop://${curam.server.host}:${curam.server.port}"/>
+      <param name="prp.contextfactoryname" value="com.ibm.ws.jndi.iiop.InitialContextFactory"/>
+      <param name="prp.jndiusername"       value="${curam.security.credentials.ws.username}"/>
+      <param name="prp.jndipassword"       value="${curam.security.credentials.ws.password}"/>
+    </antcall>
+
+  </target>
+
+  <target name="wls.main2" if="isWLS" unless="build.for.service.disabled">
+
+    <property file="${app.prop.location}"/>
+    <property name="curam.server.host" value="localhost"/>
+    <property name="curam.server.port" value="7001"/>
+
+    <antcall target="replace2" inheritAll="false">
+      <param name="prp.contextproviderurl" value="t3://${curam.server.host}:${curam.server.port}"/>
+      <param name="prp.contextfactoryname" value="weblogic.jndi.WLInitialContextFactory"/>
+      <param name="prp.jndiusername"       value="${curam.security.credentials.ws.username}"/>
+      <param name="prp.jndipassword"       value="${curam.security.credentials.ws.password}"/>
+    </antcall>
+
+  </target>
+
+  <target name="replace2">
+
+    <echo message="Replacing."/>
+
+    <replaceregexp
+      file="${dir.bld.svr.gen.int.ws}/META-INF/application.xml"
+      match="&lt;/application&gt;"
+      replace="&lt;module id=&quot;WebServicesModule2&quot;&gt; &lt;web&gt; &lt;web-uri&gt;webservices2.war&lt;/web-uri&gt; &lt;context-root&gt;${SERVER_MODEL_NAME}WS2&lt;/context-root&gt; &lt;/web&gt; &lt;/module&gt; &lt;/application&gt;"
+      byline="true">
+    </replaceregexp>
+
+    <replace dir="${dir.bld.svr.gen.int.ws_axis2}"
+      includes="**/*.xml">
+      <replacefilter token="JNDI_USERNAME"             value="${prp.jndiusername}" />
+      <replacefilter token="JNDI_PASSWORD"             value="${prp.jndipassword}" />
+      <replacefilter token="CONTEXT_PROVIDER_URL"      value="${prp.contextproviderurl}" />
+      <replacefilter token="FULL_CONTEXT_FACTORY_NAME" value="${prp.contextfactoryname}" />
+      <replacefilter token="SERVER_MODEL_NAME"         value="${SERVER_MODEL_NAME}WS2" />
+    </replace>
+
+  </target>
+
+
+  <!--  **************************************  -->
+  <!--  ***   Processing for each service  ***  -->
+  <!--  **************************************  -->
+  <target name="axis2.individual.service.build" unless="build.for.service.disabled">
+
+    <!-- For each service:
+     * Create a directory in services directory of the war based on the service name
+       * Create a META-INF directory
+         * Populate with services.xml; from one of
+           * Components\<component_name>\axis\<service_name>
+           * If not in above will be generated
+        * Populate with wsdl
+           * If found in components directory
+           * Or from that previously built in this script
+       * Create a lib directory
+    -->
+
+    <!-- Identify if wsdl exists to set useOriginalwsdl param -->
+    <condition property="useOriginalwsdl"
+               value="&lt;parameter name=&quot;useOriginalwsdl&quot;&gt;true&lt;/parameter&gt;">
+        <and>
+          <equals arg1="${wsdl.exists}" arg2="true"/>
+          <not>
+            <equals arg1="${disable.wsdl.packaging}" arg2="true"/>
+          </not>
+        </and>
+    </condition>
+    <property name="useOriginalwsdl"
+              value="&lt;parameter name=&quot;useOriginalwsdl&quot;&gt;false&lt;/parameter&gt;"/>
+
+    <property name="modifyUserWSDLPortAddress"
+              value="&lt;parameter name=&quot;modifyUserWSDLPortAddress&quot;&gt;false&lt;/parameter&gt;"/>
+
+    <condition property="curam.server.port" value="2809">
+      <isset property="isWAS"/>
+    </condition>
+    <condition property="providerUrl"
+               value="&lt;parameter name=&quot;providerUrl&quot;&gt;iiop://${curam.server.host}:${curam.server.port}&lt;/parameter&gt;">
+      <isset property="isWAS"/>
+    </condition>
+    <condition property="jndiContextClass"
+               value="&lt;parameter name=&quot;jndiContextClass&quot;&gt;com.ibm.websphere.naming.WsnInitialContextFactory&lt;/parameter&gt;">
+      <isset property="isWAS"/>
+    </condition>
+
+    <condition property="curam.server.port" value="2809">
+      <isset property="isWLP"/>
+    </condition>
+    <condition property="providerUrl"
+               value="&lt;parameter name=&quot;providerUrl&quot;&gt;iiop://${curam.server.host}:${curam.server.port}&lt;/parameter&gt;">
+      <isset property="isWLP"/>
+    </condition>
+    <condition property="jndiContextClass"
+               value="&lt;parameter name=&quot;jndiContextClass&quot;&gt;com.ibm.ws.jndi.iiop.InitialContextFactory&lt;/parameter&gt;">
+      <isset property="isWLP"/>
+    </condition>
+    
+    <condition property="curam.server.port" value="7001">
+      <isset property="isWLS"/>
+    </condition>
+    <condition property="providerUrl"
+               value="&lt;parameter name=&quot;providerUrl&quot;&gt;t3://${curam.server.host}:${curam.server.port}&lt;/parameter&gt;">
+      <isset property="isWLS"/>
+    </condition>
+    <condition property="jndiContextClass"
+               value="&lt;parameter name=&quot;jndiContextClass&quot;&gt;weblogic.jndi.WLInitialContextFactory&lt;/parameter&gt;">
+      <isset property="isWLS"/>
+    </condition>
+
+    <antcall target="axis2.services.pack">
+      <param name="service.name" value="${service.name}"/>
+      <param name="axis2.prop.file" value="${basedir}/ws_inbound.xml"/>
+      <param name="useOriginalwsdl" value="${useOriginalwsdl}"/>
+      <param name="modifyUserWSDLPortAddress" value="${modifyUserWSDLPortAddress}"/>
+      <param name="providerUrl" value="${providerUrl}"/>
+      <param name="jndiContextClass" value="${jndiContextClass}"/>
+    </antcall>
+
+    <!-- Copy supplied WSDL to build location -->
+    <antcall target="copy.wsdl.to.build.location"/>
+
+    <!-- Copy wsdl from build location to war pack location and include it in the war file. -->
+    <antcall target="copy.wsdl.to.pack.location"/>
+
+    <!-- WLS does not work with "exploded" format and an .aar file must be used -->
+    <antcall target="replace.exploded.with.aar">
+      <param name="service.name" value="${service.name}"/>
+      <param name="service.location" value="${dir.bld.svr.gen.int.ws_axis2}/WEB-INF/services"/>
+    </antcall>
+
+  </target>
+
+
+  <!--  **************************************************  -->
+  <!--  ***   Copy or generate services.xml as needed  ***  -->
+  <!--  **************************************************  -->
+  <target name="axis2.services.pack">
+    <mkdir dir="${dir.bld.svr.wsc2}/${service.name}"/>
+
+    <mkdir dir="${dir.bld.svr.gen.int.ws_axis2}/WEB-INF/services/${service.name}/META-INF"/>
+    <mkdir dir="${dir.bld.svr.gen.int.ws_axis2}/WEB-INF/services/${service.name}/lib"/>
+
+    <!-- Generate services.xml if needed -->
+    <java
+      classname="curam.util.tools.wsconnector.GetWSInboundFile"
+      classpath="${jar.tools}:${jar.coreinf}:${jar.log4j.2.core}:${jar.log4j.2.api}:${jar.clover}:${jar.javatools}:${jar.j2ee}"
+      fork="${java.fork}"
+      failonerror="${java.failonerror}"
+      maxmemory="${java.maxmemory}"
+      outputproperty="axis2.services.file"
+      logError="true"
+      taskname="getWSInboundFile"
+    >
+      <jvmarg line="${java.jvmargs}" />
+      <jvmarg value="-Xms${java.maxmemory}" />
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}" />
+      <arg line="-searchforfile services.xml" />
+      <arg line="-serverdirectory ${base.dir}" />
+      <arg line="-servercomponentorder ${SERVER_COMPONENT_ORDER}" />
+      <arg line="-serverlocalelist ${SERVER_LOCALE_LIST}" />
+      <arg line="-servicename ${service.name}"/>
+    </java>
+
+    <java
+      classname="curam.util.tools.wsconnector.GetWSInboundFile"
+      classpath="${jar.tools}:${jar.coreinf}:${jar.log4j.2.core}:${jar.log4j.2.api}:${jar.clover}:${jar.javatools}:${jar.j2ee}"
+      fork="${java.fork}"
+      failonerror="${java.failonerror}"
+      maxmemory="${java.maxmemory}"
+      outputproperty="axis2.services.appserver.file"
+      logError="true"
+      taskname="getWSInboundFile"
+    >
+      <jvmarg line="${java.jvmargs}" />
+      <jvmarg value="-Xms${java.maxmemory}" />
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}" />
+      <arg line="-searchforfile services-${app.server}.xml" />
+      <arg line="-serverdirectory ${base.dir}" />
+      <arg line="-servercomponentorder ${SERVER_COMPONENT_ORDER}" />
+      <arg line="-serverlocalelist ${SERVER_LOCALE_LIST}" />
+      <arg line="-servicename ${service.name}"/>
+    </java>
+
+    <condition property="services.xml.exists">
+      <or>
+        <not>
+          <equals arg1="${axis2.services.file}" arg2="no_file_found"/>
+        </not>
+        <not>
+          <equals arg1="${axis2.services.appserver.file}" arg2="no_file_found"/>
+        </not>
+      </or>
+    </condition>
+
+    <condition property="services.xml.to.copy" value="${axis2.services.file}">
+      <and>
+        <not>
+          <equals arg1="${axis2.services.file}" arg2="no_file_found"/>
+        </not>
+        <available file="${axis2.services.file}"/>
+      </and>
+    </condition>
+    <condition property="services.xml.to.copy" value="${axis2.services.appserver.file}">
+      <and>
+        <not>
+          <equals arg1="${axis2.services.appserver.file}" arg2="no_file_found"/>
+        </not>
+        <available file="${axis2.services.appserver.file}"/>
+      </and>
+    </condition>
+
+    <antcall target="copy.services.xml">
+      <param name="services.location" value="${dir.bld.svr.wsc2}/${service.name}"/>
+      <param name="services.file" value="${services.xml.to.copy}"/>
+    </antcall>
+
+    <!-- Allow for the XML document message receiver class: -->
+    <condition property="receiver.name.inout" value="CuramXmlDocMessageReceiver">
+      <equals arg1="${curam_ws_inbound.ws_is_xml_document}" arg2="true"/>
+    </condition>
+    <property name="receiver.name.inout" value="CuramMessageReceiver"/>
+
+    <antcall target="generate.services.xml">
+      <param name="useOriginalwsdl" value="${useOriginalwsdl}"/>
+      <param name="modifyUserWSDLPortAddress" value="${modifyUserWSDLPortAddress}"/>
+    </antcall>
+
+    <java
+      classname="curam.util.tools.wsconnector.CheckDefaultCredentials"
+      classpath="${jar.tools}:${jar.coreinf}:${jar.log4j.2.core}:${jar.log4j.2.api}:${jar.clover}:${jar.javatools}:${jar.j2ee}"
+      fork="${java.fork}"
+      failonerror="${java.failonerror}"
+      maxmemory="${java.maxmemory}"
+      taskname="checkDefaultCredentials"
+    >
+      <jvmarg line="${java.jvmargs}" />
+      <jvmarg value="-Xms${java.maxmemory}" />
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}" />
+      <arg line="${dir.bld.svr.wsc2}/${service.name}/services.xml"/>
+      <arg line="${service.name}"/>
+    </java>
+
+    <copy flatten="false" toDir="${dir.bld.svr.gen.int.ws_axis2}/WEB-INF/services/${service.name}/META-INF">
+        <fileset dir="${dir.bld.svr.wsc2}/${service.name}" includes="services.xml"/>
+    </copy>
+
+  </target>
+
+
+  <target name="copy.services.xml" if="services.xml.to.copy">
+    <echo>Copying existing services.xml file (${services.file}) to ${services.location}/services.xml.</echo>
+
+    <copy tofile="${services.location}/services.xml"
+      file="${services.file}"/>
+
+  </target>
+
+  <target name="generate.services.xml" unless="services.xml.exists">
+    <echo>Generating services.xml @ ${dir.bld.svr.wsc2}/${service.name} for ${service.name}</echo>
+
+    <property file="${app.prop.location}"/>
+
+    <condition property="ws_service_username" value="&lt;parameter name=&quot;jndiUser&quot;&gt;${curam_ws_inbound.ws_service_username}&lt;/parameter&gt;" else="">
+      <isset property="curam_ws_inbound.ws_service_username" />
+    </condition>
+    <condition property="ws_service_password" value="&lt;parameter name=&quot;jndiPassword&quot;&gt;${curam_ws_inbound.ws_service_password}&lt;/parameter&gt;" else="">
+      <isset property="curam_ws_inbound.ws_service_password" />
+    </condition>
+
+    <echo file="${dir.bld.svr.wsc2}/${service.name}/services.xml" append="false">&lt;serviceGroup&gt;
+  &lt;service name="${service.name}"&gt;
+    &lt;!-- Generated by app_webservices_axis2.xml --&gt;
+    &lt;description&gt;Axis2 web service descriptor&lt;/description&gt;
+
+    &lt;messageReceivers&gt;
+      &lt;messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-only" class="curam.util.connectors.axis2.CuramInOnlyMessageReceiver"/&gt;
+      &lt;messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"  class="curam.util.connectors.axis2.${receiver.name.inout}"/&gt;
+    &lt;/messageReceivers&gt;
+
+    &lt;parameter name="remoteInterfaceName"&gt;${curam_ws_inbound.classname}&lt;/parameter&gt;
+    &lt;parameter name="ServiceClass" locked="false"&gt;${curam_ws_inbound.classname}Bean&lt;/parameter&gt;
+    &lt;parameter name="homeInterfaceName"&gt;${curam_ws_inbound.classname}&lt;/parameter&gt;
+    &lt;parameter name="beanJndiName"&gt;curamejb/${service.name}Home&lt;/parameter&gt;
+
+    &lt;parameter name="curamWSClientMustAuthenticate"&gt;${curam_ws_inbound.ws_client_must_authenticate}&lt;/parameter&gt;
+    ${ws_service_username}
+    ${ws_service_password}
+
+    ${providerUrl}
+    ${jndiContextClass}
+
+    ${useOriginalwsdl}
+    ${modifyUserWSDLPortAddress}
+
+    &lt;!--
+    NOTE: For any In-Only services (i.e. returning void) you must explicitly code those operation names here as per:
+          http://issues.apache.org/jira/browse/AXIS2-4408
+          For example:
+            &lt;operation name="insert"&gt;
+              &lt;messageReceiver class="curam.util.connectors.axis2.CuramInOnlyMessageReceiver"/&gt;
+            &lt;/operation&gt;
+    --&gt;
+
+  &lt;/service&gt;
+&lt;/serviceGroup&gt;
+    </echo>
+
+  </target>
+
+
+  <!--  ********************  -->
+  <!--  ***   Copy WSDL  ***  -->
+  <!--  ********************  -->
+  <target name="copy.wsdl.to.build.location" if="wsdl.exists" unless="disable.wsdl.packaging">
+    <copy file="${axis2.wsdlfile}"
+      flatten="false"
+      toDir="${dir.bld.svr.wsc2}/${service.name}"/>
+  </target>
+
+  <target name="copy.wsdl.to.pack.location" unless="disable.wsdl.packaging">
+    <copy flatten="false" toDir="${dir.bld.svr.gen.int.ws_axis2}/WEB-INF/services/${service.name}/META-INF">
+        <fileset dir="${dir.bld.svr.wsc2}/${service.name}" includes="**/*.wsdl"/>
+    </copy>
+  </target>
+
+
+
+  <!--  ****************************  -->
+  <!--  ***   .aar file for WLS  ***  -->
+  <!--  ****************************  -->
+  <target name="replace.exploded.with.aar"  if="isWLS">
+
+    <property file="${app.prop.location}"/>
+    <property name="curam.server.host" value="localhost"/>
+    <property name="curam.server.port" value="7001"/>
+
+    <replace dir="${dir.bld.svr.gen.int.ws_axis2}"
+      includes="**/services.xml">
+      <replacefilter token="JNDI_USERNAME"             value="${curam.security.credentials.ws.username}"/>
+      <replacefilter token="JNDI_PASSWORD"             value="${curam.security.credentials.ws.password}"/>
+      <replacefilter token="CONTEXT_PROVIDER_URL"      value="t3://${curam.server.host}:${curam.server.port}"/>
+      <replacefilter token="FULL_CONTEXT_FACTORY_NAME" value="weblogic.jndi.WLInitialContextFactory"/>
+    </replace>
+
+    <jar destfile="${service.location}/${service.name}.aar"
+         basedir="${service.location}/${service.name}"
+         includes="**/*.*"/>
+    <delete dir="${service.location}/${service.name}"/>
+    <echo file="${service.location}/services.list"
+      append="true">${service.name}.aar
+    </echo>
+  </target>
+
+
+
+  <!--  **********************************  -->
+  <!--  ***  Include external content  ***  -->
+  <!--  **********************************  -->
+  <target name="axis2.copy.external.location" if="axis2.include.location">
+    <echo>Including the following location into the Axis2 war location before packing: ${axis2.include.location}"</echo>
+      <copy todir="${dir.bld.svr.gen.int.ws_axis2}"
+        flatten="false"
+        overwrite="${axis2.include.overwrite}"
+        verbose="true">
+        <fileset dir="${axis2.include.location}"
+          includes="**/*.*"/>
+      </copy>
+  </target>
+
+  <target name="axis2.copy.external.zip" if="axis2.include.zip">
+    <echo>Including the following zip into the Axis2 war location before packing: ${axis2.include.zip}"</echo>
+      <unjar dest="${dir.bld.svr.gen.int.ws_axis2}"
+          overwrite="${axis2.include.overwrite}"
+          src="${axis2.include.zip}"/>
+  </target>
+
+
+
+  <!--  ******************  -->
+  <!--  ***  PACK WAR  ***  -->
+  <!--  ******************  -->
+  <target name="pack.war2">
+
+    <echo message="org.apache.commons.logging.LogFactory=org.apache.commons.logging.impl.LogFactoryImpl"
+      file="${dir.bld.svr.gen.int.ws_axis2}/commons-logging.properties"/>
+      
+    <war destfile="${dir.bld.svr.gen.int}/webservices2.war"
+      webxml="${dir.bld.svr.gen.int.ws_axis2}/WEB-INF/web.xml">
+      <manifest>
+        <attribute name="Built-By" value="IBM Corporation"/>
+      </manifest>
+      <fileset dir="${dir.bld.svr.gen.int.ws_axis2}"
+          includes="**/*"
+          excludes="**/*web.xml
+                    **/*application.xml
+                    **/*application-j2ee-engine.xml
+                    lib/*
+                    sample/**
+                    source/**
+                    WEB-INF/classes/**"/>
+      <lib dir="${dir.bld.svr.gen.int.ws_axis2}/lib"/>
+    </war>
+
+  </target>
+  
+</project>

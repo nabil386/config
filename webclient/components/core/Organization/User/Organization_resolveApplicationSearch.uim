@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012-2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information").  You shall not      -->
+<!-- disclose such Confidential Information and shall use it only in        -->
+<!-- accordance with the terms of the license agreement you entered into    -->
+<!-- with Curam Software.                                                   -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp redirects the user to the correct application search page     -->
+<!-- depending on records found                                             -->
+<PAGE
+  PAGE_ID="Organization_resolveApplicationSearch"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String searchText = request.getParameter("searchText");
+      String recordCount = "";
+      String url = "";
+  
+      if (searchText == null) {
+       
+       core.ScriptletMissingParamException e = new
+           core.ScriptletMissingParamException(-20002, "searchText");
+       throw e;       
+
+      }
+      
+      curam.interfaces.OrganizationPkg.Organization_countApplicationReferenceRecord_TH
+        th = new curam.interfaces.OrganizationPkg.Organization_countApplicationReferenceRecord_TH();
+        
+      th.setFieldValue(th.key$reference_idx, searchText);
+
+      th.callServer();
+     
+      recordCount=th.getFieldValue(th.result$count_idx);
+
+      if (recordCount.equals("1")) { 
+      
+        curam.interfaces.OrganizationPkg.Organization_readApplicationSearchRecord_TH
+          th2 = new curam.interfaces.OrganizationPkg.Organization_readApplicationSearchRecord_TH();
+
+        th2.setFieldValue(th2.key$reference_idx, searchText);
+
+        th2.callServer();
+     
+        String objectType=th2.getFieldValue(th2.result$dtls$objectType_idx);
+        String objectSubtype=th2.getFieldValue(th2.result$dtls$objectSubtype_idx);
+        String objectID=th2.getFieldValue(th2.result$dtls$objectID_idx);
+
+        if (objectType.equals("SOT2000")) { 
+                
+          url = context + "Participant_resolveRoleHomePage.do?concernRoleID=" 
+            + curam.omega3.request.RequestUtils.escapeURL(objectID) + "&amp;participantType=" + curam.omega3.request.RequestUtils.escapeURL(objectSubtype);
+
+        } else if (objectType.equals("SOT2001")) { 
+      
+          url = context + "Case_resolveCaseHomePage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(objectID);
+
+        } else if (objectType.equals("SOT2002")) { 
+
+          url = context + "Incident_viewIncident1Page.do?incidentID=" + curam.omega3.request.RequestUtils.escapeURL(objectID);
+
+        } else if (objectType.equals("SOT2003")) { 
+          // BEGIN, CEF-7257, JAF
+          url = context + "Investigation_resolveHomePage.do?caseID=" + curam.omega3.request.RequestUtils.escapeURL(objectID);
+          // END, CEF-7257, JAF
+        } 
+      
+          
+      } else { 
+      
+        url = context + "Organization_applicationSearchPage.do?searchText=" 
+          + curam.omega3.request.RequestUtils.escapeURL(searchText);
+
+      } 
+         
+      url += "&amp;" + rh.getSystemParameters();
+
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+  </JSP_SCRIPTLET>
+</PAGE>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2004 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information"). You                 -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Page used to create a rules simulation.                                -->
+<PAGE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PAGE_ID="RulesEditor_createRulesSimulation" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE CLASS="RulesEditor" NAME="DISPLAY" OPERATION="getSimulationMetaData" />
+  <SERVER_INTERFACE CLASS="RulesEditor" NAME="ACTION" OPERATION="createRulesSimulation" PHASE="ACTION" />
+  <PAGE_PARAMETER NAME="ruleSetID" />
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="ruleSetID" />
+    <TARGET NAME="DISPLAY" PROPERTY="ruleSetID" />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="ruleSetID" />
+    <TARGET NAME="ACTION" PROPERTY="ruleSetID" />
+  </CONNECT>
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL IMAGE="SaveButton" TYPE="SUBMIT" LABEL="ActionControl.SaveButton.label" />
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.CancelButton.label" />
+  </ACTION_SET>
+  <CLUSTER LABEL_WIDTH="25" TITLE="Cluster.Title.SimulationName">
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="name" />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER SHOW_LABELS="false" TITLE="Cluster.Title.Simulation">
+    <WIDGET TYPE="RULES_SIMULATION_EDITOR">
+      <WIDGET_PARAMETER NAME="ADD_BUTTON_CAPTION">
+        <CONNECT>
+          <SOURCE NAME="TEXT" PROPERTY="Add.Button.Text" />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+      <WIDGET_PARAMETER NAME="META_DATA">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result" />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+      <WIDGET_PARAMETER NAME="VALUES">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="result" />
+        </CONNECT>
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="simulationData" />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+    </WIDGET>
+  </CLUSTER>
+</PAGE>
+

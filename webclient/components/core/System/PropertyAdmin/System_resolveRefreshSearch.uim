@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2013. All Rights Reserved.
+  
+  PID 5725-H26
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="System_resolveRefreshSearch"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+      java.util.Enumeration&lt;java.lang.String&gt; parameterNames = request.getParameterNames();
+      String formParams = "{";
+      while (parameterNames.hasMoreElements()) {
+        String paramName = parameterNames.nextElement();
+        
+        // At the moment, this resolve page only supports refreshing the search
+        // page where there's no more than three search input fields.
+        
+        // Ensure parameter string is escaped to prevent XSS attacks
+        if("firstFormInput".equalsIgnoreCase(paramName)) {
+          formParams += "'0':'" + curam.util.common.util.JavaScriptEscaper.escapeText(request.getParameter(paramName), true) +"'";
+          
+          if(parameterNames.hasMoreElements()) {
+            formParams += ",";
+          }
+        } else if ("secondFormInput".equalsIgnoreCase(paramName)) {
+          formParams += "'1':'" + curam.util.common.util.JavaScriptEscaper.escapeText(request.getParameter(paramName), true) +"'";
+          
+          if(parameterNames.hasMoreElements()) {
+            formParams += ",";
+          }
+        } else if ("thirdFormInput".equalsIgnoreCase(paramName)) {
+          formParams += "'2':'" + curam.util.common.util.JavaScriptEscaper.escapeText(request.getParameter(paramName), true) +"'";
+          
+          if(parameterNames.hasMoreElements()) {
+            formParams += ",";
+          }
+        } else {
+        
+          // Do nothing. No form parameter is passed down from previous page. 
+        }
+        
+      }
+      
+      if (formParams.lastIndexOf(",") == formParams.length()-1) {
+        formParams = formParams.substring(0, formParams.length()-1);
+      }
+      
+      formParams += "}";
+      
+      out.print("&lt;html&gt;&lt;head&gt;");
+      
+      out.println("&lt;script type='text/javascript' src='../CDEJ/jscript/dojotk/dojo/dojo.js'&gt;//script content&lt;/script&gt;");
+      out.println("&lt;script type='text/javascript'&gt;dojo.registerModulePath('curam', '../../curam/');dojo.registerModulePath('cm', '../../cm/');&lt;/script&gt;");
+      out.println("&lt;script src='../CDEJ/jscript/cdej.js' type='text/javascript'&gt;//Comment&lt;/script&gt;");    
+  
+      out.println("&lt;script type='text/javascript'&gt;");
+      out.println("dojo.require('curam.core-uim');");
+      out.println("dojo.require('curam.util.Dialog');");
+      out.println("curam.util.Dialog.init();");
+      out.println("dojo.ready(curam.util.Dialog.pageLoadFinished);");
+      out.println("dojo.ready(function() {");
+      out.println("var formParameters = " + formParams + ";");
+      out.println("curam.util.Dialog.closeAndSubmitParent(formParameters);});");
+      out.println("&lt;/script&gt;");
+     
+      out.println("&lt;/head&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;");
+    
+  </JSP_SCRIPTLET>
+</PAGE>

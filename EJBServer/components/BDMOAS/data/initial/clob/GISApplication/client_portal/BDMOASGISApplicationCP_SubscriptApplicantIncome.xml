@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<ieg-script xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ieg-schema.xsd"
+finish-page="CommonIntake_finishInternalIntakeScript" 
+	quit-page="CommonIntake_quitInternalIntakeScript"	
+	show-sections="true"
+	show-progress-bar="true"
+	validate-save-and-exit="false"
+	>
+		
+	<identifier id="BDMOASGISApplicationCP" scriptversionnumber="V1" type="Intake" />
+
+	<section>
+
+		<title id="Section.Title.ApplicantsIncome">
+			<![CDATA[Income]]>
+		</title>
+
+			<question-page 
+				id="ApplicantsIncome" 
+				entity="Person"
+				progress="0" 
+				show-back-button="true" 
+				show-exit-button="true"
+ 				criteria="isPrimaryParticipant==true"				
+				>
+				
+				<title id="QuestionPage.Title.ApplicantsIncome">
+					<![CDATA[Income]]>
+				</title>
+				
+				<description id="QuestionPage.Description.MandatoryFields">
+					<![CDATA[All fields marked with * are mandatory.]]>
+				</description>			
+
+				<validation expression="not(isNotNull(RetirementIncome.retirementDate)) or ValidateDateFirstOfMonth(RetirementIncome.retirementDate)">
+					<message id="Validation.Message.DateFirstOfMonth"><![CDATA[Selected Date must be 1st of the month.]]></message>
+				</validation>	
+
+				<validation expression="not(isNotNull(RetirementIncome.reductionDate)) or ValidateDateFirstOfMonth(RetirementIncome.reductionDate)">
+					<message id="Validation.Message.DateFirstOfMonth"><![CDATA[Selected Date must be 1st of the month.]]></message>
+				</validation>	
+	
+				<cluster entity="RetirementIncome">
+					<title id="Cluster.Title.RetirementIncomeDetails">
+						<![CDATA[Retirement Income details]]>
+					</title>
+					<description
+						id="Cluster.Title.RetirementIncomeDetails.Desc">
+							<![CDATA[The Supplement amount that you are entitled to is based upon your previous years income, or your expected income, depending on the payment period.]]>
+					</description>					
+					<question id="isRetirdOrRetirng2Yrs" mandatory="true">
+						<label id="Question.Label.DidRetireOrExpctedIn2Years">
+							<![CDATA[Did applicant retire from work in the last two years, or do they expect to retire in the next two years?]]>
+						</label>
+						<hint-text id="Question.Label.DidRetireOrExpctedIn2Years.Hint">
+							<![CDATA[If you are retired, an income estimate for this year may replace your net income from last year.]]>
+						</hint-text>							
+						<layout>
+							<width>50</width>							
+						</layout>						
+					</question>						
+				</cluster>	
+				
+				<condition expression="RetirementIncome.isRetirdOrRetirng2Yrs==&quot;YN1&quot; ">
+					<cluster entity="RetirementIncome">
+						<question id="retirementDate" mandatory="true" show-field-help="true">
+							<label id="Question.Label.RetirementDate">
+								<![CDATA[Retirement Date]]>
+							</label>
+							<hint-text id="Question.Label.RetirementDate.Hint">
+								<![CDATA[YYYY-MM-DD </br><p>Selected Date must be 1st of the month.</p>]]>
+							</hint-text>								
+							<layout>
+                    			<type>date-picker</type>							
+								<width>50</width>							
+							</layout>												
+						</question>		
+					</cluster>
+				</condition>
+
+				<cluster entity="RetirementIncome">
+					<question id="isPensionReduced2Yrs" mandatory="true">
+						<label id="Question.Label.DidPensionIncmRedcdOrExpectedIn2Yrs">
+							<![CDATA[Has the applicant's pension income been reduced in the last two years or do they expect it will be reduced in the next two years?]]>
+						</label>
+						<hint-text id="Question.Label.DidPensionIncmRedcdOrExpectedIn2Yrs.Hint">
+							<![CDATA[If yes, we will send you a Statement of Estimated Income form to complete.]]>
+						</hint-text>						
+						<layout>
+							<width>50</width>							
+						</layout>						
+					</question>						
+				</cluster>	
+				
+				<condition expression="RetirementIncome.isPensionReduced2Yrs==&quot;YN1&quot; ">
+					<cluster entity="RetirementIncome">
+						<question id="reductionDate" mandatory="true" show-field-help="true">
+							<label id="Question.Label.DateOfReduction">
+								<![CDATA[Date of reduction]]>
+							</label>
+							<hint-text id="Question.Label.DateOfReduction.Hint">
+								<![CDATA[YYYY-MM-DD </br><p>Selected Date must be 1st of the month.</p>]]>
+							</hint-text>					
+							<layout>
+                    			<type>date-picker</type>							
+								<width>50</width>							
+							</layout>													
+						</question>		
+					</cluster>
+				</condition>										
+
+				<cluster entity="Person">
+					<title id="Cluster.Title.ForeignIncomeDetails">
+						<![CDATA[Foreign Income details]]>
+					</title>
+					<description
+						id="Cluster.Title.ForeignIncomeDetails.Desc">
+							<![CDATA[Each year, you must report to Service Canada any income received from another country in Canadian funds. You must report the full amount of your foreign income even if it is not paid in Canada or if it is not taxable in Canada.]]>
+					</description>						
+					<question id="hasForeignIncome" mandatory="true">
+						<label id="Question.Label.DidReceiveForeignIncome">
+							<![CDATA[Does the applicant receive income from another country?]]>
+						</label>
+						<layout>
+							<width>60</width>							
+						</layout>						
+					</question>						
+				</cluster>	
+			</question-page>
+	</section>
+</ieg-script>

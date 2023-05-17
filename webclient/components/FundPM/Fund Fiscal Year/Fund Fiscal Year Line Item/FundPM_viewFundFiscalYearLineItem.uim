@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2009, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 															-->
+<!-- =========== 															-->
+<!-- This page allows the user to view fund fiscal year line item details.  -->
+<PAGE
+  PAGE_ID="FundPM_viewFundFiscalYearLineItem"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY3"
+        PROPERTY="fundName"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.StaticText"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY3"
+        PROPERTY="yearName"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainFundFiscalYear"
+    NAME="DISPLAY3"
+    OPERATION="readFundHomeForFiscalYear"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="fiscalYearFundID"
+    />
+    <TARGET
+      NAME="DISPLAY3"
+      PROPERTY="key$fundFiscalYearID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="MaintainFundFiscalYearLineItem"
+    NAME="DISPLAY"
+    OPERATION="viewLineItem"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainBudgetAdjustment"
+    NAME="DISPLAY1"
+    OPERATION="listBudgetAdjustment"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="fundFiscalYearLineItemID"/>
+  <PAGE_PARAMETER NAME="fundName"/>
+  <PAGE_PARAMETER NAME="fiscalYearName"/>
+  <PAGE_PARAMETER NAME="fiscalYearFundID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="fundFiscalYearLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$fundFclYrLineItemID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="fundFiscalYearLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="fundFclYrLineItemID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00207190, PS -->
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.FundFiscalYearLineItem"
+      STYLE="in-page-current-link"
+    >
+      <LINK PAGE_ID="FundPM_viewFundFiscalYearLineItem">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fundFiscalYearLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fundFiscalYearLineItemID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fundName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fundName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fiscalYearName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fiscalYearName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fiscalYearFundID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fiscalYearFundID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.BudgetAdjustments"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="FundPM_listBudgetAdjustments">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fundFiscalYearLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fundFiscalYearLineItemID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fundName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fundName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fiscalYearName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fiscalYearName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="fiscalYearFundID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="fiscalYearFundID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <!-- END, CR00207190 -->
+  <!-- BEGIN, CR00227014, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00227014 -->
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LineItemReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="lineItemRefNo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RemainingActualBalance">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="remainingActualBalance"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+
+
+    <!-- BEGIN, CR00426143, GK -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+      WIDTH="100"
+      WIDTH_UNITS="PERCENT"
+    >
+      <!-- END, CR00426143 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- List application case page for concernRole                    -->
+<PAGE PAGE_ID="CommonIntake_listApplicationFormByConcernRole" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd" 
+  HIDE_CONDITIONAL_LINKS="false">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title" />
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <SERVER_INTERFACE CLASS="BDMApplicationForm" NAME="DISPLAY" OPERATION="listApplicationFormsForConcernRole" PHASE="DISPLAY" />
+  <PAGE_PARAMETER NAME="concernRoleID" />
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="concernRoleID" />
+    <TARGET NAME="DISPLAY" PROPERTY="key$concernRoleID" />
+  </CONNECT>
+  
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cases" STYLE="in-page-link">
+      <LINK PAGE_ID="CommonIntake_listApplicationCaseByConcernRole" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="concernRoleID" />
+          <TARGET NAME="PAGE" PROPERTY="concernRoleID" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Referrals" STYLE="in-page-link">
+      <LINK PAGE_ID="CommonIntake_listReferralCaseByConcernRole" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="concernRoleID" />
+          <TARGET NAME="PAGE" PROPERTY="concernRoleID" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Forms" STYLE="in-page-current-link">
+      <LINK PAGE_ID="CommonIntake_listApplicationFormByConcernRole" SAVE_LINK="false">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="concernRoleID" />
+          <TARGET NAME="PAGE" PROPERTY="concernRoleID" />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  
+  <ACTION_SET BOTTOM="false">
+         <ACTION_CONTROL LABEL="ActionControl.Label.NewCase">
+         <CONDITION>
+         <IS_TRUE NAME="DISPLAY" PROPERTY="displayNewCaseLinkInd"/>
+         </CONDITION>
+            <LINK PAGE_ID="CommonIntake_createApplicationCaseForConcernRole" OPEN_MODAL="true" WINDOW_OPTIONS="width=925">
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="concernRoleID" />
+                    <TARGET NAME="PAGE" PROPERTY="concernRoleID" />
+                </CONNECT>
+            </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL LABEL="ActionControl.Label.NewReferral">
+        <CONDITION>
+        <IS_TRUE NAME="DISPLAY" PROPERTY="displayNewCaseLinkInd"/>
+        </CONDITION>
+            <LINK PAGE_ID="CommonIntake_createReferralApplicationCaseForConcernRole" OPEN_MODAL="true">
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="concernRoleID" />
+                    <TARGET NAME="PAGE" PROPERTY="concernRoleID" />
+                </CONNECT>
+            </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL LABEL="ActionControl.Label.NewApplicationForm">
+        <CONDITION>
+        <IS_TRUE NAME="DISPLAY" PROPERTY="displayNewLinkInd"/>
+        </CONDITION>
+            <LINK PAGE_ID="CommonIntake_createApplicationFormForConcernRole" OPEN_MODAL="true">
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="concernRoleID" />
+                    <TARGET NAME="PAGE" PROPERTY="concernRoleID" />
+                </CONNECT>
+               
+            </LINK>
+        </ACTION_CONTROL>
+    </ACTION_SET>
+  
+  <LIST PAGINATED="true">
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Resume">
+        <CONDITION>
+          <IS_TRUE NAME="DISPLAY" PROPERTY="resumeInd" />
+        </CONDITION>
+        <LINK PAGE_ID="CommonIntake_resumeApplicationForm" OPEN_MODAL="true" WINDOW_OPTIONS="width=925">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="applicationFormID" />
+            <TARGET NAME="PAGE" PROPERTY="applicationFormID" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Submit">
+        <CONDITION>
+          <IS_TRUE NAME="DISPLAY" PROPERTY="submitInd" />
+        </CONDITION>
+        <LINK URI_SOURCE_NAME="DISPLAY" URI_SOURCE_PROPERTY="submitURI" OPEN_MODAL="true"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <CONDITION>
+          <IS_TRUE NAME="DISPLAY" PROPERTY="deleteInd" />
+        </CONDITION>
+        <LINK PAGE_ID="CommonIntake_deleteApplicationForm" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="applicationFormID" />
+            <TARGET NAME="PAGE" PROPERTY="applicationFormID" />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="versionNo" />
+            <TARGET NAME="PAGE" PROPERTY="versionNo" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+      
+    <FIELD LABEL="Field.Label.Reference" WIDTH="19">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="applicationReference" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CaseType" WIDTH="27">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="intakeApplicationType" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Programs" WIDTH="24">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="programsList" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EnteredBy" WIDTH="16">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="enteredByName" />
+      </CONNECT>
+      <LINK OPEN_MODAL="true" PAGE_ID="Organization_viewUserDetails">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="enteredByUsername" />
+          <TARGET NAME="PAGE" PROPERTY="userName" />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status" WIDTH="14">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="status" />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

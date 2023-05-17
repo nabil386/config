@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view determination package details.       -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="DecisionAssistAdmin_viewDeterminationPackage"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <SERVER_INTERFACE
+    CLASS="DeterminationPackage"
+    NAME="MENUCONTEXT"
+    OPERATION="viewDeterminationPackageMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationPackageVersionID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="key$key$key$determinationPackageVersionID"
+    />
+  </CONNECT>
+  <PAGE_PARAMETER NAME="determinationPackageVersionID"/>
+  <PAGE_PARAMETER NAME="determinationName"/>
+  <PAGE_PARAMETER NAME="determinationConfigID"/>
+  <SERVER_INTERFACE
+    CLASS="DeterminationPackage"
+    NAME="VIEW_DETERMINATION_PACKAGE"
+    OPERATION="viewDeterminationPackageDetails"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationPackageVersionID"
+    />
+    <TARGET
+      NAME="VIEW_DETERMINATION_PACKAGE"
+      PROPERTY="key$key$key$determinationPackageVersionID"
+    />
+  </CONNECT>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="VIEW_DETERMINATION_PACKAGE"
+        PROPERTY="thisVersion$name"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText2"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="VIEW_DETERMINATION_PACKAGE"
+        PROPERTY="thisVersion$determinationPkgVersionNumber"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00214609, PS -->
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Details"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="DecisionAssistAdmin_viewDeterminationPackage">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.DecisionMatrices"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="DecisionAssistAdmin_listDecisionMatricesForDP">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.VersionHistory"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="DecisionAssistAdmin_listPackageVersionsHistory">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <!-- END, CR00214609 -->
+
+
+  <!-- BEGIN, CR00246866, AK -->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+    <!-- BEGIN, CR00226313, PS -->
+    <FIELD LABEL="Field.Label.Product">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_PACKAGE"
+          PROPERTY="thisVersion$productID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MinimumAge">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_PACKAGE"
+          PROPERTY="thisVersion$minAge"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.InitialCreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_PACKAGE"
+          PROPERTY="result$initialVersion$dateCreated"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.InitialReleasedOn">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_PACKAGE"
+          PROPERTY="result$initialVersion$fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Gender">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_PACKAGE"
+          PROPERTY="thisVersion$gender"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MaximumAge">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_PACKAGE"
+          PROPERTY="thisVersion$maxAge"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.InitialCreatedBy">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_PACKAGE"
+          PROPERTY="result$initialVersion$createdUserFullName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00184681, AK -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+      >
+        <!-- END, CR00184681 -->
+        <CONNECT>
+          <SOURCE
+            NAME="VIEW_DETERMINATION_PACKAGE"
+            PROPERTY="result$initialVersion$createdBy"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <!-- END, CR00226313 -->
+  </CLUSTER>
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.VersionDetails"
+  >
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_PACKAGE"
+          PROPERTY="thisVersion$dateCreated"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CreatedBy">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_PACKAGE"
+          PROPERTY="result$thisVersion$createdUserFullName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00184681, AK -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+      >
+        <!-- END, CR00184681 -->
+        <CONNECT>
+          <SOURCE
+            NAME="VIEW_DETERMINATION_PACKAGE"
+            PROPERTY="thisVersion$createdBy"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+  </CLUSTER>
+  <!-- BEGIN, CR00237410, AK -->
+  <LIST TITLE="Cluster.Title.Questionnaires">
+    <!-- BEGIN, CR00213213, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00213213 -->
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.NewPresentation"
+        TYPE="ACTION"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="VIEW_DETERMINATION_PACKAGE"
+            PROPERTY="result$thisVersion$inEditStatusInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DecisionAssistAdmin_createPresentationData"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="VIEW_DETERMINATION_PACKAGE"
+              PROPERTY="result$questionnaires$dtls$dtls$dpQuestionnaireLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="dpQuestionnaireLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="determinationPackageVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="determinationPackageVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Remove"
+        TYPE="ACTION"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="VIEW_DETERMINATION_PACKAGE"
+            PROPERTY="result$thisVersion$inEditStatusInd"
+          />
+        </CONDITION>
+        <!-- BEGIN, CR00198884, SS -->
+        <!-- BEGIN, CR00198297, SS -->
+        <!-- BEGIN, CR00198144, SS -->
+        <!-- BEGIN, CR00187459, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="DecisionAssistAdmin_removeQuestionnaireFromPackage"
+          WINDOW_OPTIONS="width=440"
+        >
+          <!-- END, CR00187459 -->
+          <!-- END, CR00198144 -->
+          <!-- END, CR00198297 -->
+          <!-- END, CR00198884 -->
+          <CONNECT>
+            <SOURCE
+              NAME="VIEW_DETERMINATION_PACKAGE"
+              PROPERTY="result$questionnaires$dtls$dtls$questionnaireVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionnaireVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="VIEW_DETERMINATION_PACKAGE"
+              PROPERTY="result$thisVersion$determinationPackageVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="determinationPackageVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="VIEW_DETERMINATION_PACKAGE"
+              PROPERTY="result$dCdtls$dtls$dtls$determinationConfigID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="determinationConfigID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="VIEW_DETERMINATION_PACKAGE"
+              PROPERTY="result$thisVersion$name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="determinationName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00213213, PS -->
+    </ACTION_SET>
+    <!-- END, CR00213213 -->
+    <!-- BEGIN, CR00215172, PS -->
+    <FIELD
+      LABEL="Field.Label.QuestionnaireName"
+      WIDTH="80"
+    >
+      <!-- END, CR00215172 -->
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_PACKAGE"
+          PROPERTY="result$questionnaires$dtls$dtls$name"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="DecisionAssistAdmin_viewQuestionnaire">
+        <CONNECT>
+          <SOURCE
+            NAME="VIEW_DETERMINATION_PACKAGE"
+            PROPERTY="result$questionnaires$dtls$dtls$questionnaireVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="questionnaireVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="VIEW_DETERMINATION_PACKAGE"
+            PROPERTY="result$questionnaires$dtls$dtls$questionnaireID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="questionnaireID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.QuestionnaireVersion"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_PACKAGE"
+          PROPERTY="version"
+        />
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="DecisionAssistAdmin_listQuestionnairePresentationDetails">
+        <CONNECT>
+          <SOURCE
+            NAME="VIEW_DETERMINATION_PACKAGE"
+            PROPERTY="result$questionnaires$dtls$dtls$dpQuestionnaireLinkID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="dpQuestionnaireLinkID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationPackageVersionID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00417165, GK -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00417165 -->
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DETERMINATION_PACKAGE"
+          PROPERTY="thisVersion$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00237410 -->
+  <!-- END, CR00246866 -->
+</PAGE>

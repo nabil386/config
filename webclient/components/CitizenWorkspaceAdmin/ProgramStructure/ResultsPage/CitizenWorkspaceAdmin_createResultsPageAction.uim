@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright (c) 2010-2012 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="CitizenWorkspaceAdmin_createResultsPageAction" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+  WINDOW_OPTIONS="width=800,height=310">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <SERVER_INTERFACE PHASE="DISPLAY" CLASS="ResultsPageActionAdmin" NAME="DISPLAY" OPERATION="getRPAStatesAndParameterReferences"/>
+  <SERVER_INTERFACE PHASE="ACTION" CLASS="ResultsPageActionAdmin" NAME="CREATE" OPERATION="createResultsPageAction"/>
+
+  <CLUSTER LABEL_WIDTH="50" NUM_COLS="1">
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <TARGET NAME="CREATE" PROPERTY="name"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.State" USE_BLANK="true">
+      <CONNECT>
+        <INITIAL NAME="DISPLAY" PROPERTY="stateList$state" HIDDEN_PROPERTY="stateList$state"/>
+      </CONNECT>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$dtls$state"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="CREATE" PROPERTY="state"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Type">
+      <CONNECT>
+        <TARGET NAME="CREATE" PROPERTY="type"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Uri">
+      <CONNECT>
+        <TARGET NAME="CREATE" PROPERTY="uri"/>
+      </CONNECT>
+    </FIELD> 
+	  <FIELD LABEL="Field.Label.ParameterReference" USE_BLANK="true">
+	    <CONNECT>
+        <INITIAL NAME="DISPLAY" PROPERTY="parameterReferenceName" HIDDEN_PROPERTY="parameterReferenceList$parameterReference"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="CREATE" PROPERTY="parameterReference"/>
+      </CONNECT>
+    </FIELD>
+ </CLUSTER>
+
+  <CLUSTER TITLE="Field.Label.Description" SHOW_LABELS="false">
+    <FIELD HEIGHT="9">
+      <CONNECT>
+        <TARGET NAME="CREATE" PROPERTY="description"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+  <ACTION_SET >
+    <ACTION_CONTROL IMAGE="SaveButton" LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+    <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+</PAGE>

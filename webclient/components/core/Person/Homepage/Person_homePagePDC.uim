@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="Person_homePagePDC"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYINFOMESSAGE"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <SHORTCUT_TITLE ICON="person.icon">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="description"
+      />
+    </CONNECT>
+  </SHORTCUT_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="PDCPerson"
+    NAME="DISPLAY"
+    OPERATION="readHomePageDetailsShowTasks"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Person"
+    NAME="DISPLAYINFOMESSAGE"
+    OPERATION="readInformationalMessage"
+    PHASE="DISPLAY"
+  />
+
+
+  <SCRIPT
+    ACTION="replaceDownloadLink()"
+    EVENT="ONLOAD"
+    SCRIPT_FILE="PersonPhoto.js"
+  />
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL
+      IMAGE="AddPictureButton"
+      LABEL="ActionControl.Label.AddPicture"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="concernRoleImagesEnabledAndImageNotExistsInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="TRUE"
+        PAGE_ID="Person_addImage"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="RemovePictureButton"
+      LABEL="ActionControl.Label.RemovePicture"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="concernRoleImagesEnabledAndImageExistsInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="TRUE"
+        PAGE_ID="Person_removeImage"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleImageID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleImageID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="evidenceType"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAYINFOMESSAGE"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+  <!-- END, CR00114322, PA -->
+
+
+  <!-- BEGIN, CR00078989, AL -->
+  <SERVER_INTERFACE
+    CLASS="VerificationApplication"
+    NAME="DISPLAY1"
+    OPERATION="listPersonVerificationDetails"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="participantID"
+    />
+  </CONNECT>
+  <!-- END, CR00078989 -->
+
+
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+    TITLE="Cluster.Label.Home"
+  >
+    <FIELD LABEL="Field.Label.Sensitivity">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sensitivity"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PrefPublicOffice">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="preferredPublicOfficeName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.SpecialInterest">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="specialInterest"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.RegistrationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="registrationDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+    TITLE="Cluster.Label.ReceiveDeductionPaymentDetails"
+  >
+    <FIELD LABEL="Field.Label.Currency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="currencyType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PaymentFrequency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="paymentFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.MethodOfPayment">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="methodOfPmtCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.NextPaymentDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="nextPaymentDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00266778, MC -->
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+    TITLE="Cluster.Label.CurrentActivities"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="showParticipantTasksInd"
+      />
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.NumOpenTasks">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="numberOfOpenTickets"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Person_listTask">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+  </CLUSTER>
+  <!-- BEGIN, CR00050298, MR -->
+  <!-- BEGIN, HARP 64908, SP -->
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <FIELD LABEL="Field.Label.Comments">
+      <!-- END, HARP 64908 -->
+      <!-- END, CR00050298 -->
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="remarks"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <INCLUDE FILE_NAME="Participant_AppsAndCasesListsView.vim"/>
+
+
+  <INCLUDE FILE_NAME="VerificationApplication_listParticipantEvidenceVerificationRequirements.vim"/>
+
+
+</PAGE>

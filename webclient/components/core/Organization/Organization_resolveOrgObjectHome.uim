@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2008, 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright  2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Directs to the appropiate Org object home Page.
+     - Redirection is done based on the Object Type
+     - Eg: Org unit, Position, Job home page.
+ -->
+<PAGE
+  PAGE_ID="Organization_resolveOrgObjectHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <JSP_SCRIPTLET>
+   
+     
+      // Get the context details
+      String context = request.getContextPath() + "/";
+      curam.omega3.request.RequestHandler rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+     
+      String subscriberID = request.getParameter("subscriberID");
+      String organisationStructureID = request.getParameter("organisationStructureID");
+      String organisationUnitID = request.getParameter("organisationUnitID");
+      String objectType = request.getParameter("objectType");
+      
+      String url = null;
+      
+      // Link Org Unit Home Page
+      if( objectType.equals("ORGANISATION_UNIT") ) {
+      
+      // BEGIN, CR00372377, AC
+        // Build the url        
+        url = context + "Organization_orgUnitHomePage.do?"
+            + "organisationUnitID=" + curam.omega3.request.RequestUtils.escapeURL(organisationUnitID)
+            + "&amp;organisationStructureID=" +curam.omega3.request.RequestUtils.escapeURL( organisationStructureID);
+      } 
+      // Link Position Home Page
+      else if( objectType.equals("POSITION") ) {
+        // Build the url        
+        url = context + "Organization_listUsersForPositionPage.do?"
+            + "positionID=" + curam.omega3.request.RequestUtils.escapeURL(subscriberID)
+            + "&amp;organisationUnitID=" + curam.omega3.request.RequestUtils.escapeURL(organisationUnitID)
+            + "&amp;organisationStructureID=" + curam.omega3.request.RequestUtils.escapeURL(organisationStructureID);
+      }
+      // Link to Job Home Page
+      else if( objectType.equals("JOB") ) {
+      // Build the url        
+        url = context + "Organization_viewJobPage.do?"
+            + "jobID=" + curam.omega3.request.RequestUtils.escapeURL(subscriberID);
+            // END, CR00372377
+      }
+      
+      String systemParams = rh.getSystemParameters(); 
+      String preventCache =systemParams.indexOf("o3pc=") &lt; 0 ? "&amp;o3pc=" + (new java.util.Date()).getTime() : "";
+      url += "&amp;" + rh.getSystemParameters() + preventCache;
+   
+      // redirect to the task management page.  
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+    
+ </JSP_SCRIPTLET>
+
+
+</PAGE>

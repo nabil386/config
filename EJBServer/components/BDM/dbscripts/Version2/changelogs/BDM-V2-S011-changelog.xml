@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>	
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+		http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    
+ <!-- NOTE: Always add new changesets for every pull request. 
+      DO NOT modify existing changesets or SQLs.
+      Group related SQLs in a changeset.  
+      ID's must be unique and follow the format - ComponentName+Release+Sprint+UniqueID
+      Author must be specified - firstname initial.lastname-->
+      
+      
+      <changeSet  id="BDM_V2_S011_110162_01"  author="Nadira.banu">
+        <sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+ 		INSERT INTO CodeTableHeader (TableName, TimeEntered, DefaultCode, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceStatusCode', SYSDATE, '', SYSDATE, 1);
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceStatusCode', 'BDMISC8000', 'ACTIVE', '', '', '1', 0, 'en', SYSDATE, 1);
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceStatusCode', 'BDMISC8001', 'PROCESSING', '', '', '1', 0, 'en', SYSDATE, 1);
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceStatusCode', 'BDMISC8002', 'PROCESSED', '', '', '1', 0, 'en', SYSDATE, 1);
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMInterfaceStatusCode', 'BDMISC8003', 'FAILED', '', '', '1', 0, 'en', SYSDATE, 1);
+ 		
+            
+	</sql>
+	
+    </changeSet>
+ 
+    <changeSet  id="BDM_V2_S011_52914_01"  author="Kranthi.Gatta">
+        <sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+        
+            INSERT INTO CodeTableHeader (TableName, TimeEntered, DefaultCode, LASTWRITTEN, VERSIONNO) VALUES ('BDMRecipientContactType',SYSTIMESTAMP, '',SYSTIMESTAMP, 1);
+			INSERT INTO CTDISPLAYNAME (TableName, LOCALEIdentifier,TEXT,LASTWRITTEN ) VALUES ( 'BDMRecipientContactType','en','BDMRecipientContactType',SYSTIMESTAMP);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMRecipientContactType', 'BRCT8000', 'Client', '', '', '0', 0, 'en',SYSTIMESTAMP, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMRecipientContactType', 'BRCT8001', 'Contact', '', '', '0', 0, 'en',SYSTIMESTAMP, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMRecipientContactType', 'BRCT8002', 'Individual', '', '', '0', 0, 'en',SYSTIMESTAMP, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMRecipientContactType', 'BRCT8003', 'Organization', '', '', '0', 0, 'en',SYSTIMESTAMP, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMRecipientContactType', 'BRCT8004', 'Patronato', '', '', '0', 0, 'en',SYSTIMESTAMP, 1);
+			
+			ALTER TABLE BDMCONCERNROLECOMMUNICATION ADD torecipientcontacttype VARCHAR(10);
+			ALTER TABLE BDMCONCERNROLECOMMUNICATION ADD ccrecipientcontacttype VARCHAR(10);
+            
+	</sql>
+	
+    </changeSet>
+    
+
+    <changeSet  id="BDM_V2_S011_107574_01"  author="Jaya.Bharathi">
+        <sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+        
+          INSERT INTO CodeTableHeader (TableName, TimeEntered, DefaultCode, LASTWRITTEN, VERSIONNO) VALUES ('BDMAuditAPIType', SYSTIMESTAMP, '', SYSTIMESTAMP, 1);
+          INSERT INTO CTDISPLAYNAME (TableName, LOCALEIdentifier,TEXT,LASTWRITTEN ) VALUES ( 'BDMAuditAPIType','en','Audit API Type - Inbound/Outbound', SYSTIMESTAMP);
+          INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMAuditAPIType', 'INBOUND', 'Inbound', '', '', '1', 0, 'en', SYSTIMESTAMP, 1);
+          INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMAuditAPIType', 'OUTBOUND', 'Outbound', '', '', '1', 0, 'en', SYSTIMESTAMP, 1);
+
+CREATE TABLE BDMREQUESTRESPONSE(
+AUDITID NUMBER(19,0) not null, 
+METHODNAME VARCHAR(2000), 
+RELATEDID VARCHAR(2000), 
+STATUSCODE VARCHAR(2000), 
+USERNAME VARCHAR(64), 
+CORRELATIONID VARCHAR(100), 
+APITYPE VARCHAR(10), 
+SOURCE VARCHAR(2000), 
+RESPONSEDETAILS CLOB, 
+REQUESTDETAILS CLOB, 
+REQUESTTIME DATE, 
+RESPONSETIME DATE
+);
+
+ALTER TABLE BDMREQUESTRESPONSE ADD CONSTRAINT BDMRequestResponse PRIMARY KEY(AUDITID); 
+            
+	</sql>
+	
+    </changeSet>
+    
+
+      <!--START TASK, 103241-->
+ <changeSet  id="BDM_V2_S011_103241_03"  author="Gopinath.Perumal">  
+        <sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+        
+<!--Remove from V1 to V2 Merge
+		DROP TABLE BDMOASCORRESPONDENCESTAGINGJOB;
+		DROP TABLE BDMOASCORRESPONDENCESTAGING;
+-->
+
+		CREATE TABLE BDMCORRESPONDENCESTAGING(
+		CORRESPONDENCESTAGINGID NUMBER(19,0) not null, 
+		CASEID NUMBER(19,0), 
+		CLIENTCONCERNROLEID NUMBER(19,0), 
+		COUNTRYCODE VARCHAR(10), 
+		FREQUENCY VARCHAR(10), 
+		PRINTEDDATE DATE, 
+		TEMPLATENAME VARCHAR(2000), 
+		TRIGGERDATE DATE, 
+		PAYLOAD CLOB, 
+		LOCALEIDENTIFIER VARCHAR(10), 
+		STATUS VARCHAR(10), 
+		DATEFORSENDING DATE, 
+		INPUTDATA CLOB, 
+		RECIPIENTCONCERNROLEID NUMBER(19,0), 
+		VALIDATIONMESSAGES CLOB, 
+		JOBID VARCHAR(2000), 
+		COMMUNICATIONID NUMBER(19,0)
+		);
+
+
+
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMCorresJobStatusCode', 'BDMCJS8007', 'Reprocess', '', '', '1', 0, 'en', SYSTIMESTAMP, 1);
+
+
+		UPDATE FUNCTIONIDENTIFIER SET FIDNAME = 'BDMAdhocGenerateCorrespondenceBatch.process', DESCRIPTION = 'curam.ca.gc.bdm.batch.correspondenceframework.generatecorrespondence.BDMAdhocGenerateCorrespondenceBatch.process' where FIDNAME = 'BDMOASAdhocGenerateCorrespondenceBatch.process';
+		UPDATE FUNCTIONIDENTIFIER SET FIDNAME = 'BDMGenerateCorrespondenceBatch.process', DESCRIPTION = 'curam.ca.gc.bdm.batch.correspondenceframework.generatecorrespondence.BDMGenerateCorrespondenceBatch.process' where FIDNAME = 'BDMOASGenerateCorrespondenceBatch.process';
+
+		DELETE FROM SECURITYGROUPSID where SIDNAME = 'BDMOASAdhocGenerateCorrespondenceBatch.process';
+		DELETE FROM SECURITYGROUPSID where SIDNAME = 'BDMOASGenerateCorrespondenceBatch.process';
+
+		UPDATE SECURITYIDENTIFIER SET SIDNAME = 'BDMAdhocGenerateCorrespondenceBatch.process' where SIDNAME = 'BDMOASAdhocGenerateCorrespondenceBatch.process';
+		UPDATE SECURITYIDENTIFIER SET SIDNAME = 'BDMGenerateCorrespondenceBatch.process' where SIDNAME = 'BDMOASGenerateCorrespondenceBatch.process';
+
+		UPDATE SECURITYFIDSID SET SIDNAME = 'BDMAdhocGenerateCorrespondenceBatch.process', FIDNAME = 'BDMAdhocGenerateCorrespondenceBatch.process' WHERE SIDNAME = 'BDMOASAdhocGenerateCorrespondenceBatch.process' AND FIDNAME = 'BDMOASAdhocGenerateCorrespondenceBatch.process';
+		UPDATE SECURITYFIDSID SET SIDNAME = 'BDMGenerateCorrespondenceBatch.process', FIDNAME = 'BDMGenerateCorrespondenceBatch.process' WHERE SIDNAME = 'BDMOASGenerateCorrespondenceBatch.process' AND FIDNAME = 'BDMOASGenerateCorrespondenceBatch.process';
+
+		Insert into SECURITYGROUPSID (GROUPNAME,SIDNAME,LASTWRITTEN) values ('SUPERGROUP','BDMAdhocGenerateCorrespondenceBatch.process',null);
+		Insert into SECURITYGROUPSID (GROUPNAME,SIDNAME,LASTWRITTEN) values ('SUPERGROUP','BDMGenerateCorrespondenceBatch.process',null);
+
+		DELETE FROM BATCHPARAMDESC  where processdefname = 'BDMOASAdhocGenerateCorrespondenceBatch';
+		DELETE FROM BATCHPARAMDESC  where processdefname = 'BDMOASGenerateCorrespondenceBatch';
+
+		DELETE FROM BATCHPARAMDEF  where processdefname = 'BDMOASAdhocGenerateCorrespondenceBatch';
+		DELETE FROM BATCHPARAMDEF  where processdefname = 'BDMOASGenerateCorrespondenceBatch';
+
+		DELETE FROM BATCHPROCDESC  where processdefname = 'BDMOASAdhocGenerateCorrespondenceBatch';
+		DELETE FROM BATCHPROCDESC  where processdefname = 'BDMOASGenerateCorrespondenceBatch';
+
+		DELETE FROM BATCHPROCDEF  where processdefname = 'BDMOASAdhocGenerateCorrespondenceBatch';
+		DELETE FROM BATCHPROCDEF  where processdefname = 'BDMOASGenerateCorrespondenceBatch';
+
+		INSERT INTO BatchProcDef (ProcessDefName, AppName, ClassName, OpName) values ('BDMAdhocGenerateCorrespondenceBatch', 'curam', 'BDMAdhocGenerateCorrespondenceBatch', 'process');
+		Insert into BATCHPROCDESC (PROCESSDEFNAME,PROCESSLONGNAME,DESCRIPTION,BATCHTYPE,VERSIONNO,LASTWRITTEN) values ('BDMAdhocGenerateCorrespondenceBatch','BDMAdhocGenerateCorrespondenceBatch','BDMAdhocGenerateCorrespondenceBatch',null,1,null);
+
+		INSERT INTO BatchParamDef (ProcessDefName, ParamName, ParamType) values ('BDMAdhocGenerateCorrespondenceBatch', 'instanceID', 'BATCH_PROCESS_INSTANCE_ID');
+		INSERT INTO BatchParamDef (ProcessDefName, ParamName, ParamType) values ('BDMAdhocGenerateCorrespondenceBatch', 'processingDate', 'CURAM_DATE');
+		INSERT INTO BatchParamDef (ProcessDefName, ParamName, ParamType) values ('BDMAdhocGenerateCorrespondenceBatch', 'inputFileNameWithPath', 'BDM_STRING');
+		INSERT INTO BatchParamDef (ProcessDefName, ParamName, ParamType) values ('BDMAdhocGenerateCorrespondenceBatch', 'templateName', 'BDM_STRING');
+		INSERT INTO BatchParamDef (ProcessDefName, ParamName, ParamType) values ('BDMAdhocGenerateCorrespondenceBatch', 'frequency', 'BDM_STRING');
+
+		Insert into BATCHPARAMDESC (PARAMNAME,PROCESSDEFNAME,DESCRIPTION,DEFAULTVALUE,VERSIONNO,LASTWRITTEN) values ('instanceID','BDMAdhocGenerateCorrespondenceBatch','BATCH_PROCESS_INSTANCE_ID',null,1,null);
+		Insert into BATCHPARAMDESC (PARAMNAME,PROCESSDEFNAME,DESCRIPTION,DEFAULTVALUE,VERSIONNO,LASTWRITTEN) values ('processingDate','BDMAdhocGenerateCorrespondenceBatch','CURAM_DATE',null,1,null);
+		Insert into BATCHPARAMDESC (PARAMNAME,PROCESSDEFNAME,DESCRIPTION,DEFAULTVALUE,VERSIONNO,LASTWRITTEN) values ('inputFileNameWithPath','BDMAdhocGenerateCorrespondenceBatch','BDM_STRING',null,1,null);
+		Insert into BATCHPARAMDESC (PARAMNAME,PROCESSDEFNAME,DESCRIPTION,DEFAULTVALUE,VERSIONNO,LASTWRITTEN) values ('templateName','BDMAdhocGenerateCorrespondenceBatch','BDM_STRING',null,1,null);
+		Insert into BATCHPARAMDESC (PARAMNAME,PROCESSDEFNAME,DESCRIPTION,DEFAULTVALUE,VERSIONNO,LASTWRITTEN) values ('frequency','BDMAdhocGenerateCorrespondenceBatch','BDM_STRING',null,1,null);
+
+		INSERT INTO BatchProcDef (ProcessDefName, AppName, ClassName, OpName) values ('BDMGenerateCorrespondenceBatch', 'curam', 'BDMGenerateCorrespondenceBatch', 'process');
+		Insert into BATCHPROCDESC (PROCESSDEFNAME,PROCESSLONGNAME,DESCRIPTION,BATCHTYPE,VERSIONNO,LASTWRITTEN) values ('BDMGenerateCorrespondenceBatch','BDMGenerateCorrespondenceBatch','BDMGenerateCorrespondenceBatch',null,1,null);
+
+		INSERT INTO BatchParamDef (ProcessDefName, ParamName, ParamType) values ('BDMGenerateCorrespondenceBatch', 'instanceID', 'BATCH_PROCESS_INSTANCE_ID');
+		INSERT INTO BatchParamDef (ProcessDefName, ParamName, ParamType) values ('BDMGenerateCorrespondenceBatch', 'processingDate', 'CURAM_DATE');
+		INSERT INTO BatchParamDef (ProcessDefName, ParamName, ParamType) values ('BDMGenerateCorrespondenceBatch', 'status', 'BDM_STRING');
+		INSERT INTO BatchParamDef (ProcessDefName, ParamName, ParamType) values ('BDMGenerateCorrespondenceBatch', 'frequency', 'BDM_STRING');
+		INSERT INTO BatchParamDef (ProcessDefName, ParamName, ParamType) values ('BDMGenerateCorrespondenceBatch', 'templateName', 'BDM_STRING');
+		INSERT INTO BatchParamDef (ProcessDefName, ParamName, ParamType) values ('BDMGenerateCorrespondenceBatch', 'jobID', 'BDM_STRING');
+		INSERT INTO BatchParamDef (ProcessDefName, ParamName, ParamType) values ('BDMGenerateCorrespondenceBatch', 'outputFileNameWithPath', 'BDM_STRING');
+
+
+		Insert into BATCHPARAMDESC (PARAMNAME,PROCESSDEFNAME,DESCRIPTION,DEFAULTVALUE,VERSIONNO,LASTWRITTEN) values ('instanceID','BDMGenerateCorrespondenceBatch','BATCH_PROCESS_INSTANCE_ID',null,1,null);
+		Insert into BATCHPARAMDESC (PARAMNAME,PROCESSDEFNAME,DESCRIPTION,DEFAULTVALUE,VERSIONNO,LASTWRITTEN) values ('processingDate','BDMGenerateCorrespondenceBatch','CURAM_DATE',null,1,null);
+		Insert into BATCHPARAMDESC (PARAMNAME,PROCESSDEFNAME,DESCRIPTION,DEFAULTVALUE,VERSIONNO,LASTWRITTEN) values ('status','BDMGenerateCorrespondenceBatch','BDM_STRING',null,1,null);
+		Insert into BATCHPARAMDESC (PARAMNAME,PROCESSDEFNAME,DESCRIPTION,DEFAULTVALUE,VERSIONNO,LASTWRITTEN) values ('frequency','BDMGenerateCorrespondenceBatch','BDM_STRING',null,1,null);
+		Insert into BATCHPARAMDESC (PARAMNAME,PROCESSDEFNAME,DESCRIPTION,DEFAULTVALUE,VERSIONNO,LASTWRITTEN) values ('templateName','BDMGenerateCorrespondenceBatch','BDM_STRING',null,1,null);
+		Insert into BATCHPARAMDESC (PARAMNAME,PROCESSDEFNAME,DESCRIPTION,DEFAULTVALUE,VERSIONNO,LASTWRITTEN) values ('jobID','BDMGenerateCorrespondenceBatch','BDM_STRING',null,1,null);
+		Insert into BATCHPARAMDESC (PARAMNAME,PROCESSDEFNAME,DESCRIPTION,DEFAULTVALUE,VERSIONNO,LASTWRITTEN) values ('outputFileNameWithPath','BDMGenerateCorrespondenceBatch','BDM_STRING',null,1,null);
+
+        
+        
+        </sql>
+      </changeSet>
+ <!--END TASK, 103241-->
+
+ 
+	
+
+	<changeSet  id="BDM_V2_S011_64465_01"  author="kumar.dhananjay">
+        <sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+        
+            DELETE FROM CODETABLEITEM WHERE  TABLENAME = 'BDMSampleIneligibleReason';
+			DELETE FROM CTDISPLAYNAME WHERE  TABLENAME = 'BDMSampleIneligibleReason';
+			DELETE FROM CODETABLEHEADER WHERE  TABLENAME = 'BDMSampleIneligibleReason';
+            
+	</sql>
+	
+    </changeSet>
+    <changeSet  id="BDM_V2_S011_114116_01"  author="Kranthi.Gatta">
+        <sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+        
+            INSERT INTO codetableitem (
+		    tablename,
+		    code,
+		    description,
+		    annotation,
+		    isenabled,
+		    sortorder,
+		    localeidentifier,
+		    parentcode,
+		    comments,
+		    versionno,
+		    lastwritten
+		) VALUES (
+		    'CommunicationType',
+		    'CT8018',
+		    'Migrated Data',
+		    NULL,
+		    '0',
+		    0,
+		    'en',
+		    NULL,
+		    NULL,
+		    1,
+		    SYSTIMESTAMP
+		);
+            
+	</sql>
+	
+    </changeSet>
+	
+	<changeSet id="BDM_V2_S011_113265_01"  author="abid.khan">
+        <sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">       		
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('EvidenceChangeReason', 'BDMECR8004', 'Reported by Client - Call Center', '', '', '1', 3, 'en',SYSTIMESTAMP, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('EvidenceChangeReason', 'BDMECR8004', 'Reported by Client - Call Center_fr', '', '', '1', 3, 'fr',SYSTIMESTAMP, 1);
+		</sql>
+    </changeSet>
+      <!--START TASK, 112189-->
+	<changeSet id="BDM_V2_S011_112189" author="gurpreet.kaur">
+		<sql dbms="oracle" splitStatements="true" stripComments="true">
+
+			INSERT INTO CodeTableHeader (TableName, TimeEntered, DefaultCode, LASTWRITTEN, VERSIONNO) VALUES ('BDMOBCreateReason',SYSTIMESTAMP, '',SYSTIMESTAMP, 1);
+			INSERT INTO CTDISPLAYNAME (TableName, LOCALEIdentifier,TEXT,LASTWRITTEN ) VALUES ( 'BDMOBCreateReason','en','BDMRecipientContactType',SYSTIMESTAMP);
+			INSERT INTO CTDISPLAYNAME (TableName, LOCALEIdentifier,TEXT,LASTWRITTEN ) VALUES ( 'BDMOBCreateReason','fr','BDMRecipientContactType',SYSTIMESTAMP);
+					
+			Insert into CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMDeductionType','BDMDT0003','Canada Pension Plan (Overpayments)',null,'1',0,'en',null,null,1,SYSTIMESTAMP);
+			Insert into CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMDeductionType','BDMDT0004','Employment Insurance',null,'1',0,'en',null,null,1,SYSTIMESTAMP);
+			Insert into CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMDeductionType','BDMDT0005','CRA Set-Off',null,'1',0,'en',null,null,1,SYSTIMESTAMP);
+			Insert into CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMDeductionType','BDMDT0006','Veterans Affairs Canada',null,'1',0,'en',null,null,1,SYSTIMESTAMP);
+			
+			Insert into CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMDeductionType','BDMDT0003','Canada Pension Plan (Overpayments)_fr',null,'1',0,'fr',null,null,1,SYSTIMESTAMP);
+			Insert into CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMDeductionType','BDMDT0004','Employment Insurance_fr',null,'1',0,'fr',null,null,1,SYSTIMESTAMP);
+			Insert into CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMDeductionType','BDMDT0005','CRA Set-Off_fr',null,'1',0,'fr',null,null,1,SYSTIMESTAMP);
+			Insert into CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMDeductionType','BDMDT0006','Veterans Affairs Canada_fr',null,'1',0,'fr',null,null,1,SYSTIMESTAMP);
+			
+			Insert into CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMExtLiabilityStatus','BDMELS03','Fully Repaid',null,'1',1,'en',null,null,1,SYSTIMESTAMP);
+			Insert into CODETABLEITEM (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMExtLiabilityStatus','BDMELS03','Fully Repaid_fr',null,'1',1,'fr',null,null,1,SYSTIMESTAMP);
+			
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMExtLiabilityType','BDMELT0002','Canada Pension Plan',null,'1',2,'en',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMExtLiabilityType','BDMELT0003','Employment Insurance',null,'1',3,'en',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMExtLiabilityType','BDMELT0004','Veterans Affairs Canada',null,'1',4,'en',null,null,1,SYSTIMESTAMP);
+			
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMExtLiabilityType','BDMELT0002','Canada Pension Plan_fr',null,'1',2,'fr',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMExtLiabilityType','BDMELT0003','Employment Insurance_fr',null,'1',3,'fr',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMExtLiabilityType','BDMELT0004','Veterans Affairs Canada_fr',null,'1',4,'fr',null,null,1,SYSTIMESTAMP);
+			
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('DeductionName','BDMDN0003','Canada Pension Plan (Overpayments)',null,'1',0,'en',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('DeductionName','BDMDN0004','Employment Insurance',null,'1',0,'en',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('DeductionName','BDMDN0005','CRA Set-Off',null,'1',0,'en',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('DeductionName','BDMDN0006','Veterans Affairs Canada',null,'1',0,'en',null,null,1,SYSTIMESTAMP);
+			
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('DeductionName','BDMDN0003','Canada Pension Plan (Overpayments)_fr',null,'1',0,'fr',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('DeductionName','BDMDN0004','Employment Insurance_fr',null,'1',0,'fr',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('DeductionName','BDMDN0005','CRA Set-Off_fr',null,'1',0,'fr',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('DeductionName','BDMDN0006','Veterans Affairs Canada_fr',null,'1',0,'fr',null,null,1,SYSTIMESTAMP);
+			
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMOBCreateReason','OBCR1','Clerical Error',null,'1',1,'en',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMOBCreateReason','OBCR2','Through Correspondence',null,'1',2,'en',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMOBCreateReason','OBCR3','Through Interface',null,'1',3,'en',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMOBCreateReason','OBCR4','Withhold Adjustments',null,'1',4,'en',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMOBCreateReason','OBCR5','Duplicate Payments',null,'1',5,'en',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMOBCreateReason','OBCR6','Other',null,'1',6,'en',null,null,1,SYSTIMESTAMP);
+			
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMOBCreateReason','OBCR1','Clerical Error_fr',null,'1',1,'fr',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMOBCreateReason','OBCR2','Through Correspondence_fr',null,'1',2,'fr',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMOBCreateReason','OBCR3','Through Interface_fr',null,'1',3,'fr',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMOBCreateReason','OBCR4','Withhold Adjustments_fr',null,'1',4,'fr',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMOBCreateReason','OBCR5','Duplicate Payments_fr',null,'1',5,'fr',null,null,1,SYSTIMESTAMP);
+			Insert into CodeTableItem (TABLENAME,CODE,DESCRIPTION,ANNOTATION,ISENABLED,SORTORDER,LOCALEIDENTIFIER,PARENTCODE,COMMENTS,VERSIONNO,LASTWRITTEN) values ('BDMOBCreateReason','OBCR6','Other_fr',null,'1',6,'fr',null,null,1,SYSTIMESTAMP);
+			
+			UPDATE CodeTableItem SET ISENABLED = '0' where TABLENAME='BDMDeductionType'and CODE = 'DT04';
+			UPDATE CodeTableItem SET ISENABLED = '0' where TABLENAME='DeductionName'and CODE = 'BDMDN8004';
+						
+			Insert into DEDUCTION (DEDUCTIONID,DEDUCTIONNAME,PRIORITY,MAXAMOUNT,MAXPERCENTAGE,DEFAULTAMOUNT,DEFAULTPERCENTAGE,MINAMOUNT,ACTIONTYPE,CATEGORY,DATECREATED,COMMENTS,RECORDSTATUS,PREVENTOVERLAPPINGIND,VERSIONNO) values (918002,'BDMDN0003',6,99999999.99,100,0,0,0,'DAT1','DC3',to_date('01-01-01','RR-MM-DD'),null,'RST1',null,1);
+			Insert into DEDUCTION (DEDUCTIONID,DEDUCTIONNAME,PRIORITY,MAXAMOUNT,MAXPERCENTAGE,DEFAULTAMOUNT,DEFAULTPERCENTAGE,MINAMOUNT,ACTIONTYPE,CATEGORY,DATECREATED,COMMENTS,RECORDSTATUS,PREVENTOVERLAPPINGIND,VERSIONNO) values (918003,'BDMDN0004',7,99999999.99,100,0,0,0,'DAT1','DC3',to_date('01-01-01','RR-MM-DD'),null,'RST1',null,1);
+			Insert into DEDUCTION (DEDUCTIONID,DEDUCTIONNAME,PRIORITY,MAXAMOUNT,MAXPERCENTAGE,DEFAULTAMOUNT,DEFAULTPERCENTAGE,MINAMOUNT,ACTIONTYPE,CATEGORY,DATECREATED,COMMENTS,RECORDSTATUS,PREVENTOVERLAPPINGIND,VERSIONNO) values (918004,'BDMDN0005',8,99999999.99,100,0,0,0,'DAT1','DC3',to_date('01-01-01','RR-MM-DD'),null,'RST1',null,1);
+			Insert into DEDUCTION (DEDUCTIONID,DEDUCTIONNAME,PRIORITY,MAXAMOUNT,MAXPERCENTAGE,DEFAULTAMOUNT,DEFAULTPERCENTAGE,MINAMOUNT,ACTIONTYPE,CATEGORY,DATECREATED,COMMENTS,RECORDSTATUS,PREVENTOVERLAPPINGIND,VERSIONNO) values (918005,'BDMDN0006',9,99999999.99,100,0,0,0,'DAT1','DC3',to_date('01-01-01','RR-MM-DD'),null,'RST1',null,1);
+			
+			Insert into BDMDEDUCTION (MANAGEDBY,NONREVERSIBLETYPEIND,EXTERNALLIABILITYTYPE,THIRDPARTYCONCERNROLEID,DEDUCTIONTYPE,DEDUCTIONID,CREATEDBY,CREATEDON,LASTUPDATEDBY,LASTUPDATEDON,VERSIONNO) values ('BDMUSER01','1','BDMELT0001',80001,'BDMDT0003',918002,null,null,null,null,1);
+			Insert into BDMDEDUCTION (MANAGEDBY,NONREVERSIBLETYPEIND,EXTERNALLIABILITYTYPE,THIRDPARTYCONCERNROLEID,DEDUCTIONTYPE,DEDUCTIONID,CREATEDBY,CREATEDON,LASTUPDATEDBY,LASTUPDATEDON,VERSIONNO) values ('BDMUSER01','1','BDMELT0002',80001,'BDMDT0004',918003,null,null,null,null,1);
+			Insert into BDMDEDUCTION (MANAGEDBY,NONREVERSIBLETYPEIND,EXTERNALLIABILITYTYPE,THIRDPARTYCONCERNROLEID,DEDUCTIONTYPE,DEDUCTIONID,CREATEDBY,CREATEDON,LASTUPDATEDBY,LASTUPDATEDON,VERSIONNO) values ('BDMUSER01','1','BDMELT0003',80001,'BDMDT0005',918004,null,null,null,null,1);
+			Insert into BDMDEDUCTION (MANAGEDBY,NONREVERSIBLETYPEIND,EXTERNALLIABILITYTYPE,THIRDPARTYCONCERNROLEID,DEDUCTIONTYPE,DEDUCTIONID,CREATEDBY,CREATEDON,LASTUPDATEDBY,LASTUPDATEDON,VERSIONNO) values ('BDMUSER01','1','BDMELT0004',80001,'BDMDT0006',918005,null,null,null,null,1);
+			
+			ALTER TABLE BDMEXTERNALLIABILITY ADD CREATEREASON VARCHAR(10);
+			ALTER TABLE BDMEXTERNALLIABILITYHISTORY ADD CREATEREASON VARCHAR(10);
+			ALTER TABLE BDMEXTERNALLIABILITYHISTORY ADD LIABILITYSTATUSCODE VARCHAR(10);
+
+		</sql>
+	</changeSet>
+	<changeSet id="BDM_V2_S011_F52988_1" author="dave.danbeck">
+		<sql dbms="oracle" splitStatements="true" stripComments="true">
+			INSERT INTO CREOLERULESET (CREOLERULESETID, DESCRIPTIONID, MIGRATIONACTION, NAME, RULESETDEFINITION, RULESETVERSION, VERSIONNO) VALUES (4535, null, null, 'BDMDataRuleSet', null, null, 1);
+			INSERT INTO CREOLERULESET (CREOLERULESETID, DESCRIPTIONID, MIGRATIONACTION, NAME, RULESETDEFINITION, RULESETVERSION, VERSIONNO) VALUES (4536, null, null, 'BDMParticipantCalculatorRuleSet', null, null, 1);
+		</sql>
+	</changeSet>
+
+	<changeSet id="BDM_V2_S011_114306_01"  author="abid.khan">
+        <sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">       		
+			UPDATE CodeTableItem SET SORTORDER = '0' WHERE TABLENAME = 'BDMCorrespondanceDelivery' AND CODE = 'CM1' AND LOCALEIDENTIFIER = 'en';
+			UPDATE CodeTableItem SET SORTORDER = '1' WHERE TABLENAME = 'BDMCorrespondanceDelivery' AND CODE = 'BDMCM8000' AND LOCALEIDENTIFIER = 'en';
+			UPDATE CodeTableItem SET SORTORDER = '0' WHERE TABLENAME = 'BDMCorrespondanceDelivery' AND CODE = 'CM1' AND LOCALEIDENTIFIER = 'fr';
+			UPDATE CodeTableItem SET SORTORDER = '1' WHERE TABLENAME = 'BDMCorrespondanceDelivery' AND CODE = 'BDMCM8000' AND LOCALEIDENTIFIER = 'fr';
+		</sql>
+    </changeSet>
+    
+     <!--START TASK, 112189-->
+
+	<changeSet id="BDM_V2_S011_112189_01" author="gurpreet.kaur">
+		<sql dbms="oracle" splitStatements="true" stripComments="true">
+			UPDATE DEDUCTION set PRIORITY = 12 where DEDUCTIONID = 918000;
+			UPDATE DEDUCTION set PRIORITY = 13 where DEDUCTIONID = 918001;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="BDM_V2_S011_112189_02" author="gurpreet.kaur">
+		<sql dbms="oracle" splitStatements="true" stripComments="true">
+	
+			UPDATE BDMDEDUCTION set EXTERNALLIABILITYTYPE ='BDMELT0002' where DEDUCTIONID = 918002;
+			UPDATE BDMDEDUCTION set EXTERNALLIABILITYTYPE ='BDMELT0003' where DEDUCTIONID = 918003;
+			UPDATE BDMDEDUCTION set EXTERNALLIABILITYTYPE ='BDMELT01' where DEDUCTIONID = 918004;
+			
+		</sql>
+	</changeSet>
+	
+	
+	<changeSet id="BDM_V2_S011_112189_03" author="gurpreet.kaur">
+		<sql dbms="oracle" splitStatements="true" stripComments="true">
+	
+			UPDATE CodeTableItem set DESCRIPTION ='Canada Pension Plan' where CODE = 'BDMDN0003' and LOCALEIDENTIFIER = 'en' ;
+			UPDATE CodeTableItem set DESCRIPTION ='Canada Pension Plan_fr' where CODE = 'BDMDN0003' and LOCALEIDENTIFIER = 'fr' ;
+			UPDATE CodeTableItem set DESCRIPTION ='Canada Pension Plan' where CODE = 'BDMDT0003' and LOCALEIDENTIFIER = 'en' ;
+			UPDATE CodeTableItem set DESCRIPTION ='Canada Pension Plan_fr' where CODE = 'BDMDT0003' and LOCALEIDENTIFIER = 'fr' ;
+					
+		</sql>
+	</changeSet>
+	<changeSet id="BDM_V2_S011_115543_04" author="gurpreet.kaur">
+		<sql dbms="oracle" splitStatements="true" stripComments="true">
+		
+		ALTER TABLE BDMEXTERNALLIABILITYHISTORY DROP COLUMN CREATEREASON;
+		ALTER TABLE BDMEXTERNALLIABILITYHISTORY ADD CHANGEREASON VARCHAR(10);
+		
+		INSERT INTO CodeTableHeader (TableName, TimeEntered, DefaultCode, LASTWRITTEN, VERSIONNO) VALUES ('BDMOBChangeReason', SYSTIMESTAMP, '', SYSTIMESTAMP, 1);
+		INSERT INTO CTDISPLAYNAME (TableName, LOCALEIdentifier,TEXT,LASTWRITTEN ) VALUES ( 'BDMOBChangeReason','en','OB Change Reason',SYSTIMESTAMP);
+		INSERT INTO CTDISPLAYNAME (TableName, LOCALEIdentifier,TEXT,LASTWRITTEN ) VALUES ( 'BDMOBChangeReason','fr','OB Change Reason_fr',SYSTIMESTAMP);
+		
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMOBChangeReason', 'BDMOBCR001', 'Administrative Error', '', '', '1', 1, 'en', SYSTIMESTAMP, 1);
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMOBChangeReason', 'BDMOBCR002', 'Received Request', '', '', '1', 2, 'en', SYSTIMESTAMP, 1);
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMOBChangeReason', 'BDMOBCR003', 'Undue Hardship', '', '', '1', 3, 'en', SYSTIMESTAMP, 1);
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMOBChangeReason', 'BDMOBCR004', 'Other', '', '', '1', 4, 'en', SYSTIMESTAMP, 1);
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMOBChangeReason', 'BDMOBCR005', 'Received from PSCD', '', '', '0', 5, 'en', SYSTIMESTAMP, 1);
+		
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMOBChangeReason', 'BDMOBCR001', 'Administrative Error_fr', '', '', '1', 1, 'fr', SYSTIMESTAMP, 1);
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMOBChangeReason', 'BDMOBCR002', 'Received Request_fr', '', '', '1', 2, 'fr', SYSTIMESTAMP, 1);
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMOBChangeReason', 'BDMOBCR003', 'Undue Hardship_fr', '', '', '1', 3, 'fr', SYSTIMESTAMP, 1);
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMOBChangeReason', 'BDMOBCR004', 'Other_fr', '', '', '1', 4, 'fr', SYSTIMESTAMP, 1);
+		INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMOBChangeReason', 'BDMOBCR005', 'Received from PSCD_fr', '', '', '0', 5, 'fr', SYSTIMESTAMP, 1);
+  
+		</sql>
+	</changeSet>
+	
+	<changeSet id="BDM_V2_S011_115847" author="gurpreet.kaur">
+		<sql dbms="oracle" splitStatements="true" stripComments="true">
+			DELETE FROM CODETABLEITEM WHERE TABLENAME ='BDMOBCreateReason';
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMOBChangeReason', 'BDMOBCR1', 'Received Request', '', '', '1', 1, 'en', SYSTIMESTAMP, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMOBChangeReason', 'BDMOBCR2', 'Other', '', '', '1', 2, 'en', SYSTIMESTAMP, 1);
+			
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMOBChangeReason', 'BDMOBCR1', 'Received Request_fr', '', '', '1', 1, 'fr', SYSTIMESTAMP, 1);
+			INSERT INTO CodeTableItem (TABLENAME, CODE, DESCRIPTION, ANNOTATION, COMMENTS, ISENABLED, SORTORDER, LOCALEIDENTIFIER, LASTWRITTEN, VERSIONNO) VALUES ('BDMOBChangeReason', 'BDMOBCR2', 'Other_fr', '', '', '1', 2, 'fr', SYSTIMESTAMP, 1);
+			
+            UPDATE CODETABLEITEM SET ISENABLED='0' WHERE TABLENAME ='BDMOBChangeReason' AND CODE='BDMOBCR003';
+			
+		</sql>
+	</changeSet>
+	<changeSet  id="BDM_V2_S011_115283_01"  author="ramanujam.madhula">
+        <sql dbms="oracle"
+        splitStatements="true"
+        stripComments="true">
+        
+            
+UPDATE WORKQUEUESUBSCRIPTION SET username =null WHERE WORKQUEUESUBSCRIPTIONID = 80004
+
+            
+	</sql>
+	
+    </changeSet>
+	
+
+</databaseChangeLog>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<PAGE PAGE_ID="LegalAction_getLegalActionValues">
+  <JSP_SCRIPTLET>
+
+                curam.interfaces.AdminLegalActionPkg.AdminLegalAction_searchLegalActionsByCategoryAndCase_TH legaAction_TH = null;
+                String legalActionIDs[] = null;
+                String legalActionID = null;
+		         String legalActionName = null;
+
+                String param0 = request.getParameter("Param0");
+                String param1 = request.getParameter("Param1");
+			  	try{
+				if (param0 != null){
+
+					StringBuffer sb = new StringBuffer();
+					param0 = param0.trim().toLowerCase();
+					boolean namesAdded = false;
+					legaAction_TH =  new  curam.interfaces.AdminLegalActionPkg.AdminLegalAction_searchLegalActionsByCategoryAndCase_TH ();
+	      			legaAction_TH.setFieldValue(legaAction_TH.key$key$legalActionCategoryID_idx,param0);
+	      			legaAction_TH.setFieldValue(legaAction_TH.key$key$caseID_idx,param1);
+	      			legaAction_TH.callServer();
+	      			legalActionIDs = legaAction_TH.getListField("result$list$list$legalActionID");
+
+
+	      			if(legalActionIDs != null &amp;&amp; legalActionIDs.length &gt;0){
+	      			 sb.append("&lt;codetables&gt;");
+	      			    for (int i = 0; i &lt; legalActionIDs.length; i++) {
+
+				            legalActionName = legaAction_TH.getListFieldValue("result$list$list$legalActionDesc", i);
+					    	legalActionID = legaAction_TH.getListFieldValue("result$list$list$legalActionID", i);
+
+				            if(legalActionName != null){
+				                sb.append("&lt;codetable&gt;");
+				                sb.append("&lt;id&gt;" + legalActionID + "&lt;/id&gt;");
+								sb.append("&lt;name&gt;" + legalActionName + "&lt;/name&gt;");
+								sb.append("&lt;/codetable&gt;");
+						   }
+						   namesAdded =true;
+				       }
+
+
+						if (namesAdded) {
+						    sb.append("&lt;/codetables&gt;");
+							response.setContentType("text/xml");
+							response.setHeader("Cache-Control", "no-cache");
+							out.println(sb.toString());
+						} else {
+							//nothing to show
+							response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+						}
+					}
+					else {
+						sb.append("&lt;codetables&gt;&lt;codetable&gt;&lt;id&gt; &lt;/id&gt;&lt;name&gt; &lt;/name&gt;&lt;/codetable&gt;&lt;/codetables&gt;");
+						out.println(sb.toString());
+					}
+				}
+			}catch(Exception e){
+        // BEGIN, CR00396755, JAF
+        // Removed printStackTrace()
+        // END, CR00396755, JAF
+			}
+
+	 </JSP_SCRIPTLET>
+</PAGE>

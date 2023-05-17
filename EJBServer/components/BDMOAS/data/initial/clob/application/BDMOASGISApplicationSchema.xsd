@@ -1,0 +1,716 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:D="http://www.curamsoftware.com/BaseDomains"
+	elementFormDefault="qualified">
+
+	<xsd:import namespace="http://www.curamsoftware.com/BaseDomains" />
+    <xsd:include schemaLocation="IEGDomains"/>
+    <xsd:include schemaLocation="CitizenPortalDomains"/>
+    <xsd:include schemaLocation="BDMOASGISApplicationSchemaDomain"/>  
+
+	<xsd:element name="Application">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="0">
+                <xsd:element ref="Person" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="TaxInfo" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="IntakeApplicationType" minOccurs="0" maxOccurs="1"/>
+                <xsd:element ref="ScreeningType" minOccurs="0" maxOccurs="1"/>
+                <xsd:element ref="IntakeProgram" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element ref="ScreeningProgram" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element ref="Submission" minOccurs="0" maxOccurs="unbounded"/>
+             	<xsd:element ref="Declaration" minOccurs="0" maxOccurs="1"/>  
+             	<xsd:element ref="Attestation" minOccurs="0" maxOccurs="1"/>              	          	                              
+            </xsd:sequence>        
+            <xsd:attribute name="userName" type="IEG_STRING" default=""/>
+            <xsd:attribute name="userType" type="IEG_STRING" default=""/>
+            <xsd:attribute name="externalUserType" type="IEG_STRING" default=""/>
+            <xsd:attribute name="continueSIN" type="IEG_BOOLEAN"/>
+            <xsd:attribute name="applicationChannel" type="IEG_STRING" default="CURAM"/>
+ 			<xsd:attribute name="receiptDate" type="IEG_DATE"/>		
+ 			<xsd:attribute name="applicationForm" type="CT_BDMOASAPPLICATIONFORM"/>	 				            
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="IntakeApplicationType">
+        <xsd:complexType>
+            <xsd:attribute name="intakeApplicationTypeID" type="D:SVR_INT64"/>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="ScreeningType">
+        <xsd:complexType>
+            <xsd:attribute name="screeningTypeID" type="D:SVR_INT64"/>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="IntakeProgram">
+        <xsd:complexType>
+            <xsd:attribute name="programTypeID" type="D:SVR_INT64"/>
+            <xsd:attribute name="programTypeReference" type="IEG_STRING"/>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="ScreeningProgram">
+        <xsd:complexType>
+            <xsd:attribute name="programTypeID" type="D:SVR_INT64"/>
+            <xsd:attribute name="programTypeReference" type="IEG_STRING"/>
+        </xsd:complexType>
+    </xsd:element>
+        
+	<xsd:element name="Person">
+		<xsd:complexType>
+			<xsd:sequence minOccurs="0">
+				<xsd:element ref="Relationship" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="Address" minOccurs="0" maxOccurs="1"/>
+				<xsd:element ref="AddressLink" minOccurs="0" maxOccurs="1"/>
+				<xsd:element ref="ResidentialAddress" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element ref="MailingAddress" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element ref="IntlResAddress" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element ref="IntlMailAddress" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="SearchAddress" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="SearchCriteriaResi" minOccurs="0" maxOccurs="unbounded"/>		
+				<xsd:element ref="SearchCriteriaMail" minOccurs="0" maxOccurs="unbounded"/>								
+				<xsd:element ref="CommunicationPref" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="Payment" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="PaymentBanks" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="CommunicationDetails" minOccurs="0" maxOccurs="unbounded" />   
+            	<xsd:element ref="AlertPreferences" minOccurs="0" maxOccurs="1" />
+            	<xsd:element ref="Incarceration" minOccurs="0" maxOccurs="unbounded" />
+            	<xsd:element ref="Income" minOccurs="0" maxOccurs="unbounded" />
+            	<xsd:element ref="Household" minOccurs="0" maxOccurs="1"/>
+
+            	<xsd:element ref="OASPension" minOccurs="0" maxOccurs="1"/> 
+            	<xsd:element ref="LegalStatus" minOccurs="0" maxOccurs="1"/> 
+            	<xsd:element ref="GIS" minOccurs="0" maxOccurs="1"/>
+            	<xsd:element ref="RetirementIncome" minOccurs="0" maxOccurs="1"/>
+            	<xsd:element ref="ForeignIncome" minOccurs="0" maxOccurs="1"/> 
+            	<xsd:element ref="MaritalStatusInfo" minOccurs="0" maxOccurs="1"/>            	            	                	           	
+            	<xsd:element ref="SponsorshipInfo" minOccurs="0" maxOccurs="1"/> 
+            	<xsd:element ref="WorldIncome" minOccurs="0" maxOccurs="1"/>   
+                <xsd:element ref="ResidenceHistory" minOccurs="0" maxOccurs="unbounded"/>  
+                <xsd:element ref="AbsenceDetails" minOccurs="0" maxOccurs="1"/>             	          	
+            	
+			</xsd:sequence>
+			
+			<xsd:attribute name="personID" type="D:SVR_KEY" />
+			<xsd:attribute name="programTypeID" type="D:SVR_KEY" />
+			<xsd:attribute name="isPrimaryParticipant" type="IEG_BOOLEAN" default="false"/>
+
+			<xsd:attribute name="firstName" type="BDM_NAME" />
+			<xsd:attribute name="middleName" type="BDM_NAME"/>
+			<xsd:attribute name="middleInitial" type="IEG_STRING" default=""/>
+			<xsd:attribute name="lastName" type="BDM_NAME" />
+
+			<xsd:attribute name="gender" type="IEG_GENDER" />
+			<xsd:attribute name="genderDropdown" type="CT_GENDER"/>
+			<xsd:attribute name="dateOfBirth" type="IEG_DATE"/>
+
+			<xsd:attribute name="countryOfBirth" type="CT_COUNTRY"/>		
+			<xsd:attribute name="dateOfDeath" type="IEG_DATE"/>
+							
+			<xsd:attribute name="hasIncome" type="IEG_BOOLEAN" default="false"/>
+   			<xsd:attribute name="hasForeignIncome" type="IEG_YES_NO" />			
+			<xsd:attribute name="isBlind" type="IEG_BOOLEAN" default="false"/>
+			<xsd:attribute name="isPregnant" type="IEG_BOOLEAN" default="false"/>
+			<xsd:attribute name="maritalStatus" type="CT_MARITALSTATUS" />
+			<xsd:attribute name="hasCommunications" type="IEG_STRING" default=""/>
+
+			<xsd:attribute name="isResidentialAddressUpdate" type="IEG_YES_NO" default="YN2"/>
+			<xsd:attribute name="isMailingAddressUpdate" type="IEG_YES_NO" default="YN2"/>
+			<xsd:attribute name="atSameResidence" type="IEG_YES_NO"/>
+			<xsd:attribute name="startLivingAtSameResidenceDate" type="IEG_DATE"/>
+			<xsd:attribute name="schoolName" type="IEG_STRING" />
+			<xsd:attribute name="primaryDependantPersonID" type="D:SVR_KEY" />
+    							
+			<xsd:attribute name="personTitle" type="CT_PERSONTITLE" />			
+			<xsd:attribute name="oasAccntNum" type="BDMOAS_OAS_ACCNT_NUM" />
+			<xsd:attribute name="SIN" type="BDM_SIN" />
+			<xsd:attribute name="sinRaw" type="BDM_SIN_RAW"/>
+			<xsd:attribute name="sinRawAP" type="BDM_SIN_RAW_AP"/>
+			<xsd:attribute name="PreferredName" type="BDM_NAME" />
+			<xsd:attribute name="LastNameAtBirth" type="BDM_NAME" />
+			<xsd:attribute name="ParentLastName" type="BDM_NAME" />
+			<xsd:attribute name="EducationLevel" type="CT_BDMEDUCATIONLEVEL" />
+			<xsd:attribute name="IndigenousPerson" type="BDM_YES_NO_OPTIONAL" />
+			<xsd:attribute name="MinorityGroup" type="BDM_YES_NO_OPTIONAL" />			
+			<xsd:attribute name="preferredPaymentMethod" type="PAYMENT_METHOD"/>		
+			
+			<xsd:attribute name="localID" type="IEG_INT64"/>
+		
+            <xsd:attribute name="resMail" type="IEG_YES_NO" />
+            <xsd:attribute name="residentialCountry" type="CP_COUNTRY" default="CA"/>
+            <xsd:attribute name="mailingCountry" type="CP_COUNTRY" default="CA"/>
+            <xsd:attribute name="wsResValidOrOverride" type="IEG_STRING" default="1"/>
+            <xsd:attribute name="wsMailValidOrOverride" type="IEG_STRING" default="1"/>
+            
+            <xsd:attribute name="isDiffResiAddressForPartner" type="IEG_YES_NO"/>                   
+            <xsd:attribute name="spouseOrCLPDetailsEnteredInd" type="IEG_BOOLEAN" default="false" />  
+            <xsd:attribute name="maritalStatusSetInd" type="IEG_BOOLEAN" default="false" />       
+            <xsd:attribute name="hasActiveResidAddress" type="IEG_BOOLEAN" default="false"/>   
+            <xsd:attribute name="hasActiveMailingAddress" type="IEG_BOOLEAN" default="false"/>                            
+			<xsd:attribute name="addOrUpdateResidAddress" type="IEG_BOOLEAN" default="false"/>
+			<xsd:attribute name="addOrUpdateMailAddress" type="IEG_BOOLEAN" default="false"/>  	
+            <xsd:attribute name="invalidAddressIsContinue" type="IEG_YES_NO"/>  					                                        
+            			
+			<!-- Begin: Standard Not used Required for App Submission -->
+            <xsd:attribute name="homePhoneCode" type="IEG_STRING"/>
+            <xsd:attribute name="homePhoneNumber" type="IEG_STRING"/>
+            <xsd:attribute name="workPhoneCode" type="IEG_STRING"/>
+            <xsd:attribute name="workPhoneNumber" type="IEG_STRING"/>
+            <xsd:attribute name="cellPhoneCode" type="IEG_STRING"/>
+            <xsd:attribute name="cellPhoneNumber" type="IEG_STRING"/>
+            <xsd:attribute name="otherPhoneCode" type="IEG_STRING"/>
+            <xsd:attribute name="otherPhoneNumber" type="IEG_STRING"/>
+            <xsd:attribute name="email" type="IEG_STRING"/>
+            <xsd:attribute name="ssn" type="IEG_NON_FORMATTED_NUMBER"/>
+            <xsd:attribute name="ssnStatus" type="CP_SSN_STATUS"/>
+            <xsd:attribute name="contactLanguage" type="CP_LANGUAGE"/>
+            <xsd:attribute name="isUSCitizen" type="CP_YESNO"/>
+            <xsd:attribute name="alienStatus" type="CP_ALIEN_STATUS"/>
+            <xsd:attribute name="hispanicOrLatino" type="IEG_BOOLEAN"/>
+            <xsd:attribute name="sameMailingAddress" type="IEG_BOOLEAN" default="false"/>
+            <xsd:attribute name="hasActiveBankAccounts" type="IEG_BOOLEAN" default="false"/>
+			<!-- End: Standard Not used Required for App Submission -->
+
+			<xsd:attribute name="numDependants" type="BDM_NUM_DEPENDANTS"  default="0"/>
+
+			<xsd:attribute name="alertFullPhoneNumber" type="IEG_STRING"  default=""/>
+			<xsd:attribute name="alertEmailAdr" type="IEG_STRING"  default=""/>
+			
+			<xsd:attribute name="socialSecurityOrIdentificationNumber" type="BDMOAS_FRGN_COUNTRY_ID_NUMBER"/>
+			<xsd:attribute name="socialSecurityOrIdentificationNumberCountry" type="CT_COUNTRY"/>
+			<xsd:attribute name="otherFirstName" type="BDM_NAME" />
+			<xsd:attribute name="otherLastName" type="BDM_NAME" />
+			<xsd:attribute name="spouseOrCLPDeclarationSignInd" type="IEG_BOOLEAN" default="false" />
+			
+			<!-- Temp address attributes for partner for sumamry display -->
+			<xsd:attribute name="tempPartResAddress" type="IEG_STRING"/>
+            <!-- Temp address attributes for partner for sumamry display -->
+            
+            <xsd:attribute name="tempPartMailAddress" type="IEG_STRING"/>
+            <!-- Temp address attributes for partner for sumamry display -->
+            
+            
+            <xsd:attribute name="tempIsRetirdOrRetirng2Yrs" type="IEG_YES_NO" />		
+			<xsd:attribute name="tempRetirementDate" type="IEG_DATE"/>	
+   			<xsd:attribute name="tempIsPensionReduced2Yrs" type="IEG_YES_NO" />		
+			<xsd:attribute name="tempReductionDate" type="IEG_DATE"/>				
+   			<xsd:attribute name="tempIsReceivingForeignIncome" type="IEG_YES_NO" />	
+			<xsd:attribute name="tempForeignIncomeType" type="BDMOAS_FOREIGN_INCOME_TYPE"/>
+			<xsd:attribute name="tempAnnualForeignIncomeStr" type="BDMOAS_ANNUAL_FRGN_INCM_AND_CURNCY"/>		
+            
+            <xsd:attribute name="tempIsSpouseOrCLPartnrSponsored" type="IEG_YES_NO"/>			
+			
+		</xsd:complexType>
+		<xsd:key name="PersonKey">
+			<xsd:selector xpath="./Person" />
+			<xsd:field xpath="@personID" />
+		</xsd:key>
+		<xsd:keyref name="RelationshipRef" refer="PersonKey">
+		    <xsd:selector xpath="./Person/Relationship" />
+		    <xsd:field xpath="@personID" />
+		</xsd:keyref>
+	</xsd:element>
+
+    <xsd:element name="SearchCriteriaResi">
+        <xsd:complexType>
+            <xsd:attribute name="residCountry" type="CP_COUNTRY" default="CA"/>   
+            <xsd:attribute name="residPostalCode" type="BDM_ADDRESS_POSTAL_CODE"/>    
+            <xsd:attribute name="idResidentialAddress" type="IEG_STRING" default="-1" />                              
+			<xsd:attribute name="caResiAddrSearchInd" type="IEG_BOOLEAN" default="false"/>         		              		 
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="SearchCriteriaMail">
+        <xsd:complexType> 
+            <xsd:attribute name="mailCountry" type="CP_COUNTRY" default="CA"/>  
+              <xsd:attribute name="mailPostalCode" type="BDM_ADDRESS_POSTAL_CODE"/>   
+            <xsd:attribute name="idMailingAddress" type="IEG_STRING" default="-1" />                                        
+			<xsd:attribute name="caMailAddrSearchInd" type="IEG_BOOLEAN" default="false"/>  			              		 
+        </xsd:complexType>
+    </xsd:element>    
+
+    <xsd:element name="SearchAddress">
+        <xsd:complexType>
+        <xsd:sequence minOccurs="0">
+				<xsd:element ref="oneLineAddress" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+            <xsd:attribute name="idResidentialAddress" type="IEG_STRING" default="-1" />
+            <xsd:attribute name="queryResidentialAddress" type="BDM_ADDRESS_POSTAL_CODE"/>
+            <xsd:attribute name="idMailingAddress" type="IEG_STRING" default="-1" />
+            <xsd:attribute name="queryMailingAddress" type="BDM_ADDRESS_POSTAL_CODE"/>
+            <xsd:attribute name="AddressData" type="IEG_STRING" />	
+    		<xsd:attribute name="formatedAddressData" type="IEG_STRING" />
+    		<xsd:attribute name="isMailingAddress" type="IEG_YES_NO" default="YN2"/>
+    		<xsd:attribute name="isResidentialAddress" type="IEG_YES_NO" default="YN2"/>
+    		<xsd:attribute name="isSelected" type="IEG_BOOLEAN" default="false"/>
+    		<xsd:attribute name="isActive" type="IEG_YES_NO" default="YN2"/>
+    		 <xsd:attribute name="country" type="CP_COUNTRY"/>
+        </xsd:complexType>
+    </xsd:element>
+  	<xsd:element name="Address">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="0">
+                <xsd:element ref="TempAddressLink" minOccurs="0" maxOccurs="unbounded"/>                         
+            </xsd:sequence>
+            <xsd:attribute name="street1" type="IEG_STRING"/>
+            <xsd:attribute name="street2" type="IEG_STRING"/>
+            <xsd:attribute name="city" type="IEG_STRING"/>
+            <xsd:attribute name="county" type="CP_COUNTY"/>
+            <xsd:attribute name="state" type="CP_STATE"/>
+            <xsd:attribute name="zipCode" type="IEG_NON_FORMATTED_NUMBER"/>
+            <xsd:attribute name="zipCodePlusFour" type="IEG_STRING"/>
+            <xsd:attribute name="addressData" type="IEG_STRING"/>
+			<xsd:attribute name="addressID" type="D:SVR_KEY"/>			         
+            <xsd:attribute name="country" type="CP_COUNTRY"/>
+            <xsd:attribute name="postalCode" type="BDM_ADDRESS_POSTAL_CODE"/>
+            <xsd:attribute name="province" type="CP_PROVINCE"/>
+            <xsd:attribute name="suiteNum" type="IEG_STRING"/>
+
+            <xsd:attribute name="addressEvID" type="D:SVR_KEY" default="0"/>
+            <!-- Address Validation: Begins -->
+            <xsd:attribute name="isValidated" type="IEG_YES_NO" default="YN2"/>
+   			<xsd:attribute name="unableToConnectServiceInd" type="IEG_BOOLEAN" default="false"/>
+   			<xsd:attribute name="noAddressFoundInd" type="IEG_BOOLEAN" default="false"/>
+   			<xsd:attribute name="multipleAddressesInd" type="IEG_BOOLEAN" default="false"/>
+   			<xsd:attribute name="ambiguousAddressesInd" type="IEG_BOOLEAN" default="false"/>
+			<!-- Address Validation: Ends -->
+        </xsd:complexType>
+		<xsd:key name="AddressKey">
+            <xsd:selector xpath="./Address"/>
+            <xsd:field xpath="@addressID"/>
+        </xsd:key>
+    </xsd:element>
+    	
+		<xsd:element name="AddressLink">
+    		<xsd:complexType>
+    			<xsd:attribute name="personID" type="D:SVR_KEY" />
+				<xsd:attribute name="addressID" type="D:SVR_KEY" />
+
+    		    <xsd:attribute name="addressEvID" type="D:SVR_KEY" default="0"/>
+    		    <xsd:attribute name="isMailingAddressSameAsHome" type="IEG_YES_NO" default=""/>
+    		</xsd:complexType>
+	</xsd:element>
+    
+	<xsd:element name="TempAddressLink">
+    		<xsd:complexType>
+    			<xsd:attribute name="personID" type="D:SVR_KEY" />
+				<xsd:attribute name="addressID" type="D:SVR_KEY" />
+    		    <xsd:attribute name="addressEvID" type="D:SVR_KEY" default="0"/>
+    		    <xsd:attribute name="isMailingAddressSameAsHome" type="IEG_YES_NO" default=""/>
+    		</xsd:complexType>
+	</xsd:element>
+    
+	<xsd:element name="ResidentialAddress">
+        <xsd:complexType>
+            <xsd:attribute name="street1" type="BDM_ADDRESS_STREET_NUMBER"/>
+            <xsd:attribute name="street2" type="BDM_ADDRESS_STREET_NAME"/>
+            <xsd:attribute name="city" type="BDM_ADDRESS_CITY"/>
+            <xsd:attribute name="state" type="CP_STATE"/>
+            <xsd:attribute name="zipCode" type="IEG_STRING"/>
+            <xsd:attribute name="wsAddressType" type="BDM_WS_ADDRESS_TYPE"/>
+            <!-- Support for international addresses -->
+            <xsd:attribute name="addressLine1" type="BDM_ADDRESS_LINE"/>
+            <xsd:attribute name="addressLine2" type="BDM_ADDRESS_LINE"/>
+            <xsd:attribute name="addressLine3" type="BDM_ADDRESS_LINE"/>
+            <!-- Using addrLine4 for state ( International address not US) -->
+            <xsd:attribute name="addressLine4" type="BDM_ADDRESS_LINE"/>
+            <xsd:attribute name="addressLine5" type="BDM_ADDRESS_LINE"/>           
+            <xsd:attribute name="county" type="CP_COUNTY"/>
+            <xsd:attribute name="country" type="CP_COUNTRY"/>
+            <xsd:attribute name="postalCode" type="BDM_ADDRESS_POSTAL_CODE"/>
+            <xsd:attribute name="province" type="CP_PROVINCE"/>
+            <xsd:attribute name="suiteNum" type="BDM_ADDRESS_SUITE_NUMBER"/>
+            <xsd:attribute name="oneLineAddress" type="IEG_STRING"/>
+            <!-- Validate Status 0- Not Validated  1 - Valid, 2 - Invalid, 3 - Exception in Service -->
+             <xsd:attribute name="validateStatus" type="IEG_STRING"/>
+			<xsd:attribute name="isAddrSelectedInd" type="IEG_BOOLEAN" default="false"/>			             
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="MailingAddress">
+        <xsd:complexType>
+            <xsd:attribute name="street1" type="BDM_ADDRESS_STREET_NUMBER"/>
+            <xsd:attribute name="street2" type="BDM_ADDRESS_STREET_NAME"/>
+            <xsd:attribute name="city" type="BDM_ADDRESS_CITY"/>
+            <xsd:attribute name="state" type="CP_STATE"/>
+            <xsd:attribute name="zipCode" type="BDM_ADDRESS_ZIPCODE"/>
+            <xsd:attribute name="wsAddressType" type="BDM_WS_ADDRESS_TYPE"/>
+            <!-- Support for international addresses -->
+            <xsd:attribute name="addressLine1" type="BDM_ADDRESS_LINE"/>
+            <xsd:attribute name="addressLine2" type="BDM_ADDRESS_LINE"/>
+            <xsd:attribute name="addressLine3" type="BDM_ADDRESS_LINE"/>
+            <xsd:attribute name="addressLine4" type="BDM_ADDRESS_LINE"/>
+            <xsd:attribute name="addressLine5" type="BDM_ADDRESS_LINE"/>
+            <xsd:attribute name="county" type="CP_COUNTY"/>
+            <xsd:attribute name="country" type="CP_COUNTRY"/>
+            <xsd:attribute name="postalCode" type="BDM_ADDRESS_POSTAL_CODE"/>
+            <xsd:attribute name="province" type="CP_PROVINCE"/>
+            <xsd:attribute name="suiteNum" type="BDM_ADDRESS_SUITE_NUMBER"/>
+
+            <xsd:attribute name="oneLineAddress" type="IEG_STRING"/>
+           <!-- Validate Status 0- Not Validated  1 - Valid, 2 - Invalid, 3 - Exception in Service -->
+             <xsd:attribute name="validateStatus" type="IEG_STRING"/>
+			<xsd:attribute name="isAddrSelectedInd" type="IEG_BOOLEAN" default="false"/>								             
+        </xsd:complexType>
+    </xsd:element>			
+    <xsd:element name="oneLineAddress">
+    		<xsd:complexType>
+    			<xsd:attribute name="AddressData" type="IEG_STRING" />	
+    			<xsd:attribute name="formatedAddressData" type="IEG_STRING" />			
+    		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="IntlResAddress">
+        <xsd:complexType>
+            <xsd:attribute name="city" type="BDM_ADDRESS_CITY"/>
+            <xsd:attribute name="state" type="CT_ADDRESS_STATE"/>
+            <xsd:attribute name="zipCode" type="BDM_ADDRESS_ZIPCODE"/>
+            <!-- addressLine1 matches to StreetNum -->
+            <xsd:attribute name="addressLine1" type="BDM_ADDRESS_LINE"/>
+            <!-- addressLine2 matches to StreetName -->
+            <xsd:attribute name="addressLine2" type="BDM_ADDRESS_LINE"/>
+            <!-- addressLine3 matches to poBox -->
+            <xsd:attribute name="addressLine3" type="BDM_ADDRESS_LINE"/>
+            <!-- addressLine4 matches to intlState -->
+            <xsd:attribute name="addressLine4" type="BDM_ADDRESS_LINE"/>
+            <xsd:attribute name="province" type="CP_PROVINCE"/>
+            <xsd:attribute name="suiteNum" type="BDM_ADDRESS_SUITE_NUMBER"/>
+            <xsd:attribute name="country" type="CP_COUNTRY"/>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="IntlMailAddress">
+        <xsd:complexType>
+            <xsd:attribute name="city" type="BDM_ADDRESS_CITY"/>
+            <xsd:attribute name="state" type="CT_ADDRESS_STATE"/>
+            <xsd:attribute name="zipCode" type="BDM_ADDRESS_ZIPCODE"/>
+            <!-- addressLine1 matches to StreetNum -->
+            <xsd:attribute name="addressLine1" type="BDM_ADDRESS_LINE"/>
+            <!-- addressLine2 matches to StreetName -->
+            <xsd:attribute name="addressLine2" type="BDM_ADDRESS_LINE"/>
+            <!-- addressLine3 matches to poBox -->
+            <xsd:attribute name="addressLine3" type="BDM_ADDRESS_LINE"/>
+            <!-- addressLine4 matches to intlState -->
+            <xsd:attribute name="addressLine4" type="BDM_ADDRESS_LINE"/>
+            <xsd:attribute name="province" type="CP_PROVINCE"/>
+            <xsd:attribute name="suiteNum" type="BDM_ADDRESS_SUITE_NUMBER"/>
+            <xsd:attribute name="country" type="CP_COUNTRY"/>
+        </xsd:complexType>
+    </xsd:element>
+	
+	<xsd:element name="Relationship">
+		<xsd:complexType>
+			<xsd:attribute name="relationshipType" type="IEG_STRING" />
+			<xsd:attribute name="isNonParentPrimaryCaretaker" type="IEG_BOOLEAN" default="false"/>
+			<xsd:attribute name="personID" type="D:SVR_KEY" />
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="CommunicationPref">
+		<xsd:complexType>
+			<xsd:attribute name="languageW" type="CT_LANGUAGE" />
+			<xsd:attribute name="languageS" type="CT_LANGUAGE" />
+			<xsd:attribute name="languageSelected" type="IEG_BOOLEAN" />
+			<xsd:attribute name="recieveCorrespondPref" type="BDM_CT_CORRESDEL" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- COMMUNICATION PAGE - BEGIN -->
+	<xsd:element name="CommunicationDetails">
+    	<xsd:complexType>
+			<xsd:attribute name="emailAdr" type="IEG_STRING" default=""/>
+			<xsd:attribute name="emailType" type="CT_EMAILTYPE" />
+			<xsd:attribute name="phoneNumber" type="BDM_PHONE_NUMBER" default=""/>
+			<xsd:attribute name="phoneAreaCode" type="BDM_PHONE_AREA_CODE" />
+			<xsd:attribute name="fullPhoneNumber" type="IEG_STRING" />
+			<xsd:attribute name="phoneType" type="CT_PHONETYPE" />
+			<xsd:attribute name="countryCode" type="CT_COUNTRYCODE"/>
+			<xsd:attribute name="phoneTime" type="CT_PHONETIME"/>
+			<xsd:attribute name="phoneExt" type="BDM_PHONE_EXT_CODE" />
+			<xsd:attribute name="isMor" type="IEG_BOOLEAN" />
+			<xsd:attribute name="isAftr" type="IEG_BOOLEAN" />
+			<xsd:attribute name="isEve" type="IEG_BOOLEAN" />
+			<!-- created to show blank value on summary page (display only) when client doesn't select select these on page -->
+			<xsd:attribute name="isMorDisplayValue" type="IEG_STRING"/>
+			<xsd:attribute name="isAftrDisplayValue" type="IEG_STRING"/>
+			<xsd:attribute name="isEveDisplayValue" type="IEG_STRING"/>
+			<xsd:attribute name="tempAttribute" type="IEG_STRING"/>
+			
+			<xsd:attribute name="isPrimaryCommunication" type="IEG_BOOLEAN" default="false"/>    
+            <xsd:attribute name="alertPrefEmail" type="IEG_YES_NO" default="YN2"/>
+            <xsd:attribute name="alertPrefPhone" type="IEG_YES_NO" default="YN2"/>
+            
+            <!-- localID required for life event element -->
+			<xsd:attribute name="localID" type="IEG_STRING"/>
+			<xsd:attribute name="emailAdrSelected" type="IEG_BOOLEAN" default="false"/>
+			<xsd:attribute name="phoneNumberSelected" type="IEG_BOOLEAN" default="false"/>
+			
+		</xsd:complexType>
+     </xsd:element>
+	<!-- COMMUNICATION PAGE - END -->
+	
+	<xsd:element name="AlertPreferences">
+    	<xsd:complexType>
+			<xsd:attribute name="receiveAlerts" type="IEG_YES_NO" />
+			<xsd:attribute name="phoneAlert" type="CT_PHONEALERT" />
+			<xsd:attribute name="alertOccur" type="CT_ALERTOCCUR" />
+    	</xsd:complexType>
+     </xsd:element>
+
+	<!-- TAX INFO SCREEN - BEGIN -->
+	<xsd:element name="TaxInfo">
+        <xsd:complexType>
+        	<xsd:attribute name="taxPersonID" type="D:SVR_KEY" />
+			<xsd:attribute name="indianStatus" type="IEG_YES_NO" />
+			<xsd:attribute name="dedIncomeTax" type="IEG_YES_NO" />
+			<xsd:attribute name="dedIncomeTaxPay" type="IEG_YES_NO" />
+			<xsd:attribute name="dedFedTax" type="IEG_YES_NO" />
+			<xsd:attribute name="taxSituation" type="CT_TAXSITUATION" />
+			<xsd:attribute name="dedMethod" type="CT_TAXDEDMTHOD" />
+			<xsd:attribute name="childAge" type="D:SVR_INT64" />
+			<xsd:attribute name="dollarAmount" type="BDM_MONEY" />
+			<xsd:attribute name="dollarPerct" type="BDM_PERCENT" />
+		</xsd:complexType>
+     </xsd:element>
+	<!-- TAX INFO SCREEN - END -->
+	
+	<!-- PAYMENT INFORMATION -->
+	<xsd:element name="Payment">
+        <xsd:complexType>
+			<xsd:attribute name="bankAccountName" type="BDM_ACCOUNT_NAME"/>
+			<xsd:attribute name="bankBranchNum" type="BDM_BRANCH_NUM"/>
+			<xsd:attribute name="bankInstNum" type="BDM_INSTITUTION_NUM"/>
+			<xsd:attribute name="accountNumber" type="BDM_ACCOUNT_NUM"/>
+			<xsd:attribute name="sortCode" type="IEG_STRING"/>
+			<xsd:attribute name="preferredBankAccount" type="BANK_ACCOUNT_CHOICE" default=""/>
+			<xsd:attribute name="preferredPaymentMethod" type="PAYMENT_METHOD"/>
+			<xsd:attribute name="bankEvidenceID" type="IEG_STRING" default=""/>
+			<xsd:attribute name="paymentID" type="D:SVR_KEY"/>
+		</xsd:complexType>
+     </xsd:element>
+     <xsd:element name="PaymentBanks">
+        <xsd:complexType>
+			<xsd:attribute name="bankAccountNameAndNumber" type="IEG_STRING"/>
+			<xsd:attribute name="preferredBankForProgram"  type="IEG_BOOLEAN" default="false"/>
+			<xsd:attribute name="bankBranchNum" type="BDM_BRANCH_NUM"/>
+			<xsd:attribute name="bankInstNum" type="BDM_INSTITUTION_NUM"/>
+			<xsd:attribute name="sortCode" type="IEG_STRING"/>
+			<xsd:attribute name="accountNumber" type="BDM_ACCOUNT_NUM"/>
+			<xsd:attribute name="bankEvidenceID" type="IEG_STRING" default=""/>
+			<xsd:attribute name="paymentBanksID" type="D:SVR_KEY"/>
+		</xsd:complexType>
+		<xsd:key name="PaymentBanksKey">
+			<xsd:selector xpath="PaymentBanks"/>
+			<xsd:field xpath="paymentBanksID"/>
+		</xsd:key>
+     </xsd:element>
+	<!-- PAYMENT INFORMATION -->
+	
+	<!-- Begin Dependant INFORMATION -->
+	<xsd:element name="Household">
+        <xsd:complexType>
+        	<xsd:attribute name="dependantsUnder18AtSameResidence" type="IEG_YES_NO"/>
+		</xsd:complexType>
+    </xsd:element>               
+	<!-- Begin Dependant INFORMATION -->
+	
+	<!-- INCAR INFO PAGE - BEGIN -->
+	<xsd:element name="Incarceration">
+        <xsd:complexType>
+			<xsd:attribute name="incarQuestion" type="IEG_YES_NO" />
+			<xsd:attribute name="instName" type="BDM_INCARCERATION_INSTITUTION_NAME" />
+			<xsd:attribute name="startDateInca" type="IEG_DATE" />
+			<xsd:attribute name="endDateInca" type="IEG_DATE" />
+			</xsd:complexType>
+     </xsd:element>
+	<!-- INCAR INFO PAGE - END -->
+	
+	<!-- INCOME -->
+	<xsd:element name="Income">
+		<xsd:complexType>
+			<xsd:attribute name="incomeAmount" type="IEG_MONEY"/>
+			<!-- Begin - PN - 13978 Update income year-->
+			<xsd:attribute name="incomeYear" type="BDM_INCOME_YEAR"/>
+			<xsd:attribute name="incomeType" type="CT_INCOMETYPECODE"/>	
+			<xsd:attribute name="incomeTpOthrDesc" type="BDM_INCOME_TP_OTHER_DESC"/>				
+			<xsd:attribute name="incomeCountry" type="CT_COUNTRY"/>				
+			<xsd:attribute name="incomeCurrency" type="CT_BDMCURRENCY"/>				
+					
+			<!-- End - PN - 13978 Update income year-->
+			<xsd:attribute name="cppOrQPPAmount" type="IEG_MONEY"/>
+			<xsd:attribute name="othrCAPensionAmount" type="IEG_MONEY"/>
+			<xsd:attribute name="frgnPensionAmount" type="IEG_MONEY"/>
+			<xsd:attribute name="eiAmount" type="IEG_MONEY"/>		
+			<xsd:attribute name="wcbAmount" type="IEG_MONEY"/>
+			<xsd:attribute name="interestAndInvstAmount" type="IEG_MONEY"/>
+			<xsd:attribute name="dividendsAmount" type="IEG_MONEY"/>
+			<xsd:attribute name="capitalGainsAmount" type="IEG_MONEY"/>	
+			<xsd:attribute name="netRentalAmount" type="IEG_MONEY"/>			
+			<xsd:attribute name="netEmploymentAmount" type="IEG_MONEY"/>		
+			<xsd:attribute name="netSelfEmploymentAmount" type="IEG_MONEY"/>
+			<xsd:attribute name="otherIncmAmount" type="IEG_MONEY"/>	
+			<xsd:attribute name="incomeSource" type="BDM_INCOME_SOURCE"/>
+			
+			<!-- Income year validation -->
+			<xsd:attribute name="previousYear" type="IEG_STRING"/>																							
+		</xsd:complexType>
+		</xsd:element>
+	<!-- INCOME -->
+	
+	<!-- Begin: Add Submission -->
+	<xsd:element name="Submission">
+		<xsd:complexType>
+            <xsd:attribute name="sigFirstName" type="IEG_STRING"/>
+            <xsd:attribute name="middleInitial" type="IEG_STRING"/>
+            <xsd:attribute name="sigLastName" type="IEG_STRING"/>
+            <xsd:attribute name="rightsAndResponsibilitiesInd" type="IEG_BOOLEAN"/>
+            <xsd:attribute name="acceptAttestation" type="IEG_YES_NO"/>
+            <xsd:attribute name="managementAndProtectionOfHealthInd" type="IEG_BOOLEAN"/>
+            <xsd:attribute name="authorizeReleaseInformationInd" type="IEG_BOOLEAN"/>
+            <xsd:attribute name="applicantSignatureInd" type="IEG_BOOLEAN"/>
+            <xsd:attribute name="interviewDate1" type="IEG_DATE"/>
+            <xsd:attribute name="timeAvailable1" type="CP_OA_TIME_SLOT" default=""/>
+            <xsd:attribute name="interviewDate2" type="IEG_DATE"/>
+            <xsd:attribute name="timeAvailable2" type="CP_OA_TIME_SLOT" default=""/>
+            <xsd:attribute name="interviewDate3" type="IEG_DATE"/>
+            <xsd:attribute name="timeAvailable3" type="CP_OA_TIME_SLOT" default=""/>           
+            <xsd:attribute name="acceptAttestationGettingStarted" type="IEG_YES_NO"/>
+            
+           <xsd:attribute name="areYouReadyToSubmit" type="IEG_YES_NO"/>            
+		</xsd:complexType>
+	</xsd:element>
+	<!-- End; Add Submission -->
+
+ 	<xsd:element name="OASPension">
+        <xsd:complexType>
+			<xsd:attribute name="reqPensionStartOption" type="CT_BDMOASPENSIONSTARTOPTION" />        
+			<xsd:attribute name="reqPensionStartDate" type="IEG_DATE"/>
+        </xsd:complexType>
+    </xsd:element>	
+
+ 	<xsd:element name="LegalStatus">
+        <xsd:complexType>
+            <xsd:attribute name="isOutOfCABorned" type="IEG_YES_NO" />
+			<xsd:attribute name="inCALegalStatus" type="CT_BDMOASLEGALSTATUS" />          
+			<xsd:attribute name="inCALegalStatusOthr" type="BDMOAS_LEGAL_STATUS_OTHER" /> 
+            <xsd:attribute name="isSponseredInCA" type="IEG_YES_NO" />	
+			<xsd:attribute name="outOfCALegalStatus" type="CT_BDMOASLEGALSTATUS" />  
+			<xsd:attribute name="outOfCALegalStatusOthr" type="BDMOAS_LEGAL_STATUS_OTHER" />			 		 			
+			<xsd:attribute name="canadaFirstEntryDate" type="IEG_DATE"/>			
+			<xsd:attribute name="immigrationDocType" type="CT_BDMOASIMMIGRATIONDOC" />			
+			<xsd:attribute name="immigrationDocTypOthr" type="BDMOAS_IMMIGRATION_DOC_OTHER" /> 	
+            <xsd:attribute name="isLivedInCASinceAge18" type="IEG_YES_NO" />	
+            <xsd:attribute name="isAplcntLivedInCAForLast2Yr" type="IEG_YES_NO" />
+            <xsd:attribute name="isPartnerLivedInCAForLast2Yr" type="IEG_YES_NO" />              
+            <xsd:attribute name="isAnotherResPeriodToEnter" type="IEG_YES_NO" />
+            <xsd:attribute name="isLivedInCAForLast2Yr" type="IEG_YES_NO" />
+            <xsd:attribute name="placeOfEntryInCanada" type="BDMOAS_PLACE_OF_ENTRY_IN_CANADA"/>
+            <xsd:attribute name="isLivedInCASinceBirth" type="IEG_YES_NO" />       	            					           		
+        </xsd:complexType>
+    </xsd:element>	
+    
+	<xsd:element name="ResidenceHistory">
+		<xsd:complexType>
+			<xsd:attribute name="residenceHistCountry" type="CT_COUNTRY"  />	
+			<xsd:attribute name="residenceHistStartDate" type="IEG_DATE"/>				
+			<xsd:attribute name="residenceHistEndDate" type="IEG_DATE"/>	
+            <xsd:attribute name="didWorkInCountry" type="IEG_YES_NO" />
+            <xsd:attribute name="didApplyForBenfInCountry" type="IEG_YES_NO" />   
+            <xsd:attribute name="foreignCountryIDNumber" type="BDMOAS_FRGN_COUNTRY_ID_NUMBER" />                        							
+		</xsd:complexType>
+	</xsd:element> 
+		  
+	<xsd:element name="AbsenceDetails">
+		<xsd:complexType>
+			<xsd:attribute name="absenceReason" type="BDMOAS_NATURE_OF_ABSENCE" /> 	
+		</xsd:complexType>
+	</xsd:element>
+		 
+ 	<xsd:element name="GIS">
+        <xsd:complexType>
+            <xsd:attribute name="applyingForGISInd" type="IEG_YES_NO" />
+   			<xsd:attribute name="isAnyGISSecCompleted" type="IEG_YES_NO" />
+        </xsd:complexType>
+    </xsd:element>	
+    
+	<xsd:element name="RetirementIncome">
+		<xsd:complexType>
+   			<xsd:attribute name="isRetirdOrRetirng2Yrs" type="IEG_YES_NO" />		
+			<xsd:attribute name="retirementDate" type="IEG_DATE"/>	
+   			<xsd:attribute name="isPensionReduced2Yrs" type="IEG_YES_NO" />		
+			<xsd:attribute name="reductionDate" type="IEG_DATE"/>				
+		</xsd:complexType>
+	</xsd:element>			    
+
+	<xsd:element name="ForeignIncome">
+		<xsd:complexType>
+   			<xsd:attribute name="isReceivingForeignIncome" type="IEG_YES_NO" />	
+			<xsd:attribute name="foreignIncomeType" type="BDMOAS_FOREIGN_INCOME_TYPE"/>
+			<xsd:attribute name="annualForeignIncomeStr" type="BDMOAS_ANNUAL_FRGN_INCM_AND_CURNCY"/>	
+			
+			<xsd:attribute name="incomeAmount" type="IEG_MONEY"/>
+			<xsd:attribute name="incomeYear" type="BDM_INCOME_YEAR"/>
+			<xsd:attribute name="incomeType" type="CT_INCOMETYPECODE"/>	
+			<xsd:attribute name="incomeTpOthrDesc" type="BDM_INCOME_TP_OTHER_DESC"/>				
+			<xsd:attribute name="incomeCountry" type="CT_COUNTRY"/>				
+			<xsd:attribute name="incomeCurrency" type="CT_BDMCURRENCY"/>						
+		</xsd:complexType>
+	</xsd:element>	
+
+	<xsd:element name="MaritalStatusInfo">
+		<xsd:complexType>
+			<xsd:attribute name="currentMaritalStatus" type="CT_BDMMARITALSTATUS"/>
+			<xsd:attribute name="maritalDate" type="IEG_DATE"/>				
+			<xsd:attribute name="isSeparated" type="IEG_YES_NO"/>
+			<xsd:attribute name="seperationDate" type="IEG_DATE"/>	
+			<xsd:attribute name="spouseFullName" type="BDM_NAME" /> 
+			<xsd:attribute name="spouseDateOfBirth" type="IEG_DATE"/> 
+			<xsd:attribute name="spouseSIN" type="BDM_SIN" />						
+		</xsd:complexType>
+	</xsd:element>	
+	
+	<xsd:element name="SponsorshipInfo">
+		<xsd:complexType>
+			<xsd:attribute name="isSpouseOrCLPartnrSponsored" type="IEG_YES_NO"/>
+			<xsd:attribute name="isApplicantSponsored" type="IEG_YES_NO"/>
+			<xsd:attribute name="isSponsored" type="IEG_YES_NO" />						
+		</xsd:complexType>
+	</xsd:element>	
+
+	<xsd:element name="WorldIncome">
+		<xsd:complexType>
+			<xsd:attribute name="isNonResidntNdIncmLTThrshld" type="BDMOAS_YES_NO_NA"/>
+			<xsd:attribute name="yearNdThresholdAmt" type="CT_BDMOASTAXTHRESHOLD"/>				
+		</xsd:complexType>
+	</xsd:element>		
+		
+	<xsd:element name="Declaration">
+		<xsd:complexType> 
+			<xsd:sequence minOccurs="0">           	            	      			
+                <xsd:element ref="MailingAddress" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element ref="IntlMailAddress" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="SearchAddress" minOccurs="0" maxOccurs="unbounded"/>   				  				   	          	            	
+			</xsd:sequence>
+            <xsd:attribute name="didAplicntSigned" type="IEG_YES_NO"/>
+            <xsd:attribute name="didAplicntSignedWithMark" type="IEG_YES_NO"/>            
+			<xsd:attribute name="aplicntSignedDate" type="IEG_DATE"/>	
+            <xsd:attribute name="didSpouseOrCLPSigned" type="IEG_YES_NO"/>
+            <xsd:attribute name="didSpouseOrCLPSignedWithMark" type="IEG_YES_NO"/>            
+			<xsd:attribute name="spouseOrCLPSignedDate" type="IEG_DATE"/>	
+            <xsd:attribute name="didTPSignedAsWitness" type="IEG_YES_NO"/>
+            <xsd:attribute name="didTPSignedBehalfOfAplcnt" type="IEG_YES_NO"/> 
+			<xsd:attribute name="thirdPartySignedDate" type="IEG_DATE"/>	           		
+            <xsd:attribute name="didTPSignedBehalfOfSpouse" type="IEG_YES_NO"/> 
+            <xsd:attribute name="tpSignedDateBehalfOfSpouse" type="IEG_DATE"/>	
+			<xsd:attribute name="thirdPartyName" type="BDMOAS_THIRD_PARTY_NAME"/>
+			<xsd:attribute name="relationshipToApplicant" type="CT_BDMOASWITNESSRELATIONSHIP"/>	
+			
+            <xsd:attribute name="mailingCountry" type="CP_COUNTRY" default="CA"/>
+            <xsd:attribute name="witnessAddrEnteredInd" type="IEG_BOOLEAN" default="false" />            	
+            <xsd:attribute name="wsMailValidOrOverride" type="IEG_STRING" default="1"/>  
+            <xsd:attribute name="invalidAddressIsContinue" type="IEG_YES_NO"/>            									   							
+		</xsd:complexType>		
+	</xsd:element>	
+	
+	<xsd:element name="Attestation">
+		<xsd:complexType>
+            <xsd:attribute name="applicantAttestationInd" type="IEG_BOOLEAN"/>
+            <xsd:attribute name="spouseOrCLPConsentInd" type="IEG_BOOLEAN"/>         
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

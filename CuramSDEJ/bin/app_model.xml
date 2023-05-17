@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2021. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant model build file for Curam projects.
+  It includes tasks to extract and generate the application's model.
+
+-->
+<project name="app_model" default="modelgen">
+
+  <!--  *************************  -->
+  <!--  ***  M O D E L G E N  ***  -->
+  <!--  *************************  -->
+  <target name="model.uptodate" unless="disable.uptodate.check">
+
+    <!-- Used to catch Evidence Generated Curam2.xml as well as the standard Curam.xml -->
+    <uptodate property="modelbuild.notRequired"
+      targetfile="${dir.bld.svr}/modelgen.marker">
+      <srcfiles dir="${dir.bld}" includes="${SERVER_MODEL_NAME}*.xml"/>
+    </uptodate>
+
+  </target>
+
+  <target name="model.echo" if="modelbuild.notRequired">
+    <echo level="info" message="Skipping Model generation because all files are up-to-date."/>
+  </target>
+
+  <!-- Generate sources from application model -->
+  <target name="modelgen" depends="model.uptodate, model.echo" unless="modelbuild.notRequired">
+    <antcall target="dispmsg" inheritall="false">
+      <param name="prm.msg" value="Starting modelgen"/>
+    </antcall>
+
+    <antcall target="dispmsg" inheritAll="false">
+      <param name="prm.msg" value="Generate server code"/>
+    </antcall>
+
+    <condition property="servergen.warningstoerrors" value="-warningstoerrors">
+      <istrue value="${prp.warningstoerrors}"/>
+    </condition>
+
+    <condition property="enable.facade.generation" value="-enablefacadegen">
+      <isset property="enablefacade"/>
+    </condition>
+    <property name="enable.facade.generation" value="" />
+
+    <!-- Set this here so it can be overridden from build.bat -->
+    <property name="servergen.warningstoerrors" value=""/>
+    <property name="extra.generator.options" value=""/>
+    <property name="generator.options" value=""/>
+
+    <path id="models.path">
+      <fileset dir="${base.dir}">
+        <include name="layeredmodels/*.xml"/>
+        <include name="build/${SERVER_MODEL_NAME}*.xml"/>
+      </fileset>
+    </path>
+    <pathconvert pathsep=" " property="modelfiles" refid="models.path"/>
+
+    <taskdef name="antstring" classname="curam.util.tools.AntStrings"
+      classpath="${jar.coreinf}:${jar.tools}"/>
+    <antstring to="prp.layername.lower" from="${LAYER_NAME}" type="lowercase" />
+
+    <path id="servercodegenerator.cp">
+      <fileset dir="${base.dir}/components">
+        <include name="*/lib/**/*.jar"/>
+      </fileset>
+      <pathelement path="${jar.tools}"/>
+      <pathelement path="${jar.dom4j}"/>
+      <pathelement path="${jar.coreinf}"/>
+      <pathelement path="${jar.clover}"/>
+      <pathelement path="${jar.commons}"/>
+      <pathelement path="${jar.j2ee}"/>
+      <pathelement path="${jar.log4j.2.core}"/>
+      <pathelement path="${jar.log4j.2.api}"/>
+      <pathelement location="${prop.file.location}"/>
+      <pathelement path="${jar.jde.commons}"/>
+    </path>
+
+    <java
+      classname="curam.util.tools.generator.ServerGenerator"
+      classpathref="servercodegenerator.cp"
+      fork="${java.fork}"
+      failonerror="${java.failonerror}"
+      maxmemory="${java.maxmemory}"
+      taskname="servercodegenerator"
+    >
+      <sysproperty key="curam.disable.dynamic.properties" value="true"/>
+      <jvmarg line="${java.jvmargs}" />
+      <jvmarg value="-Xms${java.maxmemory}" />
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}" />
+      <arg line="${modelfiles}" />
+      <arg value="-o" />
+      <arg path="${dir.bld.svr.gen}" />
+      <arg line="-layer ${prp.layername.lower}" />
+      <arg line="-modelName ${SERVER_MODEL_NAME}" />
+      <arg line="-projectpackage ${project.package}" />
+      <arg line="${prp.forcegen}" />
+      <arg line="${servergen.warningstoerrors}"/>
+      <arg line="${extra.generator.options}" />
+      <arg line="${generator.options}" />
+      <arg line="${enable.facade.generation}" />
+    </java>
+
+    <antcall target="mergeddl"/>
+
+    <touch file="${dir.bld.svr}/modelgen.marker"/>
+
+    <antcall target="dispmsg" inheritall="false">
+      <param name="prm.msg" value="Ending modelgen"/>
+    </antcall>
+
+  </target>
+
+  <target name="mergeddl">
+
+    <path id="mergeddl.cp">
+      <fileset dir="${base.dir}/components">
+        <include name="*/lib/**/*.jar"/>
+      </fileset>
+      <pathelement path="${jar.tools}"/>
+      <pathelement path="${jar.dom4j}"/>
+      <pathelement path="${jar.jaxen}"/>
+      <pathelement path="${jar.coreinf}"/>
+      <pathelement path="${jar.clover}"/>
+      <pathelement path="${jar.commons}"/>
+      <pathelement path="${jar.j2ee}"/>
+      <pathelement path="${jar.log4j.2.core}"/>
+      <pathelement path="${jar.log4j.2.api}"/>
+      <pathelement location="${prop.file.location}"/>
+      <pathelement path="${jar.jde.commons}"/>
+    </path>
+
+    <java
+      classname="curam.util.tools.ddl.MergeDDL"
+      classpathref="mergeddl.cp"
+      fork="${java.fork}"
+      failonerror="${java.failonerror}"
+      maxmemory="${java.maxmemory}"
+      taskname="mergeDDL"
+    >
+      <sysproperty key="curam.disable.dynamic.properties" value="true"/>
+      <jvmarg line="${java.jvmargs}" />
+      <jvmarg value="-Xms${java.maxmemory}" />
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}" />
+      <arg file="${SERVER_DIR}" />
+      <arg file="${dir.sde.scripts}" />
+      <arg file="${dir.bld.svr.gen.ddl}" />
+      <arg file="${dir.bld.ddl}" />
+      <arg value="${SERVER_COMPONENT_ORDER}" />
+      <arg value="${SERVER_LOCALE_LIST}" />
+    </java>
+
+  </target>
+
+</project>

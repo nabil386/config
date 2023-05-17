@@ -1,0 +1,1122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- 
+  Copyright 2009-2012 Curam Software Ltd.
+  All rights reserved.
+  
+  This software is the confidential and proprietary information of Curam
+  Software, Ltd. ("Confidential Information").  You shall not disclose such
+  Confidential Information and shall use it only in accordance with the
+  terms of the license agreement you entered into with Curam Software.
+-->
+<!--
+  Interface rule classes for the interaction between the CREOLE-based
+  Assessment Engine and CREOLE rules for calculating a case's eligibility
+  and entitlement.
+  
+  The rule classes for a CREOLE-based product must extend the rule classes in
+  this rule set, BUT NOTE that product rule classes should not extend these
+  rule classes directly - instead rule set developers for CREOLE-based
+  products should extend the default implementations in the
+  DefaultProductEligibilityEntitlement rule set.  These default implementations
+  provide some isolation against future changes to the
+  ProductEligibilityEntitlement rule classes in this rule set. 
+  
+  Customer code must not create, modify or remove instances of any of the rule
+  classes in this rule set.  Instances of these rule classes may only be
+  manipulated by the Curam Assessment Engine.
+  
+  -->
+<RuleSet
+  name="ProductEligibilityEntitlementRuleSet"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+>
+
+
+  <!--*********************************************************-->
+  <!-- Product ("type") classes - a single rule object instance
+       will be created for each period within the lifetime of a 
+       CREOLE-based product -->
+  <!--*********************************************************-->
+
+
+  <!-- A Curam Product (i.e. case type) -->
+  <Class
+    abstract="true"
+    name="AbstractProduct"
+  >
+
+
+    <!-- The types of objectives supported by this product. -->
+    <Attribute name="objectiveTypes">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="AbstractObjectiveType"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <!-- A type of objective -->
+  <Class
+    abstract="true"
+    name="AbstractObjectiveType"
+  >
+
+
+    <!-- Identifier for this objective type.
+      
+         The length of this identifier must be no more than the number of
+         characters dictated by the RULES_OBJECTIVE_ID domain (which by
+         default is 16 characters).
+      
+         This identifier must be unique amongst all objective types for the
+         Product. -->
+    <Attribute name="objectiveTypeID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Comments describing this type of objective -->
+    <Attribute name="comments">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The code for the localizable name of this objective type. -->
+    <Attribute name="name">
+      <type>
+        <codetableentry table="RulesComponentType"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The financial component type. -->
+    <Attribute name="financialComponentType">
+      <type>
+        <codetableentry table="RulesComponentFCType"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The rate target. -->
+    <Attribute name="rateTarget">
+      <type>
+        <codetableentry table="RulesComponentTarget"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Whether deductions are allowed against
+         objective instances for this objective type. -->
+    <Attribute name="isDeductionAllowable">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The tag types available for this objective type. -->
+    <Attribute name="tagTypes">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="AbstractTagType"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <!-- A tag type available for a type of objective.
+    
+       Specifies that the owning objective type can be delivered to its target
+       at a particular frequency. -->
+
+
+  <Class
+    abstract="true"
+    name="AbstractTagType"
+  >
+
+
+    <!-- Identifier for this tag type.
+      
+      This identifier must be representable as a Java "long". 
+      
+      This identifier must be unique amongst all tag types for the Product.
+      -->
+    <Attribute name="tagTypeID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The name of this tag type. -->
+    <Attribute name="name">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The frequency at which this tag type is delivered. -->
+    <Attribute name="pattern">
+      <type>
+        <javaclass name="curam.util.type.FrequencyPattern"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The type of value held in instances of this tag type. -->
+    <Attribute name="valueType">
+      <type>
+        <codetableentry table="RulesTagType"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <!--*********************************************************-->
+  <!-- Case ("instance" classes) -
+       instances will be created for each CREOLE-based case -->
+  <!--*********************************************************-->
+
+
+  <!-- A Curam Product Delivery case.
+    
+    The configuration of a Curam Product to use CREOLE eligibility/entitlement
+    rules will point to a product-specific concrete sub class of this rule
+    class.
+  -->
+  <Class
+    abstract="true"
+    name="AbstractCase"
+  >
+
+
+    <!-- The single rule object for the case's overall detemination. -->
+    <Attribute name="productDeliveryCase">
+      <type>
+        <ruleclass name="ProductDeliveryCase"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The timeline for when the case is eligible (according to the product's
+         rules).  -->
+    <Attribute name="isEligibleTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Boolean"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The objective timelines for this case. 
+         
+         Each objective timeline is for a particular type of objective; its
+         entitlement/value/target may vary over time.
+         -->
+    <Attribute name="objectiveTimelines">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="AbstractObjectiveTimeline"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <!-- The varying entitlement and value over time to an objective type for an
+       objective target (according to the product's rules).  -->
+  <Class
+    abstract="true"
+    name="AbstractObjectiveTimeline"
+  >
+
+
+    <!-- The type of this objective timeline. -->
+    <Attribute name="objectiveType">
+      <type>
+        <ruleclass name="AbstractObjectiveType"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!--
+      The varying entitlement to this objective.
+      -->
+    <Attribute name="isEntitledTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Boolean"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!--
+      The varying reference to additional business-specific information
+      relating to this objective.
+      
+      The relatedReference attribute can be used to store information that
+      will help distinguish the difference between one instance of a rules
+      objective and another, which may be important for Curam financial
+      processing to explain the breakdown of a payment.
+
+      The length of this identifier must be no more than the number of
+      characters dictated by the RELATED_REFERENCE_TEXT domain (which by
+      default is 4000 characters).
+    -->
+    <Attribute name="relatedReferenceTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="String"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The varying ID of the target participant (e.g. Person, Service
+         Supplier, Product Provider, Employer, etc.) which is targeted
+         by this objective.
+    
+         This numerical identifier must be representable as a Java "long". 
+      -->
+    <Attribute name="targetIDTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Number"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The tag timelines available for this objective timeline. -->
+    <Attribute name="tagTimelines">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="AbstractTagTimeline"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <!-- A tag timeline available for an objective timeline.  -->
+  <Class
+    abstract="true"
+    name="AbstractTagTimeline"
+  >
+
+
+    <!-- The type of this tag timeline. -->
+    <Attribute name="tagType">
+      <type>
+        <ruleclass name="AbstractTagType"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The varying value of this tag timeline.
+      
+      When converted to a String, the length of this value must be no more
+      than the number of characters dictated by the RULES_OBJECT_TAG_VALUE
+      domain (which by default is 1024 characters).
+      
+      -->
+    <Attribute name="valueTimeline">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <javaclass name="Object"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <!-- 
+    The rule class for calculating a determination for a case.  This rule class is internal to the CREOLE-based
+    Assessment Engine and may not be used by any other client.
+  -->
+  <Class name="ProductDeliveryCase">
+
+
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="ProductDeliveryCase.description"
+          resourceBundle="curam.core.rules.ProductEligibilityEntitlementRuleSet"
+        >
+          <!-- use toString so that the number is not formatted with commas nor precision truncated -->
+          <property name="toString">
+            <object>
+              <reference attribute="caseID"/>
+            </object>
+          </property>
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+
+
+    <!--
+      The identifier of the Product Delivery case being evaluated (from the
+      CaseHeader/ProductDelivery entity).
+      
+      This value is required so that the Assessment Engine can
+      search for the rule object for a particular case.
+    -->
+    <Attribute name="caseID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!--
+      The identifier of the parent integrated case, if any. 
+      
+      The value of this attribute will be set by Assessment Engine functionality
+      when a CREOLE-based case is created.
+    -->
+    <Attribute name="integratedCaseID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <Attribute name="caseHeader">
+      <type>
+        <ruleclass name="ProductDeliveryCaseHeader"/>
+      </type>
+      <derivation>
+        <singleitem
+          onEmpty="error"
+          onMultiple="error"
+        >
+          <readall ruleclass="ProductDeliveryCaseHeader">
+            <match retrievedattribute="caseID">
+              <reference attribute="caseID"/>
+            </match>
+          </readall>
+        </singleitem>
+      </derivation>
+    </Attribute>
+
+
+    <!--
+      The actual start date of this case, if any.
+    -->
+    <Attribute name="startDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <reference attribute="startDate">
+          <reference attribute="caseHeader"/>
+        </reference>
+      </derivation>
+    </Attribute>
+
+
+    <!--
+      The expected start date of this case, if any.
+     -->
+    <Attribute name="expectedStartDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <reference attribute="expectedStartDate">
+          <reference attribute="caseHeader"/>
+        </reference>
+      </derivation>
+    </Attribute>
+
+
+    <!--
+      The actual end date of this case, if any.
+    -->
+    <Attribute name="endDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <reference attribute="endDate">
+          <reference attribute="caseHeader"/>
+        </reference>
+      </derivation>
+    </Attribute>
+
+
+    <!--
+      The expected end date of this case, if any.
+    -->
+    <Attribute name="expectedEndDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <reference attribute="expectedEndDate">
+          <reference attribute="caseHeader"/>
+        </reference>
+      </derivation>
+    </Attribute>
+
+
+    <!--
+    The identifier of the product of which this case is an instance. 
+    
+    The value of this attribute will be set by Assessment Engine functionality
+    when a CREOLE-based case is created or modified.
+    -->
+    <Attribute name="productID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!--
+      The identifier of the primary concern role for this case. 
+    -->
+    <Attribute name="concernRoleID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <reference attribute="concernRoleID">
+          <reference attribute="caseHeader"/>
+        </reference>
+      </derivation>
+    </Attribute>
+
+
+    <!--
+  The product periods which contribute to the determination for this case.
+  
+  These are the product periods whose lifetimes overlap with the lifetime of the case, as governed
+  by the case's start and end dates (with actual dates taking precedence over expected dates).
+
+  Subclasses must not override this implementation. -->
+    <Attribute name="contributingProductPeriods">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <ruleclass name="ProductPeriod"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <call
+          class="curam.core.sl.infrastructure.assessment.impl.Statics"
+          method="contributingProductPeriods"
+        >
+          <type>
+            <javaclass name="curam.creole.value.Timeline">
+              <ruleclass name="ProductPeriod"/>
+            </javaclass>
+          </type>
+          <arguments>
+            <this/>
+          </arguments>
+        </call>
+      </derivation>
+    </Attribute>
+
+
+    <!--
+      The overall determination result for the case.
+      
+      The determination is calculated by collating the data from the eligibility/entitlement, key data
+      and decision details rule objects which apply to various parts of the case's lifetime, as
+      contributed by the various product periods.
+
+      Subclasses must not override this implementation. -->
+    <Attribute name="determinationResult">
+      <type>
+        <javaclass name="curam.core.sl.infrastructure.assessment.impl.DeterminationResult"/>
+      </type>
+      <derivation>
+        <call
+          class="curam.core.sl.infrastructure.assessment.impl.Statics"
+          method="determinationResult"
+        >
+          <type>
+            <javaclass name="curam.core.sl.infrastructure.assessment.impl.DeterminationResult"/>
+          </type>
+          <arguments>
+            <this/>
+          </arguments>
+        </call>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <!-- Rule Class to represent a Product Delivery Case Header -->
+  <Class name="ProductDeliveryCaseHeader">
+
+
+    <!-- Case ID. -->
+    <Attribute name="caseID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!--  Status Code.-->
+    <Attribute name="statusCode">
+      <type>
+        <codetableentry table="CaseStatus"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!--  Case Type Code.-->
+    <Attribute name="caseTypeCode">
+      <type>
+        <codetableentry table="CaseTypeCode"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Integrated CaseID -->
+    <Attribute name="integratedCaseID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!--  Case Reference-->
+    <Attribute name="caseReference">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The expected start date of the case. -->
+    <Attribute name="expectedStartDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The start date of the case. -->
+    <Attribute name="startDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The expected end date of the case. -->
+    <Attribute name="expectedEndDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The end date of the case. -->
+    <Attribute name="endDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Concern Role ID of the primary client of the case. -->
+    <Attribute name="concernRoleID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- Description for this Rule Class. -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="ProductDeliveryCaseHeader.description"
+          resourceBundle="curam.core.rules.ProductEligibilityEntitlementRuleSet"
+        >
+          <reference attribute="caseReference"/>
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <!-- A period of configuration within the lifetime of a CREOLE-based Product. -->
+  <Class name="ProductPeriod">
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="ProductPeriod.description"
+          resourceBundle="curam.core.rules.ProductEligibilityEntitlementRuleSet"
+        >
+          <!-- use toString so that the number is not formatted with commas nor precision truncated -->
+          <property name="toString">
+            <object>
+              <reference attribute="creoleProductPeriodID"/>
+            </object>
+          </property>
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The identifier of this product period. -->
+    <Attribute name="creoleProductPeriodID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The identifier of this product to which this period contributes configuration data. -->
+    <Attribute name="productID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The start date of this product period, if any. -->
+    <Attribute name="startDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The end date of this product period, if any. -->
+    <Attribute name="endDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- 
+      The identifier to the link to the rule class to be used for eligibility/entitlement decision calculations for parts of case lifetimes that
+      fall within this product period.
+    -->
+    <Attribute name="decisionRCLID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- 
+      The identifier to the link to the rule class to be used for key data calculations for parts of case lifetimes that
+      fall within this product period, if any.
+    -->
+    <Attribute name="otherKeyDataRCLID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- 
+      The link to the rule class to be used for eligibility/entitlement decision calculations for parts of case lifetimes that
+      fall within this product period.
+    -->
+    <Attribute name="decisionRuleClassLink">
+      <type>
+        <ruleclass name="RuleClassLink"/>
+      </type>
+      <derivation>
+        <!-- NB mandatory link -->
+        <singleitem
+          onEmpty="error"
+          onMultiple="error"
+        >
+
+
+          <readall ruleclass="RuleClassLink">
+            <match retrievedattribute="creoleRuleClassLinkID">
+              <reference attribute="decisionRCLID"/>
+
+
+            </match>
+          </readall>
+        </singleitem>
+      </derivation>
+    </Attribute>
+
+
+    <!-- 
+      The link to the rule class to be used for key data calculations for parts of case lifetimes that
+      fall within this product period, if any.
+    -->
+    <Attribute name="otherKeyDataRuleClassLink">
+      <type>
+        <ruleclass name="RuleClassLink"/>
+      </type>
+      <derivation>
+        <!-- NB optional link -->
+        <singleitem
+          onEmpty="returnNull"
+          onMultiple="error"
+        >
+          <readall ruleclass="RuleClassLink">
+            <match retrievedattribute="creoleRuleClassLinkID">
+              <reference attribute="otherKeyDataRCLID"/>
+
+
+            </match>
+          </readall>
+        </singleitem>
+      </derivation>
+    </Attribute>
+
+
+    <!-- 
+      The display categories which have been configured for this product period.
+    -->
+    <Attribute name="productPeriodDisplayCategories">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="ProductPeriodDisplayCategory"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <readall ruleclass="ProductPeriodDisplayCategory">
+          <match retrievedattribute="creoleProductPeriodID">
+            <reference attribute="creoleProductPeriodID"/>
+
+
+          </match>
+        </readall>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <!-- The configuration of a display category to use during a product period. -->
+  <Class name="ProductPeriodDisplayCategory">
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="ProductPeriodDisplayCategory.description"
+          resourceBundle="curam.core.rules.ProductEligibilityEntitlementRuleSet"
+        >
+          <!-- use toString so that the number is not formatted with commas nor precision truncated -->
+          <property name="toString">
+            <object>
+              <reference attribute="creoleProductPeriodDispCatID"/>
+            </object>
+          </property>
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The identifier of this product period display category. -->
+    <Attribute name="creoleProductPeriodDispCatID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The identifier of the product period which is configured to display this category. -->
+    <Attribute name="creoleProductPeriodID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The identifier of the product display category which the product period is configured to display. -->
+    <Attribute name="creoleProductDecisionDispCatID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- 
+      The identifier to the link to the rule class to be used for decision details to be displayed for this
+      product period display category.
+    -->
+    <Attribute name="decisionDetailsRCLID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- 
+      The link to the rule class to be used for decision details to be displayed for this
+      product period display category.
+    -->
+    <Attribute name="decisionDetailsRuleClassLink">
+      <type>
+        <ruleclass name="RuleClassLink"/>
+      </type>
+      <derivation>
+        <!-- NB mandatory link -->
+        <singleitem
+          onEmpty="error"
+          onMultiple="error"
+        >
+          <readall ruleclass="RuleClassLink">
+            <match retrievedattribute="creoleRuleClassLinkID">
+              <reference attribute="decisionDetailsRCLID"/>
+
+
+            </match>
+          </readall>
+        </singleitem>
+      </derivation>
+    </Attribute>
+
+
+  </Class>
+
+
+  <!-- A configured link to a rule class. -->
+  <Class name="RuleClassLink">
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage
+          key="RuleClassLink.description"
+          resourceBundle="curam.core.rules.ProductEligibilityEntitlementRuleSet"
+        >
+          <!-- use toString so that the number is not formatted with commas nor precision truncated -->
+          <property name="toString">
+            <object>
+              <reference attribute="creoleRuleClassLinkID"/>
+            </object>
+          </property>
+        </ResourceMessage>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The identifier of this rule class link. -->
+    <Attribute name="creoleRuleClassLinkID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The identifier of the rule set containing the rule class linked to. -->
+    <Attribute name="creoleRuleSetID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+
+
+    <!-- The name of the rule class linked to. -->
+    <Attribute name="ruleClassName">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+  </Class>
+
+
+</RuleSet>

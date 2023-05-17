@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2003, 2014. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003,2009, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information"). You                 -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Lists all of the work queues that the currently logged in user and     -->
+<!-- his organization objects (org object where supervisor holds a          -->
+<!-- lead position) are subscribed to.                                      -->
+<PAGE PAGE_ID="Supervisor_userWorkQueues" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE CLASS="MaintainSupervisorUsers" NAME="DISPLAY" OPERATION="listWorkQueuesForSupervisor"/>
+  <PAGE_PARAMETER NAME="taskOptionCode"/>
+  <PAGE_PARAMETER NAME="userName"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="userName"/>
+    <TARGET NAME="DISPLAY" PROPERTY="userName"/>
+  </CONNECT>
+
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL IMAGE="SubscribeButton" LABEL="ActionControl.SubscribeButton.label">
+      <!-- BEGIN, CR00427278, MV -->
+      <LINK OPEN_MODAL="true" PAGE_ID="Supervisor_subscribeUserToWorkQueues" WINDOW_OPTIONS="width=500">
+        <!-- END, CR00427278 -->
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="description"/>
+          <TARGET NAME="PAGE" PROPERTY="userFullName"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL IMAGE="ReserveButton" LABEL="ActionControl.ReserveButton.label">
+      <LINK OPEN_MODAL="true" PAGE_ID="Supervisor_reserveWorkQueueTasksForUser">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="description"/>
+          <TARGET NAME="PAGE" PROPERTY="userFullName"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="userName"/>
+          <TARGET NAME="PAGE" PROPERTY="userName"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <LIST TITLE="List.UserWQ.Title.Name">
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.UnSubscribe">
+        <LINK OPEN_MODAL="true" PAGE_ID="Supervisor_unsubscribeOrgObjectFromWorkQueue" WINDOW_OPTIONS="width=500">
+          <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="userName"/>
+            <TARGET NAME="PAGE" PROPERTY="userName"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="description"/>
+            <TARGET NAME="PAGE" PROPERTY="userFullName"/>
+          </CONNECT>
+          <!-- BEGIN, CR00161962, BK -->
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="dtls$dtls$workQueueID"/>
+            <TARGET NAME="PAGE" PROPERTY="workQueueID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="dtls$dtls$pageTitle"/>
+            <TARGET NAME="PAGE" PROPERTY="pageTitle"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="dtls$dtls$unsubscribePageText"/>
+            <TARGET NAME="PAGE" PROPERTY="unsubscribePageText"/>
+          </CONNECT>
+          <!-- END, CR00161962 -->
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.reservenexttask">
+        <LINK OPEN_MODAL="true" PAGE_ID="Supervisor_reserveNextWorkQueueTaskForUser" WINDOW_OPTIONS="width=500">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="dtls$dtls$workQueueID"/>
+            <TARGET NAME="PAGE" PROPERTY="workQueueID"/>
+          </CONNECT>
+          <!-- Begin CR00029761 SS-->
+          <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="userName"/>
+            <TARGET NAME="PAGE" PROPERTY="userName"/>
+          </CONNECT>
+          <!-- End CR00029761 SS-->
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="description"/>
+            <TARGET NAME="PAGE" PROPERTY="userFullName"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Title.Name" WIDTH="60">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="dtls$dtls$workQueueName"/>
+      </CONNECT>
+      <LINK PAGE_ID="Supervisor_workQueueWorkspace">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="dtls$dtls$workQueueID"/>
+          <TARGET NAME="PAGE" PROPERTY="workQueueID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="CONSTANT" PROPERTY="supervisor.viewTaskOption"/>
+          <TARGET NAME="PAGE" PROPERTY="taskOptionCode"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <!-- BEGIN, CR00161962, BK -->
+    <FIELD LABEL="Field.Title.ReservedTasks" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="dtls$dtls$numberOfReservedTasksByUser"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.TasksInQueue" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="dtls$dtls$numberOfWorkQueueTasks"/>
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <LIST TITLE="List.UserOrgObjectWQ.Title.Name">
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.UnSubscribe">
+        <LINK OPEN_MODAL="true" PAGE_ID="Supervisor_unsubscribeOrgObjectFromWorkQueue" WINDOW_OPTIONS="width=500">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="orgObjectsDtls$dtls$subscriberID"/>
+            <TARGET NAME="PAGE" PROPERTY="subscriberID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="orgObjectsDtls$dtls$subscriberType"/>
+            <TARGET NAME="PAGE" PROPERTY="subscriberType"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="description"/>
+            <TARGET NAME="PAGE" PROPERTY="userFullName"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="orgObjectsDtls$dtls$workQueueID"/>
+            <TARGET NAME="PAGE" PROPERTY="workQueueID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="orgObjectsDtls$dtls$pageTitle"/>
+            <TARGET NAME="PAGE" PROPERTY="pageTitle"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="orgObjectsDtls$dtls$unsubscribePageText"/>
+            <TARGET NAME="PAGE" PROPERTY="unsubscribePageText"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.reservenexttask">
+        <LINK OPEN_MODAL="true" PAGE_ID="Supervisor_reserveNextWorkQueueTaskForUser" WINDOW_OPTIONS="width=500">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="orgObjectsDtls$dtls$workQueueID"/>
+            <TARGET NAME="PAGE" PROPERTY="workQueueID"/>
+          </CONNECT>
+          <!-- Begin CR00029761 SS-->
+          <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="userName"/>
+            <TARGET NAME="PAGE" PROPERTY="userName"/>
+          </CONNECT>
+          <!-- End CR00029761 SS-->
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="description"/>
+            <TARGET NAME="PAGE" PROPERTY="userFullName"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Title.Name" WIDTH="26">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="orgObjectsDtls$dtls$workQueueName"/>
+      </CONNECT>
+      <LINK PAGE_ID="Supervisor_workQueueWorkspace">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="orgObjectsDtls$dtls$workQueueID"/>
+          <TARGET NAME="PAGE" PROPERTY="workQueueID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="CONSTANT" PROPERTY="supervisor.viewTaskOption"/>
+          <TARGET NAME="PAGE" PROPERTY="taskOptionCode"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Title.Subscriber" WIDTH="22">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="subscriberName"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.SubscriberType" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="subscriberType"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.ReservedTasks" WIDTH="16">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="orgObjectsDtls$dtls$numberOfReservedTasksByUser"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.TasksInQueue" WIDTH="16">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="orgObjectsDtls$dtls$numberOfWorkQueueTasks"/>
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00161962 -->
+  </LIST>
+
+
+</PAGE>

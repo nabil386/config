@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2021. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant build file for Curam projects.
+
+  You can use "ant -projecthelp" to get information about the important targets in this
+  build file.
+
+  For more detailed information about the progress of a build than is displayed on
+  the console, check the logs in your projects "build/log" directory.
+
+  This file is broadly organised into the following sections:
+
+  IMPORTS        - loads up all included build files.
+
+  UTILITIES      - loads up global utilities used by this build procedure.
+
+  MAIN TARGETS   - useful combinations of build steps
+
+  SETUP PROJECT  - sets up a new project
+
+  DATABASE       - builds a clean database
+
+-->
+<project name="serverbuild" default="server">
+
+  <!--  ***********************  -->
+  <!--  ***  I M P O R T S  ***  -->
+  <!--  ***********************  -->
+  <!-- build properties -->
+  <import file="./app_properties.xml"/>
+
+  <!-- build utilities -->
+  <import file="./app_utilities.xml"/>
+
+  <!-- build initialization -->
+  <import file="./app_init.xml"/>
+
+  <!-- model generation -->
+  <import file="./app_model.xml"/>
+
+  <!-- compile tasks for codetables and message files -->
+  <import file="./app_auxiliary.xml"/>
+
+  <!-- main compile tasks -->
+  <import file="./app_compile.xml"/>
+
+  <!-- clover code coverage -->
+  <import file="./app_clover.xml"/>
+
+  <!-- database build -->
+  <import file="./app_database.xml"/>
+
+  <!-- runtime management of application servers -->
+  <import file="./app_runtime.xml"/>
+
+  <!-- Extract model targets -->
+  <import file="./app_umltools.xml"/>
+
+  <!-- GSS Targets -->
+  <import file="./app_gss.xml"/>
+
+  <!--  *********************************  -->
+  <!--  ***  M A I N   T A R G E T S  ***  -->
+  <!--  *********************************  -->
+  <target name="model" depends="init, wsconnector2, emx2xml, modelgen, rulesfunctionsmerge" description="Extract model and generate code"/>
+  <target name="generated" depends="init, model, msggen, ctgen, propgen, check.dependencies, compile.generated, evgen, mergeuserpreferenceproperties, generateAdapters" description="model + msggen + ctgen + compile.generated + evgen + mergeuserpreferenceproperties"/>
+  <target name="implemented" depends="init, check.dependencies, compile.implemented" description="Calls compile.implemented which compiles and jars all handcrafted sources"/>
+  <target name="server" depends="init, generated, implemented" description="generated + implemented"/>
+  <target name="supplement" depends="init, compile.supplement" description="Compile supplementary dir (use -Dsupplement=)"/>
+
+  <target name="clean" description="CAUTION: Deletes ALL generated AND compiled outputs">
+  
+   <!-- BEGIN WI250537, YF -->
+   <!-- Delete the Rest.xml file from Tomcat defenitions -->
+   <delete file="${sysenv.CATALINA_HOME}/conf/Catalina/localhost/Rest.xml"/>
+   <!-- END WI250537, YF -->
+    <!-- Delete the ${dir.bld} directory tree -->
+    <delete dir="${dir.bld}"/>
+  </target>
+
+  <!--  ******************************************  -->
+  <!--  ***  S E T U P  N E W   P R O J E C T  ***  -->
+  <!--  ******************************************  -->
+  <target name="setupproject">
+
+   <!-- Call app_setup.xml to setup a new project -->
+    <ant antfile="${dir.sde.bin}/app_setup.xml" target="main" inheritall="false">
+    </ant>
+  </target>
+
+  <!--  ***********************  -->
+  <!--  ***  R E L E A S E  ***  -->
+  <!--  ***********************  -->
+  <target name="release" description="Gather release files.">
+
+   <!-- Call app_release.xml to copy files -->
+    <ant antfile="${dir.sde.bin}/app_release.xml" target="main" inheritall="false">
+	  <property name="create.zip" value="${create.zip}"/>
+    </ant>
+  </target>
+
+  <!--  *************************  -->
+  <!--  ***  C H E C K S Q L  ***  -->
+  <!--  *************************  -->
+  <target name="checksql" description="Checks the handcrafted SQL within the model.">
+
+   <!-- Call app_sqlchecker.xml to check SQL -->
+    <ant antfile="${dir.sde.bin}/app_sqlchecker.xml" target="check.sql" inheritall="false">
+    </ant>
+  </target>
+
+  <!--  *****************  -->
+  <!--  ***  T E S T  ***  -->
+  <!--  *****************  -->
+  <target name="test" description="Run unit tests">
+
+   <!-- Call app_test.xml to run the JUnit Tests -->
+    <ant antfile="${dir.sde.bin}/app_test.xml" target="test">
+    </ant>
+  </target>
+
+  <!--  ***************************  -->
+  <!--  ***  B U I L D   E A R  ***  -->
+  <!--  ***************************  -->
+  <!-- Target for building a deployable EAR file for WAS-->
+  <target name="websphereEAR" description="Build a deployable EAR file for Websphere App Server">
+
+    <!-- build application bean jar files -->
+    <ant antfile="${dir.sde.bin}/app_buildEAR.xml" target="main" inheritall="false">
+      <property name="dd.type" value="WAS"/>
+    </ant>
+  </target>
+
+  <!-- Target for building a deployable EAR file for WLP-->
+  <target name="libertyEAR" description="Build a deployable EAR file for Websphere Liberty App Server">
+
+    <!-- build application bean jar files -->
+    <ant antfile="${dir.sde.bin}/app_buildEAR.xml" target="main" inheritall="false">
+      <property name="dd.type" value="WLP"/>
+    </ant>
+  </target>
+
+  <!-- Target for building a deployable EAR file for WLS -->
+  <target name="weblogicEAR" description="Build a deployable EAR file for Weblogic Platform Server">
+
+    <!-- build application bean jar files -->
+    <ant antfile="${dir.sde.bin}/app_buildEAR.xml" target="main" inheritall="false">
+      <property name="dd.type" value="WLS"/>
+    </ant>
+  </target>
+
+  <target name="websphereEARGSS" description="Build a deployable EAR file for external deployment of a Search Server instance on WebSphere">
+
+    <!-- build application bean jar files -->
+    <ant antfile="${dir.sde.bin}/app_buildEAR.xml" target="main" inheritall="false">
+      <property name="dd.type"      value="WAS"/>
+      <property name="server.only"  value="true"/>
+      <property name="ear.name"     value="SearchServer"/>
+          <property name="SERVER_MODEL_NAME"   value="SearchServer"/>
+    </ant>
+
+  </target>
+
+  <target name="weblogicEARGSS" description="Build a deployable EAR file for external deployment of a Search Server instance on WebLogic">
+
+    <!-- build application bean jar files -->
+    <ant antfile="${dir.sde.bin}/app_buildEAR.xml" target="main" inheritall="false">
+      <property name="dd.type" value="WLS"/>
+      <property name="server.only"  value="true"/>
+      <property name="ear.name"     value="SearchServer"/>
+          <property name="SERVER_MODEL_NAME"   value="SearchServer"/>
+    </ant>
+
+  </target>
+
+
+  <!--  *******************************  -->
+  <!--  ***  C O N F I G   T E S T  ***  -->
+  <!--  *******************************  -->
+  <target name="configtest" description="Check your configuration settings, properties, versions">
+
+    <!-- Call app_configtest.xml to check settings -->
+    <ant antfile="${dir.sde.bin}/app_configtest.xml" target="main" inheritall="false">
+    </ant>
+  </target>
+
+  <!--  ***********************************  -->
+  <!--  ***  C O N F I G   R E P O R T  ***  -->
+  <!--  ***********************************  -->
+  <target name="configreport" description="Create a jar file containing all settings for problem solving by the IBM Corporation Support">
+
+    <ant antfile="${dir.sde.bin}/app_configreport.xml" target="main" inheritall="false">
+    </ant>
+  </target>
+
+  <!--  *************************************  -->
+  <!--  ***  B A T C H   L A U N C H E R  ***  -->
+  <!--  *************************************  -->
+  <target name="runbatch" description="Runs the Batch Launcher">
+
+    <!-- Call app_batchlauncher.xml to launch the Batch Launcher -->
+    <ant antfile="${dir.sde.bin}/app_batchlauncher.xml" target="main" inheritall="false">
+    </ant>
+  </target>
+
+  <!--  *******************************  -->
+  <!--  ***  W E B S E R V I C E S  ***  -->
+  <!--  *******************************  -->
+
+  <target name="websphereWebServices" description="Create a Websphere WebServices EAR File">
+    <ant antfile="${dir.sde.bin}/app_webservices.xml" target="main" inheritall="false">
+      <property name="app.server" value="was"/>
+    </ant>
+  </target>
+
+  <target name="libertyWebServices" description="Create a WLP WebServices EAR File">
+    <ant antfile="${dir.sde.bin}/app_webservices.xml" target="main" inheritall="false">
+      <property name="app.server" value="wlp"/>
+    </ant>
+  </target>
+
+  <target name="weblogicWebServices" description="Create a WebLogic WebServices EAR File">
+    <ant antfile="${dir.sde.bin}/app_webservices.xml" target="main" inheritall="false">
+      <property name="app.server" value="wls"/>
+    </ant>
+  </target>
+
+  <!--  **************************************************  -->
+  <!--  ***  W E B S E R V I C E S  C O N N E C T O R  ***  -->
+  <!--  **************************************************  -->
+
+  <target name="wsconnector2" description="Generates client stub connectors for outbound Axis2 web services from the registered WSDL files">
+    <ant antfile="${dir.sde.bin}/app_wsconnector_axis2.xml" target="main" inheritall="true">
+      <property name="clover.initstring" value="${clover.initstring}"/>
+    </ant>
+  </target>
+
+  <!--  ***********************************************  -->
+  <!--  ***  P A S S W O R D   E N C R Y P T I O N  ***  -->
+  <!--  ***********************************************  -->
+  <target name="encrypt" description="Encrypts the given password. (use -Dpassword=)">
+
+    <!-- Call app_encrypt.xml to encrypt the given password -->
+    <ant antfile="${dir.sde.bin}/app_encrypt.xml" target="encrypt.password" inheritall="false">
+    </ant>
+  </target>
+
+
+  <!--  ***********************************************  -->
+  <!--  ***  P A S S W O R D   D I G E S T  ***  -->
+  <!--  ***********************************************  -->
+  <target name="digest" description="Digests the given password. used for one-way encryption (use -Dpassword=)">
+
+    <!-- Call app_encrypt.xml to encrypt the given password -->
+    <ant antfile="${dir.sde.bin}/app_encrypt.xml" target="digest.password" inheritall="false">
+    </ant>
+  </target>
+
+
+  <!--  *********************************  -->
+  <!--  ***  E X T R A C T   D A T A  ***  -->
+  <!--  *********************************  -->
+  <target name="extractdata" description="Extract the contents of your database into DMX files (extract one table using -Dtablename=)">
+
+    <ant antfile="${dir.sde.bin}/app_dataextractor.xml" target="extractdata" inheritall="false">
+    </ant>
+
+  </target>
+
+  <!--  *********************************************  -->
+  <!--  ***  E X T R A C T   P R O P E R T I E S  ***  -->
+  <!--  *********************************************  -->
+  <target name="extractproperties" description="Extract the properties from your database into a PRX file">
+
+    <ant antfile="${dir.sde.bin}/app_propertiesmanager.xml" target="exportproperties" inheritall="false">
+    </ant>
+
+  </target>
+
+  <!--  ***********************************  -->
+  <!--  ***  LIST RULESETS INFORMATION  ***  -->
+  <!--  ***********************************  -->
+  <target name="listrulesets" description="List all rulesets available in the database">
+
+    <ant antfile="${dir.sde.bin}/app_rulesimportexport.xml" target="listrulesets" inheritall="false">
+    </ant>
+
+  </target>
+
+  <!--  **************************************  -->
+  <!--  ***  Export  rule set information  ***  -->
+  <!--  **************************************  -->
+  <target name="exportruleset" description="Export a rule set definition from database to file system (use -Drulesetid= -Dcomponent=)">
+
+    <ant antfile="${dir.sde.bin}/app_rulesimportexport.xml" target="exportruleset" inheritall="false">
+    </ant>
+  </target>
+
+  <!--  **************************************  -->
+  <!--  ***  Import  rule set information  ***  -->
+  <!--  **************************************  -->
+  <target name="importruleset" description="Import a rule set definition from file to database (use -Druleset.file= -Doverwrite=)">
+    <ant antfile="${dir.sde.bin}/app_rulesimportexport.xml" target="importruleset" inheritall="false">
+    </ant>
+  </target>
+
+  <!--  ****************************************  -->
+  <!--  ***  Validate  rule set information  ***  -->
+  <!--  ****************************************  -->
+  <target name="validateruleset" description="Validate a rule set definition (use -Druleset.file=)">
+    <ant antfile="${dir.sde.bin}/app_rulesvalidator.xml" target="validateruleset" inheritall="false">
+    </ant>
+  </target>
+
+  <!--  *************************************************  -->
+  <!--  ***  Validate  All the rule sets information  ***  -->
+  <!--  *************************************************  -->
+  <target name="validateallrulesets" description="Validate all the rule sets definition in Curam Application.">
+    <ant antfile="${dir.sde.bin}/app_rulesvalidator.xml" target="validateallrulesets" inheritall="false">
+    </ant>
+  </target>
+
+  <!--  ***********************************************************************  -->
+  <!--  ***  Validate the rule sets information in the specified directory  ***  -->
+  <!--  ***********************************************************************  -->
+  <target name="validaterulesets" description="Validate the rule sets definition in the specified directory (use -Drulesets.dir=)">
+    <ant antfile="${dir.sde.bin}/app_rulesvalidator.xml" target="validaterulesets" inheritall="false">
+    </ant>
+  </target>
+
+
+  <!--  ***********************************************************************  -->
+  <!--  ***      Validate the IEG2 scripts in the specified directory       ***  -->
+  <!--  ***********************************************************************  -->
+  <target name="validateieg2scripts" description="Validates the IEG2 scripts in the specified directory. Requires IntelligentEvidenceGathering component to run.">
+    <ant antfile="${dir.sde.bin}/app_ieg2validator.xml" target="validateieg2scripts" inheritall="false">
+    </ant>
+  </target>
+
+  <target name="createClasspaths" description="Creates the EJBServer and webclient Eclipse classpath files">
+
+    <attrib readonly="false">
+      <fileset dir="${SERVER_DIR}" includes=".classpath"/>
+      <fileset dir="${CLIENT_DIR}" includes=".classpath"/>
+    </attrib>
+
+    <!--  Create EJBServer classpath  -->
+    <taskdef name="createEJBClasspath"
+      classname="curam.util.tools.eclipse.CreateEJBServerClasspath"
+      classpath="${jar.tools}:${jar.coreinf}:${jar.dom4j}:${jar.commons}" />
+
+    <dirset dir="${base.dir}/components" id="source.directories.fileset">
+      <include name="*/source" />
+    </dirset>
+
+    <dirset dir="${base.dir}/components" id="test.directories.fileset">
+      <include name="*/tests" />
+    </dirset>
+
+    <dirset dir="${base.dir}" id="component.build.fileset">
+      <include name="build/svr/components/*" />
+    </dirset>
+
+    <fileset dir="${base.dir}/components" id="classpath.entries.fileset">
+      <include name="*/lib/*.classpathentry" />
+    </fileset>
+
+    <path id="libraries.fileset">
+      <pathelement path="${sysenv.PRE_CLASSPATH}"/>
+      <fileset dir="${base.dir}/components">
+        <include name="*/lib/*.jar" />
+      </fileset>
+      <fileset dir="${base.dir}/components">
+        <include name="*/tests/*.jar" />
+      </fileset>
+      <pathelement path="${sysenv.POST_CLASSPATH}"/>
+    </path>
+
+    <fileset dir="${base.dir}" id="additional.libraries.fileset">
+      <include name="components/Rest/graphql_lib/*.jar" />
+      <include name="components/Rest/restlib/RESTToolkit.jar" />
+      <include name="tools/lib/*.jar" />
+      <exclude name="tools/lib/javaee.jar" />
+    </fileset>
+
+    <createEJBClasspath
+       sourceDirRef="source.directories.fileset"
+       testDirRef="test.directories.fileset"
+       classPathEntriesRef="classpath.entries.fileset"
+       librariesRef="libraries.fileset"
+       j2eeJar="${J2EE_JAR}"
+       visibleSource="${dir.project.properties}/VisibleSource.properties"
+       visibleTest="${dir.project.properties}/VisibleTest.properties"
+       additionalLibrariesRef="additional.libraries.fileset"
+       componentBuildDirectoriesRef="component.build.fileset"
+       classpathFile="${base.dir}/.classpath"/>
+
+    <!--  Create webclient classpath  -->
+    <taskdef name="createWebClasspath"
+      classname="curam.util.tools.eclipse.CreateWebClientClasspath"
+      classpath="${jar.tools}:${jar.coreinf}:${jar.dom4j}:${jar.commons}" />
+
+    <fileset dir="${CLIENT_DIR}/components" id="libraries.fileset">
+      <include name="**/*.jar" />
+    </fileset>
+
+    <createWebClasspath
+       librariesRef="libraries.fileset"
+       componentOrder="${sysenv.CLIENT_COMPONENT_ORDER}"
+       j2eeJar="${J2EE_JAR}"
+       clientDir="${CLIENT_DIR}"
+       classpathFile="${CLIENT_DIR}/.classpath"/>
+
+  </target>
+
+  <!--  ***********************************************************************************  -->
+    <!--  ***  Import UIM to the Application Resource Store from the specified directory  ***  -->
+    <!--  ***********************************************************************************  -->
+    <target name="importuim">
+      <!-- HIDDEN TARGET FOR NOW
+           description="Import the UIM from a specified directory (use -Duim.dir=)">
+      -->
+      <ant
+        antfile="${dir.sde.bin}/app_importuim.xml"
+        target="importuim"
+        inheritall="false">
+      </ant>
+  </target>
+
+</project>

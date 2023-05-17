@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009, 2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                    -->
+<!--                                                                         -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information").  You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam Software.-->
+<!-- Description                                                             -->
+<!-- ===========                                                             -->
+<!-- Page to add existing milestone to an integrated case.                   -->
+<PAGE
+  PAGE_ID="Product_addExistingMilestoneToIntegratedCase"
+  WINDOW_OPTIONS="width=825"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Product"
+    NAME="DISPLAY"
+    OPERATION="listUnassociatedMilestoneForProductIDCaseType"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Product"
+    NAME="ACTION"
+    OPERATION="addExistingMilestoneWithConfigDetails"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseTypeID"/>
+  <PAGE_PARAMETER NAME="caseType"/>
+  <PAGE_PARAMETER NAME="description"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseTypeID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="productID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseType"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseType"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseTypeID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="caseTypeID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseType"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="caseType"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+  <LIST>
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      WIDTH="10"
+    >
+      <WIDGET TYPE="MULTISELECT">
+
+
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="milestoneConfigurationID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+
+
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="milestoneTabList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+
+
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Title.Name">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Product_viewMilestoneConfigurationModal"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="milestoneConfigurationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="milestoneConfigurationID"
+          />
+        </CONNECT>
+      </LINK>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.Type">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="type"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.DateCreated">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <CLUSTER TITLE="Cluster.Label.ConfigurationDetails">
+
+
+    <CLUSTER
+      LABEL_WIDTH="25"
+      SHOW_LABELS="FALSE"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD CONFIG="DynamicDropDown.MilestoneComponents">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="components"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <CLUSTER
+      LABEL_WIDTH="50"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+
+
+      <FIELD LABEL="Field.Label.CreationEvent">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="creationEvent"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.CompletionEvent">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="completionEvent"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+</PAGE>

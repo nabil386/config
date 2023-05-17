@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="PDCBankAccountRuleSet">
+  <Class
+    extends="DynamicEvidence"
+    extendsRuleSet="DynamicEvidenceRuleSet"
+    name="PDCBankAccount"
+  >
+    <Attribute name="jointAccountInd">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.Boolean"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="accountNumber">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <!-- BEGIN, CR00407584, SS -->
+    <Attribute name="iban">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00407584 -->
+    <Attribute name="accountName">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="fromDate">
+      <Annotations/>
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="accountStatus">
+      <Annotations/>
+      <type>
+        <codetableentry table="BankAccountStatus"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="sortCode">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.String"/>
+      </type>
+      <derivation>
+        <property name="toString">
+           <object>
+               <concat>
+                   <fixedlist>
+                       <listof>
+                           <javaclass name="String" />
+                       </listof>
+                       <members>
+                           <reference attribute="financialInstitutionNumber" />
+                           <reference attribute="branchTransitNumber" />
+                       </members>
+                   </fixedlist>
+               </concat>
+           </object>
+         </property>
+      </derivation>
+    </Attribute>
+    <!-- BEGIN, CR00407584, SS -->
+    <Attribute name="bic">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00407584 -->
+    <Attribute name="accountType">
+      <Annotations/>
+      <type>
+        <codetableentry table="BankAccountType"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="toDate">
+      <Annotations/>
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="preferredInd">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.Boolean"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="participant">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="related_participant">
+      <Annotations/>
+      <type>
+        <ruleclass
+          name="CaseParticipantRole"
+          ruleset="CaseEntitiesRuleSet"
+        />
+      </type>
+      <derivation>
+        <reference attribute="caseParticipantRoleRecord">
+          <create
+            ruleclass="CaseParticipantRoleCalculator"
+            ruleset="DynamicEvidenceRuleSet"
+          >
+            <reference attribute="participant"/>
+          </create>
+        </reference>
+      </derivation>
+    </Attribute>
+    <Attribute name="financialInstitutionNumber">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="branchTransitNumber">
+      <Annotations/>
+      <type>
+        <javaclass name="java.lang.String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <!-- BEGIN TASK 12976  -->
+    <Attribute name="bdmBankAccountReason">
+      <Annotations/>
+      <type>
+        <codetableentry table="BDMBankAccountReason"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <!-- END TASK 12976  -->
+  </Class>
+</RuleSet>

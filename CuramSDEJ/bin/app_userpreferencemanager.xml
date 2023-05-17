@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant database build file for Curam projects.
+  It includes tasks for compiling message files and codetables.
+
+-->
+<project name="app_userpreferencemanager" default="insertuserpreferences">
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="./app_properties.xml" />
+
+  <!--  **************************  -->
+  <!--  ***  Import Utilities  ***  -->
+  <!--  **************************  -->
+  <import file="./app_utilities.xml" />
+
+  <target name="insertuserpreferences"
+    depends="get.replaced.component.order, build.userpreferenceimport.properties"
+    description="Insert the user preferences">
+
+    <!-- Call app_batchlauncher.xml to launch the Batch Launcher -->
+    <ant
+      antfile="${dir.sde.bin}/app_batchlauncher.xml"
+      target="main"
+      inheritall="false">
+      <property name="batch.program" value="${batch.program}"/>
+      <property name="batch.parameters" value="${batch.parameters}"/>
+      <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+      <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+    </ant>
+
+    <echo>The user preferences have been imported into the database.
+    </echo>
+  </target>
+
+  <!--  *******************************************  -->
+  <!--  *** Set the user preference properties. ***  -->
+  <!--  *******************************************  -->
+  <target name="build.userpreferenceimport.properties">
+
+    <property name="batch.program"
+      value="curam.util.internal.userpreference.intf.UserPreferenceLoader.insertUserPreferencesToDatabase"/>
+    <property name="batch.parameters"
+      value="serverDirectory=${SERVER_DIR},infrastructureDirectory=${dir.sde},componentList=${replaced.component.order},localeList=${replaced.locale.list}"/>
+
+  </target>
+
+  <!--  **************************************  -->
+  <!--  ***  REPLACE.COMMAS.IN.STRING      ***  -->
+  <!--  **************************************  -->
+  <target name="get.replaced.component.order">
+
+    <!-- Replace all the commas in SERVER_COMPONENT_ORDER with ; -->
+    <taskdef name="antstring" classname="curam.util.tools.AntStrings"
+      classpath="${jar.coreinf}:${jar.tools}"/>
+    <antstring to="replaced.component.order"
+          oldchar=","
+          newchar=";"
+          from="${SERVER_COMPONENT_ORDER}"
+          type="replace" />
+
+    <antstring to="replaced.locale.list"
+          oldchar=","
+          newchar=";"
+          from="${SERVER_LOCALE_LIST}"
+          type="replace" />
+
+  </target>
+
+
+  <!--  *****************  -->
+  <!--  ***  THE END  ***  -->
+  <!--  *****************  -->
+
+</project>
+
+

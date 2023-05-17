@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                                     -->
+<!-- All rights reserved.                                                                   -->
+<!-- This software is the confidential and proprietary information of Curam                 -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose                    -->
+<!-- such Confidential Information and shall use it only in accordance with                 -->
+<!-- the terms of the license agreement you entered into with Curam                         -->
+<!-- Software.                                                                              -->
+<!-- Description                                                                            -->
+<!-- ===========                                                                            -->
+<!-- This page provide a view of an investigation allegation.                               -->
+<PAGE
+  PAGE_ID="InvestigationDelivery_allegationAttachmentDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="InvestigationDelivery"
+    NAME="DISPLAY"
+    OPERATION="readAllegationHomeDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="allegationID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="allegationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$allegationID"
+    />
+  </CONNECT>
+  
+    <MENU MODE="IN_PAGE_NAVIGATION">
+    
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Details"
+        STYLE="in-page-link"
+       >
+         <LINK
+           PAGE_ID="InvestigationDelivery_viewAllegation"
+          SAVE_LINK="false"
+          >  
+    
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="key$allegationID"
+        />
+        <TARGET
+          NAME="PAGE"
+          PROPERTY="allegationID"
+        />
+            </CONNECT>
+            
+        </LINK>
+      </ACTION_CONTROL>
+
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Participants"
+        STYLE="in-page-link"
+       >
+         <LINK
+           PAGE_ID="InvestigationDelivery_allegationParticipantDetails"
+          SAVE_LINK="false"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="key$allegationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="allegationID"
+              />
+            </CONNECT>
+              
+          </LINK>
+      </ACTION_CONTROL> 
+      
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Source"
+        STYLE="in-page-link"
+       >
+         <LINK
+           PAGE_ID="InvestigationDelivery_allegationSourceDetails"
+          SAVE_LINK="false"
+          >
+
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="key$allegationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="allegationID"
+              />
+            </CONNECT>    
+           </LINK>
+      </ACTION_CONTROL> 
+      
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Attachements"
+        STYLE="in-page-current-link"
+       >
+         <LINK
+           PAGE_ID="InvestigationDelivery_allegationAttachmentDetails"
+          SAVE_LINK="false"
+          >
+         
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="key$allegationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="allegationID"
+              />
+            </CONNECT>
+                  
+          </LINK>
+      </ACTION_CONTROL>
+    </MENU>   
+  
+    <CLUSTER>
+  
+  
+      <LIST>
+        <DETAILS_ROW>
+          <INLINE_PAGE PAGE_ID="Attachment_view">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="attachmentLinkID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="attachmentLinkID"
+              />
+            </CONNECT>
+          </INLINE_PAGE>
+        </DETAILS_ROW>
+  
+  
+        <ACTION_SET TYPE="LIST_ROW_MENU">
+          <ACTION_CONTROL LABEL="ActionControl.Label.EditAttachment">
+            <LINK
+              OPEN_MODAL="true"
+              PAGE_ID="Attachment_modify"
+            >
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="attachmentLinkID"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="attachmentLinkID"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="PAGE"
+                  PROPERTY="pageDescription"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="description"
+                />
+              </CONNECT>
+            </LINK>
+          </ACTION_CONTROL>
+  
+  
+          <ACTION_CONTROL LABEL="ActionControl.Label.RemoveAttachment">
+            <LINK
+              OPEN_MODAL="true"
+              PAGE_ID="Attachment_cancel"
+            >
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="attachmentLinkID"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="attachmentLinkID"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="result$attachmentList$attachmentLinkDetails$attachmentLinkDtls$versionNo"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="versionNo"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="PAGE"
+                  PROPERTY="pageDescription"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="description"
+                />
+              </CONNECT>
+            </LINK>
+          </ACTION_CONTROL>
+        </ACTION_SET>
+  
+  
+        <FIELD
+          LABEL="Field.Label.AttachmentDescription"
+          WIDTH="80"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$attachmentList$attachmentLinkDetails$attachmentLinkDtls$description"
+            />
+          </CONNECT>
+        </FIELD>
+  
+  
+        <FIELD
+          LABEL="Field.Label.AttachmentDate"
+          WIDTH="20"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$attachmentList$attachmentLinkDetails$attachmentDtls$receiptDate"
+            />
+          </CONNECT>
+        </FIELD>
+  
+  
+      </LIST>
+  
+  
+  </CLUSTER>
+  
+  </PAGE>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2021. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This contains the ant scripts for the JWT keystore and certificate.
+-->
+<project name="app_jwt" default="internal.jwt.jar">
+
+  <import file="./app_properties.xml" />
+
+  <property file="${jwt.keystore.prop.file.location}/${jwt.keystore.prop.file.name}"/>
+
+  <condition property="jwt.crypto.dir" value="${sysenv.JAVA_HOME}/jre/lib/ext" else="${sysenv.JAVA_HOME}/lib/ext">
+    <available file="${sysenv.JAVA_HOME}/jre/lib/ext"/>
+  </condition>
+
+  <condition property="java.cacerts.path" value="${sysenv.JAVA_HOME}/jre/lib/security/cacerts" else="${sysenv.JAVA_HOME}/lib/security/cacerts">
+      <available file="${sysenv.JAVA_HOME}/jre/lib/security/cacerts"/>
+    </condition>
+
+
+  <!-- The keystore and properties file will be copied to here before adding to jar -->
+  <property name="jwt.bld.dir" value="${dir.bld}/jwt"/>
+
+  <property name="jwt.gen.keystore.file" value="${jwt.bld.dir}/${jwt.keystore.filename}" />
+
+  <condition property="jwt.keystore.exists">
+    <available file="${jwt.keystore.location}/${jwt.keystore.filename}"/>
+  </condition>
+
+  <condition property="jwt.keystore.file" value="${jwt.keystore.location}/${jwt.keystore.filename}" else="${jwt.gen.keystore.file}">
+    <available file="${jwt.keystore.location}/${jwt.keystore.filename}"/>
+  </condition>
+
+
+  <!-- *************************************************************************************-->
+  <!-- Main target to handle the keystore, public cert and prop file used for signing a JWT -->
+  <!-- *************************************************************************************-->
+  <target name="internal.jwt.jar" >
+
+    <delete dir="${jwt.bld.dir}" />
+    <mkdir dir="${jwt.bld.dir}" />
+
+    <antcall target="createKeystoreAndSelfSignedCert" inheritall="true"/>
+    <antcall target="exportCert" inheritall="true" />
+    <antcall target="importCert" />
+
+    <copy file="${jwt.keystore.prop.file.location}/${jwt.keystore.prop.file.name}"
+            todir="${jwt.bld.dir}" overwrite="true" failonerror="${false}"/>
+
+    <jar destfile="${jwt.bld.dir}/JWTCryptoConfig.jar" update="true" filesonly="true" level="0">
+      <fileset dir="${jwt.bld.dir}">
+        <include name="${jwt.keystore.filename}"/>
+        <include name="${jwt.keystore.prop.file.name}"/>
+      </fileset>
+    </jar>
+
+    <copy file="${jwt.bld.dir}/JWTCryptoConfig.jar" todir="${jwt.crypto.dir}" overwrite="true" failonerror="true"/>
+
+  </target>
+
+  <!-- ******************************************************************-->
+  <!-- Create a keystore and self signed cert, unless one already exists -->
+  <!-- ******************************************************************-->
+  <target name="createKeystoreAndSelfSignedCert" description="Generate a keystore with a self signed cert for JWT usage" unless="${jwt.keystore.exists}" >
+
+    <exec executable="${sysenv.JAVA_HOME}/bin/keytool" failonerror="true" >
+      <arg line="-genkey"/>
+      <arg line="-noprompt"/>
+      <arg line="-alias ${jwt.key.alias}"/>
+      <arg line="-keyalg ${jwt.key.alg}"/>
+      <arg line="-keystore ${jwt.gen.keystore.file}"/>
+      <arg line="-keysize ${jwt.key.size}"/>
+      <arg line="-dname 'CN=${jwt.cert.common.name}, OU=${jwt.cert.organisation.unit}, O=${jwt.cert.organisation}, L=${jwt.cert.locality}, S=${jwt.cert.state}, C=${jwt.cert.country}'"/>
+      <arg line="-storepass ${jwt.keystore.password}"/>
+      <arg line="-keypass ${jwt.keystore.password}"/>
+      <arg line="-storetype ${jwt.keystore.type}"/>
+      <arg line="-validity ${jwt.cert.key.validity}"/>
+    </exec>
+    <echo message="A keystore with a self signed cert for JWT usage was created"/>
+
+  </target>
+
+  <!-- ****************************************************************-->
+  <!-- Export the public cert into the Java directory for later access -->
+  <!-- ****************************************************************-->
+  <target name="exportCert" description="Export JWT public certificate from keystore" >
+
+    <!-- export the public cert - this will be required by the AppServer configure build scripts later. -->
+    <exec executable="${sysenv.JAVA_HOME}/bin/keytool" failonerror="true" >
+      <arg line="-export"/>
+      <arg line="-storetype ${jwt.keystore.type}"/>
+      <arg line="-alias ${jwt.key.alias}"/>
+      <arg line="-storepass ${jwt.keystore.password}"/>
+      <arg line="-file ${jwt.crypto.dir}/${jwt.public.cert.filename}"/>
+      <arg line="-keystore ${jwt.keystore.file}"/>
+      <arg line="-keypass ${jwt.keystore.password}"/>
+      <arg line="-rfc"/>
+    </exec>
+    <echo message="Public certificate exported from JWT keystore to ${jwt.crypto.dir}/${jwt.public.cert.filename}"/>
+
+  </target>
+
+  <!-- **************************************************************************************************************************-->
+  <!-- Import the public cert into the Java cacerts trustsore. If an entry already exists it will be deleted before re-importing -->
+  <!-- **************************************************************************************************************************-->
+
+  <target name="importCert" description="Import certificate as trusted signer into java keystore" depends="delete.trusted.cert.entry" >
+
+    <exec executable="${sysenv.JAVA_HOME}/bin/keytool" failonerror="true" >
+      <arg line="-importcert"/>    
+      <arg line="-trustcacerts"/>
+      <arg line="-alias ${jwt.cert.alias}"/>
+      <arg line="-file ${jwt.crypto.dir}/${jwt.public.cert.filename}"/>
+      <arg line="-keystore ${java.cacerts.path}"/>
+      <arg line="-storepass ${jwt.truststore.password}"/>
+      <arg line="-noprompt"/>
+    </exec>
+    <echo message="Certificate imported as trusted signer into Java cacerts keystore"/> 
+
+  </target>
+
+  <target name="check.trusted.cert.entry" description="Checks if a jwt trusted cert entry exists in the Java cacerts truststore" >
+  
+    <exec executable="${sysenv.JAVA_HOME}/bin/keytool" outputproperty="existing.public.certs">
+      <arg line="-list"/>
+      <arg line="-keystore ${java.cacerts.path}"/>
+      <arg line="-storepass ${jwt.truststore.password}"/>
+      <arg line="-noprompt"/>
+    </exec>
+    <condition property="jwt.trusted.cert.exists">
+      <contains string="${existing.public.certs}" substring="${jwt.cert.alias}"/>
+    </condition>
+
+  </target>
+
+  <target name="delete.trusted.cert.entry" description="Delete certificate from CA cert store" if="jwt.trusted.cert.exists" depends="check.trusted.cert.entry">
+    <exec executable="${sysenv.JAVA_HOME}/bin/keytool" failonerror="false">
+      <arg line="-delete"/>
+      <arg line="-alias ${jwt.cert.alias}"/>
+      <arg line="-keystore ${java.cacerts.path}"/>
+      <arg line="-storepass ${jwt.truststore.password}"/>
+      <arg line="-noprompt"/>
+    </exec>
+    <echo message="Deleting existing public cert entry in trustsore before re-importing"/> 
+  </target>
+
+
+</project>

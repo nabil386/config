@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2020. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2005, 2009-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software Ltd. ("Confidential Information"). You shall not        -->
+<!-- disclose such Confidential Information and shall use it only in        -->
+<!-- accordance with the terms of the license agreement you entered into    -->
+<!-- with Curam Software.                                                   -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to invite a user to participate in a hearing.-->
+<PAGE
+  PAGE_ID="Appeal_modifyHearingAttendee"
+  WINDOW_OPTIONS="width=450"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="HearingAttendee"
+    NAME="DISPLAY"
+    OPERATION="view"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Hearing"
+    NAME="DISPLAY_ATTENDEE_TYPES"
+    OPERATION="readHearingUserAttendeeTypeList"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="HearingAttendee"
+    NAME="ACTION"
+    OPERATION="modify"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="hearingUserRoleID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="hearingUserRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="hearingUserRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="hearingUserRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="hearingUserRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="hearingUserRoleVersionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="hearingUserRoleVersionNo"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="35">
+    <FIELD
+      LABEL="Field.Label.Attendance"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="participatedCode"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="participatedCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00290455, MC -->
+    <FIELD
+      WIDTH="75"
+      LABEL="Field.Label.Type"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="typeCode"
+          NAME="DISPLAY_ATTENDEE_TYPES"
+          PROPERTY="typeCodeDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="typeCode"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="typeCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00290455 -->
+
+
+  </CLUSTER>
+
+
+</PAGE>

@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ieg-script
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ieg-schema.xsd"
+	finish-page="CommonIntake_finishInternalIntakeScript"
+	quit-page="CommonIntake_quitInternalIntakeScript" show-sections="true"
+	show-progress-bar="true" validate-save-and-exit="false">
+	<identifier id="BDMOASGISApplicationCP"
+		scriptversionnumber="V1" type="Intake" />
+	<!-- SUMMARY PAGE -->
+	<section>
+
+		<callout expression="CopyPartnerDetailsTemp()"
+			id="CopyPartnerDetailsTemp" />
+
+		<title id="Summary.Title"><![CDATA[Summary]]></title>
+		<summary-page id="SummaryPage" entity="Person"
+			show-back-button="true" show-exit-button="true"
+			show-save-exit-button="true">
+			<title id="SummaryPage.Title"><![CDATA[Summary]]></title>
+			<next-button-label id="NextButton.Label"><![CDATA[Continue]]></next-button-label>
+			<!-- PERSONAL INFO SUMMARY - BEGIN -->
+
+			<cluster grouping-id="PersonalInfo">
+				<title id="PI.Title"><![CDATA[Personal information]]></title>
+				<edit-link start-page="PersonalInformation"
+					skip-to-summary="false" />
+				<layout>
+					<label-width>0</label-width>
+				</layout>
+			</cluster>
+
+
+			<cluster grouping-id="PersonalInfo">
+				<layout>
+					<label-width>0</label-width>
+				</layout>
+				<display-text id="PI.Cluster.PersonalInfoDet"><![CDATA[<h3>Personal Information</h3>]]></display-text>
+			</cluster>
+
+			<cluster entity="Person"
+				criteria="isPrimaryParticipant==true" grouping-id="PersonalInfo">
+				<question id="personTitle">
+					<label id="PI.PersonalInfo.Question.Title"><![CDATA[<h4>Title<h4>]]></label>
+				</question>
+				<question id="sinRaw">
+					<label id="PI.ApplDet.SIN"><![CDATA[<h4>Social Insurance Number<h4>]]></label>
+				</question>
+				<question id="firstName">
+					<label id="PI.ApplDet.FirstName"><![CDATA[<h4>First given name (as indicated on your SIN card/letter)<h4>]]></label>
+				</question>
+				<question id="middleName">
+					<label id="PI.ApplDet.OGivenName"><![CDATA[<h4>Other given name(s)<h4>]]></label>
+				</question>
+				<question id="lastName">
+					<label id="PI.ApplDet.FamName"><![CDATA[<h4>Last name (as indicated on your SIN card/letter)<h4>]]></label>
+				</question>
+
+				<question id="LastNameAtBirth">
+					<label id="PI.ApplDet.LastNameBirth"><![CDATA[<h4>Last name at birth<h4>]]></label>
+				</question>
+
+				<question id="dateOfBirth">
+					<label id="PI.ApplDet.DOB"><![CDATA[<h4>Date of birth<h4>]]></label>
+				</question>
+				<question id="genderDropdown">
+					<label id="PI.ApplDet.Gender"><![CDATA[<h4>Gender<h4>]]></label>
+				</question>
+			</cluster>
+			<!-- PERSONAL INFO SUMMARY - END -->
+
+			<!-- ADDRESS INFO SUMMARY - BEGIN -->
+			<cluster>
+				<title id="AddressInformation.Title"><![CDATA[Address information]]></title>
+				<edit-link start-page="AddressInformationResidential"
+					skip-to-summary="false" />
+				<display-text id="AddressInformation.DisplayText"><![CDATA[<h3>Residential address</h3>]]></display-text>
+
+				<layout>
+					<label-width>0</label-width>
+				</layout>
+			</cluster>
+
+			<cluster entity="Person"
+				criteria="isPrimaryParticipant==true">
+				<question id="tempPartResAddress">
+					<label id="AddressInformation.ResAddr"><![CDATA[Residential Address]]></label>
+				</question>
+			</cluster>
+			<!-- <cluster entity="Person" criteria="isPrimaryParticipant==true"> <question 
+				id="resMail"> <label id="AddressInformation.ResAddr.MailingRed"><![CDATA[<h4>Is 
+				mailing address different from residential address?<h4>]]></label> </question> 
+				</cluster> <condition expression="isNotNull(Person.resMail) and Person.resMail==&quot;YN2&quot;"> 
+				<cluster entity="Person" criteria="isPrimaryParticipant==false"> <question 
+				id="tempPartMailAddress"> <label id="AddressInformation.MailAddr"><![CDATA[Mailing 
+				Address]]></label> </question> </cluster> </condition> -->
+
+			<!-- ADDRESS INFO SUMMARY - END -->
+
+			<condition expression="Person.isPrimaryParticipant==true">
+				<!-- LANGUAGE PREF. - BEING -->
+				<cluster entity="CommunicationPref">
+					<title id="ContactInfo.Title"><![CDATA[Contact information]]></title>
+					<display-text id="CommunicationPref.Title"><![CDATA[<h3>Preferred Contact Information</h3>]]></display-text>
+					<display-text id="WrittenComm.LabelTag"><![CDATA[<h3>Language preferences</h3>]]></display-text>
+					<edit-link start-page="CommunicationPref"
+						skip-to-summary="false" />
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+				</cluster>
+
+				<cluster entity="CommunicationPref">
+					<question id="languageS">
+						<label
+							id="CommunicationDetails.SectionOne.SpokenLanguageQuestion"><![CDATA[<h4>Preferred Language of Communication?<h4>]]></label>
+					</question>
+				</cluster>
+
+				<!-- LANGUAGE PREF. - END -->
+				<!-- COMMUNICATION DETAILS SUMMARY- BEGIN -->
+				<cluster>
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+					<display-text
+						id="CommunicationDetails.SectionOne.PTelephoneTitle"><![CDATA[<h3>Preferred phone number</h3>]]></display-text>
+				</cluster>
+
+				<cluster entity="CommunicationDetails">
+					<question id="phoneType">
+						<label
+							id="CommunicationDetails.SectionOne.ATelephoneTypeTitle" />
+					</question>
+					<question id="countryCode">
+						<label id="CommunicationDetails.SectionOne.ATelephoneCCode"><![CDATA[Country code]]></label>
+					</question>
+					<question id="fullPhoneNumber">
+						<label id="CommunicationDetails.SectionOne.ATelephoneNumber"><![CDATA[Phone number (5551212)]]></label>
+					</question>
+					<question id="phoneExt">
+						<label id="CommunicationDetails.SectionOne.ATelephoneExt"><![CDATA[Extension]]></label>
+					</question>
+					<skip-field />
+				</cluster>
+
+				<!-- ALTERNATE COMMUNICATION INFORMATION START -->
+				<condition
+					expression="isNotNull(CommunicationDetails.phoneNumber) and CommunicationDetails.phoneNumber!=&quot;&quot;">
+					<cluster>
+						<layout>
+							<label-width>0</label-width>
+						</layout>
+						<display-text
+							id="CommunicationDetails.Title.ContactInfoTitle"><![CDATA[<h3>Alternate contact information</h3>]]></display-text>
+					</cluster>
+					<cluster entity="CommunicationDetails"
+						criteria="isPrimaryCommunication==false">
+						<question id="phoneType">
+							<label
+								id="CommunicationDetails.SectionOne.ATelephoneTypeTitle" />
+						</question>
+						<question id="countryCode">
+							<label id="CommunicationDetails.SectionOne.ATelephoneCCode"><![CDATA[Country code]]></label>
+						</question>
+						<question id="fullPhoneNumber">
+							<label
+								id="CommunicationDetails.SectionOne.ATelephoneNumber"><![CDATA[Phone number (5551212)]]></label>
+						</question>
+						<question id="phoneExt">
+							<label id="CommunicationDetails.SectionOne.ATelephoneExt"><![CDATA[Extension]]></label>
+						</question>
+						<skip-field />
+					</cluster>
+				</condition>
+				<!-- COMMUNICATION DETAILS SUMMARY- END -->
+			</condition>
+
+
+
+			<cluster>
+				<layout>
+					<label-width>0</label-width>
+				</layout>
+				<display-text id="Cluster.Title.ResidenceHistory"><![CDATA[<h3>Residence History</h3>]]></display-text>
+			</cluster>
+
+			<cluster entity="LegalStatus">
+				<question id="isAplcntLivedInCAForLast2Yr">
+					<label id="Question.Label.LivedInCanadaForLastTwoYears">
+						<![CDATA[Have you lived in Canada for the last two years?]]>
+					</label>
+				</question>
+			</cluster>
+
+
+			<cluster>
+				<display-text id="Cluster.Title.ResidenceHistory"><![CDATA[<h3>Residence History</h3>]]></display-text>
+				<layout>
+					<label-width>0</label-width>
+				</layout>
+			</cluster>
+
+			<list entity="Person" criteria="isPrimaryParticipant==true">
+				<edit-link start-page="ResidenceHistory" />
+				<delete-link />
+				<list entity="ResidenceHistory">
+					<column id="residenceHistCountry">
+						<title id="Question.Label.Country">
+							<![CDATA[Country]]>
+						</title>
+					</column>
+					<column id="residenceHistStartDate">
+						<title id="Question.Label.StartDate">
+							<![CDATA[Start Date]]>
+						</title>
+					</column>
+					<column id="residenceHistEndDate">
+						<title id="Question.Label.EndDate">
+							<![CDATA[End Date]]>
+						</title>
+					</column>
+				</list>
+			</list>
+
+
+			<!-- BEGIN GIS -->
+			<cluster>
+				<title id="QuestionPage.Title.Income"><![CDATA[Income]]></title>
+				<edit-link start-page="ApplicantsIncome"
+					skip-to-summary="false" />
+				<display-text
+					id="QuestionPage.Title.RetirementIncomeDetails"><![CDATA[<h3>Retirement Income Details</h3>]]></display-text>
+				<layout>
+					<label-width>0</label-width>
+				</layout>
+			</cluster>
+			<cluster entity="RetirementIncome">
+				<question id="isRetirdOrRetirng2Yrs">
+					<label
+						id="Question.Label.DidYouRetireInLstTwoYrsExptToRtrNxtTwoYrs"><![CDATA[Did applicant retire from work in the last two years, or do they expect to retire in the next two years?]]></label>
+				</question>
+			</cluster>
+			<condition
+				expression="isNotNull(RetirementIncome.isRetirdOrRetirng2Yrs) and RetirementIncome.isRetirdOrRetirng2Yrs==&quot;YN1&quot;">
+				<cluster entity="RetirementIncome">
+					<question id="isRetirdOrRetirng2Yrs">
+						<label
+							id="Question.Label.IfRetirementIncomeEstmteForThisYrRepyourNetIncomeLstYr">
+							<![CDATA[(If yes, an income estimate for this year may replace your net income from last year.)]]>
+						</label>
+					</question>
+
+					<question id="retirementDate">
+						<label id="Question.Label.RetirementDate">
+							<![CDATA[Retirement Date]]>
+						</label>
+					</question>
+
+				</cluster>
+			</condition>
+
+			<cluster entity="RetirementIncome">
+				<question id="isPensionReduced2Yrs">
+					<label
+						id="Question.Label.DidYourPensionIncomeDroppedInLstTwoYrsExptToRtrNxtTwoYrs"><![CDATA[Has the applicant's pension income been reduced in the last two years or do they expect it will be reduced in the next two years?]]></label>
+				</question>
+			</cluster>
+			<condition
+				expression="isNotNull(RetirementIncome.isPensionReduced2Yrs) and RetirementIncome.isPensionReduced2Yrs==&quot;YN1&quot;">
+				<cluster entity="RetirementIncome">
+					<question id="isPensionReduced2Yrs">
+						<label
+							id="Question.Label.IfRetirementIncomeEstmteForThisYrRepyourNetIncomeLstYr">
+							<![CDATA[((If yes, you will be given the opportunity to provide an estimate of your income. If it is to your advantage, we would base the Guaranteed Income Supplement on your estimated income rather than on your reported income from last year.))]]>
+						</label>
+					</question>
+
+					<question id="reductionDate">
+						<label id="Question.Label.DateOfReduction">
+							<![CDATA[Reduction of Date]]>
+						</label>
+					</question>
+
+				</cluster>
+			</condition>
+
+
+			<condition expression="Person.isPrimaryParticipant==true">
+
+				<cluster>
+					<display-text id="Cluster.Title.ForeignIncomeDetails"><![CDATA[<h3>Foreign Income details</h3>]]></display-text>
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+				</cluster>
+
+				<cluster entity="Person">
+					<question id="hasForeignIncome">
+						<label id="Question.Label.DidApplicantReceiveForeignIncome">
+								<![CDATA[Do you receive income from another country? ]]>
+						</label>
+					</question>
+				</cluster>
+
+			</condition>
+
+
+			<cluster>
+				<display-text id="Cluster.Title.MaritalStatus"><![CDATA[<h3>Marital Status Information</h3>]]></display-text>
+				<layout>
+					<label-width>0</label-width>
+				</layout>
+			</cluster>
+
+			<cluster entity="MaritalStatusInfo">
+				<question id="currentMaritalStatus">
+					<label id="Question.Label.CurrentMaritalStatus">
+							<![CDATA[Current Marital Status]]>
+					</label>
+				</question>
+			</cluster>
+
+			<condition
+				expression="isNotNull(MaritalStatusInfo.currentMaritalStatus) and MaritalStatusInfo.currentMaritalStatus!=&quot;MS1&quot;">
+				<cluster entity="MaritalStatusInfo">
+					<question id="maritalDate">
+						<label id="Question.Label.Date">
+								<![CDATA[Date]]>
+						</label>
+					</question>
+				</cluster>
+			</condition>
+
+			<condition
+				expression="isNotNull(MaritalStatusInfo.currentMaritalStatus) and (MaritalStatusInfo.currentMaritalStatus==&quot;MS3&quot;  or MaritalStatusInfo.currentMaritalStatus==&quot;MS5&quot; or MaritalStatusInfo.currentMaritalStatus==&quot;MS6&quot;)">
+				<cluster entity="MaritalStatusInfo">
+					<display-text id="Cluster.Title.LivingApartReasons"><![CDATA[<h3>Living apart for reasons beyond contro</h3>]]></display-text>
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+				</cluster>
+				<cluster entity="MaritalStatusInfo">
+					<question id="isSeparated">
+						<label id="Question.Label.LivingApartReasonsBeyondControl">
+							<![CDATA[Are the applicant and their spouse/common-law partner living apart for reasons beyond their control?]]>
+						</label>
+					</question>
+				</cluster>
+			</condition>
+			<condition
+				expression="isNotNull(MaritalStatusInfo.isSeparated) and MaritalStatusInfo.isSeparated==&quot;YN1&quot;">
+				<cluster entity="MaritalStatusInfo">
+					<question id="seperationDate">
+						<label id="Question.Label.SeparatedDate">
+							<![CDATA[Date]]>
+						</label>
+					</question>
+				</cluster>
+			</condition>
+
+			<!-- START Client Attestation -->			
+			<cluster entity="Attestation">
+					<title id="Cluster.Title.ClientAttestation"><![CDATA[Clien Attestation]]></title>
+					<display-text id="Cluster.Title.Attestation"><![CDATA[<h3>Attestation</h3>]]></display-text>
+					<display-text id="Cluster.Description.Attestation"><![CDATA[If you make a false or misleading statement, you may be subject to an administrative monetary penalty and interest,]]></display-text>
+					<edit-link start-page="Attestation" skip-to-summary="false" />
+					<layout>
+						<label-width>0</label-width>
+					</layout>
+				</cluster>
+			<cluster entity="Attestation">
+				<question id="applicantAttestationInd">
+					<label id="Question.Label.ApplicantAttestation">
+							<![CDATA[By clicking this box, I declare that the information on this application is true and complete. I realize that..]]>
+					</label>
+				</question>
+			</cluster>
+			<!-- END Client Attestation -->
+			
+		</summary-page>
+
+	</section>
+
+</ieg-script>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:curam="http://www.curamsoftware.com/curam"
+  xmlns:cw="http://www.curamsoftware.com/curam/jde/client/curam-cw"
+  xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+  <jsp:directive.page import="curam.omega3.texthelper.TextHelper"/>
+  <jsp:directive.page isErrorPage="false" pageEncoding="UTF-8"
+    contentType="text/html;charset=UTF-8" isELIgnored="false"
+    language="java" buffer="32kb" errorPage="/cw/ErrorPage.do"/>
+  <jsp:output omit-xml-declaration="yes"/>
+  <jsp:text><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></jsp:text>
+  <jsp:scriptlet>
+    pageContext.setAttribute("pageLocale", 
+      curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+        pageContext.getSession()).getLocale().toString());
+  </jsp:scriptlet>
+  <curam:userPreferences localeCode="${pageScope.pageLocale}"/>
+  <jsp:scriptlet>
+    <![CDATA[
+    
+        javax.servlet.http.HttpServletRequest hsRequest;
+        hsRequest = (javax.servlet.http.HttpServletRequest) request;
+        
+        String id = request.getParameter("id");
+        
+        curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_getCWSessionToken_TH getCWSessionToken_TH = 
+          new curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_getCWSessionToken_TH(); 
+          
+        getCWSessionToken_TH.setFieldValue(getCWSessionToken_TH.key$playerID_idx, id);
+          
+        getCWSessionToken_TH.callServer();
+          
+        String token = getCWSessionToken_TH.getFieldValue(getCWSessionToken_TH.result$token_idx);         
+          
+	    String url = citizenworkspace.jsp.ProcessForwardExternalLogin.redirectToUserHome(
+	        hsRequest, response, out, token);
+		
+        response.sendRedirect(response.encodeRedirectURL(url)); 
+      ]]>
+  </jsp:scriptlet>   
+</jsp:root>    

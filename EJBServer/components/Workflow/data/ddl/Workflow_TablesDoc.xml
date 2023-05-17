@@ -1,0 +1,813 @@
+<?xml version="1.0" encoding="ISO-8859-1"?><entities>
+<entity name="ActivityInstance"><![CDATA[@curam.logicalname Activity Instance
+@curam.definition  The runtime data for an activity in an enacted workflow.
+@curam.description
+<P>A new Activity Instance row is created for each execution of an activity in the enactment of a workflow {@curam.entity internal.workflow.ProcessDefinition Process Definition}.</P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+      </P>
+<UL>
+<LI>system prints out a letter (automatic);</LI>
+<LI>{@curam.entity core.Users User} puts the letter in an envelope and posts it (manual); and</LI>
+<LI>'End Process' (a necessary step to end the workflow which is mandated by the Process Definition Tool).</LI>
+</UL> <P>{@curam.entity core.Person Person} John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a {@curam.entity internal.workflow.ProcessInstance Process Instance}.</P>
+<P>The {@curam.entity internal.workflow.ProcessDefinition Process Definition} specifies an initial activity ('system prints out a letter') and so the Workflow Engine creates an Activity Instance row for this initial activity and sets its startDateTime.  Because this activity is an automatic one, the Workflow Engine immediately calls the business processing defined by the activity.  Upon completion of the business processing, the Workflow Engine sets the endDateTime on the Activity Instance and marks it as completed.</P>
+<P>The Workflow Engine follows the transition out of the 'system prints a letter' activity and determines that the next activity is 'User puts the letter in an envelope'.  The Workflow Engine creates another Activity Instance row for this next step in the workflow and sets its startDateTime.  Because this activity is a manual one, the Workflow Engine creates a {@curam.entity workflow.Task Task} for a {@curam.entity core.Users User} to perform the work.  {@curam.entity core.Users User} Ronan Rooney performs the work and upon completion he opens the correspondence screen and marks the letter as 'sent'.  Curam raises an event which causes the Workflow Engine to:</P>
+<UL>
+<LI>close the {@curam.entity workflow.Task Task};</LI>
+<LI>set the endDateTime on the Activity Instance and mark it as completed; and</LI>
+<LI>follows the transition out of the 'User puts the letter in an envelope' activity.</LI>
+</UL> <P>The Workflow Engine determines that the next activity is 'End Process', which performs the necessary clean up and ends the {@curam.entity internal.workflow.ProcessInstance Process Instance}.</P>
+@curam.technotes
+<P>There is no 'Activity' database table.  An activity is an XML element defined within the {@curam.entity internal.workflow.ProcessDefinition Process Definition} metadata.</P>
+<P>For 'sequential' workflows there will only be at most one active Activity Instance for any {@curam.entity internal.workflow.ProcessInstance Process Instance}.  However, a {@curam.entity internal.workflow.ProcessDefinition Process Definition} can specify concurrent paths and thus for such 'concurrent' workflows a {@curam.entity internal.workflow.ProcessInstance Process Instance} may have multiple active Activity Instances.</P>
+<P>For a workflow which contains no loops, there will be at most one Activity Instance for each activity defined in the {@curam.entity internal.workflow.ProcessDefinition Process Definition}.  However, if the {@curam.entity internal.workflow.ProcessDefinition Process Definition} makes use of loops, then there can be multiple Activity Instances for the same activity (one for each iteration round the loop); note though that at most one of these 'loop' Activity Instances will be active.</P>
+<P>The Process Definition Tool (PDT) ensures that every {@curam.entity internal.workflow.ProcessDefinition Process Definition} has an 'End Process' activity.</P>
+@curam.exclude
+]]>
+<attribute fieldname="activityInstanceID" key="true" description="The unique identifier of a workflow activity instance."/>
+<attribute fieldname="activityID" description="The unique identifier of the workflow activity."/>
+<attribute fieldname="status" description="The status of the activity instance."/>
+<attribute fieldname="iterationID" description="An Activity contained within a loop may have multiple instances (one for each iteration of the loop) - this ID allows them to be distinguished from one another."/>
+<attribute fieldname="processInstanceID" description="The unique identifier of the process instance, within the workflow engine, that is responsible for the workflow of a particular process instance."/>
+<attribute fieldname="taskID" description="The ID of the Task associated with this activity instance, if there is one (this will only be populated for Manual Activities)."/>
+<attribute fieldname="category" description="The category of the workflow activity."/>
+<attribute fieldname="startDateTime" description="The date and time this activity instance was started at."/>
+<attribute fieldname="endDateTime" description="The date and time at which this activity instance completed."/>
+</entity>
+<entity name="ActivityOccurrence"><![CDATA[@curam.logicalname Parallel Activity Occurrence
+@curam.definition Extension of {@curam.entity internal.workflow.ActivityInstance Activity Instance} state data for Parallel Activity Instances - keeps track of which Workflow Data Object the Instance is processing.
+@curam.description
+<P>
+A Parallel Activity in a Workflow {@curam.entity internal.workflow.ProcessDefinition  Process Definition} allows a workflow to perform the same step on multiple data items in parallel.  The data items are obtained from the Parallel List WDO and one {@curam.entity internal.workflow.ActivityInstance Activity Instance} is created for each item in the list.  The Parallel Activity Occurrence record tracks which item in the list is associated with each Activity Instance.
+</P>
+@curam.example
+<P>
+    Your department is experiencing a significant amount of claim fraud, where clients are boosting their eligibility by claiming to have more dependents than they actually do.  You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to check the details for all dependents listed on claim forms.  The checks are time-consuming and you want to process claims quickly, so you simultaneously assign each dependent to an individual case worker for investigation (modeled as a Parallel Manual activity).
+</P>
+<P>{@curam.entity core.Person Person} John Smith submits a claim form, indicating that he has three dependents.  This causes your workflow to be enacted, creating a {@curam.entity internal.workflow.ProcessInstance Process Instance} and supplying the list of dependents as 'enactment data'.</P>
+<P>The system transitions to the first Activity definition in your workflow.  The Workflow Engine detects that this is a Parallel Manual Activity and divides up the list of dependents - creating one Activity Instance for each dependent in the list.</P>
+<P>It also creates a Parallel Activity Occurrence record for each Activity Instance, relating that instance to the dependent it will be processing.  Specifically, it records the position of that dependent in the supplied dependents list).</P>
+<P>The Workflow Engine creates Tasks for each of the Activity Instances, separately allocating those Tasks to independent caseworkers.  The Workflow Engine uses the Parallel Activity Occurrence information to populate each Task with the correct details for the respective dependent.</P>
+@curam.technotes
+<P>See the Workflow Reference Guide for further information.</P>
+@curam.exclude
+]]>
+<attribute fieldname="occurrenceCount" description="The number of the index from the parallel activity list workflow data object used to create this parallel activity instance."/>
+<attribute fieldname="activityInstanceID" key="true" description="The unique identifier of a parallel activity instance workflow data object."/>
+</entity>
+<entity name="BPOMethodLibrary"><![CDATA[@curam.logicalname Business Process Object Method
+@curam.definition  A business method which may be invoked by an {@curam.entity internal.workflow.ActivityInstance Activity Instance}.
+@curam.description
+<P>An activity can specify that when it executes, a business method must be invoked.</P>
+<P>The following types of business method can be invoked:</P>
+<UL>
+<LI>a method which performs some business processing;</LI>
+<LI>a method which allocates manual work to an allocation target; and</LI>
+<LI>a method which performs deadline processing for a {@curam.entity workflow.Task Task} whose deadline has expired.</LI>
+</UL>
+@curam.example
+<P>Your organization has a process whereby correspondence is sent to customers whenever their payment details change.</P>
+<P>You plan to implement this process using Curam Workflow.  You identify that two business methods will be required by your workflow:</P>
+<UL>
+<LI>a 'print' method to print a 'payment increase' letter to a {@curam.entity core.Person Person}; and</LI>
+<LI>an 'identify user' allocation function to identify a {@curam.entity core.Users User} who works in an office close to the {@curam.entity core.Person Person's}{@curam.entity core.Address Address}.</LI>
+</UL> <P>You implement these two methods and use the Admin screens to add these methods to the BPO Method Library.  The Admin server application creates two Business Process Object Method rows for your methods.  Your methods are now available for use when defining your workflow.</P>
+<P>
+    You now define your workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}), containing these activities:
+      </P>
+<UL>
+<LI>system prints out a letter (automatic) - you specify that this automatic activity should invoke your 'print' method;</LI>
+<LI>{@curam.entity core.Users User} puts the letter in an envelope and posts it (manual) - you specify that the relevant {@curam.entity core.Users User} should be identified by your 'identify user' allocation function.</LI>
+</UL> <P>{@curam.entity core.Person Person} John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow.</P>
+<P>The Workflow Engine executes the initial activity ('system prints out a letter') and invokes your 'print' method passing the required parameters (e.g. the {@curam.entity core.CaseHeader case} identifier).</P>
+<P>The Workflow Engine transitions to the next activity ('User puts the letter in an envelope').  Because this activity is a manual one, the Workflow Engine creates a {@curam.entity workflow.Task Task} for a {@curam.entity core.Users User} to perform the work, and invokes your allocation function to determine which {@curam.entity core.Users User} should be allocated the {@curam.entity workflow.Task Task}.</P>
+@curam.technotes
+<P>This table exists purely so that Process Definition Tool (PDT) can list the subset of available business methods which you intend to use in your workflows.</P>
+<P>A business method is referenced by name only - the method signature is not included.  As such:</P>
+<UL>
+<LI>overloaded methods (i.e. those with the same name but different signatures) cannot be invoked; and</LI>
+<LI>any changes you make to the signature of a method may result in execution-time failures of workflows that reference your method.</LI>
+</UL> <P>See the Workflow Guide for further information.</P>
+@curam.exclude
+]]>
+<attribute fieldname="methodID" key="true" description="The unique identifier of a BPO method library entry."/>
+<attribute fieldname="interfaceName" description="Specifies the qualified class name of the business process object for a BPO Method library entry."/>
+<attribute fieldname="methodName" description="The method name on the associated interface for a BPO Method Library entry."/>
+<attribute fieldname="category" description="The code of the category that a BPO method library entry is associated with."/>
+<attribute fieldname="type" description="The type of business process object method reference being created. These types include allocation and deadline functions."/>
+<attribute fieldname="comments" description="The comments used to describe the BPO method library entry."/>
+</entity>
+<entity name="BizObjAssociation"><![CDATA[@curam.logicalname Business Object Association
+@curam.definition  An association of a {@curam.entity workflow.Task Task} with a row on a database table.
+@curam.description
+<P>This table allows a {@curam.entity workflow.Task Task} to be related to any other row of database data, e.g.:</P>
+<UL>
+<LI>a {@curam.entity core.Person Person}; or</LI>
+<LI>a {@curam.entity core.CaseHeader Case};</LI>
+</UL>
+<P>This facility enables {@curam.entity workflow.Task Task} functionality to be extended and permits custom application functionality to tie any required information to a {@curam.entity workflow.Task Task}.</P>
+@curam.example
+<P>A {@curam.entity workflow.Task Task} is created which relates to one of {@curam.entity core.Person Person} John Smith's {@curam.entity core.CaseHeader Cases}.</P>
+<P>Two rows are created on this entity:</P>
+<UL>
+<LI>one to associate the {@curam.entity workflow.Task Task} with {@curam.entity core.Person Person} John Smith; and</LI>
+<LI>one to associate the {@curam.entity workflow.Task Task} with John's {@curam.entity core.CaseHeader Case}.</LI>
+</UL>
+<P>These rows allow the {@curam.entity workflow.Task Task} to be listed both on John's Person Home Page and on the Case Home Page.</P>
+@curam.technotes
+<P>See the Workflow Reference Guide for further information.</P>
+@curam.exclude
+]]>
+<attribute fieldname="bizObjAssocID" key="true" description="The ID of the business object association."/>
+<attribute fieldname="taskID" description="The ID of the task to associate with a business object."/>
+<attribute fieldname="bizObjectType" description="Specifies the business object type."/>
+<attribute fieldname="bizObjectID" description="Identifies a particular instance of the specified business object type."/>
+</entity>
+<entity name="EventWait"><![CDATA[@curam.logicalname Event Wait
+@curam.definition  An event which must occur before an {@curam.entity internal.workflow.ActivityInstance Activity Instance} can be completed.
+@curam.description
+<P>Only {@curam.entity internal.workflow.ActivityInstance Activity Instances} which depend on some other event have an associated Event Wait.  These {@curam.entity internal.workflow.ActivityInstance Activity Instances} are:</P>
+<UL>
+<LI>manual {@curam.entity internal.workflow.ActivityInstance Activity Instances} ({@curam.entity workflow.Task Tasks}), which wait for some user-generated event; or </LI>
+<LI>'event wait' {@curam.entity internal.workflow.ActivityInstance Activity Instances}, which wait for some system-generated event not strictly related to the workflow, e.g. the completion of some deferred or batch-driven application processing.</LI>
+</UL> <P>Automatic {@curam.entity internal.workflow.ActivityInstance Activity Instances} do not depend on an event and are automatically marked as completed by the Workflow Engine as soon as they are executed.  An automatic {@curam.entity internal.workflow.ActivityInstance Activity Instance} has no related Event Wait.</P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+      </P>
+<UL>
+<LI>system prints out a letter (automatic); and</LI>
+<LI>{@curam.entity core.Users User} puts the letter in an envelope and posts it (manual).</LI>
+</UL> <P>{@curam.entity core.Person Person} John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a {@curam.entity internal.workflow.ProcessInstance Process Instance}.</P>
+<P>The system creates and executes the first (automatic) {@curam.entity internal.workflow.ActivityInstance Activity Instance} which prints out the letter.</P>
+<P>The system transitions to the next activity definition in your workflow and creates the second {@curam.entity internal.workflow.ActivityInstance Activity Instance}. Because this {@curam.entity internal.workflow.ActivityInstance Activity Instance} is a manual one, when the Workflow Engine executes the {@curam.entity internal.workflow.ActivityInstance Activity Instance}, it also creates:</P>
+<UL>
+<LI>a {@curam.entity workflow.Task Task} which details the work to be done; and</LI>
+<LI>an Event Wait which registers the Workflow Engine's 'interest' in the result of the {@curam.entity workflow.Task Task}.</LI>
+</UL> <P>The {@curam.entity workflow.Task Task} is assigned to {@curam.entity core.Users User} Ronan Rooney.  The {@curam.entity workflow.Task Task} instructs Ronan to collect the letter from the printer and post it.  Ronan performs this work and in the correspondence screen marks the letter as 'sent'.  Curam raises a 'correspondence sent' event by calling the 'raise event' function.</P>
+<P>The Event Match Engine:</P>
+<UL>
+<LI>receives the event;</LI>
+<LI>searches the Event Wait table to identify which {@curam.entity internal.workflow.ActivityInstance Activity Instance(s)} are waiting on the event;</LI>
+<LI>finds the Event Wait relating to the {@curam.entity internal.workflow.ActivityInstance Activity Instance} for the 'User puts the letter in an envelope and posts it' activity in the {@curam.entity internal.workflow.ProcessInstance Process Instance} created for John Smith's payment increase;</LI>
+<LI>deletes the Event Wait row;</LI>
+<LI>creates a {@curam.entity internal.workflow.MatchedEvtArchive Workflow Event Audit} row; and</LI>
+<LI>instructs the Workflow Engine to continue.</LI>
+</UL> <P>The Workflow Engine marks the {@curam.entity internal.workflow.ActivityInstance Activity Instance} as completed and follows the transition out of it.</P>
+@curam.technotes
+<P>The metadata for the activity stored in the {@curam.entity internal.workflow.ProcessDefinition Process Definition} defines whether an {@curam.entity internal.workflow.ActivityInstance Activity Instance} will have an associated Event Wait.</P>
+<P>An {@curam.entity internal.workflow.ActivityInstance Activity Instance} may wait on multiple events and thus have multiple related Event Wait rows.  When any one of these events is raised, the Workflow Engine:</P>
+<UL>
+<LI>removes all Event Wait rows related to the {@curam.entity internal.workflow.ActivityInstance Activity Instance};</LI>
+<LI>creates a single {@curam.entity internal.workflow.MatchedEvtArchive Workflow Event Audit} row detailing which Event Wait was actually matched to the event; and</LI>
+<LI>continues processing the workflow.</LI>
+</UL>
+@curam.exclude
+]]>
+<attribute fieldname="eventWaitID" key="true" description="The unique identifier of a workflow event wait."/>
+<attribute fieldname="activityInstanceID" description="The unique identifier of a workflow activity instance. This is used to allow an event wait to be associated to a specific activity instance in the workflow system. This association then allows the workflow engine to ascertain which activity instance (if any) to complete as a result of an associated event being raised."/>
+<attribute fieldname="eventClass" description="The concept of an event class is used to group related event types. For example, an event class of 'Case' describes a set of events related to the status of a 'Case'.  The corresponding event types for this event class could be  CloseCase,  OpenCase, SuspendCase etc."/>
+<attribute fieldname="eventType" description="An identifier for an event on the event class. For  example, where the  business object type is  'Case', the event type might be 'Case_Open' or Case_Closed etc. The two fields uniquely identify the nature of the event."/>
+<attribute fieldname="eventMatchData" description="A unique identifier related to the event class for which the event wait is created. The identifier is used by the event handler to find additional information relevant to handling the event. For example, where the business object type specified for an event is equal to  'Case', the event data could be case identifier, i.e. primaryEventData='12345'."/>
+</entity>
+<entity name="FailedMessageException"><![CDATA[@curam.logicalname Failed Message Exception
+@curam.definition  Workflow exception description arising from a failure in business application processing.
+@curam.description Maintains the error stack trace from a Workflow failure.
+@curam.exclude
+]]>
+<attribute fieldname="failedMessageID" key="true" description="The unique ID of a failed message."/>
+<attribute fieldname="exceptionMessage" description="The failure stack trace."/>
+</entity>
+<entity name="FailedMessage">
+<attribute fieldname="failedMessageID" key="true" description="The unique ID of a failed message."/>
+<attribute fieldname="processInstanceID" description="The unique identifier of the process instance, within the workflow engine, that is responsible for the workflow of a particular process instance."/>
+<attribute fieldname="messageType" description="The message type of the dequeued message."/>
+<attribute fieldname="failureTime" description="The time at which the processed JMS message failed."/>
+<attribute fieldname="retryCount" description="The number of times this failed message has been manually retried by removing it from the failed message table and en-queuing it."/>
+<attribute fieldname="activityInstanceID" description="The unique identifier of a workflow activity instance."/>
+<attribute fieldname="iterationID" description="The ID of the loop iteration to which the activity instance belongs."/>
+<attribute fieldname="messageStatus" description="The message status of the failed message."/>
+<attribute fieldname="resolvedTime" description="The time at which the failed message is resolved."/>
+</entity>
+<entity name="Iteration"><![CDATA[@curam.logicalname Iteration
+@curam.definition  The details of each iteration of a loop block in a workflow {@curam.entity internal.workflow.ProcessInstance Process Instance}.
+@curam.description
+<P>Each time a LoopBegin activity in a loop block (LoopBegin/LoopEnd activity pair) is executed, the details of the current iteration are stored in this table.</P>
+<P>
+    All {@curam.entity internal.workflow.ActivityInstance Activity Instances} and {@curam.entity internal.workflow.TransitionInstance Transition Instances} created within the context of a loop iteration will have a reference to the Iteration under which they were created.
+    </P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to allow {@curam.entity core.Users Users} submit a {@curam.entity core.CaseHeader Case} for approval.  The activities defined in your workflow are:
+      </P>
+<UL>
+<LI>'Loop Begin' (An activity that indicates the start of a loop block) with loop condition 'While the case has not been approved, do the following'.</LI>
+<LI>Submit the {@curam.entity core.CaseHeader Case} for approval. (manual)</LI>
+<LI>Examine the {@curam.entity core.CaseHeader Case} and determine whether it should be approved (manual).</LI>
+<LI>'Loop End' (An activity that signifies the end of a loop block).</LI>
+<LI>Notify the Case owner of the {@curam.entity core.CaseHeader Case} approval (automatic).</LI>
+</UL> <P>
+      Ronan Rooney requires to submit a case for approval.  A {@curam.entity internal.workflow.ProcessInstance Process Instance} of the desired workflow is enacted and an {@curam.entity internal.workflow.ActivityInstance instance} of the 'Loop Begin' activity is executed.  An iteration record of the loop is written to this table with an iteration count of zero (the first iteration of the loop).
+    </P>
+<P>
+      When Ronan Rooney submits the desired case for approval, an {@curam.entity internal.workflow.ActivityInstance Activity Instance} of the  'submit for approval' manual activity is created.  As this activity is in a loop, the {@curam.entity internal.workflow.ActivityInstance Activity Instance} is associated with the iteration Id of the iteration record created.
+    </P>
+<P>
+      John Smith examines the case in the second manual activity (which has its own {@curam.entity internal.workflow.ActivityInstance Activity Instance} associated with the iteration Id of the iteration record created) and does not approve it.  The Approver adds comments to explain why the case was not approved.
+    </P>
+<P>
+      The workflow engine determines that the loop should iterate again. It creates a new record in this table, incrementing the iteration count by 1 for the associated 'Loop Begin' {@curam.entity internal.workflow.ActivityInstance Activity Instance}.
+    </P>
+<P>
+      Ronan Rooney examines the comments on the case approval, makes the necessary changes and submits the case for approval once more.  This {@curam.entity internal.workflow.ActivityInstance Activity Instance} contains a reference to the second iteration record written to this table for the 'Loop Begin' {@curam.entity internal.workflow.ActivityInstance Activity Instance}.
+    </P>
+<P>
+      John Smith examines the case again and decides to approve it.
+    </P>
+<P>
+      The workflow engine determines that the loop should exit, and the case owner is notified of the case approval.
+    </P>
+@curam.exclude
+]]>
+<attribute fieldname="iterationID" key="true" description="Uniquely identifies a single iteration of a loop in a process instance."/>
+<attribute fieldname="loopActivityInstID" description="The ID of the loop ActivityInstance of which this is an iteration.  In other words 'this is the Nth iteration of the Loop Activity identified by loopActivityInstID'."/>
+<attribute fieldname="iterationCount" description="The number of times the loop activity has iterated."/>
+<attribute fieldname="startDateTime" description="The DateTime at which this iteration started."/>
+<attribute fieldname="endDateTime" description="The DateTime at which this iteration ended."/>
+<attribute fieldname="processInstanceID" description="The ID of the process instance which contains the loop activity of which this is an iteration."/>
+</entity>
+<entity name="JoinInstance"><![CDATA[@curam.logicalname Join Instance
+@curam.definition  A count of the number of parallel branches remaining to be synchronized at an instance of a workflow join (synchronization point) in a {@curam.entity internal.workflow.ProcessInstance Process Instance}.
+@curam.description
+<P>
+      When a {@curam.entity internal.workflow.ProcessInstance Process Instance} reaches a Parallel (AND) Split, it creates multiple threads of execution that must be synchronized at a corresponding Parallel (AND) Join.  The workflow engine creates a Join Instance row once it has determined the number of outbound transitions that can be followed out of the Parallel (AND) Split.  This row contains a count of the number of threads that must terminate before the Join Instance is satisfied and the engine can execute the activity associated with the join.
+    </P>
+<P>
+      As each inbound thread on the join completes, it decrements the waitCount (the number of remaining threads).  When the waitCount reaches 0, the synchronization is complete and the engine executes the activity associated with the join.
+    </P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to obtain vetting information about candidates for employment as teachers.  The activities defined in your workflow are:
+      </P>
+<UL>
+<LI>a Parallel (AND) split that executes the following two activities in parallel:</LI>
+<UL>
+<LI>a police background check on the candidate; and</LI>
+<LI>a references check with all referees listed on the candidate's resume.  This activity is not executed if the candidate has had no previous employment (e.g. a recent graduate).</LI>
+</UL> <LI>a Parallel (AND) join that synchronizes the completion of the previous parallel activities; and</LI>
+<LI>an activity that adds the candidate's name to the list of candidates eligible for interview.  This activity only executes if all previously executed checks passed.</LI>
+</UL> <P>
+      John Smith's applies for a job as a teacher in a local school.  An employee at the school board enters his application details into the system.  This triggers the enactment of your workflow and creates a {@curam.entity internal.workflow.ProcessInstance Process Instance}.
+    </P>
+<P>
+      The workflow engine executes the {@curam.entity internal.workflow.ProcessInstance Process Instance}.  The first thing it encounters is the Parallel (AND) split.  It checks the two parallel activities for pre-conditions.  The first (police check) has no pre-condition, so it is added to the list of executable activities.  The second (resume check) has a pre-condition which evaluates 'true' (as John has worked in another school before).  The workflow engine creates two parallel threads for execution of the two activities.  It also creates a Join Instance record with a wait count of 2, to denote that the join should synchronize two threads.
+    </P>
+<P>
+      The 'police check' activity completes (John has no record) and the workflow engine decrements the wait count on the Parallel (AND) Join; which becomes 1.  The 'resume check' activity completes (all references checked out OK) and the workflow engine decrements the wait count on the Parallel (AND) Join; which becomes 0.  The workflow engine detects that the Join is satisfied and executes the activity that adds the candidate's name to the list of candidates eligible for interview.
+    </P>
+@curam.technotes
+<P>At runtime, any arbitrary number of paths can be taken out of a Parallel (AND) split, from the number of available paths to 0.  The JoinInstance will reflect the number of paths taken, as long as it is greater than 0.  If no paths are taken, the workflow engine detects that the {@curam.entity internal.workflow.ProcessInstance Process Instance} has stalled and creates a {@curam.entity internal.workflow.FailedMessage Failed Message} for the attention of an administrator.</P>
+@curam.exclude
+]]>
+<attribute fieldname="joinInstanceID" key="true" description="Uniquely identifies ID a runtime instance of a join in a workflow."/>
+<attribute fieldname="processInstanceID" description="The primary key of the Process Instance in which the join instance was created."/>
+<attribute fieldname="joinMetaID" description="The ID of a join in the Process Definition metadata (currently the ID of the activity to which the join is connected)."/>
+<attribute fieldname="waitCount" description="The number of threads that remain to be synchronized by this workflow join."/>
+</entity>
+<entity name="MatchedEvtArchive"><![CDATA[@curam.logicalname Workflow Event Audit
+@curam.definition  A raised event that an {@curam.entity internal.workflow.ActivityInstance Activity Instance} was waiting on.
+@curam.description
+<P>An {@curam.entity internal.workflow.ActivityInstance Activity Instance} may wait for one of a number of events to be raised (as specified on its related {@curam.entity internal.workflow.EventWait Event Wait} rows).  When one of these events is raised, the Workflow Engine creates a Workflow Event Audit row to store details of which event was raised.</P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+      </P>
+<UL>
+<LI>system prints out a letter (automatic); and</LI>
+<LI>{@curam.entity core.Users User} puts the letter in an envelope and posts it (manual).</LI>
+</UL> <P>{@curam.entity core.Person Person} John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a {@curam.entity internal.workflow.ProcessInstance Process Instance}.</P>
+<P>The system creates and executes the first (automatic) {@curam.entity internal.workflow.ActivityInstance Activity Instance} which prints out the letter.</P>
+<P>The system transitions to the next activity definition in your workflow and creates the second {@curam.entity internal.workflow.ActivityInstance Activity Instance}. Because this {@curam.entity internal.workflow.ActivityInstance Activity Instance} is a manual one, when the Workflow Engine executes the {@curam.entity internal.workflow.ActivityInstance Activity Instance}, it also creates:</P>
+<UL>
+<LI>a {@curam.entity workflow.Task Task} which details the work to be done; and</LI>
+<LI>an {@curam.entity internal.workflow.EventWait Event Wait} which registers the Workflow Engine's 'interest' in the result of the {@curam.entity workflow.Task Task}.</LI>
+</UL> <P>The {@curam.entity workflow.Task Task} is assigned to {@curam.entity core.Users User} Ronan Rooney.  The {@curam.entity workflow.Task Task} instructs Ronan to collect the letter from the printer and post it.  Ronan performs this work and in the correspondence screen marks the letter as 'sent'.  Curam raises a 'correspondence sent' event by calling the 'raise event' function.</P>
+<P>The Event Match Engine:</P>
+<UL>
+<LI>receives the event;</LI>
+<LI>searches the {@curam.entity internal.workflow.EventWait Event Wait} table to identify which {@curam.entity internal.workflow.ActivityInstance Activity Instance(s)} are waiting on the event;</LI>
+<LI>finds the {@curam.entity internal.workflow.EventWait Event Wait} relating to the {@curam.entity internal.workflow.ActivityInstance Activity Instance} for the 'User puts the letter in an envelope and posts it' activity in the {@curam.entity internal.workflow.ProcessInstance Process Instance} created for John Smith's payment increase;</LI>
+<LI>deletes the {@curam.entity internal.workflow.EventWait Event Wait} row;</LI>
+<LI>creates a Workflow Event Audit row; and</LI>
+<LI>instructs the Workflow Engine to continue.</LI>
+</UL> <P>The Workflow Engine marks the {@curam.entity internal.workflow.ActivityInstance Activity Instance} as completed and follows the transition out of it.</P>
+@curam.technotes
+<P>The rows on this table exist for auditing purposes only.</P>
+<P>The metadata for the activity stored in the {@curam.entity internal.workflow.ProcessDefinition Process Definition} defines whether an {@curam.entity internal.workflow.ActivityInstance Activity Instance} will have an associated {@curam.entity internal.workflow.EventWait Event Wait}.</P>
+<P>An {@curam.entity internal.workflow.ActivityInstance Activity Instance} may wait on multiple events and thus have multiple related {@curam.entity internal.workflow.EventWait Event Wait} rows.  When any one of these events is raised, the Workflow Engine:</P>
+<UL>
+<LI>removes all {@curam.entity internal.workflow.EventWait Event Wait} rows related to the {@curam.entity internal.workflow.ActivityInstance Activity Instance};</LI>
+<LI>creates a single Workflow Event Audit row detailing which {@curam.entity internal.workflow.EventWait Event Wait} was actually matched to the event; and</LI>
+<LI>continues processing the workflow.</LI>
+</UL> <P>See the Workflow Guide for further information.</P>
+@curam.exclude
+]]>
+<attribute fieldname="eventWaitID" key="true" description="The unique identifier of a workflow event wait."/>
+<attribute fieldname="activityInstanceID" description="The unique identifier of a workflow activity instance. This is used to allow an event wait to be associated to a specific activity instance in the workflow system. This association then allows the workflow engine to ascertain which activity instance (if any) to complete as a result of an associated event being raised."/>
+<attribute fieldname="eventClass" description="The concept of an event class is used to group related event types. For example, an event class of 'Case' describes a set of events related to the status of a 'Case'.  The corresponding event types for this event class could be  CloseCase,  OpenCase, SuspendCase etc."/>
+<attribute fieldname="eventType" description="An identifier for an event on the event class. For  example, where the  business object type is  'Case', the event type might be 'Case_Open' or Case_Closed etc. The two fields uniquely identify the nature of the event."/>
+<attribute fieldname="eventMatchData" description="A unique identifier related to the event class for which the event wait is created. The identifier is used by the event handler to find additional information relevant to handling the event. For example, where the business object type specified for an event is equal to  'Case', the event data could be case identifier, i.e. primaryEventData='12345'."/>
+<attribute fieldname="eventOutputData" description="The event output mapping data is optional. It is intended for events that must represent an association between two entities. An example of this would be an event class of RELATIONSHIP with an associated event type of CHANGED. In this case the primary and secondary event data would represent the relationship that has changed between the two entities."/>
+<attribute fieldname="eventRaisedBy" description="The name of the user that raised the event."/>
+<attribute fieldname="archiveTime" description="The time at which the matched event archive table entry was made."/>
+</entity>
+<entity name="ProcEnactEvtData"><![CDATA[@curam.logicalname Process Enactment Event Data
+@curam.definition  The data to be mapped from a business event to a Workflow being enacted when the specified event occurs.
+@curam.description
+<P>A Workflow that is being enacted in response to a business event can map data from the business event raised to the Workflow as enactment data.</P>
+<P>This table stores mappings for data from a business event raised that is then used to enact the required workflow.</P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to allow correspondence to be sent to customers whenever their payment details change.
+      </P>
+<P>The payment business processing has already been modified to raise a 'payment increase' event whenever payments increase on a {@curam.entity core.CaseHeader case}.</P>
+<P>You use the Admin application to configure your workflow to start whenever the 'payment increase' event occurs.  As part of this configuration, you specify that the {@curam.entity core.CaseHeader case} identifier associated with the 'payment increase' event be used as enactment data for the specified workflow. Curam creates a Process Enactment Event Data row to record the event data mapping used to enact the workflow.</P>
+<P>{@curam.entity core.Person Person} John Smith's payment details change due to an increase in rates.  This increase raises a 'payment increase' event.  The Workflow Engine
+      reads this table and determines that the {@curam.entity core.CaseHeader case} identifier
+      used in the business event raised is to be used to enact the associated workflow {@curam.entity internal.workflow.ProcessInstance Process Instance} for this event.  The case identifier is then passed as enactment data to the workflow {@curam.entity internal.workflow.ProcessInstance Process Instance} as it is being enacted.
+    </P>
+@curam.technotes
+<UL>
+<LI>The event data mapped must be sufficient to fully populate the enactment data of the associated {@curam.entity internal.workflow.ProcessDefinition Process Definition}.</LI>
+<LI>Any updates to the enactment data of a {@curam.entity internal.workflow.ProcessDefinition Process Definition} must remain fully satisfied by any Process Enactment Event Data records defined for it.</LI>
+</UL>
+@curam.exclude
+]]>
+<attribute fieldname="procEvtMappingID" key="true" description="The unique identifier of a process enactment event data mapping."/>
+<attribute fieldname="procStartEventID" description="The unique identifier of a process event association."/>
+<attribute fieldname="eventField" description="The event data being mapped when a process is enacted."/>
+<attribute fieldname="wdoAttribute" description="The fully qualified name of a workflow data object attribute to populate with data from the given event field when a process is enacted."/>
+</entity>
+<entity name="ProcEnactmentEvt"><![CDATA[@curam.logicalname Process Enactment Event
+@curam.definition  The workflow to enact whenever the specified event occurs.
+@curam.description
+<P>Workflows can be enacted:</P>
+<UL>
+<LI>by business logic explicitly invoking an enactment service;</LI>
+<LI>from an existing workflow (as a sub-flow); or</LI>
+<LI>in response to a business event.</LI>
+</UL> <P>This table stores configuration only for workflows enacted in response to a business event.</P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to allow correspondence to be sent to customers whenever their payment details change.
+      </P>
+<P>The payment business processing has already been modified to raise a 'payment increase' event whenever payments increase on a {@curam.entity core.CaseHeader case}.</P>
+<P>You use the Admin application to configure your workflow to start whenever the 'payment increase' event occurs.  Curam creates a Process Enactment Event row to store the association between this event and your workflow.</P>
+<P>{@curam.entity core.Person Person} John Smith's payment details change due to an increase in rates.  This increase raises a 'payment increase' event.  The Workflow Engine reads this table to identify that your workflow is configured to start whenever the 'payment increase' event occurs, and enacts an instance of your workflow.</P>
+@curam.technotes
+<P>The configuration of which event starts which workflow can be specified or modified at any time after the workflow has been defined.  </P>
+<P>Changes to your workflow and the event/workflow configuration are independent provided the event data can fully populate the enactment data required by workflow at all times, i.e. you can:</P>
+<UL>
+<LI>change your workflow without affecting which events start your workflow; or</LI>
+<LI>change the events which start your workflow without changing your workflow definition.</LI>
+</UL>
+@curam.exclude
+]]>
+<attribute fieldname="procStartEventID" key="true" description="The unique identifier of the process event association."/>
+<attribute fieldname="eventClass" description="The associated event class."/>
+<attribute fieldname="eventType" description="The type of Event (e.g. CASE_CLOSED)."/>
+<attribute fieldname="processToStart" description="The unique identifier of the workflow process to be started.  The latest released version of that process is always enacted."/>
+<attribute fieldname="enabled" description="Indicates whether this process/event association is enabled."/>
+</entity>
+<entity name="ProcInstOverflow"><![CDATA[@curam.logicalname Process Instance WDO Data Overflow
+@curam.definition  One element of a sequence that, when combined, form a complete instance of a Workflow Data Object for a {@curam.entity internal.workflow.ProcessInstance Process Instance}.
+@curam.description
+<P>The Workflow Engine stores Workflow Data Object values in {@curam.entity internal.workflow.ProcInstWDOData Process Instance WDO Data} records.  These records contain an XML string describing the Workflow Data Object, its attributes and the current values of those attributes for a given {@curam.entity internal.workflow.ProcessInstance Process Instance}.  If the XML string exceeds 3900 characters, it is broken up into a sequence of strings, each with a maximum length of 3900 characters.  These strings are then stored as overflow records.</P>
+<P>When the Workflow Engine attempts to retrieve a Workflow Data Object value, it reads the XML string from a Process Instance WDO Data record and appends any associated overflow records.</P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+      </P>
+<UL>
+<LI>system prints out a letter (automatic); and</LI>
+<LI>{@curam.entity core.Users User} puts the letter in an envelope and posts it (manual).</LI>
+</UL>
+<P>{@curam.entity core.Person Person} John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a {@curam.entity internal.workflow.ProcessInstance Process Instance}.</P>
+<P>The Process Definition defines values that are required in order to enact a Process Instance.  These provide initial values for some Workflow Data Objects.  The system constructs an XML string for one of these Workflow Data Objects.  The string is 8,000 characters long.  The system breaks this string up into two blocks of 3900 characters and one of 200 characters.  It persists the first block in a Process Instance WDO Data record.  It then persists the second and third block as sequential overflow records.</P>
+<P>The system transitions to the first activity definition in your workflow -  printing out a letter.  This activity calls a method that prints the letter.  The method requires the Person's name (John Smith) to be passed in. The Workflow Engine reads the Process Definition and establishes that this information is held in the PersonInfo Workflow Data Object.  It reads the first part of the PersonInfo XML string from the corresponding Process Instance WDO Data record. It then appends the two overflow records in sequence.  This re-forms the original XML string, thereby allowing the Workflow Engine to access the PersonInfo Workflow Data Object and retrieve the value for the personName attribute.
+</P>
+@curam.technotes
+<P>See the Workflow Reference Guide for further information.</P>
+@curam.exclude
+]]>
+<attribute fieldname="processInstanceID" key="true" description="The unique identifier of a workflow process instance within the workflow engine."/>
+<attribute fieldname="wdoName" key="true" description="The name of a workflow data object."/>
+<attribute fieldname="sequenceNo" key="true" description="The sequence number used when compiling WDO snapshot data from the overflow table."/>
+<attribute fieldname="wdoSnapshot" description="The XML string representing the WDO attributes and their values associated with this WDO."/>
+</entity>
+<entity name="ProcInstWDOData"><![CDATA[@curam.logicalname Process Instance WDO Data
+@curam.definition  An instance of a Workflow Data Object for a {@curam.entity internal.workflow.ProcessInstance Process Instance}.
+@curam.description
+<P>The Process Definition Tool (PDT) allows you to define 'Workflow Data Objects' which hold shared data for the activities in a workflow.  At workflow execution time, instances of these Workflow Data Objects are wrapped in an XML string and stored as Process Instance WDO Data records (one record per Workflow Data Object).</P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to allow correspondence to be sent to customers whenever their payment details change.  The workflow has a single Workflow Data Object 'CorrespondenceDetails' which has two attributes: 'CaseID' and 'RefNo' (defined by example below).  The activities defined in your workflow are:
+      </P>
+<UL>
+<LI>system prints out a letter (automatic); and</LI>
+<LI>{@curam.entity core.Users User} puts the letter in an envelope and posts it (manual).</LI>
+</UL>
+<P>{@curam.entity core.Person Person} John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a {@curam.entity internal.workflow.ProcessInstance Process Instance}.  The event includes the ID of John's {@curam.entity core.CaseHeader case}.  The Workflow Engine creates a new XML string representing the 'CorrespondenceDetails' Workflow Data Object, using the value provided to initialize the 'caseID' attribute.  It then creates a Process Instance WDO Data record to store this XML representation of the 'CorrespondenceDetails' Workflow Data Object.</P>
+<P>The system transitions to the first activity definition in your workflow - printing a letter. This activity requires the 'Case ID' attribute as a parameter.  The Workflow Engine retrieves the Process Instance WDO Data record for the 'CorrespondenceDetails' Workflow Data Object and obtains the value of the 'Case ID' attribute from it.  It then passes this value to the business processing for the activity.  The business processing prints out a letter for the specified {@curam.entity core.CaseHeader case} (using the {@curam.entity core.CaseHeader case} to navigate to {@curam.entity core.Person Person} John Smith's financial and contact details).</P>
+<P>The business processing returns a correspondence reference number which will be used to identify the printed letter.  The Workflow Engine uses this value to initialize the 'RefNo' attribute of the 'CorrespondenceDetails' Workflow Data Object.  It then updates the Process Instance WDO Data record for the 'CorrespondenceDetails' Workflow Data Object.</P>
+<P>The next activity is 'User puts the letter in an envelope'.  The Workflow Engine creates a {@curam.entity workflow.Task Task} for {@curam.entity core.Users User} Ronan Rooney to collect the letter from the printer, specifying the correspondence reference number that Ronan should look for (to ensure that he picks up the correct letter).</P>
+@curam.technotes
+<P>See the Workflow Reference Guide for further information.</P>
+@curam.exclude
+]]>
+<attribute fieldname="processInstanceID" key="true" description="The unique identifier of a workflow process instance within the workflow engine."/>
+<attribute fieldname="wdoName" key="true" description="The name of a workflow data object."/>
+<attribute fieldname="isContextWDO" description="Indicates whether or not the workflow data object is a context workflow data object."/>
+<attribute fieldname="wdoSnapshot" description="The XML string representing the WDO attributes and their values associated with this WDO."/>
+<attribute fieldname="overflowInd" description="Indicates if the WDO snapshot XML string requires access to the process instance overflow table."/>
+</entity>
+<entity name="ProcessDefinition"><![CDATA[@curam.logicalname Process Definition
+@curam.definition  A business process that is automated in Curam.
+@curam.description
+<P>The status of a Process Definition is governed by the 'released' attribute:</P>
+<UL>
+<LI>false - the Process Definition is being edited and has not yet been enacted; or</LI>
+<LI>true - the Process Definition has been released and can be enacted.</LI>
+</UL>
+@curam.example
+<P>You define a process using the Process Definition Tool (PDT).  Curam creates a row on this table to store your process definition.</P>
+<P>You edit the process and when you are happy that the definition reflects your desired business process, you 'release' your Process Definition.</P>
+<P>The Curam application raises an event which you have configured to enact your business process.  The workflow engine creates a {@curam.entity internal.workflow.ProcessInstance Process Instance} based on the most recent released version of your Process Definition.</P>
+@curam.technotes
+<P>The terms 'business process' and 'workflow' are interchangeable in Curam.</P>
+<P>There is no 'Activity' database table.  An activity is an XML element defined within the Process Definition metadata.</P>
+<P>Once a Process Definition has been released, it can never be edited; however, a new version of the Process Definition can be cloned and edited. Once released, the newer version of the Process Definition will be used for any new enactments of the process; however, existing {@curam.entity internal.workflow.ProcessInstance Process Instances} will continue to execute using the version of the Process Definition in place when they were enacted.</P>
+<P>Rows for Process Definitions which have been enacted are never deleted.</P>
+<P>See the Workflow Guide for further information.</P>
+@curam.exclude
+]]>
+<attribute fieldname="processID" key="true" description="The identifier of a workflow process definition."/>
+<attribute fieldname="processVersion" key="true" description="The version of the workflow process definition."/>
+<attribute fieldname="processName" description="The workflow process definition name. This field, once set, may not be updated. This is necessary to maintain the integrity of the table as a repository for 'live' workflow data."/>
+<attribute fieldname="category" description="The category the process definition belongs to."/>
+<attribute fieldname="released" description="A boolean value indicating the (non)readiness of the workflow process definition for release. Only workflow definitions with a release setting of true are considered for instantiation."/>
+<attribute fieldname="definition" description="Contains a XML workflow process definition serialized to a string form."/>
+<attribute fieldname="creationTime" description="The date on which this version of the workflow process was created."/>
+<attribute fieldname="createdByUsername" description="The system username of the creator of this version of the workflow process."/>
+</entity>
+<entity name="ProcessDefinitionTranslation"><![CDATA[@curam.logicalname Process Definition Translation
+@curam.definition  Contains localized names for the associated {@curam.entity internal.workflow.ProcessDefinition Process Definition}.
+@curam.description
+<P>This entity contains the localized process display name for the associated {@curam.entity internal.workflow.ProcessDefinition Process Definition}.</P>
+@curam.example
+<P>You define a process using the Process Definition Tool (PDT).  Curam creates a row on this table to store the display name of your {@curam.entity internal.workflow.ProcessDefinition Process Definition}.</P>
+@curam.technotes
+<P>This process display name is always editable unlike the process name (which is the identifier).</P>
+<P>The display name must be unique within all the processes in the system.</P>
+@curam.exclude
+]]>
+<attribute fieldname="processName" key="true" description="The workflow process definition name. This field, once set, may not be updated. This is necessary to maintain the integrity of the table as a repository for 'live' workflow data."/>
+<attribute fieldname="processVersion" key="true" description="The version of the workflow process definition."/>
+<attribute fieldname="type" key="true" description="A code table representing the type of the process definition translation (e.g. Process Display Name)."/>
+<attribute fieldname="localeIdentifier" key="true" description="The locale of the translation (e.g. zh_CN)."/>
+<attribute fieldname="localizedText" description="The translated text in the specified locale."/>
+</entity>
+<entity name="ProcessInstance"><![CDATA[@curam.logicalname Process Instance
+@curam.definition  The runtime data for an enacted workflow.
+@curam.description
+<P>
+</P>
+<P>A new workflow Process Instance row is created for each enactment of a workflow {@curam.entity internal.workflow.ProcessDefinition Process Definition}.</P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to allow correspondence to be sent to customers whenever their payment details change.  The workflow contains several activities.</P>
+<P>{@curam.entity core.Person Person} John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a row on this table.  All subsequent processing of the workflow for John Smith acts on data which is ultimately tied back to this row.</P>
+<P>{@curam.entity core.Person Person} Mary Smith's payment details also change; the Workflow Engine enacts the same workflow as for John, but creates a separate Process Instance.
+</P>
+@curam.technotes
+<P>Processes may be enacted by:</P>
+<UL>
+<LI>an explicit call to the enactment service (i.e. an explicit call that you write in your customized server application);</LI>
+<LI>the occurrence of a system event which you have configured (using the Admin Application) to start your process; or</LI>
+<LI>a sub-flow activity in a parent Process Instance.</LI>
+</UL> <P>You can customize the Curam server application to raise new system events which you can then configure to trigger the enactment of your workflow(s).</P>
+<P>See the Workflow Guide for further information.</P>
+@curam.exclude
+]]>
+<attribute fieldname="processInstanceID" key="true" description="The unique identifier of the process instance, within the workflow engine, that is responsible for the workflow of a particular process instance."/>
+<attribute fieldname="processID" description="The unique identifier of the workflow process definition being used."/>
+<attribute fieldname="processVersion" description="The version number of the workflow process definition being used."/>
+<attribute fieldname="processType" description="The type of the workflow process instance. The valid entries for this field are Normal, Synchronous, and Asynchronous, and this value indicates the type of subflow associated with this process instance."/>
+<attribute fieldname="status" description="The status of the process instance."/>
+<attribute fieldname="synchronousMode" description="Indicates whether or not the process instance should be executed in synchronous mode (i.e. without the use of messaging)."/>
+<attribute fieldname="parentActInstID" description="The value of this field indicates the activity instance id of the parent workflow process that executed this process, if this workflow process is a subflow."/>
+<attribute fieldname="startDateTime" description="The date and time that the process instance was enacted."/>
+<attribute fieldname="endDateTime" description="The date and time that the process instance was completed."/>
+</entity>
+<entity name="Reminders"><![CDATA[@curam.logicalname Reminder Notification
+@curam.definition  An instance of a Reminder Notification for an {@curam.entity internal.workflow.ActivityInstance Activity Instance}.
+@curam.description
+<P>The Process Definition Tool (PDT) allows you to define an arbitrary number of Reminder Notifications for any Workflow Activity that waits on an Event.  Any Activity that waits on an event can optionally specify a deadline after which the workflow engine should stop waiting and take some action. Reminders can then be set to send out notifications at specific times in advance of the deadline.</P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to ensure claimant records are kept up-to-date with government employment records.
+</P>
+<UL>
+<LI> This workflow is triggered when government records show a claimant's employment details have changed (e.g. the claimant has been employed).</LI>
+<LI> The workflow has a single Manual Activity which requests a Case Worker contact the claimant and confirm the change of employment status.  The Case Worker must do this before the end of the month.</LI>
+<LI> A gentle reminder is set for two weeks prior to the deadline.</LI>
+<LI> An urgent reminder is set for three days prior to the deadline.</LI>
+</UL>
+<P>{@curam.entity core.Person Person} John Smith begins a new job, having been unemployed for some time.  John's new employment is picked up by a daily update from the tax system.  This causes your workflow to be enacted, creating a {@curam.entity internal.workflow.ProcessInstance Process Instance}.</P>
+<P>The system transitions to the first activity definition in your workflow - sending a Task to a Case Worker to confirm John's new employment details. The Task has a deadline 18 days away.</P>
+<P>Two Reminder Notification records are created, corresponding to the two reminders specified in the Activity definition.</P>
+<P>The Case Worker does not contact John for a few days.  Once the two-week point is passed (i.e. two weeks before the deadline), the Workflow Engine sends the gentle reminder. The Workflow Engine then deletes the corresponding Reminder Notification record.</P>
+<P>The Case Worker waits until the day before the deadline to contact John.  Once the 3 day point is passed (i.e. three days before the deadline), the Workflow Engine sends the urgent reminder.  The Workflow Engine then deletes the corresponding Reminder Notification record.</P>
+@curam.technotes
+<P>See the Workflow Reference Guide for further information.</P>
+@curam.exclude
+]]>
+<attribute fieldname="deliveryDate" description="The reminder delivery dateTime."/>
+<attribute fieldname="reminderID" key="true" description="The reminder identifier."/>
+<attribute fieldname="activityInstanceID" key="true" description="The activity instance ID."/>
+</entity>
+<entity name="SuspendedActivity"><![CDATA[@curam.logicalname Suspended Activity
+@curam.definition  The {@curam.entity internal.workflow.ActivityInstance activity instances} that have been suspended as a result of the suspension of an associated {@curam.entity internal.workflow.ProcessInstance Process Instance}.
+@curam.description
+<P>When a Workflow {@curam.entity internal.workflow.ProcessInstance Process Instance} is suspended, any currently executing activities are allowed to complete.  New {@curam.entity internal.workflow.ActivityInstance Activity Instances} are created and immediately suspended.</P>
+<P>This table stores the {@curam.entity internal.workflow.ActivityInstance activity instance} details for all currently suspended activities associated with a suspended workflow {@curam.entity internal.workflow.ProcessInstance Process Instance} .</P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+      </P>
+<UL>
+<LI>system prints out a letter (automatic);</LI>
+<LI>{@curam.entity core.Users User} puts the letter in an envelope and posts it (manual); and</LI>
+<LI>'End Process' (a necessary step to end the workflow which is mandated by the Process Definition Tool).</LI>
+</UL> <P>{@curam.entity core.Person Person} John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a {@curam.entity internal.workflow.ProcessInstance Process Instance}. As soon as the {@curam.entity internal.workflow.ProcessInstance Process Instance} is started, administrator Ronan Rooney realizes that the printer is not working.  He suspends the process before it executes the 'system prints out a letter' activity. A suspended activity record is added for this {@curam.entity internal.workflow.ActivityInstance Activity Instance}, and the {@curam.entity internal.workflow.ProcessInstance Process Instance} ceases to continue.
+    </P>
+<P>
+      At a later time the problems with the printer are resolved and administrator Ronan Rooney resumes the {@curam.entity internal.workflow.ProcessDefinition Process Definition}.  All suspended activity records associated with the suspended {@curam.entity internal.workflow.ProcessInstance Process Instance} are read from this table and resumed.
+    </P>
+@curam.technotes
+<UL>
+<LI>Once a suspended {@curam.entity internal.workflow.ProcessInstance Process Instance} has resumed, all suspended activity records are deleted from this table.</LI>
+<LI>If an {@curam.entity internal.workflow.ActivityInstance Activity Instance} associated with a suspended {@curam.entity internal.workflow.ProcessInstance Process Instance} references a synchronous sub-flow {@curam.entity internal.workflow.ProcessDefinition Process Definition}, the sub-flow {@curam.entity internal.workflow.ProcessInstance Process Instance} is similarly suspended.</LI>
+</UL>
+@curam.exclude
+]]>
+<attribute fieldname="activityInstanceID" key="true" description="The identifier of the activity instance."/>
+<attribute fieldname="processInstanceID" key="true" description="The identifier of the process instance."/>
+<attribute fieldname="processID" description="The identifier of the process definition."/>
+<attribute fieldname="processVersion" description="The process definition version."/>
+<attribute fieldname="activityID" description="The identifier of the activity."/>
+<attribute fieldname="iterationID" description="An Activity contained within a loop may have multiple instances (one for each iteration of the loop) - this ID allows them to be distinguished from one another."/>
+</entity>
+<entity name="TaskHistory"><![CDATA[@curam.logicalname Task History
+@curam.definition  An event in the lifecycle of a {@curam.entity workflow.Task Task}.
+@curam.description
+<P>A row on this table stores the old and new values for a particular column value which has changed on the related {@curam.entity workflow.Task Task} row.</P>
+@curam.example
+<P>A {@curam.entity workflow.Task Task} is assigned to {@curam.entity core.Users User} Ronan Rooney to instruct him to post a letter to {@curam.entity core.Person Person} John Smith.</P>
+<P>Ronan reserves the {@curam.entity workflow.Task Task} to start work on it.  Curam changes the reservedBy value on the {@curam.entity workflow.Task Task} to be {@curam.entity core.Users User} Ronan Rooney and creates a new row on the Task History to record that the reservedBy value has changed.</P>
+<P>Ronan is unable to complete the work before going on holiday and so:</P>
+<UL>
+<LI>un-reserves the {@curam.entity workflow.Task Task} - Curam clears the reservedBy value on the {@curam.entity workflow.Task Task} and creates a new corresponding row on the Task History table; and</LI>
+<LI>reassigns the {@curam.entity workflow.Task Task} to his supervisor - Curam sets the assignedDateTime on the {@curam.entity workflow.Task Task} and creates a new corresponding row on the Task History table.</LI>
+</UL>
+@curam.technotes
+<P>See the Workflow Guide for further information. - check whether this table will actually be mentioned in the guide...</P>
+@curam.exclude
+]]>
+<attribute fieldname="taskHistoryID" key="true" description="The unique ID associated with this task history record."/>
+<attribute fieldname="taskID" description="The task ID associated with this record."/>
+<attribute fieldname="changeType" description="The type of change associated with this task history record."/>
+<attribute fieldname="changeDateTime" description="The date time that the history record was written."/>
+<attribute fieldname="userName" description="The user making the change to the task."/>
+<attribute fieldname="oldValue" description="The old value of the task item being modified."/>
+<attribute fieldname="newValue" description="The new value of the task item being modified."/>
+<attribute fieldname="comments" description="A comment on the change made to the task."/>
+</entity>
+<entity name="Task"><![CDATA[@curam.logicalname Task
+@curam.definition  A set of instructions to enable a {@curam.entity core.Users User} to perform the manual work required by an {@curam.entity internal.workflow.ActivityInstance Activity Instance}.
+@curam.description
+<P>The Workflow Engine creates a Task whenever a manual {@curam.entity internal.workflow.ActivityInstance Activity Instance} is executed. At the time that the Task is created:</P>
+<UL>
+<LI>the Task is associated with an {@curam.entity internal.workflow.EventWait Event Wait} which specifies the Curam event which will subsequently close the Task; and</LI>
+<LI>an allocation strategy is executed to determine the agent which will perform the task.</LI>
+</UL>
+<P>The agent performs the work required by the task and upon completion causes an event to be raised.</P>
+<P>When the event is raised, the Workflow Engine reads the {@curam.entity internal.workflow.EventWait Event Wait} table and determines which Tasks to close.</P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+      </P>
+<UL>
+<LI>system prints out a letter (automatic); and</LI>
+<LI>{@curam.entity core.Users User} puts the letter in an envelope and posts it (manual).</LI>
+</UL>
+<P>{@curam.entity core.Person Person} John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a {@curam.entity internal.workflow.ProcessInstance Process Instance}.</P>
+<P>The system creates and executes the first (automatic) {@curam.entity internal.workflow.ActivityInstance Activity Instance} which prints out the letter.</P>
+<P>The system transitions to the next activity definition in your workflow and creates the second {@curam.entity internal.workflow.ActivityInstance Activity Instance}. Because this {@curam.entity internal.workflow.ActivityInstance Activity Instance} is a manual one, when the Workflow Engine executes the {@curam.entity internal.workflow.ActivityInstance Activity Instance}, it also creates a Task which details the work to be done (as defined by the activity in your {@curam.entity internal.workflow.ProcessDefinition Process Definition}).</P>
+<P>Based on the allocation strategy defined by the activity, the Task is assigned to {@curam.entity core.Users User} Ronan Rooney.  The Task instructs Ronan to collect the letter from the printer and post it.  Ronan performs this work and in the correspondence screen marks the letter as 'sent'.  Curam raises an event which causes the Workflow Engine to close the Task and the {@curam.entity internal.workflow.ProcessInstance Process Instance} ends.</P>
+@curam.technotes
+<P>See the Workflow Guide for further information.</P>
+@curam.exclude
+]]>
+<attribute fieldname="taskID" key="true" description="The ID of the task."/>
+<attribute fieldname="wdoSnapshot" description="A snapshot of the WDO data mapped to the parameters of the task subject taken when a task record is created."/>
+<attribute fieldname="creationTime" description="The date and time at which the task was created."/>
+<attribute fieldname="assignedDateTime" description="The date and time at which the task was assigned."/>
+<attribute fieldname="totalTimeWorked" description="Total time spent on this task (in seconds)."/>
+<attribute fieldname="restartTime" description="The date and time at which the task was restarted."/>
+<attribute fieldname="reservedBy" description="The name of the user that has reserved the task."/>
+<attribute fieldname="status" description="The status of the task."/>
+<attribute fieldname="priority" description="The priority of the task."/>
+<attribute fieldname="category" description="The category of the manual activity associated with this task."/>
+<attribute fieldname="deadTimeOverInd" description="A boolean flag to indicate if the time associated with a deadline may be overridden."/>
+<attribute fieldname="allowForwardInd" description="A boolean flag to indicate if the task can be forwarded."/>
+<attribute fieldname="administrationSID" description="The administration security identifier associated with a manual activity."/>
+<attribute fieldname="overflowInd" description="Indicates if the WDO snapshot XML string requires access to the process instance overflow table."/>
+</entity>
+<entity name="TaskWDOOverflow"><![CDATA[@curam.logicalname Task Workflow Data Object Snapshot Overflow
+@curam.definition  One element of a sequence that, when combined, form the Workflow Data Object snapshot for a {@curam.entity internal.workflow.Task Task}.
+@curam.description
+<P>The Workflow Engine creates a {@curam.entity internal.workflow.Task Task} whenever a manual activity is executed. At the time that the Task is created, the Workflow Engine takes a snapshot of any Workflow Data Object values that are used by the Task (for example, used in the Task Subject, or Primary Action).  This snapshot is stored as XML data in the wdoSnapshot attribute of the Task entity.  If the XML string exceeds 3900 characters, it is broken up into a sequence of strings, each with a maximum length of 3900 characters.  These strings are then stored as overflow records.</P>
+<P>When the Workflow Engine attempts to reconstruct the Task's wdoSnapshot, it reads the wdoSnapshot from the Task record and appends any associated overflow records.</P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+      </P>
+<UL>
+<LI>system prints out a letter (automatic); and</LI>
+<LI>{@curam.entity core.Users User} puts the letter in an envelope and posts it (manual).</LI>
+</UL>
+<P>{@curam.entity core.Person Person} John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a {@curam.entity internal.workflow.ProcessInstance Process Instance}.</P>
+<P>The system creates and executes the first (automatic) {@curam.entity internal.workflow.ActivityInstance Activity Instance} which prints out the letter.</P>
+<P>The system transitions to the next activity definition in your workflow and creates the second {@curam.entity internal.workflow.ActivityInstance Activity Instance}. Because this {@curam.entity internal.workflow.ActivityInstance Activity Instance} is a manual one, when the Workflow Engine executes the {@curam.entity internal.workflow.ActivityInstance Activity Instance}, it also creates a Task which details the work to be done (as defined by the activity in your {@curam.entity internal.workflow.ProcessDefinition Process Definition}).</P>
+<P>The Manual Activity maps data from several Workflow Data Objects to the Task.  The system captures these data values and snapshots them in an XML string.  The string is 8,000 characters long.  The system breaks this string up into two blocks of 3900 characters and one of 200 characters.  It persists the first block in the Task entity's wdoSnapshot attribute.  It then persists the second and third block as sequential overflow records.</P>
+<P>The {@curam.entity core.Users User} to whom the Task was assigned opens their Inbox, which causes the Inbox to request the Task Subject from the Workflow infrastructure.  The infrastructure acquires the initial wdoSnapshot from the Task record and appends the two overflow records in sequence.  This re-forms the original XML document, thereby allowing the Workflow Engine to construct & return the Task Subject.</P>
+@curam.technotes
+<P>See the Workflow Reference Guide for further information.</P>
+@curam.exclude
+]]>
+<attribute fieldname="taskID" key="true" description="The ID of the task."/>
+<attribute fieldname="sequenceNo" key="true" description="The sequence number used when compiling WDO snapshot data from the overflow table."/>
+<attribute fieldname="wdoSnapshot" description="The XML string representing the WDO attributes and their values associated with this WDO."/>
+</entity>
+<entity name="TransitionInstance"><![CDATA[@curam.logicalname Transition Instance
+@curam.definition  An attempt to navigate from one activity to another.
+@curam.description
+<P>A transition is the path between two activities (a 'from' activity and a 'to' activity) - it specifies that once the 'from' activity has been completed, the 'to' activity should be started.  If you imagine activities as 'boxes', then transitions are the 'lines' between these boxes.</P>
+<P>A Transition Instance records the attempt to navigate the transition between two {@curam.entity internal.workflow.ActivityInstance Activity Instances} (the 'from' {@curam.entity internal.workflow.ActivityInstance Activity Instance} and the 'to' {@curam.entity internal.workflow.ActivityInstance Activity Instance}).</P>
+<P>Transitions may be conditional, i.e. once the 'from' activity has been completed, the 'to' activity should only be started if some condition (specified by the transition) is met.  A Transition Instance row will be created for each transition evaluated, and for conditional transitions, the Transition Instance records whether the transition's condition was met.</P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+      </P>
+<UL>
+<LI>'Start Process' (a necessary step to start the workflow which is mandated by the Process Definition Tool); and</LI>
+<LI>system prints out a letter (automatic);</LI>
+<LI>{@curam.entity core.Users User} puts the letter in an envelope and posts it (manual); and</LI>
+<LI>'End Process' (a necessary step to end the workflow which is mandated by the Process Definition Tool).</LI>
+</UL> <P>The transitions in your workflow are a straightforward progression through the activities in the order listed above.</P>
+<P>{@curam.entity core.Person Person} John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a {@curam.entity internal.workflow.ProcessInstance Process Instance}.</P>
+<P>The Workflow Engine executes the 'Start Process' activity and creates an {@curam.entity internal.workflow.ActivityInstance Activity Instance}.  This special activity performs initialization of the workflow and completes.</P>
+<P>The Workflow Engine identifies the outgoing transition from 'Start Process' and traverses the transition.  The Workflow Engine creates a row on Transition Instance to record this traversal, linking the 'Start Process' activity to the 'system prints out a letter' activity.  The system prints out the letter and completes the activity.</P>
+<P>Similarly, upon completion of the relevant {@curam.entity internal.workflow.ActivityInstance Activity Instances}, the Workflow Engine:</P>
+<UL>
+<LI>traverses from 'system prints out a letter' to 'user puts the letter in an envelope'; and </LI>
+<LI>traverses from 'user puts the letter in an envelope' to 'end process'.</LI>
+</UL>
+@curam.technotes
+<P>See the Workflow Guide for further information.</P>
+<P>There is no 'Activity' database table.  An activity is an XML element defined within the {@curam.entity internal.workflow.ProcessDefinition Process Definition} metadata.</P>
+<P>Straightforward {@curam.entity internal.workflow.ActivityInstance Activity Instances} will (as the workflow executes) typically have:</P>
+<UL>
+<LI>a Transition Instance 'coming in', i.e. will be the 'to' {@curam.entity internal.workflow.ActivityInstance Activity Instance} on a Transition Instance; and</LI>
+<LI>a Transition Instance 'going out', i.e. will be the 'from' {@curam.entity internal.workflow.ActivityInstance Activity Instance} on a Transition Instance.</LI>
+</UL> <P>Activities which are associated with split or join points may have multiple such Transition Instances.</P>
+<P>A Transition Instance identifies the 'from' and 'to' activities, but does not link (directly) to the {@curam.entity internal.workflow.ActivityInstance Activity Instances} themselves.</P>
+@curam.exclude
+]]>
+<attribute fieldname="transitionInstID" key="true" description="The unique identifier of a workflow transition instance."/>
+<attribute fieldname="transitionID" description="The unique identifier of a workflow transition as described in the process definition."/>
+<attribute fieldname="processInstanceID" description="The unique identifier of the workflow process instance that this transition instance is associated with."/>
+<attribute fieldname="fromActivityID" description="The unique identifier of the activity that the transition is from."/>
+<attribute fieldname="toActivityID" description="The unique identifier of the activity that the transition moves the workflow process to."/>
+<attribute fieldname="vote" description="A boolean value to indicate whether the transition should be followed or not. Transitions defined in the process definition with no rule condition will always have this value set to true. Other transitions will have their rule conditions evaluated and this value will be based on the result of this evaluation, true if the transition should be followed, otherwise false."/>
+<attribute fieldname="iterationID" description="An Transition contained within a loop may have multiple instances (one for each iteration of the loop) - this ID allows them to be distinguished from one another."/>
+</entity>
+<entity name="WDOTemplateLibrary"><![CDATA[@curam.logicalname Workflow Data Object Template
+@curam.definition  A template for a Workflow Data Object (WDO).
+@curam.description
+<P>The Process Definition Tool (PDT) allows you to define 'Workflow Data Objects' which can hold data shared between the activities in a workflow.  The definition of each WDO is stored in the {@curam.entity internal.workflow.ProcessDefinition Process Definition}.</P>
+<P>You may wish to use the same set of data in several workflows; the PDT allows you to select a template WDO from a library, to copy into your workflow definition.</P>
+@curam.example
+<P>You determine that several of your workflows require to pass a {@curam.entity core.CaseHeader case} identifier between the activities in the workflow.  You define a template WDO containing a {@curam.entity core.CaseHeader case} identifier and the Admin application creates a row on Workflow Data Object Template to store your template WDO.</P>
+<P>You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to allow correspondence to be sent to customers whenever their payment details change.  This workflow requires to pass the {@curam.entity core.CaseHeader case} identifier between the activities in the workflow.</P>
+<P>You use the PDT to select your WDO template from the library.  The PDT reads this table to display a list of Workflow Data Object Templates available.  You choose the template containing the {@curam.entity core.CaseHeader case} identifier and the PDT copies the WDO definition to your {@curam.entity internal.workflow.ProcessDefinition Process Definition}.</P>
+@curam.technotes
+<P>If you update the WDO template in the library, the changes you make are not reflected in any {@curam.entity internal.workflow.ProcessDefinition Process Definitions} which used the template.</P>
+<P>However, if you create a new version of a {@curam.entity internal.workflow.ProcessDefinition Process Definition}, the facility exists to replace the WDO used in your {@curam.entity internal.workflow.ProcessDefinition Process Definition} with the latest version of the WDO template.</P>
+<P>See the Workflow Guide for further information.</P>
+@curam.exclude
+]]>
+<attribute fieldname="wdoID" key="true" description="The ID of the workflow data object."/>
+<attribute fieldname="name" description="The name of the workflow data object."/>
+<attribute fieldname="category" description="The category of the workflow data object."/>
+<attribute fieldname="definition" description="The definition of the workflow data object."/>
+</entity>
+<entity name="WDOValuesHistory"><![CDATA[@curam.logicalname Workflow Data Object Values History
+@curam.definition  An audit log of the {@curam.entity internal.workflow.ProcInstWDOData Process Instance Data} used as input and output for activities in a {@curam.entity internal.workflow.ProcessInstance Process Instance}.
+@curam.description
+<P>During the life of a {@curam.entity internal.workflow.ProcessInstance Process Instance}, data is stored in the attributes of workflow data objects. The value of these attributes can change at many points during the execution of the process. The attributes values can also be used at many points.  A Workflow Data Object Values History record is created any time an activity reads (or modifies) the value of a workflow data object attribute during the execution of a {@curam.entity internal.workflow.ProcessInstance Process Instance}.  Hence the set of Workflow Data Object Values History rows for a given {@curam.entity internal.workflow.ProcessInstance Process Instance} provide an audit trail of the {@curam.entity internal.workflow.ProcInstWDOData Process Instance Data} for the life of that {@curam.entity internal.workflow.ProcessInstance Process Instance}.</P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+      </P>
+<UL>
+<LI>system prints out a letter (automatic);</LI>
+<LI>{@curam.entity core.Users User} puts the letter in an envelope and posts it (manual); and</LI>
+<LI>'End Process' (a necessary step to end the workflow which is mandated by the Process Definition Tool).</LI>
+</UL>
+<P>{@curam.entity core.Person Person} John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a {@curam.entity internal.workflow.ProcessInstance Process Instance}.
+    </P>
+<P>
+      The initial activity in the process is 'system prints out a letter', so the Workflow Engine gets the necessary data for printing the letter (name, case, etc) from the attributes of the workflow data objects available to it. Before the activity is executed, the engine detects that an activity is about to use some {@curam.entity internal.workflow.ProcInstWDOData Process Instance Data} and creates a Workflow Data Object Values History row to record the data values used.
+    </P>
+<P>
+      The second activity in the process is 'User posts the letter'.  Once this has been done, the Workflow Engine updates another Workflow Data Object attribute with the time at which the letter the letter was posted.  The engine detects that an activity has changed some {@curam.entity internal.workflow.ProcInstWDOData Process Instance Data} and creates a Workflow Data Object Values History row to record the change.
+    </P>
+@curam.technotes
+<P>
+      The pool of workflow data objects can be quite large, so it would be inefficient to log the values of the entire data pool before and after every activity.   Hence the workflow engine ensures that only those workflow data object attributes that are either used (as input to) or modified (as output from) an activity are audited.
+</P>
+@curam.exclude
+]]>
+<attribute fieldname="wdoValuesHistoryID" key="true" description="The unique identifier associated with this workflow data object values history record."/>
+<attribute fieldname="activityInstanceID" description="The unique identifier of the associated activity instance."/>
+<attribute fieldname="processInstanceID" description="The unique identifier of the associated process instance."/>
+<attribute fieldname="executionPeriod" description="The point during the execution of a workflow process instance that this history record was written."/>
+<attribute fieldname="creationTime" description="The time at which this record was created."/>
+<attribute fieldname="wdoSnapShot" description="The workflow data object snapshot represented as an XML string."/>
+</entity>
+<entity name="WorkflowDeadline"><![CDATA[@curam.logicalname Workflow Deadline
+@curam.definition  The length of time that a {@curam.entity workflow.Task Task} or {@curam.entity internal.workflow.EventWait Event Wait} is allowed to remain unprocessed.
+@curam.description
+<P>Curam supports the ability for a {@curam.entity workflow.Task Task} to have a 'deadline', which is the reasonable amount of time for a {@curam.entity core.Users User} to complete the {@curam.entity workflow.Task Task}.</P>
+<P>If the deadline passes and the {@curam.entity workflow.Task Task} has not been closed, the Workflow Engine notifies the specified deadline handler that {@curam.entity workflow.Task Task} has not yet been closed.</P>
+<P>Similarly, an {@curam.entity internal.workflow.EventWait Event Wait} can have a 'deadline', which is the reasonable amount of time for an event to occur in the system.</P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to allow correspondence to be sent to customers whenever their payment details change.</P>
+<P>{@curam.entity core.Person Person} John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a {@curam.entity internal.workflow.ProcessInstance Process Instance}.</P>
+<P>The system prints out the letter and assigns a {@curam.entity workflow.Task Task} to {@curam.entity core.Users User} Ronan Rooney to post the letter.  Your {@curam.entity internal.workflow.ProcessDefinition Process Definition} specifies a deadline time of one day for the letter to be posted.</P>
+<P>{@curam.entity core.Users User} Ronan Rooney is called away from the office and does not complete the {@curam.entity workflow.Task Task}.  After one day has passed the Workflow Engine invokes your specified deadline handler, which reassigns the {@curam.entity workflow.Task Task} to Ronan's supervisor.</P>
+@curam.technotes
+<P>See the Workflow Guide for further information.</P>
+@curam.exclude
+]]>
+<attribute fieldname="deadlineID" key="true" description="The unique identifier of the workflow deadline."/>
+<attribute fieldname="taskID" description="The unique identifier of a task associated with a workflow deadline . This field is not set for deadlines associated with event wait activities."/>
+<attribute fieldname="activityInstanceID" description="The unique identifier of the activity instance associated with this workflow deadline."/>
+<attribute fieldname="deadlineTime" description="The time at which the workflow deadline times out. For a manual activity or a decision activity workflow deadline, this time is calculated by adding the deadline duration specified to the time that the associated manual activity task was created. For an event wait workflow deadline, the time is calculated by adding the deadline duration specified to the time that the associated event wait activity was executed."/>
+<attribute fieldname="suspended" description="NOTE: This flag provides no functional benefit at present. In the future, if the functionality becomes available, this flag could set to true to indicate that the handler function associated with the workflow deadline was invoked but failed. This flag may be then be used to filter out deadlines that were previously handled but failed when scanning for workflow deadlines."/>
+<attribute fieldname="deadlineType" description="The type of the workflow deadline (as deadlines may be associated with a number of activity types including manual activities, event wait activities and decision activities)."/>
+</entity>
+<entity name="WorkflowHistory"><![CDATA[@curam.logicalname Workflow History
+@curam.definition  An audit log of actions taken by an administrator that change the status of an executing {@curam.entity internal.workflow.ProcessInstance Process Instance}.
+@curam.description
+<P>A new Workflow History row is created each time an administrator changes the status of a {@curam.entity internal.workflow.ProcessInstance Process Instance}.</P>
+@curam.example
+<P>
+    You define a workflow ({@curam.entity internal.workflow.ProcessDefinition Process Definition}) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+      </P>
+<UL>
+<LI>system prints out a letter (automatic);</LI>
+<LI>{@curam.entity core.Users User} puts the letter in an envelope and posts it (manual); and</LI>
+<LI>'End Process' (a necessary step to end the workflow which is mandated by the Process Definition Tool).</LI>
+</UL>
+<P>{@curam.entity core.Person Person} John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a {@curam.entity internal.workflow.ProcessInstance Process Instance}. As soon as the {@curam.entity internal.workflow.ProcessInstance Process Instance} is started, administrator Ronan Rooney realizes that the printer is not working.  He suspends the process before it executes the 'system prints out a letter' activity. A Workflow History record is added to indicate that the process has been suspended.
+    </P>
+<P>
+      At a later time the problems with the printer are resolved and administrator Ronan Rooney resumes the {@curam.entity internal.workflow.ProcessDefinition Process Definition}.  A Workflow History record is added to indicate that the process has been resumed.
+    </P>
+@curam.technotes
+<P>See the Workflow Guide for further information.</P>
+@curam.exclude
+]]>
+<attribute fieldname="workflowHistoryID" key="true" description="The unique identifier of the workflow history record."/>
+<attribute fieldname="processInstanceID" description="The unique identifier of the associated process instance."/>
+<attribute fieldname="userID" description="The user name of the user associated with the workflow history entry."/>
+<attribute fieldname="event" description="The type of event describing the status change for this process instance."/>
+<attribute fieldname="eventTime" description="The timestamp for this event."/>
+</entity>
+</entities>

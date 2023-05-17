@@ -1,0 +1,841 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2005-2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page is used to display the home page details for the             -->
+<!-- liability overbilling product.                                         -->
+<PAGE
+  PAGE_ID="LiabilityOverbilling_home"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00113328, ELG -->
+  <SHORTCUT_TITLE ICON="liabilitycase.icon">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="result$details$contextDescription$description"
+      />
+    </CONNECT>
+  </SHORTCUT_TITLE>
+  <!-- END, CR00113328 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="ProductDelivery"
+    NAME="DISPLAY"
+    OPERATION="readLiabilityOverbillingHomePageDetails1"
+  />
+  <MENU>
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewTask">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Case_createTask"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$contextDescription$description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewActivity">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Case_createStandardActivity"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$contextDescription$description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="EditButton"
+      LABEL="ActionControl.Label.Edit"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProductDelivery_modifyHeader1"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$contextDescription$description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="ManageButton"
+      LABEL="ActionControl.Label.Manage"
+    >
+      <LINK PAGE_ID="LiabilityOverbilling_manage">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$contextDescription$description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="CheckEligibilityButton"
+      LABEL="ActionControl.Label.CheckEligibility"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProductDelivery_checkEligibility"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$contextDescription$description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="RemoveBookmarkButton"
+      LABEL="ActionControl.Label.RemoveBookmark"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="caseIsUserBookmarkInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_cancelCaseBookmark"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$contextDescription$description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      IMAGE="AddBookmarkButton"
+      LABEL="ActionControl.Label.AddBookmark"
+    >
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="caseIsUserBookmarkInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_createCaseBookmark"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$contextDescription$description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseID"
+    />
+  </CONNECT>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+    <FIELD LABEL="Field.Label.ProductName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$homePageDetails$productName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER LABEL="Field.Label.PrimaryClient">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="primaryClientName"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="Person_resolveHomePage">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="primaryClientID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <ACTION_CONTROL IMAGE="SpecialCautionDefaultIcon">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="primaryClientSpecialCautionInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="TRUE"
+          PAGE_ID="SpecialCaution_listFromCase"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseStartDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Priority">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="casePriorityCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER LABEL="Field.Label.Owner">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="caseOwnerName"
+          />
+        </CONNECT>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Case_resolveOrgObjectTypeHome"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="userName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="orgObjectReference"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="orgObjectReference"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="caseOwnerType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="orgObjectType"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <ACTION_CONTROL 
+        LABEL="ActionControl.Label.Change"
+        APPEND_ELLIPSIS="false"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Case_modifyCaseOwner"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.Objective">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="objectiveCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <CONTAINER LABEL="Field.Label.DeliveryPattern">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="deliveryPattern"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Change">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProductDelivery_modifyDeliveryPattern"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="productID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="productID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$contextDescription$description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.CaseReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$closureDtls$caseReference"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00151495, MC -->
+    <CONTAINER LABEL="Field.Label.Status">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="caseStatusCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL 
+        LABEL="ActionControl.Label.ViewHistory"
+      >
+        <LINK PAGE_ID="LiabilityOverbilling_listStatusHistory">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <!-- END, CR00151495 -->
+
+
+    <FIELD LABEL="Field.Label.ExpectedEndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expectedEndDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Classification">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="classificationCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DateReceived">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="receivedDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Outcome">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="outcomeCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <CONTAINER LABEL="Field.Label.OverrideMDR">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="overrideMDRInd"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL 
+        LABEL="ActionControl.Label.Set"
+        APPEND_ELLIPSIS="false"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProductDelivery_setOverrideMDR"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="homePageDetails$caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$contextDescription$description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL 
+        LABEL="ActionControl.Label.Unset"
+        APPEND_ELLIPSIS="false"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProductDelivery_unsetOverrideMDR"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="homePageDetails$caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$contextDescription$description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.OverbillingDetails"
+  >
+    <FIELD LABEL="Field.Label.Amount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="evidenceDetails$overbillingAmount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Product">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="evidenceDetails$productName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.From">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="evidenceDetails$fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Nominee">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="evidenceDetails$nomineeName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Participant_resolveRoleHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="participantType"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Date">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="evidenceDetails$overbillingDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.To">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="evidenceDetails$toDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$closureDtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- BEGIN, CR00022501 ,RR -->
+  <LIST TITLE="List.Title.RecentChanges">
+    <FIELD LABEL="Field.Label.EventType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$transactionLogDtls$dtlsList$eventTypeDesc"
+        />
+      </CONNECT>
+      <!--BEGIN CR00108593, GBA-->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Case_resolveViewTransactionLogRecord"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="relatedID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="relatedID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="transactionDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="transactionDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="transactionDateTime"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="transactionDateTime"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$transactionLogDtls$dtlsList$userFullName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userFullName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="eventTypeDesc"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="eventType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="pageID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Description">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="transactionDescription"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.TransactionDateTime">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$transactionLogDtls$dtlsList$transactionDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UserFullname">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$transactionLogDtls$dtlsList$userFullName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="username"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+      <!--END CR00108593-->
+    </FIELD>
+  </LIST>
+
+
+  <!-- END, CR00022501 -->
+</PAGE>

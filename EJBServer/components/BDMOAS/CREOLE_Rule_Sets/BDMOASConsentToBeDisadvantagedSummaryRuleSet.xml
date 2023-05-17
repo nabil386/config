@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="BDMOASConsentToBeDisadvantagedSummaryRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class extends="DefaultEvidenceSummary"
+		extendsRuleSet="EvidenceSummaryRuleSet" name="SummaryInformation">
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="BDMOASConsentToBeDisadvantaged"
+					ruleset="BDMOASConsentToBeDisadvantagedRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="livingApartforReasonsBeyondControl">
+			<type>
+				<ruleclass name="BDMOASLivingApartforReasonsBeyondControl"
+					ruleset="BDMOASLivingApartforReasonsBeyondControlRuleSet" />
+			</type>
+			<derivation>
+				<reference attribute="livingApartforReasonsBeyondControl">
+					<reference attribute="evidence" />
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="summary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Message" />
+					</type>
+					<when>
+						<condition>
+							<not>
+								<equals>
+									<reference attribute="endDate">
+										<reference attribute="livingApartforReasonsBeyondControl">
+											<reference attribute="evidence" />
+										</reference>
+									</reference>
+									<null/>
+								</equals>
+							</not>
+						</condition>
+						<value>
+							<ResourceMessage
+								key="ConsentToBeDisadvantagedSummary.endDate"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASConsentToBeDisadvantagedSummaryRuleSet">
+								<reference attribute="consentStatus">
+									<reference attribute="evidence" />
+								</reference>
+								<reference attribute="concernRoleName">
+									<singleitem onEmpty="error" onMultiple="error">
+										<readall ruleclass="ConcernRole"
+											ruleset="ParticipantEntitiesRuleSet">
+											<match retrievedattribute="concernRoleID">
+												<reference attribute="participantRoleID">
+													<reference
+														attribute="related_relatedCaseParticipantRoleID">
+														<reference attribute="maritalRelationship">
+															<reference attribute="livingApartforReasonsBeyondControl">
+																<reference attribute="evidence" />
+															</reference>
+														</reference>
+													</reference>
+												</reference>
+											</match>
+										</readall>
+									</singleitem>
+								</reference>
+								<reference attribute="startDate">
+									<reference attribute="livingApartforReasonsBeyondControl">
+										<reference attribute="evidence" />
+									</reference>
+								</reference>
+								<reference attribute="endDate">
+									<reference attribute="livingApartforReasonsBeyondControl">
+										<reference attribute="evidence" />
+									</reference>
+								</reference>
+							</ResourceMessage>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<ResourceMessage
+								key="ConsentToBeDisadvantagedSummary"
+								resourceBundle="curam.ca.gc.bdmoas.evidence.BDMOASConsentToBeDisadvantagedSummaryRuleSet">
+								<reference attribute="consentStatus">
+									<reference attribute="evidence" />
+								</reference>
+								<reference attribute="concernRoleName">
+									<singleitem onEmpty="error" onMultiple="error">
+										<readall ruleclass="ConcernRole"
+											ruleset="ParticipantEntitiesRuleSet">
+											<match retrievedattribute="concernRoleID">
+												<reference attribute="participantRoleID">
+													<reference
+														attribute="related_relatedCaseParticipantRoleID">
+														<reference attribute="maritalRelationship">
+															<reference attribute="livingApartforReasonsBeyondControl">
+																<reference attribute="evidence" />
+															</reference>
+														</reference>
+													</reference>
+												</reference>
+											</match>
+										</readall>
+									</singleitem>
+								</reference>
+								<reference attribute="startDate">
+									<reference attribute="livingApartforReasonsBeyondControl">
+										<reference attribute="evidence" />
+									</reference>
+								</reference>
+							</ResourceMessage>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

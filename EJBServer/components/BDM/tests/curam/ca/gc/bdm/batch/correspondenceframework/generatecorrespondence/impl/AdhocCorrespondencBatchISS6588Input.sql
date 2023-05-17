@@ -1,0 +1,1 @@
+select  cr.concernroleid,cr.concernroleid,cr.concernroleid INTO :clientConcernRoleID,:concernRoleID,:toRecipientConcernRoleID from concernrole cr      

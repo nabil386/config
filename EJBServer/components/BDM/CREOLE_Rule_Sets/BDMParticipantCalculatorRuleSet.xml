@@ -1,0 +1,136 @@
+<RuleSet name="BDMParticipantCalculatorRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class name="BDMParticipantCalculator">
+		<Initialization>
+			<Attribute name="caseParticipantRoleID">
+				<type>
+					<javaclass name="Number" />
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="caseParticipantData">
+			<type>
+				<ruleclass name="BDMCaseParticipantData" ruleset="BDMDataRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="BDMCaseParticipantData" ruleset="BDMDataRuleSet">
+					<reference attribute="caseParticipantRoleID" />
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="concernRoleID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<reference attribute="participantRoleID">
+					<reference attribute="caseParticipantRoleRecord">
+						<reference attribute="caseParticipantData" />
+					</reference>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="isProspectPerson">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<equals>
+					<Code table="ConcernRoleType">
+						<String value="RL7" />
+					</Code>
+					<reference attribute="concernRoleType">
+						<singleitem onMultiple="error" onEmpty="error">
+							<readall ruleclass="ConcernRole"
+								ruleset="ParticipantEntitiesRuleSet">
+								<match retrievedattribute="concernRoleID">
+									<reference attribute="concernRoleID" />
+								</match>
+							</readall>
+						</singleitem>
+					</reference>
+				</equals>
+			</derivation>
+		</Attribute>
+		<Attribute name="personRecord">
+			<type>
+				<ruleclass name="Person" ruleset="ParticipantEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<singleitem onMultiple="error" onEmpty="error">
+					<readall ruleclass="Person" ruleset="ParticipantEntitiesRuleSet">
+						<match retrievedattribute="concernRoleID">
+							<reference attribute="concernRoleID" />
+						</match>
+					</readall>
+				</singleitem>
+			</derivation>
+		</Attribute>
+		<Attribute name="prospectPersonRecord">
+			<type>
+				<ruleclass name="ProspectPerson"
+					ruleset="ParticipantEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<singleitem onMultiple="error" onEmpty="error">
+					<readall ruleclass="ProspectPerson"
+						ruleset="ParticipantEntitiesRuleSet">
+						<match retrievedattribute="concernRoleID">
+							<reference attribute="concernRoleID" />
+						</match>
+					</readall>
+				</singleitem>
+			</derivation>
+		</Attribute>
+		<Attribute name="dateOfBirth">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.util.type.Date" />
+					</type>
+					<when>
+						<condition>
+							<reference attribute="isProspectPerson" />
+						</condition>
+						<value>
+							<reference attribute="dateOfBirth">
+								<reference attribute="prospectPersonRecord" />
+							</reference>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<reference attribute="dateOfBirth">
+								<reference attribute="personRecord" />
+							</reference>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="ageTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.Statics"
+					method="getAgeTimeline">
+					<type>
+						<javaclass name="curam.creole.value.Timeline">
+							<javaclass name="Number" />
+						</javaclass>
+					</type>
+					<arguments>
+						<reference attribute="dateOfBirth" />
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

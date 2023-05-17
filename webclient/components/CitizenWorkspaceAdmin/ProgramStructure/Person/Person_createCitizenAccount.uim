@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed Materials - Property of IBM
+    
+    Copyright IBM Corporation 2012. All Rights Reserved.
+    
+    US Government Users Restricted Rights - Use, duplication or disclosure 
+    restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<PAGE PAGE_ID="Person_createCitizenAccount"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd" WINDOW_OPTIONS="width=550">
+
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+        </CONNECT>
+    </PAGE_TITLE>
+
+<!--
+    <INFORMATIONAL>
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="Page.StaticText.InformationMessage"/>
+        </CONNECT>
+    </INFORMATIONAL>
+-->
+    <SERVER_INTERFACE CLASS="CitizenWorkspaceAdmin" NAME="DISPLAY"
+        OPERATION="listPersonEmailDetails" PHASE="DISPLAY"/>
+    <SERVER_INTERFACE CLASS="CitizenWorkspaceAdmin" NAME="ACTION"
+        OPERATION="createCitizenAccount" PHASE="ACTION"/>
+
+    <PAGE_PARAMETER NAME="concernRoleID"/>
+
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="concernRoleID"/>
+        <TARGET NAME="DISPLAY" PROPERTY="key$concernRoleID"/>
+    </CONNECT>
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="concernRoleID"/>
+        <TARGET NAME="ACTION" PROPERTY="details$concernRoleID"/>
+    </CONNECT>
+
+    <ACTION_SET>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Save" TYPE="SUBMIT"/>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+    </ACTION_SET>
+
+    <CLUSTER SHOW_LABELS="false" STYLE="outer-cluster-borderless">
+        <CLUSTER SHOW_LABELS="false" STYLE="outer-cluster-borderless">
+            <CONDITION>
+                <IS_TRUE NAME="DISPLAY" PROPERTY="displayEmailOption"/>
+            </CONDITION>
+            <FIELD>
+                <CONNECT>
+                    <SOURCE NAME="TEXT" PROPERTY="Field.StaticText.InformationMessage"/>
+                </CONNECT>
+            </FIELD>
+        </CLUSTER>
+        <CLUSTER SHOW_LABELS="false" STYLE="outer-cluster-borderless">
+            <CONDITION>
+                <IS_FALSE NAME="DISPLAY" PROPERTY="displayEmailOption"/>
+            </CONDITION>
+            <FIELD>
+                <CONNECT>
+                    <SOURCE NAME="TEXT" PROPERTY="Field.StaticText.Specify.InformationMessage"/>
+                </CONNECT>
+            </FIELD>
+        </CLUSTER>
+    </CLUSTER>
+    <CLUSTER NUM_COLS="1" LABEL_WIDTH="30">
+
+        <CLUSTER NUM_COLS="1" LABEL_WIDTH="30">
+            <CONDITION>
+                <IS_TRUE NAME="DISPLAY" PROPERTY="displayEmailOption"/>
+            </CONDITION>
+            <FIELD LABEL="Field.Label.SelectEmailAddress" USE_BLANK="true" >
+                <CONNECT>
+                    <INITIAL NAME="DISPLAY" HIDDEN_PROPERTY="result$dtls$emailAddressID" PROPERTY="result$dtls$emailAddress"/>
+                </CONNECT>
+                <CONNECT>
+                    <SOURCE NAME="DISPLAY" PROPERTY="result$primaryEmailAddress"/>
+                </CONNECT>
+                <CONNECT>
+                    <TARGET NAME="ACTION" PROPERTY="details$emailAddressID"/>
+                </CONNECT>
+            </FIELD>
+        </CLUSTER>
+        <FIELD LABEL="Field.Label.NewEmailAddress">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="details$newEmailAddress"/>
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+
+</PAGE>

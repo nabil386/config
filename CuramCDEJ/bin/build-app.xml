@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Copyright 2004-2010 Curam Software Ltd.
+All rights reserved.
+
+This software is the confidential and proprietary information of Curam
+Software, Ltd. ("Confidential Information"). You shall not disclose
+such Confidential Information and shall use it only in accordance with the
+terms of the license agreement you entered into with Curam Software.
+-->
+<project name="build-clientapp">
+
+  <target name="external-client" description="Creates and builds an external client application environment. Requires the parameter -Dapp=&lt;application name&gt;.">
+
+    <fail message="The application name must be specified, use -Dapp=" unless="app"/>
+
+    <property name="dir.apps" value="${dir.bld}/apps"/>
+    <property name="dir.app" value="${dir.apps}/${app}"/>
+
+    <mkdir dir="${dir.app}"/>
+
+    <taskdef name="parseconfig"
+      classname="curam.omega3.anttasks.ParseDeploymentPackaging"
+      classpathref="taskdef.cp" />
+
+    <parseconfig outFile="${dir.app}/app.properties"
+      appName="${app}"
+      deploymentConfig="${dir.server}/project/config/deployment_packaging.xml"
+      locales="${prp.locale.list}"/>
+
+    <loadproperties srcFile="${dir.app}/app.properties"/>
+
+    <copy todir="${dir.app}/JavaSource">
+      <fileset dir="${dir.src.java}"/>
+    </copy>
+
+    <property name="dir.app.components" value="${dir.app}/components"/>
+
+    <foreach list="${app.components.to.copy}" target="-copyComponent" param="component.name">
+      <param name="dir.app.components" value="${dir.app.components}"/>
+    </foreach>
+
+    <mkdir dir="${dir.app.components}/core"/>
+
+    <exec executable="cmd.exe"
+      dir="${dir.client}"
+      osfamily="windows"
+      failonerror="true">
+      <arg line="/c call"/>
+      <arg line="${dir.client}/build.bat"/>
+      <arg line="client"/>
+      <env key="ANT_CMD_LINE_ARGS"      value=""/>
+      <env key="CLIENT_DIR"             path="${dir.app}"/>
+      <env key="CLIENT_COMPONENT_ORDER" value="${app.component.order}"/>
+      <env key="SKIP_ENV"               value="TRUE"/>
+    </exec>
+
+    <exec executable="${dir.client}/build.sh"
+      dir="${dir.client}"
+      osfamily="unix"
+      failonerror="true">
+      <arg line="client"/>
+      <env key="CLIENT_DIR"             path="${dir.app}"/>
+      <env key="CLIENT_COMPONENT_ORDER" value="${app.component.order}"/>
+      <env key="SKIP_ENV"               value="TRUE"/>
+    </exec>  	
+  	
+    <mkdir dir="${dir.app}/work"/>
+
+    <echoxml file="${dir.app}/.classpath">
+      <classpath>
+        <classpathentry kind="src" output="work" path="work"/>
+        <classpathentry kind="src" path="JavaSource"/>
+        <classpathentry kind="src" path="/CuramCDEJ"/>
+        <classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
+      </classpath>
+    </echoxml>
+
+    <copy file="${dir.client}/.project" tofile="${dir.app}/.project"/>
+    <replace file="${dir.app}/.project" token="&gt;Curam&lt;" value="&gt;${app.name}&lt;"/>
+
+    <if>
+      <available file="${dir.client}/.tomcatplugin"/>
+    <then>
+      <copy file="${dir.client}/.tomcatplugin" tofile="${dir.app}/.tomcatplugin"/>
+      <replace file="${dir.app}/.tomcatplugin" token="/Curam" value="${app.context.root}"/>
+    </then>
+    </if>
+
+  </target>
+
+  <target name="-copyComponent">
+    <if>
+      <available file="${dir.src.components}/${component.name}" type="dir"/>
+    <then>
+       <copy todir="${dir.app.components}/${component.name}">
+          <fileset dir="${dir.src.components}/${component.name}"/>
+       </copy>
+       <delete>
+          <fileset dir="${dir.app.components}/${component.name}">
+             <present present="srconly" targetdir="${dir.src.components}/${component.name}"/>
+          </fileset>
+       </delete>
+    </then>
+    </if>
+  </target>
+
+</project>

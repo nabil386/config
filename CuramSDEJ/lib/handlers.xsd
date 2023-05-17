@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="event-class">
+    <xs:complexType>
+      <xs:attribute name="identifier" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="event-classes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="event-class" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:unique name="event-class">
+      <xs:selector xpath="event-class"/>
+      <xs:field xpath="@identifier"/>
+    </xs:unique>
+  </xs:element>
+  <xs:element name="event-registration">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="event-classes"/>
+      </xs:sequence>
+      <xs:attribute name="handler" type="xs:string" use="required"/>
+      <xs:attribute name="filter" type="xs:string" use="optional"/>
+      <xs:attribute name="removed" type="xs:boolean" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="registrations">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="event-registration" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:unique name="handler">
+      <xs:selector xpath="event-registration"/>
+      <xs:field xpath="@handler"/>
+    </xs:unique>
+  </xs:element>
+</xs:schema>

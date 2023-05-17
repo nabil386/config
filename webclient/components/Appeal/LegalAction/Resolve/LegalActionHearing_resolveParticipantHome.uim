@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This script redirects the user from an Hearing page to a participant    -->
+<!-- home page.                                                             -->
+<PAGE PAGE_ID="LegalActionHearing_resolveParticipantHome">
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences
+        (pageContext.getSession()).getLocale() + "/";
+      String caseParticipantRoleID = request.getParameter("caseParticipantRoleID");
+      String concernRoleID = "";
+      String concernRoleType = "";
+      String url = "";
+
+      if (caseParticipantRoleID == null) {
+        // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "caseParticipantRoleID");
+       System.out.println(e);
+       throw e;
+       // END, CR00126196
+      }
+            
+      curam.interfaces.AppealPkg.Appeal_readConcernRoleDetails_TH 
+        th = new curam.interfaces.AppealPkg.Appeal_readConcernRoleDetails_TH();
+    
+      th.setFieldValue(th.key$appealCaseParticipantRoleKey$caseParticipantRoleKey$caseParticipantRoleID_idx, caseParticipantRoleID);
+   
+      th.callServer();
+    
+      concernRoleID = th.getFieldValue
+        (th.result$appealParticipantRoleDetails$caseParticipantConcernRoleDetails$concernRoleID_idx);
+      concernRoleType = th.getFieldValue
+        (th.result$appealParticipantRoleDetails$caseParticipantConcernRoleDetails$concernRoleType_idx);
+      
+      url = context + "Participant_resolveRoleHomePage.do?concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID)
+        + "&amp;participantType=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleType);
+      
+      url += "&amp;" + rh.getSystemParameters(); 
+
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+    
+  </JSP_SCRIPTLET>
+</PAGE>

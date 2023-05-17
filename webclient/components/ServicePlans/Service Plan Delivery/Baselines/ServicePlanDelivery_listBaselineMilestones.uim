@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page provides a user with a list of all baseline milestones       -->
+<!-- created at the service plan level                                      -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_listBaselineMilestones"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewBaseline"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ServicePlanDelivery_viewBaseline"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="baselineID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="baselineID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.PlanContent"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ServicePlanDelivery_baselinePlanContent"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="baselineID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="baselineID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Milestones"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="ServicePlanDelivery_listBaselineMilestones"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="baselineID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="baselineID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Gantt"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ServicePlanDelivery_viewBaselineGantt"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="baselineID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="baselineID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="baselineID"/>
+  <SERVER_INTERFACE
+    CLASS="ServicePlanDelivery"
+    NAME="DISPLAY"
+    OPERATION="listServicePlanLevelBaselineMilestones"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="baselineID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="baseLineID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+
+
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ExpectedStartDate"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expectedStartDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ExpectedEndDate"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expectedEndDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ActualStartDate"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="actualStartDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ActualEndDate"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="actualEndDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ServicePlanDelivery_resolveBaselineMilestoneExists">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$listDetails$listDetails$dtls$milestoneDeliveryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="milestoneDeliveryID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00282078, AKr -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="baselineID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="baselineID"
+          />
+        </CONNECT>
+        <!-- END, CR00282078 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+</PAGE>

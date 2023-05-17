@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012,2019. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This is the home page for the web application.                         -->
+<PAGE
+  PAGE_ID="Supervisor_casesHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- BEGIN, CR00290965, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00290965 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorCase"
+    NAME="DISPLAY1"
+    OPERATION="getAllProductTypes"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorCase"
+    NAME="DISPLAY2"
+    OPERATION="getAllCaseStatuses"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00304801, VT -->
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorCase"
+    NAME="ACTION"
+    OPERATION="listCasesByProductStatusCaseTypeAndOrganisationObject"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00304801 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSupervisorCase"
+    NAME="DISPLAY3"
+    OPERATION="getAllCaseTypes"
+    PHASE="DISPLAY"
+  />
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.Description.FilterDescription"
+    SHOW_LABELS="FALSE"
+    TITLE="Cluster.Title.Filter"
+  >
+    <CLUSTER LABEL_WIDTH="10">
+      <CONTAINER LABEL="Container.Label.Owner">
+        <FIELD WIDTH="17">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="key$dtls$organisationObject"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD WIDTH="40">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="key$dtls$assignedTo"
+            />
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <CLUSTER
+      LABEL_WIDTH="30"
+      NUM_COLS="3"
+    >
+      <FIELD LABEL="Field.Title.Product">
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="result$dtls$code"
+            NAME="DISPLAY1"
+            PROPERTY="result$dtls$description"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$dtls$productType"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Title.CaseType">
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="result$dtls$code"
+            NAME="DISPLAY3"
+            PROPERTY="result$dtls$description"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$dtls$caseType"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Title.Status"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$dtls$statusCode"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      BOTTOM="true"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.SearchButton.label"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.ResetButton.label"
+      >
+        <LINK PAGE_ID="Supervisor_casesHome"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.CaseDetails">
+    <FIELD
+      LABEL="Field.Title.ReferenceNumber"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$caseDtls$dtls$caseReference"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Supervisor_caseWorkspace">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$dtls$caseDtls$dtls$caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="supervisor.viewTaskOption"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskOptionCode"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="supervisor.weekBeginDate"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="weekBeginDate"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="organisationObject"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationObject"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="assignedTo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="assignedTo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="supervisor.type"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseIssuesViewOptionCode"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.ProductName"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00291562, KRK -->
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$caseDtls$dtls$productTypeDescOpt"
+        />
+        <!-- END, CR00291562 -->
+      </CONNECT>
+      <LINK PAGE_ID="Supervisor_caseWorkspace">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$dtls$caseDtls$dtls$caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="supervisor.viewTaskOption"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskOptionCode"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="organisationObject"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="organisationObject"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="assignedTo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="assignedTo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="supervisor.type"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseIssuesViewOptionCode"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.PrimaryClient"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$caseDtls$dtls$primaryClient"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.StartDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$caseDtls$dtls$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.StatusType"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$caseDtls$dtls$status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

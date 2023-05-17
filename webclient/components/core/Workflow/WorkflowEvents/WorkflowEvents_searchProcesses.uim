@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2005-2007, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Searches for Workflow Processes to map to an Event Type                -->
+<PAGE
+  PAGE_ID="WorkflowEvents_searchProcesses"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="WorkflowEvents"
+    NAME="ACTION"
+    OPERATION="searchProcesses"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="eventClassParam"/>
+  <PAGE_PARAMETER NAME="eventTypeParam"/>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    >
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.SearchCriteria.Title"
+  >
+    <FIELD LABEL="Field.Label.WorkflowName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$processName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.WorkflowDisplayName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$processDisplayName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Category"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$category"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CreatedBy">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$createdBy"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.DateCreated"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$dateCreated"
+        />
+      </CONNECT>
+    </FIELD>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK
+          PAGE_ID="WorkflowEvents_searchProcesses"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="eventClassParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="eventClassParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="eventTypeParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="eventTypeParam"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+  <LIST TITLE="List.Title.SearchResults">
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="12"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.Select">
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="WorkflowEvents_confirmWorkflowEventMapping"
+          SAVE_LINK="false"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="eventClassParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="eventClassParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="eventTypeParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="eventTypeParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$dtls$processName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="processNameParam"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$processDisplayName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Category"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$dtls$category"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

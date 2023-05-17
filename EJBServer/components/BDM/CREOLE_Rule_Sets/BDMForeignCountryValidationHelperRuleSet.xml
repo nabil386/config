@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<RuleSet name="BDMForeignCountryValidationHelperRuleSet"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../build/svr/creole.gen/schema/RuleSet.xsd">
+
+	<Class name="ForeignCountryValidationHelper">
+		<Initialization>
+			<Attribute name="receivedFrom">
+				<type>
+					<codetableentry table="BDMReceivedFrom" />
+				</type>
+			</Attribute>
+			<Attribute name="receivedFromCountry">
+				<type>
+					<codetableentry table="BDMSourceCountry" />
+				</type>
+			</Attribute>
+			<Attribute name="modeOfReceipt">
+				<type>
+					<codetableentry table="BDMModeOfReceipt" />
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="description">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<XmlMessage>A validation helper for evidences including Foreign
+					Government source fields
+				</XmlMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="mandatorySourceFieldFailure">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<all>
+					<fixedlist>
+						<listof>
+							<javaclass name="java.lang.Boolean" />
+						</listof>
+						<members>
+							<equals>
+								<reference attribute="receivedFrom" />
+								<Code table="BDMReceivedFrom">
+									<String value="RF4" />
+								</Code>
+							</equals>
+							<reference attribute="areForeignCountryFieldsNull" />
+						</members>
+					</fixedlist>
+				</all>
+			</derivation>
+		</Attribute>
+		<Attribute name="disallowedSourceFieldFailure">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="java.lang.Boolean" />
+					</type>
+					<when>
+						<condition>
+							<not>
+								<equals>
+									<Code table="BDMReceivedFrom">
+										<String value="RF4" />
+									</Code>
+									<reference attribute="receivedFrom" />
+								</equals>
+							</not>
+						</condition>
+						<value>
+							<reference attribute="areForeignCountryFieldsNotNull" />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<false />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="restrictedCountryFailure">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<all>
+					<fixedlist>
+						<listof>
+							<javaclass name="java.lang.Boolean" />
+						</listof>
+						<members>
+							<reference attribute="isRestrictedCountry" />
+							<equals>
+								<reference attribute="modeOfReceipt" />
+								<Code table="BDMModeOfReceipt">
+									<String value="MOR1" />
+								</Code>
+							</equals>
+						</members>
+					</fixedlist>
+				</all>
+			</derivation>
+		</Attribute>
+		<Attribute name="areForeignCountryFieldsNull">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<any>
+					<fixedlist>
+						<listof>
+							<javaclass name="java.lang.Boolean" />
+						</listof>
+						<members>
+							<equals>
+								<reference attribute="receivedFromCountry" />
+								<null />
+							</equals>
+							<equals>
+								<reference attribute="modeOfReceipt" />
+								<null />
+							</equals>
+						</members>
+					</fixedlist>
+				</any>
+			</derivation>
+		</Attribute>
+		<Attribute name="areForeignCountryFieldsNotNull">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<any>
+					<fixedlist>
+						<listof>
+							<javaclass name="java.lang.Boolean" />
+						</listof>
+						<members>
+							<not>
+								<equals>
+									<reference attribute="receivedFromCountry" />
+									<null />
+								</equals>
+							</not>
+							<not>
+								<equals>
+									<reference attribute="modeOfReceipt" />
+									<null />
+								</equals>
+							</not>
+						</members>
+					</fixedlist>
+				</any>
+			</derivation>
+		</Attribute>
+		<Attribute name="isRestrictedCountry">
+			<type>
+				<javaclass name="java.lang.Boolean" />
+			</type>
+			<derivation>
+				<call class="curam.ca.gc.bdm.creole.impl.Statics"
+					method="isRestrictedCountry">
+					<type>
+						<javaclass name="java.lang.Boolean" />
+					</type>
+					<arguments>
+						<reference attribute="receivedFromCountry" />
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+	</Class>
+
+</RuleSet>

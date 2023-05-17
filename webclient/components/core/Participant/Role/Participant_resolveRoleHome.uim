@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012-2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002, 2008, 2012 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- This jsp redirects the user to a Home Page.-->
+<!-- Each assignee type value is matched to a Home Page name.-->
+<PAGE
+  PAGE_ID="Participant_resolveRoleHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String participantType = request.getParameter("participantType");
+      String concernRoleID = request.getParameter("concernRoleID");
+      String url = "";
+
+
+      if(participantType == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "participantType");
+       throw e;
+       // END, CR00110216
+      }
+
+      if(concernRoleID == null) {
+        // BEGIN, CR00110216, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "concernRoleID");
+       throw e;
+       
+      }
+      
+      
+
+      if(participantType.equals("RL1")) {
+        url = context + "Person_resolveHomePagePage.do" + "?concernRoleID="
+          + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+      }
+      else {
+        if (participantType.equals("RL2")) {
+          url = context + "Employer_homePage.do" + "?concernRoleID="
+            + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+        }
+      else {
+        if (participantType.equals("RL3")) {
+        url = context + "ServiceSupplier_homePagePage.do" + "?concernRoleID="
+          + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+        }
+      else {
+        if (participantType.equals("RL4")) {
+          url = context + "ProductProvider_homePage.do" + "?concernRoleID="
+            + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+        }
+      else {
+        if (participantType.equals("RL5")) {
+
+          // BEGIN, CR00300404, MC
+          curam.interfaces.InformationProviderPkg.InformationProvider_isEducationalInstitute_TH 
+             isEductationalInstitute_th = new curam.interfaces.InformationProviderPkg.InformationProvider_isEducationalInstitute_TH();
+
+          isEductationalInstitute_th.setFieldValue(isEductationalInstitute_th.concernRoleKey$maintainConcernRoleKey$concernRoleID_idx, concernRoleID);
+          isEductationalInstitute_th.callServer();
+
+          String isEductationalInstituteInd = isEductationalInstitute_th.getFieldValue(isEductationalInstitute_th.result$statusInd_idx);
+
+          if (isEductationalInstituteInd == null || !Boolean.valueOf(isEductationalInstituteInd).booleanValue()){
+            url = context + "InformationProvider_homePage.do" + "?concernRoleID="+ curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+          }
+          else {
+            url = context + "EducationalInstitute_homePage.do" + "?concernRoleID="+ curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+          }
+        // END, CR00300404
+        
+        }
+      else {
+        if (participantType.equals("RL6")) {
+          url = context + "Utility_homePage.do" + "?concernRoleID="
+            + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+        }
+      else {
+        if (participantType.equals("RL7")) {
+        // BEGIN CR00020975, SG
+        curam.interfaces.ParticipantPkg.Participant_resolveProspectHome_TH 
+         th = new curam.interfaces.ParticipantPkg.Participant_resolveProspectHome_TH();
+    
+        th.setFieldValue(th.key$concernRoleID_idx,concernRoleID);
+
+        th.callServer();
+        String homePageName=th.getFieldValue(th.result$participantHomePageName_idx);
+        url = context + curam.omega3.request.RequestUtils.escapeURL(homePageName) + "?concernRoleID="
+            + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+        // END CR00020975
+        }
+      else {
+        if (participantType.equals("RL13")) {
+          url = context + "Representative_homePage.do" + "?concernRoleID="
+            + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+        
+      }
+      else {
+        if (participantType.equals("RL17")) {
+          url = context + "ExternalParty_homePage.do" + "?concernRoleID="
+            + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+                    
+        }
+       else {
+        // BEGIN CR00020975, SG
+        if (participantType.equals("RL8")) {
+         curam.interfaces.ParticipantPkg.Participant_resolveProspectHome_TH 
+         th = new curam.interfaces.ParticipantPkg.Participant_resolveProspectHome_TH();
+    
+        th.setFieldValue(th.key$concernRoleID_idx,concernRoleID);
+
+        th.callServer();
+        String homePageName=th.getFieldValue(th.result$participantHomePageName_idx);
+        url = context + curam.omega3.request.RequestUtils.escapeURL(homePageName) + "?concernRoleID="
+            + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+         // END CR00020975
+         
+         // END, CR00110216
+        }
+        }
+      }
+      }
+      }
+      }
+      }
+      }
+      }
+      }
+      url += "&amp;" + rh.getSystemParameters();
+      response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+</PAGE>

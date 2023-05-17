@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2005-2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Evidence infrastructure view page to be included in the client page    -->
+<!-- for applying evidence changes                                          -->
+<!-- BEGIN, CR00238748, GD -->
+<?curam-deprecated Since Curam 6.0, replaced by Incident_viewIncident1.uim?>
+<!-- END, CR00238748 -->
+<PAGE PAGE_ID="Incident_viewIncident" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <PAGE_TITLE>
+
+
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText"/>
+    </CONNECT>
+    <CONNECT>
+      <SOURCE NAME="DISPLAY" PROPERTY="pageDescription"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL LABEL="ActionControl.Label.MenuIncidentDetails" STYLE="in-page-current-link">
+      <LINK PAGE_ID="Incident_viewIncident">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="incidentID"/>
+          <TARGET NAME="PAGE" PROPERTY="incidentID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.MenuContactLog" STYLE="in-page-link">
+      <LINK PAGE_ID="IncidentContactLog_listByIncident">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="incidentID"/>
+          <TARGET NAME="PAGE" PROPERTY="incidentID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="pageDescription"/>
+          <TARGET NAME="PAGE" PROPERTY="pageDescription"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.MenuAttachments" STYLE="in-page-link">
+      <LINK PAGE_ID="IncidentAttachments_listByIncident">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="incidentID"/>
+          <TARGET NAME="PAGE" PROPERTY="incidentID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <SERVER_INTERFACE CLASS="Incidents" NAME="DISPLAY" OPERATION="viewIncident" PHASE="DISPLAY"/>
+
+
+  <PAGE_PARAMETER NAME="incidentID"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="incidentID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="key$incidentID"/>
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL IMAGE="AddIncidentParticipantButton" LABEL="ActionControl.Label.AddIncidentParticipant">
+      <LINK OPEN_MODAL="TRUE" PAGE_ID="IncidentParticipant_createIncidentParticipant">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="incidentID"/>
+          <TARGET NAME="PAGE" PROPERTY="incidentID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="pageDescription"/>
+          <TARGET NAME="PAGE" PROPERTY="pageDescription"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL IMAGE="EditIncidentButton" LABEL="ActionControl.Label.EditIncident">
+      <LINK OPEN_MODAL="TRUE" PAGE_ID="Incident_maintainIncident">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="incidentID"/>
+          <TARGET NAME="PAGE" PROPERTY="incidentID"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL IMAGE="DeleteIncidentButton" LABEL="ActionControl.Label.DeleteIncident">
+      <LINK OPEN_MODAL="TRUE" PAGE_ID="Incident_deleteIncident" WINDOW_OPTIONS="width=400">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="incidentID"/>
+          <TARGET NAME="PAGE" PROPERTY="incidentID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="pageDescription"/>
+          <TARGET NAME="PAGE" PROPERTY="pageDescription"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL IMAGE="CloseIncidentButton" LABEL="ActionControl.Label.CloseIncident">
+      <LINK OPEN_MODAL="TRUE" PAGE_ID="Incident_closeIncident" WINDOW_OPTIONS="width=800">
+        <CONNECT>
+          <SOURCE NAME="PAGE" PROPERTY="incidentID"/>
+          <TARGET NAME="PAGE" PROPERTY="incidentID"/>
+        </CONNECT>
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="pageDescription"/>
+          <TARGET NAME="PAGE" PROPERTY="pageDescription"/>
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL IMAGE="CloseButton" LABEL="ActionControl.Label.Close">
+      </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00127598, POB -->
+  <!-- Changed to use two conditional clusters to handle
+    anonymous reporting -->
+  <CLUSTER NUM_COLS="1" TITLE="Cluster.Details.Title">
+    <CONDITION>
+      <IS_FALSE NAME="DISPLAY" PROPERTY="anonymousReportInd"/>
+    </CONDITION>
+    <CLUSTER LABEL_WIDTH="40" NUM_COLS="2" STYLE="cluster-cpr-no-border">
+      <FIELD LABEL="Field.Label.Type" USE_BLANK="TRUE">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="incidentDtls$type"/>
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Sensitivity" USE_DEFAULT="TRUE">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="incidentDtls$sensitivityCode"/>
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.IncidentDateTime" USE_DEFAULT="TRUE">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="incidentDtls$incidentDateTime"/>
+        </CONNECT>
+      </FIELD>
+
+
+      <CONTAINER LABEL="Container.Label.Status">
+        <FIELD USE_DEFAULT="TRUE">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="incidentDtls$status"/>
+          </CONNECT>
+        </FIELD>
+        <ACTION_CONTROL LABEL="ActionControl.Label.ViewHistory">
+          <LINK OPEN_MODAL="TRUE" PAGE_ID="IncidentStatus_listByIncident">
+            <CONNECT>
+              <SOURCE NAME="PAGE" PROPERTY="incidentID"/>
+              <TARGET NAME="PAGE" PROPERTY="incidentID"/>
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </CONTAINER>
+
+
+      <FIELD LABEL="Field.Label.Severity" USE_DEFAULT="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="incidentDtls$severity"/>
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.ReportedBy" USE_DEFAULT="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="reporterFullName"/>
+        </CONNECT>
+        <LINK OPEN_MODAL="TRUE" PAGE_ID="IncidentParticipant_resolveViewIncidentParticipant" WINDOW_OPTIONS="width=800">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="reporterIncidentParticipantRoleID"/>
+            <TARGET NAME="PAGE" PROPERTY="incidentParticipantRoleID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="pageDescription"/>
+            <TARGET NAME="PAGE" PROPERTY="pageDescription"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="reporterConcernRoleID"/>
+            <TARGET NAME="PAGE" PROPERTY="reporterConcernRoleID"/>
+          </CONNECT>
+        </LINK>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.TimeOfDay" USE_DEFAULT="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="incidentDtls$timeOfDay"/>
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.ClosureReason" USE_DEFAULT="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="incidentDtls$closureReason"/>
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER LABEL_WIDTH="20" NUM_COLS="1" STYLE="cluster-cpr-no-border">
+      <FIELD HEIGHT="2" LABEL="Field.Label.ClosureComment" USE_DEFAULT="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="incidentDtls$closureComment"/>
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <CLUSTER NUM_COLS="1" TITLE="Cluster.Details.Title">
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="anonymousReportInd"/>
+    </CONDITION>
+    <CLUSTER LABEL_WIDTH="40" NUM_COLS="2" STYLE="cluster-cpr-no-border">
+      <FIELD LABEL="Field.Label.Type" USE_BLANK="TRUE">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="incidentDtls$type"/>
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Sensitivity" USE_DEFAULT="TRUE">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="incidentDtls$sensitivityCode"/>
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.IncidentDateTime" USE_DEFAULT="TRUE">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="incidentDtls$incidentDateTime"/>
+        </CONNECT>
+      </FIELD>
+
+
+      <!-- BEGIN, CR00142603, ZV -->
+      <CONTAINER LABEL="Container.Label.Status">
+        <FIELD USE_DEFAULT="TRUE">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="incidentDtls$status"/>
+          </CONNECT>
+        </FIELD>
+        <ACTION_CONTROL LABEL="ActionControl.Label.ViewHistory">
+          <LINK OPEN_MODAL="TRUE" PAGE_ID="IncidentStatus_listByIncident">
+            <CONNECT>
+              <SOURCE NAME="PAGE" PROPERTY="incidentID"/>
+              <TARGET NAME="PAGE" PROPERTY="incidentID"/>
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </CONTAINER>
+      <!-- END, CR00142603 -->
+
+
+      <FIELD LABEL="Field.Label.Severity" USE_DEFAULT="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="incidentDtls$severity"/>
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.ReportedBy" USE_DEFAULT="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="reporterFullName"/>
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.TimeOfDay" USE_DEFAULT="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="incidentDtls$timeOfDay"/>
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.ClosureReason" USE_DEFAULT="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="incidentDtls$closureReason"/>
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER LABEL_WIDTH="20" NUM_COLS="1" STYLE="cluster-cpr-no-border">
+      <FIELD HEIGHT="2" LABEL="Field.Label.ClosureComment" USE_DEFAULT="true">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="incidentDtls$closureComment"/>
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+  <!-- END, CR00127598 -->
+
+
+  <CLUSTER NUM_COLS="1" SHOW_LABELS="FALSE" TITLE="Cluster.Location.Title">
+    <FIELD>
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="location"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER NUM_COLS="1" SHOW_LABELS="FALSE" TITLE="Cluster.Description.Title">
+    <FIELD HEIGHT="4">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="description"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.ParticipantRoleList.Title">
+    <CONTAINER LABEL="List.Title.Action" SEPARATOR="Container.Separator" WIDTH="13">
+      <ACTION_CONTROL LABEL="ActionControl.Label.View">
+        <LINK OPEN_MODAL="TRUE" PAGE_ID="IncidentParticipant_resolveViewIncidentParticipant" WINDOW_OPTIONS="width=800">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="roles$dtlsList$incidentParticipantRoleID"/>
+            <TARGET NAME="PAGE" PROPERTY="incidentParticipantRoleID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="roles$dtlsList$concernRoleID"/>
+            <TARGET NAME="PAGE" PROPERTY="reporterConcernRoleID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="pageDescription"/>
+            <TARGET NAME="PAGE" PROPERTY="pageDescription"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK OPEN_MODAL="true" PAGE_ID="IncidentParticipant_resolveMaintainIncidentParticipant" WINDOW_OPTIONS="width=800">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="roles$dtlsList$incidentParticipantRoleID"/>
+            <TARGET NAME="PAGE" PROPERTY="incidentParticipantRoleID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="roles$dtlsList$concernRoleID"/>
+            <TARGET NAME="PAGE" PROPERTY="reporterConcernRoleID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="pageDescription"/>
+            <TARGET NAME="PAGE" PROPERTY="pageDescription"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK OPEN_MODAL="true" PAGE_ID="IncidentParticipant_deleteIncidentParticipant" WINDOW_OPTIONS="height=200,width=400">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="roles$dtlsList$incidentParticipantRoleID"/>
+            <TARGET NAME="PAGE" PROPERTY="incidentParticipantRoleID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="pageDescription"/>
+            <TARGET NAME="PAGE" PROPERTY="pageDescription"/>
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="List.Title.Name" WIDTH="30">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="roles$dtlsList$fullName"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="List.Title.Role" WIDTH="20">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="roles$dtlsList$incidentParticipantRoleType"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="List.Title.Status" WIDTH="10">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="roles$dtlsList$recordStatus"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

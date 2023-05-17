@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2010, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                            		    	-->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to choose how much of the generated 				  -->
+<!-- case sample to audit                                   								-->
+<PAGE
+  PAGE_ID="CaseAudit_externalServiceSelectAmount"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="AuditCaseSample"
+    NAME="DISPLAY"
+    OPERATION="generateExternalCaseAuditDataSize"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="AuditCaseSample"
+    NAME="DISPLAYWIZARD"
+    OPERATION="getExternalCaseAuditDataWizard"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="AuditCaseSample"
+    NAME="DISPLAYCASELOAD"
+    OPERATION="getNumberAndPercentageOfCases"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="AuditCaseSample"
+    NAME="ACTION"
+    OPERATION="validateCaseSampleAmount"
+    PHASE="ACTION"
+  />
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <PAGE_PARAMETER NAME="externalCaseAuditDataID"/>
+  <PAGE_PARAMETER NAME="auditPlanID"/>
+  <PAGE_PARAMETER NAME="numberOfCases"/>
+  <PAGE_PARAMETER NAME="percentageOfCases"/>
+  <PAGE_PARAMETER NAME="startPoint"/>
+  <PAGE_PARAMETER NAME="interval"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="externalCaseAuditDataID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$externalCaseAuditDataID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="auditPlanID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$auditPlanID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="numberOfCases"
+    />
+    <TARGET
+      NAME="DISPLAYCASELOAD"
+      PROPERTY="key$numberOfCases"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="percentageOfCases"
+    />
+    <TARGET
+      NAME="DISPLAYCASELOAD"
+      PROPERTY="key$percentageOfCases"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$count"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$totalNumCases"
+    />
+  </CONNECT>
+
+<!-- BEGIN, CR00332478, GA -->
+  <CLUSTER
+    DESCRIPTION="Cluster.Description.Text"
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+<!-- END, CR00332478 -->
+
+    <FIELD
+      LABEL="Field.Label.TotalCases"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$count"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Number"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYCASELOAD"
+          PROPERTY="result$numberOfCases"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$numberOfCases"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+    <FIELD
+      LABEL="Field.Label.Percentage"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYCASELOAD"
+          PROPERTY="result$percentageOfCases"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$percentageOfCases"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+    <ACTION_CONTROL
+      DEFAULT="true"
+      IMAGE="NextButton"
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="CaseAudit_externalServiceConfigureAlgorithm"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="externalCaseAuditDataID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="externalCaseAuditDataID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$numberOfCases"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="numberOfCases"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$percentageOfCases"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="percentageOfCases"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$totalNumCases"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="totalCases"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="startPoint"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="startPoint"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="interval"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="interval"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="auditPlanID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

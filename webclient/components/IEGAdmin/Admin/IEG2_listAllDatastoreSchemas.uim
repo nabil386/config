@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2017. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<!-- Copyright (c) 2012 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Page used to list all of the available IEG scripts.                    -->
+<PAGE PAGE_ID="IEG2_listAllDatastoreSchemas" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+	<PAGE_TITLE>
+	    <CONNECT>
+	      <SOURCE
+	        NAME="TEXT"
+	        PROPERTY="PageTitle.title"
+	      />
+	    </CONNECT>
+	  </PAGE_TITLE>
+
+  <SERVER_INTERFACE CLASS="DatastoreSchema" NAME="ACTION" OPERATION="searchSchemas" PHASE="ACTION" />
+  
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL LABEL="ActionControl.Label.CreateBlankSchema">
+      <LINK PAGE_ID="Datastore_createBlankSchema" OPEN_MODAL="true"/>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddSchema">
+        <LINK PAGE_ID="Datastore_createSchema" OPEN_MODAL="true"/>
+    </ACTION_CONTROL>    
+  </ACTION_SET>
+  
+  <CLUSTER NUM_COLS="2" SHOW_LABELS="true" LABEL_WIDTH="35" TITLE="Cluster.Title.SearchCriteria">
+    <FIELD LABEL="Cluster.Label.SchemaName">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="key$schemaName" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Cluster.Label.SchemaType">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="key$schemaType" />
+      </CONNECT>
+    </FIELD>
+    
+    <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+      <ACTION_CONTROL DEFAULT="true" LABEL="ActionControl.Label.Search" TYPE="SUBMIT">
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="IEG2_listAllDatastoreSchemas" SAVE_LINK="false"/>
+       </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+  
+  
+  <LIST
+    PAGINATED="true"
+    TITLE="List.Title.SearchResults"
+  >
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.EditDisplayName" APPEND_ELLIPSIS="true">
+        <LINK PAGE_ID="Datastore_editDisplayName" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="dtls$schemaName" />
+            <TARGET NAME="PAGE" PROPERTY="schemaName" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>  	
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit" APPEND_ELLIPSIS="true">
+        <LINK PAGE_ID="System_editSchema">
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="dtls$schemaName" />
+            <TARGET NAME="PAGE" PROPERTY="schemaName" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>      
+      <ACTION_CONTROL LABEL="ActionControl.Label.Download" TYPE="FILE_DOWNLOAD" APPEND_ELLIPSIS="true">
+        <LINK>
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="dtls$schemaName" />
+            <TARGET NAME="PAGE" PROPERTY="schemaName" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK OPEN_MODAL="true" PAGE_ID="Datastore_deleteSchema">
+          <CONNECT>
+            <SOURCE NAME="ACTION" PROPERTY="dtls$schemaName" />
+            <TARGET NAME="PAGE" PROPERTY="schemaName" />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD LABEL="Field.Title.Name">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="schemaDisplayName" />
+      </CONNECT>
+    </FIELD>
+	
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Datastore_viewSchemaInline">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$schemaName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="schemaName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$schemaType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="schemaType"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+
+</PAGE>

@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to select the type of evidence where an      -->
+<!-- issue has been identified and the type of issue.                       -->
+<PAGE
+  PAGE_ID="IssueDelivery_selectEvidenceIssueTypeForICWizard"
+  WINDOW_OPTIONS="width=750,height=450"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="IssueDelivery"
+    NAME="DISPLAYWIZARD"
+    OPERATION="getCreateIssueDeliveryWizard"
+  />
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <SERVER_INTERFACE
+    CLASS="Product"
+    NAME="DISPLAYISSUETYPE"
+    OPERATION="listActiveIssueTypes"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAYEVIDENCETYPE"
+    OPERATION="listAllEvidenceTypesByAdminIntegratedCaseID"
+    PHASE="DISPLAY"
+  />
+
+  // BEGIN, CR00477087, MC
+  <SERVER_INTERFACE
+    CLASS="IntegratedCase"
+    NAME="DISPLAY_CASEMEMBERS"
+    OPERATION="listCaseMembers1"
+    PHASE="DISPLAY"
+  />
+  // END, CR00477087
+
+  <SERVER_INTERFACE
+    CLASS="IssueDelivery"
+    NAME="ACTION"
+    OPERATION="getIssueEvidenceTypeAndMemberDetails"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="NextButton"
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="IssueDelivery_createIssueForICWizard"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$issueConfigurationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="issueConfigurationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$evidenceType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="evidenceType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$caseParticipantRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseParticipantRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="directionParam"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="directionParam"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="adminIntegratedCaseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="adminIntegratedCaseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="adminIntegratedCaseID"
+    />
+    <TARGET
+      NAME="DISPLAYEVIDENCETYPE"
+      PROPERTY="key$adminIntegratedCaseID"
+    />
+  </CONNECT>
+  
+  // BEGIN, CR00477087, MC
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY_CASEMEMBERS"
+      PROPERTY="key$caseID"
+    />
+  </CONNECT>
+  // END, CR00477087
+
+  <PAGE_PARAMETER NAME="issueConfigurationID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="adminIntegratedCaseID"/>
+  <PAGE_PARAMETER NAME="caseParticipantRoleID"/>
+  <PAGE_PARAMETER NAME="evidenceType"/>
+  <PAGE_PARAMETER NAME="description"/>
+  <PAGE_PARAMETER NAME="directionParam"/>
+
+
+  <CLUSTER LABEL_WIDTH="25">
+
+
+    <FIELD
+      LABEL="Field.Label.EvidenceType"
+      USE_BLANK="true"
+      WIDTH="60"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$list$list$dtls$evidenceType"
+          NAME="DISPLAYEVIDENCETYPE"
+          PROPERTY="result$list$list$dtls$evidenceType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$evidenceType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.IssueType"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$list$list$list$issueConfigurationID"
+          NAME="DISPLAYISSUETYPE"
+          PROPERTY="result$list$list$list$typeDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$issueConfigurationID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Member"
+      USE_BLANK="false"
+      USE_DEFAULT="true"
+      WIDTH="35"
+    >
+      
+    // BEGIN, CR00477087, MC
+    <CONNECT>
+      <INITIAL
+        HIDDEN_PROPERTY="caseParticipantRoleID"
+        NAME="DISPLAY_CASEMEMBERS"
+        PROPERTY="result$participantList$nameAndAgeOpt"
+      />
+    </CONNECT>
+    // END, CR00477087
+    
+    <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$caseParticipantRoleID"
+        />
+      </CONNECT>
+
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

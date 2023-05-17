@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2013,2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+
+<!-- This page allows users to search for an Application Case.                           -->
+<PAGE PAGE_ID="CommonIntake_referralCaseSearch" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+  <SERVER_INTERFACE CLASS="ApplicationCase" NAME="DISPLAY"
+    OPERATION="getReferralSearchCriteria" />
+  <SERVER_INTERFACE CLASS="ApplicationCase" NAME="ACTION"
+    OPERATION="searchReferral" PHASE="ACTION" />
+
+ <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE NAME="ACTION" PROPERTY="informationMsgTxt" />
+    </CONNECT>
+  </INFORMATIONAL>
+  
+  <SCRIPT
+    ACTION="checkAll()"
+    EVENT="ONLOAD"
+    SCRIPT_FILE="EnableCheckBoxes.js"
+  />
+
+
+ 
+    <CLUSTER LABEL_WIDTH="44" NUM_COLS="2" SHOW_LABELS="true" TITLE="Cluster.Title.SearchCriteria">
+      <FIELD LABEL="Field.Label.CaseReference">
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="details$caseReference" />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.ReferralReference">
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="details$referralReference" />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    
+    <CLUSTER LABEL_WIDTH="44" NUM_COLS="2" SHOW_LABELS="true">
+      <FIELD CONTROL="CHECKBOXED_LIST" HEIGHT="4" LABEL="Field.Label.Type"
+        USE_BLANK="false">
+        <CONNECT>
+          <INITIAL NAME="DISPLAY" PROPERTY="typeDtls$dtls$caseName"
+            HIDDEN_PROPERTY="applicationCaseAdminID" />
+        </CONNECT>
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="details$caseTypeList" />
+        </CONNECT>
+      </FIELD>
+      <FIELD CONTROL="CHECKBOXED_LIST" HEIGHT="4" LABEL="Field.Label.Status"
+        USE_BLANK="false">
+        <CONNECT>
+          <INITIAL HIDDEN_PROPERTY="caseStatus" NAME="DISPLAY"
+            PROPERTY="caseStatusDescription" />
+        </CONNECT>
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="details$statusList" />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+    <CLUSTER LABEL_WIDTH="44" NUM_COLS="2" SHOW_LABELS="true">
+      <FIELD LABEL="Field.Label.ReferralReceivedFrom"
+        USE_DEFAULT="false" WIDTH="15" WIDTH_UNITS="CHARS">
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="details$referralDate" />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Client">
+        <CONNECT>
+          <TARGET NAME="ACTION" PROPERTY="details$concernRoleID" />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  
+  
+   <CLUSTER LABEL_WIDTH="44" NUM_COLS="2" SHOW_LABELS="true">
+      <FIELD LABEL="Field.Label.ReferralSource"
+        USE_DEFAULT="false" WIDTH="17" WIDTH_UNITS="CHARS" USE_BLANK="true">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="details$referralSource"/>
+      </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.ReferralReason" WIDTH="17" WIDTH_UNITS="CHARS"  USE_BLANK="true">
+        <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="details$referralReason"/>
+      </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+  <CLUSTER>
+    <ACTION_SET ALIGNMENT="CENTER" BOTTOM="false">
+      <ACTION_CONTROL DEFAULT="true" IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search" TYPE="SUBMIT">
+        <LINK PAGE_ID="THIS" />
+      </ACTION_CONTROL>
+      <ACTION_CONTROL IMAGE="ResetButton" LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="CommonIntake_referralCaseSearch" />
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+
+  <LIST TITLE="List.Title.SearchResult">
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="CommonIntake_referralCaseDetails">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$dtls$applicationCaseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="applicationCaseID"
+          />
+        </CONNECT>
+
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+    <FIELD LABEL="Field.Label.CaseReferenceList" WIDTH="12">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="result$dtls$caseReference" />
+      </CONNECT>
+      <LINK URI_SOURCE_NAME="ACTION" URI_SOURCE_PROPERTY="applicationHomeURL" />
+    </FIELD>
+    <FIELD LABEL="Field.Label.ReferralReferenceList" WIDTH="14">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="result$dtls$applicationReference" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Type" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="caseType" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Clients" WIDTH="21">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="caseClients" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ReferralSource"  WIDTH="15" >
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="result$dtls$referralSource"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Date" WIDTH="12">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="result$dtls$applicationDate" />
+      </CONNECT>
+    </FIELD> 
+    <FIELD LABEL="Field.Label.Status" WIDTH="10">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="status" />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+</PAGE>

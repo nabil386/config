@@ -1,0 +1,48 @@
+CKEditor
+Current Base Version of CK Editor: 4.5.10
+
+This file details the custom changes made by SPM to the CK Editor in order to address some defects and other issues as they arise.
+Please follow the pattern below for documenting any future changes.
+
+Changes
+=======================================
+CK Editor SPM Version: ckeditor_4.5.10_curam_1.1
+Date: September-2022
+SPM Release:   SPM 8.0.3.0 and other releases
+SPM Ticket:    SPM-125157  - Rich Text Editor removes highlighted text in the middle of a sentence without a warning message
+Files Changed:
+ - ckeditor/plugins/pastefromword/filter/default.js - replaced with new version.
+ - ckeditor/plugins/whitelist/plugin.js             - modified.
+Rationale for Changes:
+The default.js file has been replaced with the version from the CK Editor 4.6.2 version to solve the issue outlined in
+JIRA Ticket SPM-12515 in which the Rich Text Editor was removing highlighted text in the middle of a sentence without a warning message.
+The plugin.js file has been modified to add the "lang" attribute to the CKEDITOR.config.whitelist_globalAttributes because the
+new pasteFromWord update generates that attribute. Without this change the user would be warned on not extsting format changes on every paste.
+
+=======================================
+CK Editor SPM Version: ckeditor_4.5.10_curam_1.0
+Date: May-2017
+SPM Release:   SPM 7.0.1.0
+SPM Ticket:    RTC-183356 - Format Warning" message is being thrown - relating to updates to the Intake Narrative
+Files Changed:
+ - cefwidgets/ckeditor/plugins/whitelist/plugin.js
+Rationale for Changes:
+At the moment, when content is added to the Rich text Editor (RTE), the content is checked against a whitelist and when something is
+removed an error is thrown. This error is thrown when information is added to the RTE and if information is loaded into the RTE as a
+result of a read from the database. In the case of an Intake. We need to update the RTE check to differentiate when information is being
+added to the RTE for the first time and when information is being read from a database (loaded). The formatting error should only be thrown
+when information is added to the RTE. Implemented and onPaste event in the whitelist plugin to format the 'pasted' data. If anything was
+removed during formatting an error is thrown.
+
+=======================================
+CK Editor SPM Version: ckeditor_4.5.10_curam_1.0
+Date: May-2016
+SPM Release:   SPM 6.0.5.2 iFix5
+SPM Ticket:    RTC-149431 - Modal becomes all white when using Spell Checker and browser used is Microsoft IE
+Files Changed:
+ - ckeditor\plugins\ibmspellchecker\dialogs\ibmspellchecker.js
+Rationale for Changes:
+The check function has been altered to remove misspellings which were incorrectly returned from the service call.
+E.g.: If "minister's" is passed to the service, "'s" is returned. The word "'s" does not exist in the original text so this
+miss spelling now ignored. MS Word's smart quotes have been added to the regex pattern in the moveToNextWord function.
+This allows the pattern to identify the last letter of a word surrounded by MS Word's smart quotes.

@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2006-2008, 2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows you to search for the list of questions to be added   -->
+<!-- to the decision matrix widget.                                         -->
+<!-- BEGIN, CR00246242, AK -->
+<PAGE
+  PAGE_ID="DecisionMatrixQuestionPopup"
+  POPUP_PAGE="true"
+  SCRIPT_FILE="DecisionAssistAdmin_decisionMatrixWidget.js"
+  WINDOW_OPTIONS="width=600,height=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00246242 -->
+  <PAGE_PARAMETER NAME="matrixID"/>
+  <PAGE_PARAMETER NAME="existingQuestionIds"/>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="DecisionMatrix"
+    NAME="DISPLAY"
+    OPERATION="getQuestionnaireForMatrix"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="matrixID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$key$key$decisionMatrixVersionID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00291203, PB -->
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="key$actionControlIDOpt"
+    CLASS="DecisionMatrix"
+    NAME="ADD_ACTION"
+    OPERATION="readMultiSelect"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionControlIDOpt"
+    CLASS="DecisionMatrix"
+    NAME="ACTION"
+    OPERATION="getQuestionsForMatrix"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="matrixID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="existingQuestionDetails$decisionMatrixVersionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="existingQuestionIds"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="existingQuestionDetails$existingQuestionIds"
+    />
+  </CONNECT>
+  <!-- END, CR00291203 -->
+  <!-- BEGIN, CR00246242, AK -->
+  <CLUSTER
+    LABEL_WIDTH="10"
+    TITLE="Cluster.Title.Questionnaire"
+  >
+    <FIELD
+      LABEL="Field.Label.questinnaire"
+      WIDTH="40"
+    >
+      <!-- END, CR00246242 -->
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$dtls$dtls$dtls$questionnaireVersionID"
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$dtls$dtls$name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$dtls$questionnaireVersionID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- BEGIN, CR00291203, PB -->
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.QuestionnaireDetails"
+  >
+    <FIELD LABEL="Field.Label.QuestionnaireName">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$questionnaireDtls$dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$questionnaireDtls$dtls$versionStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireFrom">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$questionnaireDtls$dtls$fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireVersion">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$questionnaireDtls$dtls$questionnaireVersionNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.QuestionnaireType">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$questionnaireDtls$dtls$type"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST
+    
+    TITLE="List.Title"
+  >
+
+
+    <CONTAINER
+      ALIGNMENT="LEFT"
+      LABEL="List.Multiselect.Header"
+      WIDTH="5"
+    >
+
+
+      <WIDGET
+        ALIGNMENT="LEFT"
+        TYPE="MULTISELECT"
+        WIDTH="10"
+      >
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$questionList$dtlsList$multiselectQuestionParam"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+
+
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ADD_ACTION"
+              PROPERTY="key$multiselect"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+
+
+      </WIDGET>
+
+
+    </CONTAINER>
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Title.Question"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$questionList$dtlsList$questionLabel"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <ACTION_SET TOP="false">
+    <ACTION_CONTROL
+      ACTION_ID="Search"
+      LABEL="ActionControl.Label.Search"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="THIS"/>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      ACTION_ID="AddQuestions"
+      LABEL="ActionControl.Label.AddQuestions"
+      TYPE="SUBMIT"
+    >
+      <SCRIPT
+        ACTION="addQuestionsFromPopup(arguments[0])"
+        EVENT="ONCLICK"
+      />
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="DISMISS"
+    > </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- END, CR00291203 -->
+</PAGE>
