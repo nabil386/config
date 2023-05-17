@@ -1,5 +1,0 @@
-﻿/**
- * @license Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/licensePortions Copyright IBM Corp., 2009-2016.
- */
-CKEDITOR.plugins.setLang("filetools","fr",{loadError:"Une erreur s'est produite lors de la lecture du fichier.",networkError:"Une erreur réseau s'est produite lors de l'envoi par téléchargement du fichier.",httpError404:"Une erreur HTTP s'est produite lors de l'envoi par téléchargement du fichier (404 : Fichier introuvable).",httpError403:"Une erreur HTTP s'est produite lors de l'envoi par téléchargement du fichier (403 : Interdit).",httpError:"Une erreur HTTP s'est produite lors de l'envoi par téléchargement du fichier (statut d'erreur : %1).",noUrlError:"L'URL d'envoi par téléchargement n'est pas définie.",responseError:"La réponse du serveur n'est pas correcte."});

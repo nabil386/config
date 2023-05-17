@@ -1,1 +1,0 @@
-delete from securitygroupsid where GROUPNAME='SUPERGROUP' and SIDNAME='BDMCCTAPI.updateWorkItemStatus';

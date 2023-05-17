@@ -1,5 +1,0 @@
-﻿/**
- * @license Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/licensePortions Copyright IBM Corp., 2009-2016.
- */
-CKEDITOR.plugins.setLang("filetools","es",{loadError:"Se ha producido un error durante la lectura del archivo.",networkError:"Se ha producido un error de red durante la subida del archivo.",httpError404:"Se ha producido un error de HTTP durante la subida del archivo (404: Archivo no encontrado).",httpError403:"Se ha producido un error de HTTP durante la subida del archivo (403: No permitido).",httpError:"Se ha producido un error de HTTP durante la subida del archivo (estado de error: %1).",noUrlError:"No se ha definido el URL de subida.",responseError:"Respuesta de servidor incorrecta."});

@@ -1,8 +1,0 @@
-//>>built
-require({cache:{"url:curam/layout/resources/ModalUIMController.html":"<div id=\"uimcontroller_${uid}\" \n  class=\"uimcontroller_${uid} uimController ${classList}\" \n  data-dojo-attach-point=\"uimController\">\n  <div style=\"display:none;\" \n       id=\"uimcontroller_tc_${uid}\" \n       class=\"ipnTabController in-page-nav-tabContainer\"\n       data-dojo-attach-point=\"tabController\" \n       data-dojo-type=\"curam.layout.TabContainer\">\n  </div>\n  <div class=\"contentPanelFrameWrapper\"\n       data-dojo-attach-point=\"frameWrapper\">\n    <iframe frameborder=\"0\" marginwidth=\"0\" marginheight=\"0\"\n            allowTransparency=\"true\" \n            id=\"${iframeId}\" \n            data-dojo-attach-point=\"frame\"                 \n            class=\"${iframeId} ${iframeClassList}\"\n            iscpiframe=\"${iscpiframe}\"\n            title=\"${title}\" >\n    </iframe>\n    <span onFocus=\"require(['curam/ModalDialog'], function(md) {md.handleFocusAtEnd(event)});\"\n          tabIndex=\"0\" class=\"hidden\" id=\"end-${uid}\" style=\"visibility: hidden;\">${endModalUIMController}</span>\n  </div>\n</div>"}});
-define("curam/ModalUIMController",["dojo/text!curam/layout/resources/ModalUIMController.html","dojo/_base/declare","dojo/parser","curam/inspection/Layer","curam/UIMController","curam/debug","curam/util/onLoad"],function(_1,_2,_3,_4,_5){
-var _6=_2("curam.ModalUIMController",[_5],{startModalUIMController:LOCALISED_ACCESSIBILITY_MODAL_START,endModalUIMController:LOCALISED_ACCESSIBILITY_MODAL_END,templateString:_1,constructor:function(_7){
-_4.register("curam/ModalUIMController",this);
-}});
-return _6;
-});

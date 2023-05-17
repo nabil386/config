@@ -1,5 +1,0 @@
-﻿/**
- * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
- */
-CKEDITOR.dialog.add("embedBase",function(t){"use strict";var e=t.lang.embedbase;return{title:e.title,minWidth:350,minHeight:50,onLoad:function(){function e(){n.setState(CKEDITOR.DIALOG_STATE_IDLE),i=null}var n=this,i=null;this.on("ok",function(a){a.data.hide=!1,a.stop(),n.setState(CKEDITOR.DIALOG_STATE_BUSY,this.parts.footer);var l=n.getValueOf("info","url");i=n.widget.loadContent(l,{noNotifications:!0,callback:function(){n.widget.isReady()||t.widgets.finalizeCreation(n.widget.wrapper.getParent(!0)),t.fire("saveSnapshot"),n.hide(),e()},errorCallback:function(t){n.getContentElement("info","url").select(),alert(n.widget.getErrorMessage(t,l,"Given")),e()}})},null,null,15),this.on("cancel",function(t){t.data.hide&&i&&(i.cancel(),e())})},contents:[{id:"info",elements:[{type:"text",id:"url",label:t.lang.common.url,required:!0,setup:function(t){this.setValue(t.data.url)},validate:function(){return this.getDialog().widget.isUrlValid(this.getValue())?!0:e.unsupportedUrlGiven}}]}]}});

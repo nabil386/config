@@ -1,2 +1,0 @@
-//>>built
-define("dojo/nls/ieg-oneui-layer_es",{"idx/widget/nls/HoverHelpTooltip":{"learnMoreLabel":"Más información","_localized":{}},"idx/widget/nls/Dialog":{"closeButtonLabel":"Cerrar","_localized":{}},"dijit/form/nls/ComboBox":{"previousMessage":"Opciones anteriores","_localized":{},"nextMessage":"Más opciones"},"dijit/form/nls/validate":{"invalidMessage":"El valor especificado no es válido.","rangeMessage":"Este valor está fuera del intervalo.","_localized":{},"missingMessage":"Este valor es necesario."}});

@@ -1,1 +1,0 @@
-({"curam.select.option.blank":"Blank value"})

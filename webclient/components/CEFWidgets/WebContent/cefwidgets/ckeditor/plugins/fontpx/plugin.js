@@ -1,5 +1,0 @@
-﻿/**
- * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
- */
-!function(){"use strict";CKEDITOR.plugins.add("fontpx",{lang:"en",icons:"fontpx",requires:"font",onLoad:function(){function e(e,n){var o=-1;if(e){var a=n.document.createElement(e.element);e.applyToObject(a),o=Math.floor(parseFloat(t(a,n)))+"px"}return o}function t(e,t){var o,a=CKEDITOR.dom.element.createFromHtml('<div data-cke-temp="1" style="'+n+'"></div>',t.document);return a.append(e),t.editable().append(a),o=e.getComputedStyle("font-size"),a.remove(),o}var n=CKEDITOR.env.ie?"display:none":"position:fixed;top:0;left:-1000px";CKEDITOR.plugins.font.on("matchSize",function(t){var n,o,a,i=t.data.styles,r=t.data.computedValue;for(a in i)if(n=i[a],o=n.getDefinition(),o.styles&&o.styles["font-size"]&&e(n,t.editor)==r)return t.data.setValue(a),t.cancel()})}})}();

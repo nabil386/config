@@ -1,1 +1,0 @@
-({"sessionExpired":"Your session has expired.\nPlease reload the application and log in again.","ajaxError":"Background server request has failed.\nPlease retry your last activity or reload the application.\n\nIf the problem persists please contact your administrator."})
